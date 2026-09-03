@@ -1,128 +1,129 @@
-
-
 <div align="center">
 
-# 🖋️ Handwritten
+# 📝 PaperTrail
 
-<img src="public/images/logo.png" alt="Handwritten Logo" width="160" />
+<img src="public/images/logo.png" alt="PaperTrail Logo" width="140" />
 
-### Transform digital text into organic, human-like handwriting instantly.
+### Hyper-Realistic Text-to-Handwriting Studio with Camera Physics & Human Errors
 
-[![Vercel Deployment](https://img.shields.io/badge/Vercel-Deployed-black?logo=vercel&logoColor=white)](https://handwritten-git.vercel.app)
-[![Version](https://img.shields.io/badge/Version-2.0.1-indigo.svg?style=flat-square)](CHANGELOG.md)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-black?logo=github&logoColor=white)](https://github.com/bipin-vishwakarma/papertrail)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
-[![Security Policy](https://img.shields.io/badge/Security-Policy-blue.svg?style=flat-square)](SECURITY.md)
+[![React 19](https://img.shields.io/badge/React-19-blue.svg?style=flat-square)](https://react.dev)
+[![Vite](https://img.shields.io/badge/Vite-7.3-646CFF.svg?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC.svg?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
 
-**[Launch the Workshop](https://handwritten-git.vercel.app)** • **[Features](https://handwritten-git.vercel.app/features)** • **[How it Works](https://handwritten-git.vercel.app/how-it-works)**
+**[Explore Features](https://github.com/bipin-vishwakarma/papertrail#features)** • **[Quick Start](https://github.com/bipin-vishwakarma/papertrail#quick-start)** • **[Realism Engines](https://github.com/bipin-vishwakarma/papertrail#realism-architecture)**
 
 </div>
 
 ---
 
-## 🎨 What is Handwritten?
+## 🌟 What is PaperTrail?
 
-**Handwritten** is a high-performance web application that leverages procedural rendering and AI to convert typed text into realistic, organic handwriting. Version 2.0, the **"Atmospheric Update"**, introduces a premium visual layer and a sophisticated rendering engine that ensures every character feels uniquely human.
+**PaperTrail** is an advanced, privacy-first web application that transforms digital text into **indistinguishable physical handwriting photos**.
 
-### 🌟 Key Features (v2.0)
+Unlike basic handwriting fonts that produce flat, robotic text, PaperTrail simulates:
+1. **The Human Hand**: Micro-jitter per letter, progressive wrist fatigue sag, pen pressure variations, and realistic human typos.
+2. **The Pen**: Procedural scratch-outs (wavy scribble, dense blackout, single/double strike) and handwritten caret insertions (`^`).
+3. **The Physical Environment (Photo Mode)**: Smartphone cast shadows, 3D camera angles, room lighting (warm desk lamp, flash, daylight), paper creases, and sensor noise.
 
-- **Atmospheric Rendering Engine**: A unified visual system featuring fluid mesh gradients and a subtle micro-dot grid for a premium aesthetic.
-- **Premium 3D Depth**: Multi-layered shadow systems and elevation markers that provide a tangible sense of hierarchy.
-- **AI Humanization Engine**: Integrated with OpenAI's GPT-4o-mini via OpenRouter to inject natural phrasing and spontaneous "human" rhythm into your text.
-- **Deterministic Randomness**: Characters are offset dynamically using hash seeds, ensuring stylistic consistency across sessions.
-- **High-Fidelity Export**: Seamlessly export your creations as multi-page PDFs or high-resolution image ZIPs, all processed locally for maximum privacy.
+Everything processes **100% locally in your browser** with zero data sent to external servers and zero mandatory login gates for PDF/image exports.
+
+---
+
+## ⚡ Key Features
+
+### ✂️ 1. Human Errors & Scribble Engine
+- **Procedural Spelling Slips**: Automatically simulates realistic human typing/writing errors (adjacent key slips, transposed letters, dropped vowels, double strikes).
+- **4 Procedural Pen Scratch Styles**:
+  - 〰️ **Wavy Scribble**: Organic, looping cursive blackout strokes.
+  - ⬛ **Dense Blackout**: Anxious, heavy zig-zag pen scratch.
+  - ➖ **Single Strike**: A quick, hurried slash.
+  - ═ **Double Strike**: Deliberate double-line strike-through.
+- **Handwritten Caret Insertion (`^`)**: Renders realistic caret marks with the corrected word handwritten directly above the line.
+- **Manual Markdown Syntax**:
+  - `~~word~~` $\rightarrow$ Scratch out word.
+  - `~~mistake~~^correction` $\rightarrow$ Scratch out mistake and write "correction" above with a caret.
+- **Writer's Fatigue**: Progressively drifts baseline and increases slant towards the bottom of long pages.
+
+### 📸 2. Camera & Photo Physics Engine
+- **Smartphone Cast Shadow**: Realistic soft-edged silhouette of a phone hovering over the notebook, with customizable angle ($0^\circ - 360^\circ$) and shadow intensity.
+- **3D Non-Planar Camera Tilt**: Renders pages with real 3D camera angles (`perspective(1000px)`, `rotateX`, `rotateY`).
+- **Room Lighting Environments**:
+  - 🛋️ **Warm Desk Lamp**: Tungsten 2900K gradient with adjustable warmth slider.
+  - ☀️ **Cool Daylight**: Natural window exposure lighting.
+  - ⚡ **Camera Flash**: High-intensity central flash hotspot.
+  - 📄 **Scanner Mode**: High-contrast document scan.
+- **Paper Folds & Creases**: Realistic horizontal half-folds, quarter cross-folds, and dog-eared corners.
+- **Analog Sensor Noise**: Subtle ISO grain and lens vignette to prevent flat digital rendering.
+
+### 🖋️ 3. Pen Presets & Realistic Papers
+- **Pen Presets**:
+  - 🖊️ **Blue Ballpoint** (`#1e40af`) — Classic student pen
+  - 🖋️ **Black Gel Pen** (`#111827`) — Deep dark ink
+  - ✒️ **Royal Blue Fountain** (`#1d4ed8`) — Parker royal blue
+  - ✏️ **HB #2 Pencil** (`#4b5563`) — Graphite texture
+  - 🔴 **Teacher Red Pen** (`#dc2626`) — Exam grading ink
+- **Paper Styles**:
+  - 📝 **College Ruled (Red Margin)** — Classic 65px vertical margin line
+  - 📜 **Standard Blue Ruled** — Clean lined notebook paper
+  - 📋 **Yellow Legal Pad** — Professional yellow pad with margin line
+  - 📐 **Math / Engineering Grid** — Precision 24px grid paper
+  - 📄 **Plain White A4** — Unlined printer paper
+
+### 🗂️ 4. 15 Authentic Scraped Handwriting Fonts
+Preserved and loaded locally in `/public/fonts/`:
+- `Handwriting 1` through `Handwriting 14` (Clean Pen, Casual Slant, Neat Ballpoint, Fluid Cursive, Fast Flow, Compact Print, Loose Homework, Fine Nib, Quick Notes, Forward Lean, Natural Cursive, Rounded Junior, Micro Gel, Expressive).
+- `Hindi Handwriting` (Full Devnagari handwriting support).
+- Google Fonts curated for messy, cute, casual, and formal handwriting styles.
+
+### 📦 5. 100% Free & Frictionless Export
+- Multi-page high-resolution PDF download.
+- High-resolution JPEG/PNG ZIP image bundle download.
+- **Zero Login Wall**: No email signup, no Google login required to export.
 
 ---
 
 ## 🚀 Quick Start
 
-Get your local handwriting workshop running in less than 2 minutes:
+### 1. Clone the Repository
+```bash
+git clone https://github.com/bipin-vishwakarma/papertrail.git
+cd papertrail
+```
 
-1. **Clone the Repository**
+### 2. Install Dependencies
+```bash
+npm install
+```
 
-    ```bash
-    git clone https://github.com/ArshVermaGit/Handwritten.git
-    cd Handwritten
-    ```
+### 3. Run Development Server
+```bash
+npm run dev
+```
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-2. **Install Dependencies**
-
-    ```bash
-    npm install
-    ```
-
-3. **Environment Configuration**
-   Copy `.env.example` to `.env` and add your [OpenRouter](https://openrouter.ai/) API key.
-
-4. **Fire it Up!**
-    ```bash
-    npm run dev
-    ```
-
----
-
-## 🛠️ Technical Architecture
-
-<div align="center">
-
-![React](https://skillicons.dev/icons?i=react)
-![Vite](https://skillicons.dev/icons?i=vite)
-![TailwindCSS](https://skillicons.dev/icons?i=tailwind)
-![JavaScript](https://skillicons.dev/icons?i=js)
-![HTML](https://skillicons.dev/icons?i=html)
-![CSS](https://skillicons.dev/icons?i=css)
-
-</div>
-
-| Layer          | Technology                                                                                  |
-| :------------- | :------------------------------------------------------------------------------------------ |
-| **Framework**  | [React](https://reactjs.org/) + [Vite](https://vitejs.dev/)                                 |
-| **Styling**    | [Tailwind CSS](https://tailwindcss.com/) (Standardized Utility System)                      |
-| **Animations** | [Framer Motion](https://www.framer.com/motion/) (Global Orchestration)                      |
-| **State**      | [Zustand](https://github.com/pmndrs/zustand) (Store & Persist)                              |
-| **Rendering**  | [html2canvas](https://html2canvas.hertzen.com/) + [jsPDF](https://parall.ax/products/jspdf) |
+### 4. Build for Production
+```bash
+npm run build
+```
 
 ---
 
-## 🤝 Community & Development
+## 🛠️ Tech Stack
 
-Handwritten is built by the community, for the community. We've made our repository **100% contributor-friendly**.
-
-- 📖 **[Contribution Guide](CONTRIBUTING.md)**: Our standards for code, branching, and PRs.
-- 🛡️ **[Security Policy](SECURITY.md)**: How to report vulnerabilities safely.
-- 📜 **[Code of Conduct](CODE_OF_CONDUCT.md)**: Standards for a healthy community.
-- ❓ **[Support Guide](SUPPORT.md)**: Finding help and asking questions.
-- 📜 **[MIT License](LICENSE)**: Open and free to use.
-
----
-
-## ☕ Support the Project
-
-If you find this tool helpful and want to support its development, consider buying me a coffee! Your support helps keep the project alive and free.
-
-<div align="center">
-    
-<a href="https://www.buymeacoffee.com/ArshVerma">
-  <img src="public/images/buy-me-a-coffee.png" width="200" />
-</a>
-
-</div>
-
-## 📱 Connect with Me
-
-I'd love to hear your feedback or discuss potential collaborations!
-
-<div align="center">
-
-[![GitHub](https://skillicons.dev/icons?i=github)](https://github.com/ArshVermaGit)
-[![LinkedIn](https://skillicons.dev/icons?i=linkedin)](https://www.linkedin.com/in/arshvermadev/)
-[![Twitter](https://skillicons.dev/icons?i=twitter)](https://x.com/TheArshVerma)
-[![Gmail](https://skillicons.dev/icons?i=gmail)](mailto:arshverma.dev@gmail.com)
-
-</div>
+| Technology | Purpose |
+| :--- | :--- |
+| **React 19** | Modern UI components & hooks |
+| **Vite 7** | Next-generation frontend tooling & build pipeline |
+| **TypeScript** | Strict type safety with `verbatimModuleSyntax` |
+| **Tailwind CSS v4** | Modern utility-first styling |
+| **Zustand** | Centralized reactive state management |
+| **Framer Motion** | Smooth UI transitions and drawers |
+| **modern-screenshot & jsPDF** | High-fidelity canvas capture and PDF generation |
 
 ---
 
-<p align="center">
-  Built with ❤️ by <strong>Arsh Verma</strong>
-</p>
+## 📄 License
+
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
