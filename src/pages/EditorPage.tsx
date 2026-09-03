@@ -8,7 +8,6 @@ import {
 } from 'lucide-react';
 
 import { useStore } from '../lib/store';
-import { useAuth } from '../context/AuthContext';
 import { useToast } from '../hooks/useToast';
 import HistoryModal from '../components/modals/HistoryModal';
 import ExportModal from '../components/modals/ExportModal';
@@ -266,7 +265,6 @@ const PAPERS = [
 export default function EditorPage() {
     const { addToast } = useToast();
     const sourceRef = useRef<HTMLTextAreaElement>(null);
-    const { user } = useAuth();
     
     // Global Store State
     const { 
@@ -320,7 +318,6 @@ export default function EditorPage() {
     const [exportStatus, setExportStatus] = useState<'idle' | 'processing' | 'complete' | 'error'>('idle');
     const [isHumanizing, setIsHumanizing] = useState(false);
     const [isHistoryOpen, setIsHistoryOpen] = useState(false);
-    const [pendingAction, setPendingAction] = useState<{ type: 'export', format: 'pdf' | 'zip' } | null>(null);
     const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
     const [activeMobileTab, setActiveMobileTab] = useState<'write' | 'design' | 'paper' | 'effects'>('write');
     const [mobileView, setMobileView] = useState<'write' | 'preview'>('write');
@@ -355,19 +352,6 @@ export default function EditorPage() {
         return () => observer.disconnect();
     }, [mobileView]);
 
-    // Initial Login Pop-up (Handled by AuthContext, but we ensure persistence of intent)
-    useEffect(() => {
-        if (user && pendingAction) {
-            if (pendingAction.type === 'export') {
-                setExportFormat(pendingAction.format);
-                setExportStatus('idle');
-                setIsExportModalOpen(true);
-                setProgress(0);
-            }
-            setPendingAction(null);
-        }
-    }, [user, pendingAction]);
-
     const deferredText = useDeferredValue(text);
 
     // Sync Paper
@@ -380,7 +364,7 @@ export default function EditorPage() {
     // History Snapshots (Zustand addToHistory)
     useEffect(() => {
         const timer = setTimeout(() => {
-            if (user && text && text.length > 10) {
+            if (text && text.length > 10) {
                 const latest = storeHistory[0];
                 if (!latest || latest.text !== text) {
                     addToHistory({
@@ -392,7 +376,7 @@ export default function EditorPage() {
             }
         }, 10000); 
         return () => clearTimeout(timer);
-    }, [text, user, storeHistory, addToHistory]);
+    }, [text, storeHistory, addToHistory]);
 
     const normalizeInput = (val: string) => {
         return val
@@ -1334,15 +1318,13 @@ export default function EditorPage() {
                             <FileText size={12} className="text-neutral-300 hidden sm:block"/>
                             <span className="hidden sm:inline">/ Documents /</span>
                             <span className="truncate max-w-[120px] sm:max-w-none">{headerText || 'Untitled'}</span>
-                            {user && (
-                                <button 
-                                    onClick={() => setIsHistoryOpen(true)}
-                                    className="ml-4 flex items-center gap-1.5 px-3 py-1 bg-neutral-900 text-white rounded-full hover:bg-neutral-800 transition-colors"
-                                >
-                                    <Clock size={10} />
-                                    History
-                                </button>
-                            )}
+                            <button 
+                                onClick={() => setIsHistoryOpen(true)}
+                                className="ml-4 flex items-center gap-1.5 px-3 py-1 bg-neutral-900 text-white rounded-full hover:bg-neutral-800 transition-colors"
+                            >
+                                <Clock size={10} />
+                                History
+                            </button>
                         </div>
                         <div className="flex items-center gap-2">
                              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />

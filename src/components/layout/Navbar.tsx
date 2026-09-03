@@ -1,13 +1,9 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 const logo = '/images/logo.png';
-import UserMenu from '../UserMenu';
-import { useAuth } from '../../context/AuthContext';
 import { useStore } from '../../lib/store';
-import AuthModal from '../modals/AuthModal';
 
 export default function Navbar() {
-    const { user, setAuthModalOpen } = useAuth();
     const isNavbarVisible = useStore(state => state.isNavbarVisible);
 
     return (
@@ -39,22 +35,23 @@ export default function Navbar() {
 
                     {/* Actions */}
                     <div className="flex items-center gap-4">
-                        {user ? (
-                            <UserMenu />
-                        ) : (
-                            <button
-                                onClick={() => setAuthModalOpen(true)}
-                                className="px-4 sm:px-6 py-2 sm:py-2.5 bg-neutral-900 text-white rounded-full text-xs sm:text-sm font-bold shadow-lg shadow-neutral-900/10 hover:shadow-xl hover:scale-105 active:scale-95 transition-all"
-                            >
-                                <span className="hidden sm:inline">Get Started</span>
-                                <span className="sm:hidden">Start</span>
-                            </button>
-                        )}
+                        <a
+                            href="/#editor"
+                            onClick={(e) => {
+                                const editorEl = document.getElementById('editor');
+                                if (editorEl) {
+                                    e.preventDefault();
+                                    editorEl.scrollIntoView({ behavior: 'smooth' });
+                                }
+                            }}
+                            className="px-4 sm:px-6 py-2 sm:py-2.5 bg-neutral-900 text-white rounded-full text-xs sm:text-sm font-bold shadow-lg shadow-neutral-900/10 hover:shadow-xl hover:scale-105 active:scale-95 transition-all"
+                        >
+                            <span className="hidden sm:inline">Open Studio</span>
+                            <span className="sm:hidden">Studio</span>
+                        </a>
                     </div>
                 </div>
             </motion.nav>
-            
-            <AuthModal />
         </>
     );
 }

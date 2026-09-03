@@ -1,45 +1,47 @@
 import PageLayout from '../components/layout/PageLayout';
-import { Mail, Linkedin, HelpCircle, FileText, Shield } from 'lucide-react';
+import { Github, MessageSquare, HelpCircle, FileText, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function SupportPage() {
     return (
         <PageLayout 
             title="Support Center" 
-            subtitle="How can we help you today? Our team is here to ensure you have the best experience with Handwritten."
+            subtitle="Get support, submit issues, or contribute to PaperTrail."
         >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
                 <div className="p-8 bg-white border border-black/5 rounded-3xl hover:shadow-xl hover:shadow-neutral-900/5 transition-all">
                     <div className="w-12 h-12 bg-neutral-900 text-white rounded-2xl flex items-center justify-center mb-6">
-                        <Mail size={24} />
+                        <Github size={24} />
                     </div>
-                    <h3 className="mt-0">Email Support</h3>
+                    <h3 className="mt-0">GitHub Issues</h3>
                     <p className="text-neutral-500 mb-6">
-                        Have a specific question or issue? Send us an email and we'll get back to you within 24 hours.
+                        Found a rendering glitch or have a request? Open an issue directly on the repository.
                     </p>
                     <a 
-                        href="mailto:arshverma.dev@gmail.com" 
-                        className="inline-flex items-center font-bold text-neutral-900 hover:gap-2 transition-all"
-                    >
-                        arshverma.dev@gmail.com →
-                    </a>
-                </div>
-
-                <div className="p-8 bg-white border border-black/5 rounded-3xl hover:shadow-xl hover:shadow-neutral-900/5 transition-all">
-                    <div className="w-12 h-12 bg-blue-500 text-white rounded-2xl flex items-center justify-center mb-6">
-                        <Linkedin size={24} />
-                    </div>
-                    <h3 className="mt-0">LinkedIn</h3>
-                    <p className="text-neutral-500 mb-6">
-                        Connect with us on LinkedIn for professional updates and networking.
-                    </p>
-                    <a 
-                        href="https://www.linkedin.com/in/arshvermadev/" 
+                        href="https://github.com/bipin-vishwakarma/papertrail/issues" 
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center font-bold text-neutral-900 hover:gap-2 transition-all"
                     >
-                        Arsh Verma (LinkedIn) →
+                        GitHub Issues Tracker →
+                    </a>
+                </div>
+
+                <div className="p-8 bg-white border border-black/5 rounded-3xl hover:shadow-xl hover:shadow-neutral-900/5 transition-all">
+                    <div className="w-12 h-12 bg-indigo-600 text-white rounded-2xl flex items-center justify-center mb-6">
+                        <MessageSquare size={24} />
+                    </div>
+                    <h3 className="mt-0">Community & Developer</h3>
+                    <p className="text-neutral-500 mb-6">
+                        Connect with Bipin Vishwakarma and explore the PaperTrail codebase.
+                    </p>
+                    <a 
+                        href="https://github.com/bipin-vishwakarma" 
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center font-bold text-neutral-900 hover:gap-2 transition-all"
+                    >
+                        Bipin Vishwakarma (GitHub) →
                     </a>
                 </div>
             </div>

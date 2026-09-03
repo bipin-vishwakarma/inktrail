@@ -87,7 +87,7 @@ export default function ChangelogPage() {
 
             <div className="mt-16 text-center">
                 <p className="text-neutral-400 text-sm font-medium">
-                    Want to stay updated? Follow us on <a href="https://x.com/TheArshVerma" className="text-neutral-900 font-bold hover:underline">X (Twitter)</a>.
+                    Want to stay updated? Star and watch the project on <a href="https://github.com/bipin-vishwakarma/papertrail" className="text-neutral-900 font-bold hover:underline">GitHub</a>.
                 </p>
             </div>
         </PageLayout>

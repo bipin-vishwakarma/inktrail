@@ -1,11 +1,11 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, CheckCircle2, Loader2 } from 'lucide-react';
+import { X, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useScrollLock } from '../../hooks/useScrollLock';
 const logo = '/images/logo.png';
 
 export default function AuthModal() {
-    const { isAuthModalOpen, setAuthModalOpen, login, isLoading } = useAuth();
+    const { isAuthModalOpen, setAuthModalOpen } = useAuth();
 
     useScrollLock(isAuthModalOpen);
 
@@ -32,8 +32,8 @@ export default function AuthModal() {
                                     <div className="w-3 h-3 rounded-full bg-[#28C840] shadow-inner" />
                                 </div>
                                 <div>
-                                    <h2 className="text-lg sm:text-xl font-display font-bold text-neutral-900 leading-tight">Welcome Back</h2>
-                                    <p className="text-xs text-neutral-400 font-medium">Sign in to continue</p>
+                                    <h2 className="text-lg sm:text-xl font-display font-bold text-neutral-900 leading-tight">PaperTrail Studio</h2>
+                                    <p className="text-xs text-emerald-600 font-bold">100% Free & Open Access</p>
                                 </div>
                             </div>
                             <button 
@@ -53,32 +53,22 @@ export default function AuthModal() {
                                 {/* Logo */}
                                 <div className="w-20 h-20 mb-6 bg-white rounded-2xl flex items-center justify-center shadow-sm border border-neutral-100 relative overflow-hidden group">
                                     <div className="absolute inset-0 bg-linear-to-br from-indigo-50/50 to-transparent" />
-                                    <img src={logo} alt="Handwritten" className="w-12 h-12 object-contain relative z-10 drop-shadow-md group-hover:scale-110 transition-transform duration-500" />
+                                    <img src={logo} alt="PaperTrail" className="w-12 h-12 object-contain relative z-10 drop-shadow-md group-hover:scale-110 transition-transform duration-500" />
                                 </div>
                                 
-                                <p className="text-sm text-neutral-500 mb-8 leading-relaxed max-w-[260px]">
-                                    Sign in to save your masterpieces and export without limits.
+                                <p className="text-sm text-neutral-600 mb-6 leading-relaxed max-w-[280px]">
+                                    PaperTrail runs 100% locally in your browser. No sign-up, accounts, or Google logins needed.
                                 </p>
 
                                 <motion.button
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}
                                     transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                                    onClick={() => login()}
-                                    disabled={isLoading}
-                                    className="w-full py-4 px-6 bg-neutral-900 text-white rounded-2xl hover:bg-black transition-all flex items-center justify-center gap-3 group relative overflow-hidden shadow-lg shadow-neutral-900/20 disabled:opacity-70 disabled:cursor-not-allowed"
+                                    onClick={() => setAuthModalOpen(false)}
+                                    className="w-full py-3.5 px-6 bg-neutral-900 text-white rounded-2xl hover:bg-black transition-all flex items-center justify-center gap-3 font-bold text-sm shadow-lg shadow-neutral-900/20"
                                 >
-                                    {isLoading ? (
-                                        <Loader2 size={20} className="animate-spin text-white/70" />
-                                    ) : (
-                                        <>
-                                            <div className="bg-white p-1.5 rounded-full"><img src="https://www.google.com/favicon.ico" alt="G" className="w-4 h-4" /></div>
-                                            <span className="font-bold text-sm tracking-wide">Sign in with Google</span>
-                                        </>
-                                    )}
+                                    Start Writing Now →
                                 </motion.button>
-                                
-                                {isLoading && <p className="text-xs text-neutral-400 mt-4 animate-pulse">Connecting to secure server...</p>}
 
                                 <div className="mt-8 pt-6 border-t border-neutral-200 w-full">
                                     <div className="flex items-center justify-center gap-2 text-[10px] text-neutral-400 font-bold uppercase tracking-widest">

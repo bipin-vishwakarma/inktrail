@@ -1,12 +1,11 @@
 import { 
     PenTool, Download, Type, ArrowRight,
-    Github, Linkedin, Twitter, Mail
+    Github
 } from 'lucide-react';
 import React, { useRef, useEffect } from 'react';
 import { motion, type Variants, useInView } from 'framer-motion';
 import EditorPage from './EditorPage';
 import { useStore } from '../lib/store';
-const photo = '/images/arsh.jpg';
 
 export default function LandingPage() {
     const editorRef = useRef<HTMLDivElement>(null);
@@ -465,35 +464,35 @@ const AboutSection = React.memo(() => {
                             <div className="w-3 h-3 rounded-full bg-green-400" />
                          </div>
 
-                         <div className="w-full bg-[#FAFAFA] rounded-md overflow-hidden relative min-h-[400px] sm:min-h-[500px] flex flex-col md:flex-row">
+                          <div className="w-full bg-[#FAFAFA] rounded-md overflow-hidden relative min-h-[400px] sm:min-h-[500px] flex flex-col md:flex-row">
                                 <div className="w-full md:w-1/3 bg-white border-b md:border-b-0 md:border-r border-black/5 p-6 sm:p-8 flex flex-col items-center pt-10 sm:pt-16 md:pt-20">
-                                    <div className="relative w-28 h-28 sm:w-36 sm:h-36 md:w-48 md:h-48 mb-4 sm:mb-6 md:mb-8">
-                                    <div className="absolute inset-0 bg-accent/10 rounded-full blur-2xl transform translate-y-4" />
-                                    <img src={photo} alt="Arsh Verma" className="w-full h-full object-cover rounded-full border-4 border-white shadow-xl relative z-10" />
-                                    <div className="absolute bottom-4 right-4 z-20 bg-white p-2 rounded-full shadow-md"><span className="text-2xl">👋</span></div>
+                                    <div className="relative w-28 h-28 sm:w-36 sm:h-36 md:w-48 md:h-48 mb-4 sm:mb-6 md:mb-8 flex items-center justify-center">
+                                    <div className="absolute inset-0 bg-indigo-500/10 rounded-full blur-2xl transform translate-y-4" />
+                                    <div className="w-full h-full rounded-full bg-linear-to-br from-neutral-900 to-neutral-700 text-white flex items-center justify-center text-4xl font-black shadow-xl border-4 border-white relative z-10 font-sans tracking-wider">
+                                        BV
+                                    </div>
+                                    <div className="absolute bottom-4 right-4 z-20 bg-white p-2 rounded-full shadow-md"><span className="text-2xl">✍️</span></div>
                                 </div>
-                                <h3 className="font-display font-bold text-2xl text-ink mb-1">Arsh Verma</h3>
-                                <p className="text-xs font-black tracking-widest uppercase text-ink/40 mb-8">Developer & Designer</p>
+                                <h3 className="font-display font-bold text-2xl text-ink mb-1">Bipin Vishwakarma</h3>
+                                <p className="text-xs font-black tracking-widest uppercase text-ink/40 mb-8">Creator & Engineer</p>
                                 <div className="flex gap-4">
-                                    <SocialLink href="https://github.com/ArshVermaGit" icon={Github} />
-                                    <SocialLink href="https://www.linkedin.com/in/arshvermadev/" icon={Linkedin} />
-                                    <SocialLink href="https://x.com/TheArshVerma" icon={Twitter} />
-                                    <SocialLink href="mailto:arshverma.dev@gmail.com" icon={Mail} />
+                                    <SocialLink href="https://github.com/bipin-vishwakarma" icon={Github} />
+                                    <SocialLink href="https://github.com/bipin-vishwakarma/papertrail" icon={PenTool} />
                                 </div>
                             </div>
 
                              <div className="flex-1 p-8 md:p-16 bg-[radial-gradient(#00000005_1px,transparent_1px)] bg-size-[16px_16px]">
                                   <div className="max-w-2xl mx-auto space-y-8">
                                      <motion.div variants={itemVariants} className="bg-white p-8 rounded-3xl shadow-premium border border-black/5">
-                                         <h4 className="font-bold text-ink mb-4 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-accent" /> About Me</h4>
+                                         <h4 className="font-bold text-ink mb-4 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-accent" /> About the Creator</h4>
                                          <p className="text-ink/70 leading-relaxed font-serif text-lg">
-                                             I'm a student at <span className="font-bold text-ink">VIT Bhopal</span> with a passion for building digital experiences. Whether it's developing games in Unity or creating tools like Handwritten, I love turning ideas into reality.
+                                             Building from <span className="font-bold text-ink">UPES</span> with a focus on reverse-engineering digital tools and crafting hyper-realistic handwriting engines that bring tactile physical nuance back into software.
                                          </p>
                                      </motion.div>
                                      <motion.div variants={itemVariants} className="bg-white p-8 rounded-3xl shadow-premium border border-black/5">
                                          <h4 className="font-bold text-ink mb-4 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-rose-400" /> Philosophy</h4>
                                          <p className="text-ink/70 leading-relaxed font-serif text-lg">
-                                             I focus on making things that look great and work even better. Coding isn't just about logic—it's about creating something that feels <span className="font-handwriting text-2xl mx-2 text-accent">human</span>.
+                                             Real handwriting isn't perfect—it has slips, ink pressure shifts, desk lamp shadows, and hasty scratches. PaperTrail makes digital handwriting feel genuinely <span className="font-handwriting text-2xl mx-2 text-accent">human</span>.
                                          </p>
                                      </motion.div>
                                   </div>

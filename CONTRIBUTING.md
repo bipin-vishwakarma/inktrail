@@ -79,10 +79,8 @@ Format: `<type>(<scope>): <subject>`
 
 Got questions? Want to discuss a feature before building it? Reach out!
 
-- **GitHub**: [@ArshVermaGit](https://github.com/ArshVermaGit)
-- **X (Twitter)**: [@TheArshVerma](https://x.com/TheArshVerma)
-- **LinkedIn**: [Arsh Verma](https://www.linkedin.com/in/arshvermadev/)
-- **Email**: [arshverma.dev@gmail.com](mailto:arshverma.dev@gmail.com)
+- **GitHub**: [@bipin-vishwakarma](https://github.com/bipin-vishwakarma)
+- **Repository**: [bipin-vishwakarma/papertrail](https://github.com/bipin-vishwakarma/papertrail)
 
 ---
 

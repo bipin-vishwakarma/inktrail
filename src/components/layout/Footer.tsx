@@ -1,4 +1,4 @@
-import { Github, Twitter, Linkedin, Heart } from 'lucide-react';
+import { Github, PenTool, Heart } from 'lucide-react';
 const logo = '/images/logo.png';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, type Variants } from 'framer-motion';
@@ -98,11 +98,10 @@ export default function Footer() {
                     </motion.div>
 
                     <motion.div variants={itemVariants} className="col-span-1 lg:col-span-2">
-                        <h4 className="font-black text-xs uppercase tracking-[0.2em] text-neutral-400 mb-6 focus:outline-none">Socials</h4>
+                        <h4 className="font-black text-xs uppercase tracking-[0.2em] text-neutral-400 mb-6 focus:outline-none">Links</h4>
                         <ul className="space-y-3">
-                            <li><a href="https://x.com/TheArshVerma" target="_blank" rel="noopener noreferrer" className="text-neutral-500 hover:text-sky-500 transition-colors flex items-center gap-3 text-sm font-bold"><Twitter size={14} /> X (Twitter)</a></li>
-                            <li><a href="https://github.com/ArshVermaGit" target="_blank" rel="noopener noreferrer" className="text-neutral-500 hover:text-purple-600 transition-colors flex items-center gap-3 text-sm font-bold"><Github size={14} /> GitHub</a></li>
-                            <li><a href="https://www.linkedin.com/in/arshvermadev/" target="_blank" rel="noopener noreferrer" className="text-neutral-500 hover:text-blue-600 transition-colors flex items-center gap-3 text-sm font-bold"><Linkedin size={14} /> LinkedIn</a></li>
+                            <li><a href="https://github.com/bipin-vishwakarma" target="_blank" rel="noopener noreferrer" className="text-neutral-500 hover:text-purple-600 transition-colors flex items-center gap-3 text-sm font-bold"><Github size={14} /> GitHub Profile</a></li>
+                            <li><a href="https://github.com/bipin-vishwakarma/papertrail" target="_blank" rel="noopener noreferrer" className="text-neutral-500 hover:text-neutral-900 transition-colors flex items-center gap-3 text-sm font-bold"><PenTool size={14} /> Repository</a></li>
                         </ul>
                     </motion.div>
                 </div>
@@ -111,14 +110,14 @@ export default function Footer() {
                 <div className="border-t border-black/5 pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
                     <div className="flex items-center gap-4">
                         <p className="text-xs text-neutral-400 font-bold">
-                            &copy; {new Date().getFullYear()} Handwritten. All rights reserved.
+                            &copy; {new Date().getFullYear()} PaperTrail. Open Source.
                         </p>
-                        <a href="https://github.com/ArshVermaGit/Handwritten" target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-neutral-900 transition-colors" title="View Source on GitHub">
+                        <a href="https://github.com/bipin-vishwakarma/papertrail" target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-neutral-900 transition-colors" title="View Source on GitHub">
                             <Github size={14} />
                         </a>
                     </div>
                     <p className="text-xs text-neutral-400 font-bold flex items-center gap-2">
-                        Built with <Heart size={12} className="text-rose-500 fill-current" /> by <a href="https://www.linkedin.com/in/arshvermadev/" target="_blank" rel="noopener noreferrer" className="text-neutral-900 hover:underline underline-offset-4 font-black">Arsh Verma</a>
+                        Crafted with <Heart size={12} className="text-rose-500 fill-current" /> by <a href="https://github.com/bipin-vishwakarma" target="_blank" rel="noopener noreferrer" className="text-neutral-900 hover:underline underline-offset-4 font-black">Bipin Vishwakarma</a>
                     </p>
                 </div>
             </div>

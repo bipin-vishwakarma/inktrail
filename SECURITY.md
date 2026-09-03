@@ -13,10 +13,6 @@ currently being supported with security updates.
 
 ## Reporting a Vulnerability
 
-We take the security of Handwritten seriously. If you believe you have found a security vulnerability in Handwritten, please report it to us as described below.
+We take the security of PaperTrail seriously. If you believe you have found a security vulnerability in PaperTrail, please report it via [GitHub Security Advisories](https://github.com/bipin-vishwakarma/papertrail/security/advisories).
 
-**Please do not report security vulnerabilities through public GitHub issues.**
-
-Instead, please report them via email to **arshverma.dev@gmail.com**.
-
-You should expect to receive a response within 24 hours. If for some reason you do not, please follow up via email to ensure we received your original message.
+You should expect to receive a response within 24 hours.
