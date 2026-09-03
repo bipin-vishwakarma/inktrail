@@ -8,6 +8,7 @@ import ScrollToTop from './components/layout/ScrollToTop';
 
 // Lazy Load Pages
 const LandingPage = lazy(() => import('./pages/LandingPage'));
+const EditorPage = lazy(() => import('./pages/EditorPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 // Legal & Support Pages
@@ -37,6 +38,7 @@ function InnerApp() {
       <Routes>
         <Route path="/" element={<RootLayout />}>
           <Route index element={<LandingPage />} />
+          <Route path="editor" element={<EditorPage />} />
           
           {/* Legal Pages */}
           <Route path="privacy" element={<PrivacyPolicy />} />

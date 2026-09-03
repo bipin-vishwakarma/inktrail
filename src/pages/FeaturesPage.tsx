@@ -1,5 +1,5 @@
 import PageLayout from '../components/layout/PageLayout';
-import { Sparkles, Download, Layout, PenTool } from 'lucide-react';
+import { Sparkles, Download, PenTool } from 'lucide-react';
 
 export default function FeaturesPage() {
     return (
@@ -48,12 +48,22 @@ export default function FeaturesPage() {
                     </div>
 
                     <div className="p-8 bg-white/50 rounded-3xl border border-black/5 hover:shadow-premium transition-all group">
-                        <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                            <Layout className="text-blue-600" size={28} />
+                        <div className="w-14 h-14 bg-rose-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <span className="text-2xl">✂️</span>
                         </div>
-                        <h3 className="text-2xl font-bold mb-4">Smart Layout</h3>
+                        <h3 className="text-2xl font-bold mb-4">Human Errors & Strikes</h3>
                         <p className="text-neutral-600 leading-relaxed">
-                            Automatic margin handling, line spacing, and page breaks ensure your letters look professional and perfectly aligned every time.
+                            Simulate authentic human mistakes with auto-typos, realistic wavy or dense pen scribbles, and handwritten caret (<code className="font-mono text-xs bg-black/5 px-1 py-0.5 rounded">^</code>) corrections.
+                        </p>
+                    </div>
+
+                    <div className="p-8 bg-white/50 rounded-3xl border border-black/5 hover:shadow-premium transition-all group">
+                        <div className="w-14 h-14 bg-violet-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <span className="text-2xl">📸</span>
+                        </div>
+                        <h3 className="text-2xl font-bold mb-4">Camera & Photo Physics</h3>
+                        <p className="text-neutral-600 leading-relaxed">
+                            Looks 100% like a real smartphone photo of homework on a desk with phone cast shadows, warm lamp lighting, 3D perspective camera tilt, sensor ISO noise, and paper fold creases.
                         </p>
                     </div>
                 </div>

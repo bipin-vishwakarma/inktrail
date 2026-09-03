@@ -12,6 +12,11 @@ export type PaperMaterial = 'white' | 'ruled' | 'graph' | 'dotted' | 'vintage' |
 export type PaperSize = 'a4' | 'letter' | 'a5' | 'a6' | 'legal' | 'tabloid';
 export type PaperOrientation = 'portrait' | 'landscape';
 
+export type StrikeStyle = 'wavy' | 'dense' | 'single' | 'double';
+export type LightingMode = 'flat' | 'warm-lamp' | 'cool-daylight' | 'scanner-contrast' | 'flash';
+export type PaperCrease = 'none' | 'center-h' | 'cross' | 'corner-fold';
+export type PenType = 'ballpoint-blue' | 'gel-black' | 'fountain-blue' | 'pencil' | 'red-pen' | 'custom';
+
 export type ToastType = 'success' | 'error' | 'info' | 'warning';
 
 export interface Token {
@@ -50,12 +55,23 @@ export interface AppState {
     hasSeenOnboarding: boolean;
     hasSeenTour: boolean;
 
-    // Visual Effects
+    // Visual & Camera Effects
     paperShadow: boolean;
     inkBlur: number;
     resolutionQuality: number;
     paperTilt: boolean;
     paperTexture: boolean;
+    phoneShadow: boolean;
+    phoneShadowAngle: number;
+    phoneShadowIntensity: number;
+    perspectiveWarp: boolean;
+    tiltX: number;
+    tiltY: number;
+    lightingMode: LightingMode;
+    lightingWarmth: number;
+    paperCrease: PaperCrease;
+    sensorNoise: number;
+    penType: PenType;
 
     // UI State
     isSidebarCollapsed: boolean;
@@ -65,8 +81,10 @@ export interface AppState {
     expandedPanels: string[];
     isNavbarVisible: boolean;
     
-    // Editor Refinements
+    // Editor Refinements & Biological Simulation
     jitter: number;
+    charJitter: number;
+    fatigue: number;
     pressure: number;
     smudge: number;
     baseline: number;
@@ -78,6 +96,11 @@ export interface AppState {
     showPageNumbers: boolean;
     showHeader: boolean;
     headerText: string;
+
+    // Human Errors & Strikes
+    autoTypoRate: number;
+    strikeStyle: StrikeStyle;
+    autoCaret: boolean;
 
     // Actions
     setText: (text: string) => void;
@@ -105,6 +128,24 @@ export interface AppState {
     setResolutionQuality: (value: number) => void;
     setPaperTilt: (enabled: boolean) => void;
     setPaperTexture: (enabled: boolean) => void;
+    setPhoneShadow: (enabled: boolean) => void;
+    setPhoneShadowAngle: (angle: number) => void;
+    setPhoneShadowIntensity: (intensity: number) => void;
+    setPerspectiveWarp: (enabled: boolean) => void;
+    setTiltX: (deg: number) => void;
+    setTiltY: (deg: number) => void;
+    setLightingMode: (mode: LightingMode) => void;
+    setLightingWarmth: (val: number) => void;
+    setPaperCrease: (crease: PaperCrease) => void;
+    setSensorNoise: (val: number) => void;
+    setPenType: (pen: PenType) => void;
+
+    // Human Error & Fatigue Actions
+    setCharJitter: (val: number) => void;
+    setFatigue: (val: number) => void;
+    setAutoTypoRate: (rate: number) => void;
+    setStrikeStyle: (style: StrikeStyle) => void;
+    setAutoCaret: (enabled: boolean) => void;
 
     // Onboarding Actions
     completeOnboarding: () => void;
@@ -133,3 +174,4 @@ export interface AppState {
 
     reset: () => void;
 }
+

@@ -16,13 +16,17 @@ export interface HistoryItem {
     text: string;
 }
 
-const initialState: Omit<AppState, 'reset' | 'setText' | 'setLastSaved' | 'setZoom' | 'setEditorMode' | 'setUploadedFileName' | 'setHandwritingStyle' | 'setFontSize' | 'setLetterSpacing' | 'setLineHeight' | 'setWordSpacing' | 'setPaperMaterial' | 'setPaperSize' | 'setPaperOrientation' | 'setInkColor' | 'addCustomFont' | 'removeCustomFont' | 'resetTypography' | 'setCustomPaperImage' | 'completeOnboarding' | 'completeTour' | 'setSidebarCollapsed' | 'setSettingsOpen' | 'setPaperShadow' | 'setInkBlur' | 'setResolutionQuality' | 'setPaperTilt' | 'setPaperTexture' | 'setExpandedPanels' | 'togglePanel' | 'applyPreset' | 'setIsRendering' | 'setRenderingProgress' | 'setNavbarVisible' | 'addToHistory' | 'setJitter' | 'setPressure' | 'setSmudge' | 'setBaseline' | 'setTextAlign' | 'setMargins' | 'setPageOptions'> = {
+type StateValues = {
+    [K in keyof AppState as AppState[K] extends (...args: any[]) => any ? never : K]: AppState[K];
+};
+
+const initialState: StateValues = {
     text: '',
     lastSaved: null,
     zoom: 1,
     editorMode: 'plain',
     uploadedFileName: null,
-    handwritingStyle: 'caveat',
+    handwritingStyle: 'handwriting-1',
     fontSize: DEFAULT_TYPOGRAPHY.fontSize,
     letterSpacing: DEFAULT_TYPOGRAPHY.letterSpacing,
     lineHeight: DEFAULT_TYPOGRAPHY.lineHeight,
@@ -33,25 +37,41 @@ const initialState: Omit<AppState, 'reset' | 'setText' | 'setLastSaved' | 'setZo
     paperOrientation: 'portrait',
     customFonts: [],
     customPaperImage: null,
-    // Visual Effects Defaults
+
+    // Visual & Camera Effects Defaults
     paperShadow: true,
     inkBlur: 0,
     resolutionQuality: 2,
     paperTilt: false,
     paperTexture: true,
+    phoneShadow: true,
+    phoneShadowAngle: 125,
+    phoneShadowIntensity: 0.45,
+    perspectiveWarp: false,
+    tiltX: 4,
+    tiltY: -2,
+    lightingMode: 'warm-lamp',
+    lightingWarmth: 0.4,
+    paperCrease: 'center-h',
+    sensorNoise: 0.15,
+    penType: 'ballpoint-blue',
+
+    // UI State
     hasSeenOnboarding: false,
     hasSeenTour: false,
     isSidebarCollapsed: false,
     isSettingsOpen: false,
     isRendering: false,
     renderingProgress: 0,
-    expandedPanels: ['handwriting', 'typography', 'paper', 'effects'],
+    expandedPanels: ['handwriting', 'typography', 'paper', 'human-errors', 'camera-lighting', 'effects'],
     isNavbarVisible: true,
     history: [],
     
-    // Editor Refinements
-    jitter: 0,
-    pressure: 0,
+    // Editor Refinements & Biological Simulation
+    jitter: 1.5,
+    charJitter: 1.2,
+    fatigue: 1.5,
+    pressure: 1.0,
     smudge: 0,
     baseline: -1,
     textAlign: 'left',
@@ -62,6 +82,11 @@ const initialState: Omit<AppState, 'reset' | 'setText' | 'setLastSaved' | 'setZo
     showPageNumbers: false,
     showHeader: false,
     headerText: '',
+
+    // Human Errors & Strikes
+    autoTypoRate: 2,
+    strikeStyle: 'wavy',
+    autoCaret: true,
 };
 
 export const useStore = create<AppState>()(
@@ -96,6 +121,38 @@ export const useStore = create<AppState>()(
             setResolutionQuality: (resolutionQuality) => set({ resolutionQuality }),
             setPaperTilt: (paperTilt) => set({ paperTilt }),
             setPaperTexture: (paperTexture) => set({ paperTexture }),
+            setPhoneShadow: (phoneShadow) => set({ phoneShadow }),
+            setPhoneShadowAngle: (phoneShadowAngle) => set({ phoneShadowAngle }),
+            setPhoneShadowIntensity: (phoneShadowIntensity) => set({ phoneShadowIntensity }),
+            setPerspectiveWarp: (perspectiveWarp) => set({ perspectiveWarp }),
+            setTiltX: (tiltX) => set({ tiltX }),
+            setTiltY: (tiltY) => set({ tiltY }),
+            setLightingMode: (lightingMode) => set({ lightingMode }),
+            setLightingWarmth: (lightingWarmth) => set({ lightingWarmth }),
+            setPaperCrease: (paperCrease) => set({ paperCrease }),
+            setSensorNoise: (sensorNoise) => set({ sensorNoise }),
+            setPenType: (penType) => {
+                const penColors: Record<string, string> = {
+                    'ballpoint-blue': '#1e40af',
+                    'gel-black': '#111827',
+                    'fountain-blue': '#1d4ed8',
+                    'pencil': '#4b5563',
+                    'red-pen': '#dc2626',
+                };
+                set({ 
+                    penType, 
+                    inkColor: penColors[penType] || '#1e40af',
+                    pressure: penType === 'pencil' ? 0.6 : penType === 'fountain-blue' ? 1.4 : 1.0,
+                    inkBlur: penType === 'fountain-blue' ? 0.3 : 0
+                });
+            },
+
+            // Human Error & Fatigue Actions
+            setCharJitter: (charJitter) => set({ charJitter }),
+            setFatigue: (fatigue) => set({ fatigue }),
+            setAutoTypoRate: (autoTypoRate) => set({ autoTypoRate }),
+            setStrikeStyle: (strikeStyle) => set({ strikeStyle }),
+            setAutoCaret: (autoCaret) => set({ autoCaret }),
 
             completeOnboarding: () => set({ hasSeenOnboarding: true }),
             completeTour: () => set({ hasSeenTour: true }),
@@ -112,7 +169,7 @@ export const useStore = create<AppState>()(
             setNavbarVisible: (isNavbarVisible) => set({ isNavbarVisible }),
             applyPreset: (settings) => set((state) => ({ ...state, ...settings })),
             addToHistory: (item) => set((state) => ({ 
-                history: [item, ...state.history].slice(0, 50) // Keep last 50 items
+                history: [item, ...state.history].slice(0, 50)
             })),
 
             // Editor Refinement Actions
@@ -155,17 +212,35 @@ export const useStore = create<AppState>()(
 );
 
 export const getAvailableFonts = (state: AppState) => {
-    const defaultFonts: FontPreference[] = [
-        { id: 'caveat', name: 'Caveat', family: 'Caveat', type: 'google' },
-        { id: 'gloria-hallelujah', name: 'Gloria Hallelujah', family: 'Gloria Hallelujah', type: 'google' },
-        { id: 'indie-flower', name: 'Indie Flower', family: 'Indie Flower', type: 'google' },
-        { id: 'shadows-into-light', name: 'Shadows Into Light', family: 'Shadows Into Light', type: 'google' },
-        { id: 'patrick-hand', name: 'Patrick Hand', family: 'Patrick Hand', type: 'google' },
-        { id: 'permanent-marker', name: 'Permanent Marker', family: 'Permanent Marker', type: 'google' },
-        { id: 'kalam', name: 'Kalam', family: 'Kalam', type: 'google' },
-        { id: 'homemade-apple', name: 'Homemade Apple', family: 'Homemade Apple', type: 'google' },
-        { id: 'reenie-beanie', name: 'Reenie Beanie', family: 'Reenie Beanie', type: 'google' },
-        { id: 'nothing-you-could-do', name: 'Nothing You Could Do', family: 'Nothing You Could Do', type: 'google' },
+    const scrapedFonts: FontPreference[] = [
+        { id: 'handwriting-1', name: 'Student Script 1 (Clean Pen)', family: 'Handwriting 1', type: 'custom' },
+        { id: 'handwriting-2', name: 'Student Script 2 (Casual Slant)', family: 'Handwriting 2', type: 'custom' },
+        { id: 'handwriting-3', name: 'Student Script 3 (Neat Ballpoint)', family: 'Handwriting 3', type: 'custom' },
+        { id: 'handwriting-4', name: 'Student Script 4 (Fluid Cursive)', family: 'Handwriting 4', type: 'custom' },
+        { id: 'handwriting-5', name: 'Student Script 5 (Fast Flow)', family: 'Handwriting 5', type: 'custom' },
+        { id: 'handwriting-6', name: 'Student Script 6 (Compact Print)', family: 'Handwriting 6', type: 'custom' },
+        { id: 'handwriting-7', name: 'Student Script 7 (Loose Homework)', family: 'Handwriting 7', type: 'custom' },
+        { id: 'handwriting-8', name: 'Student Script 8 (Fine Nib)', family: 'Handwriting 8', type: 'custom' },
+        { id: 'handwriting-9', name: 'Student Script 9 (Quick Notes)', family: 'Handwriting 9', type: 'custom' },
+        { id: 'handwriting-10', name: 'Student Script 10 (Forward Lean)', family: 'Handwriting 10', type: 'custom' },
+        { id: 'handwriting-11', name: 'Student Script 11 (Natural Cursive)', family: 'Handwriting 11', type: 'custom' },
+        { id: 'handwriting-12', name: 'Student Script 12 (Rounded Junior)', family: 'Handwriting 12', type: 'custom' },
+        { id: 'handwriting-13', name: 'Student Script 13 (Micro Gel)', family: 'Handwriting 13', type: 'custom' },
+        { id: 'handwriting-14', name: 'Student Script 14 (Expressive)', family: 'Handwriting 14', type: 'custom' },
+        { id: 'hindi-type', name: 'Hindi Devnagari Hand', family: 'Hindi Handwriting', type: 'custom' },
     ];
-    return [...defaultFonts, ...state.customFonts];
+
+    const googleFonts: FontPreference[] = [
+        { id: 'caveat', name: 'Caveat (Casual)', family: 'Caveat', type: 'google' },
+        { id: 'indie-flower', name: 'Indie Flower (Cute)', family: 'Indie Flower', type: 'google' },
+        { id: 'patrick-hand', name: 'Patrick Hand (Print)', family: 'Patrick Hand', type: 'google' },
+        { id: 'homemade-apple', name: 'Homemade Apple (Messy Cursive)', family: 'Homemade Apple', type: 'google' },
+        { id: 'shadows-into-light', name: 'Shadows Into Light (Quick)', family: 'Shadows Into Light', type: 'google' },
+        { id: 'kalam', name: 'Kalam (Marker Pen)', family: 'Kalam', type: 'google' },
+        { id: 'gloria-hallelujah', name: 'Gloria Hallelujah (Bold)', family: 'Gloria Hallelujah', type: 'google' },
+        { id: 'reenie-beanie', name: 'Reenie Beanie (Fine Pen)', family: 'Reenie Beanie', type: 'google' },
+    ];
+
+    return [...scrapedFonts, ...googleFonts, ...state.customFonts];
 };
+

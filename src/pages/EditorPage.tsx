@@ -1,7 +1,6 @@
 import { useState, useMemo, useDeferredValue, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-
 import { 
     Settings2, FileText, RefreshCw, Type, 
     AlignLeft, AlignCenter, AlignRight, AlignJustify, 
@@ -13,6 +12,12 @@ import { useAuth } from '../context/AuthContext';
 import { useToast } from '../hooks/useToast';
 import HistoryModal from '../components/modals/HistoryModal';
 import ExportModal from '../components/modals/ExportModal';
+import { HandwrittenWord } from '../components/HandwrittenWord';
+import { CameraOverlay } from '../components/CameraOverlay';
+import { HumanErrorsControls } from '../components/HumanErrorsControls';
+import { CameraPhysicsControls } from '../components/CameraPhysicsControls';
+import { PenPresetSelector } from '../components/PenPresetSelector';
+import { parseWordToken } from '../utils/humanErrorEngine';
 
 // --- PIPELINE TYPES ---
 interface LineData {
@@ -170,32 +175,98 @@ function getDeterminRandom(seed: string) {
 
 // --- DATA CONSTANTS ---
 const FONTS = [
-    { name: 'Caveat', label: 'Real Handwriting' },
-    { name: 'Homemade Apple', label: 'Messy Apple' },
-    { name: 'Indie Flower', label: 'Indie Flower' },
-    { name: 'Gloria Hallelujah', label: 'Gloria' },
-    { name: 'Reenie Beanie', label: 'Beanie' },
-    { name: 'Shadows Into Light', label: 'Shadows' },
-    { name: 'Patrick Hand', label: 'Patrick' },
-    { name: 'Kalam', label: 'Kalam' },
+    { name: 'Handwriting 1', label: 'Student 1 (Clean Pen)' },
+    { name: 'Handwriting 2', label: 'Student 2 (Casual Slant)' },
+    { name: 'Handwriting 3', label: 'Student 3 (Neat Ballpoint)' },
+    { name: 'Handwriting 4', label: 'Student 4 (Fluid Cursive)' },
+    { name: 'Handwriting 5', label: 'Student 5 (Fast Flow)' },
+    { name: 'Handwriting 6', label: 'Student 6 (Compact Print)' },
+    { name: 'Handwriting 7', label: 'Student 7 (Loose Homework)' },
+    { name: 'Handwriting 8', label: 'Student 8 (Fine Nib)' },
+    { name: 'Handwriting 9', label: 'Student 9 (Quick Notes)' },
+    { name: 'Handwriting 10', label: 'Student 10 (Forward Lean)' },
+    { name: 'Handwriting 11', label: 'Student 11 (Natural Cursive)' },
+    { name: 'Handwriting 12', label: 'Student 12 (Rounded Junior)' },
+    { name: 'Handwriting 13', label: 'Student 13 (Micro Gel)' },
+    { name: 'Handwriting 14', label: 'Student 14 (Expressive)' },
+    { name: 'Hindi Handwriting', label: 'Hindi Devnagari Hand' },
+    { name: 'Caveat', label: 'Caveat (Casual)' },
+    { name: 'Homemade Apple', label: 'Homemade Apple (Messy)' },
+    { name: 'Indie Flower', label: 'Indie Flower (Cute)' },
+    { name: 'Patrick Hand', label: 'Patrick Hand (Print)' },
+    { name: 'Shadows Into Light', label: 'Shadows (Quick)' },
+    { name: 'Kalam', label: 'Kalam (Marker)' },
+    { name: 'Gloria Hallelujah', label: 'Gloria (Bold)' },
+    { name: 'Reenie Beanie', label: 'Reenie Beanie (Fine)' },
 ];
 
 const COLORS = [
-    { name: 'Blue Ink', value: '#1e3a8a' },
-    { name: 'Black Ink', value: '#171717' },
-    { name: 'Red Ink', value: '#991b1b' },
-    { name: 'Pencil', value: '#4b5563' },
+    { name: 'Blue Ballpoint', value: '#1e40af' },
+    { name: 'Black Gel Pen', value: '#111827' },
+    { name: 'Royal Blue Fountain', value: '#1d4ed8' },
+    { name: 'HB #2 Pencil', value: '#4b5563' },
+    { name: 'Correction Red', value: '#dc2626' },
 ];
 
 const PAPERS = [
-    { id: 'plain', name: 'Plain White', css: 'bg-white', lineHeight: 32 },
-    { id: 'lined', name: 'Lined Paper', css: 'bg-white', lineHeight: 32, style: { backgroundImage: 'linear-gradient(#e5e7eb 1px, transparent 1px)', backgroundSize: '100% 32px' } },
+    { 
+        id: 'college', 
+        name: 'College Ruled (Red Margin)', 
+        css: 'bg-white', 
+        lineHeight: 32, 
+        hasRedMargin: true,
+        style: { 
+            backgroundImage: 'linear-gradient(#cbd5e1 1px, transparent 1px)', 
+            backgroundSize: '100% 32px' 
+        } 
+    },
+    { 
+        id: 'lined', 
+        name: 'Standard Blue Ruled', 
+        css: 'bg-white', 
+        lineHeight: 32, 
+        hasRedMargin: false,
+        style: { 
+            backgroundImage: 'linear-gradient(#93c5fd 1px, transparent 1px)', 
+            backgroundSize: '100% 32px' 
+        } 
+    },
+    { 
+        id: 'yellow', 
+        name: 'Yellow Legal Pad', 
+        css: 'bg-amber-50', 
+        lineHeight: 32, 
+        hasRedMargin: true,
+        style: { 
+            backgroundColor: '#fef3c7',
+            backgroundImage: 'linear-gradient(#d97706 0.75px, transparent 0.75px)', 
+            backgroundSize: '100% 32px' 
+        } 
+    },
+    { 
+        id: 'grid', 
+        name: 'Math / Science Grid', 
+        css: 'bg-white', 
+        lineHeight: 28, 
+        hasRedMargin: false,
+        style: { 
+            backgroundImage: 'linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px)', 
+            backgroundSize: '24px 24px' 
+        } 
+    },
+    { 
+        id: 'plain', 
+        name: 'Plain White A4', 
+        css: 'bg-white', 
+        lineHeight: 32, 
+        hasRedMargin: false 
+    },
 ];
 
 export default function EditorPage() {
     const { addToast } = useToast();
     const sourceRef = useRef<HTMLTextAreaElement>(null);
-    const { user, setAuthModalOpen } = useAuth();
+    const { user } = useAuth();
     
     // Global Store State
     const { 
@@ -207,10 +278,25 @@ export default function EditorPage() {
         marginTop, marginBottom, marginLeft, marginRight,
         showPageNumbers, showHeader, headerText, setPageOptions,
         jitter, setJitter,
+        charJitter,
+        fatigue,
         pressure, setPressure,
         smudge, setSmudge,
         baseline, setBaseline,
         textAlign, setTextAlign,
+        autoTypoRate,
+        strikeStyle,
+        autoCaret,
+        phoneShadow,
+        phoneShadowAngle,
+        phoneShadowIntensity,
+        perspectiveWarp,
+        tiltX,
+        tiltY,
+        lightingMode,
+        lightingWarmth,
+        paperCrease,
+        sensorNoise,
         history: storeHistory, addToHistory
     } = useStore();
     const setNavbarVisible = useStore(state => state.setNavbarVisible);
@@ -284,13 +370,12 @@ export default function EditorPage() {
 
     const deferredText = useDeferredValue(text);
 
-    // Sync Paper (Store uses 'white'|'ruled', but Editor uses object)
+    // Sync Paper
     const paper = useMemo(() => {
-        const p = PAPERS.find(p => p.id === (paperMaterial === 'white' ? 'plain' : 'lined')) || PAPERS[1];
-        return p;
+        return PAPERS.find(p => p.id === paperMaterial) || PAPERS[0];
     }, [paperMaterial]);
 
-    const setPaper = (p: { id: string }) => setPaperMaterial(p.id === 'plain' ? 'white' : 'ruled');
+    const setPaper = (p: { id: string }) => setPaperMaterial(p.id as any);
 
     // History Snapshots (Zustand addToHistory)
     useEffect(() => {
@@ -408,11 +493,6 @@ export default function EditorPage() {
     };
 
     const handleStartExport = (format: 'pdf' | 'zip') => {
-        if (!user) {
-            setPendingAction({ type: 'export', format });
-            setAuthModalOpen(true);
-            return;
-        }
         setExportFormat(format);
         setExportStatus('idle');
         setIsExportModalOpen(true);
@@ -624,12 +704,28 @@ export default function EditorPage() {
                                             <div 
                                                 className={`handwritten-page-render absolute top-0 left-0 w-[800px] aspect-[1/1.414] ${pIdx === 0 ? 'paper-stack' : 'shadow-2xl'} overflow-hidden bg-white ring-1 ring-black/5 rounded-sm origin-top-left`} 
                                                 style={{ 
-                                                    transform: `scale(${scale})`,
-                                                    transformOrigin: 'top left'
+                                                    transform: perspectiveWarp 
+                                                        ? `scale(${scale}) perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)` 
+                                                        : `scale(${scale})`,
+                                                    transformOrigin: 'top left',
+                                                    transition: 'transform 0.3s ease'
                                                 }}
                                             >
                                                 {/* Export Container */}
                                                 <div className={`handwritten-export-target w-full h-full relative ${paper.css}`} style={paper.style}>
+                                                    {paper.hasRedMargin && (
+                                                        <div className="absolute top-0 bottom-0 left-[65px] w-[2px] bg-red-400 opacity-60 pointer-events-none z-10" />
+                                                    )}
+                                                    {/* Physical Camera & Environment Overlay */}
+                                                    <CameraOverlay
+                                                        phoneShadow={phoneShadow}
+                                                        phoneShadowAngle={phoneShadowAngle}
+                                                        phoneShadowIntensity={phoneShadowIntensity}
+                                                        lightingMode={lightingMode}
+                                                        lightingWarmth={lightingWarmth}
+                                                        paperCrease={paperCrease}
+                                                        sensorNoise={sensorNoise}
+                                                    />
                                                     {marginNote && pIdx === 0 && (
                                                         <div 
                                                             className="absolute left-4 top-1/3 -rotate-90 origin-left z-20"
@@ -723,20 +819,37 @@ export default function EditorPage() {
                                                                 className="w-full whitespace-nowrap overflow-hidden"
                                                             >
                                                                 {line.text.split(' ').map((word, wIdx) => {
-                                                                    const seed = `${pIdx}-${lIdx}-${wIdx}-${word}-${randomSeed}`;
-                                                                    const y = (getDeterminRandom(seed+'y')-0.5)*jitter*3;
-                                                                    const r = (getDeterminRandom(seed+'r')-0.5)*jitter*1.5;
-                                                                    const op = 1-(getDeterminRandom(seed+'o')*pressure*0.2);
-                                                                    const bl = smudge > 0 ? getDeterminRandom(seed+'b')*smudge*0.4 : 0;
-                                                                    return (
-                                                                        <span 
-                                                                            key={wIdx} 
-                                                                            className="inline-block" 
-                                                                            style={{transform:`translateY(${y}px) rotate(${r}deg)`, opacity:op, filter:bl?`blur(${bl}px)`:'none', marginRight:'0.25em'}}
-                                                                        >
-                                                                            {word}
-                                                                        </span>
+                                                                    const wordInLineOffset = line.text.split(' ').slice(0, wIdx).join(' ').length + (wIdx > 0 ? 1 : 0);
+                                                                    const tokens = parseWordToken(
+                                                                        word,
+                                                                        wIdx,
+                                                                        lIdx,
+                                                                        pIdx,
+                                                                        String(randomSeed),
+                                                                        autoTypoRate,
+                                                                        strikeStyle,
+                                                                        autoCaret
                                                                     );
+                                                                    return tokens.map((token, tIdx) => (
+                                                                        <HandwrittenWord
+                                                                            key={`${wIdx}-${tIdx}`}
+                                                                            token={token}
+                                                                            pageIndex={pIdx}
+                                                                            lineIndex={lIdx}
+                                                                            wordIndex={wIdx * 10 + tIdx}
+                                                                            totalLines={page.lines.length}
+                                                                            randomSeed={String(randomSeed)}
+                                                                            fontFamily={font}
+                                                                            fontSize={fontSize}
+                                                                            color={color}
+                                                                            jitter={jitter}
+                                                                            charJitter={charJitter}
+                                                                            fatigue={fatigue}
+                                                                            pressure={pressure}
+                                                                            smudge={smudge}
+                                                                            onClick={() => handleWordClick(line.charIndex + wordInLineOffset)}
+                                                                        />
+                                                                    ));
                                                                 })}
                                                             </div>
                                                         ))}
@@ -745,7 +858,6 @@ export default function EditorPage() {
                                                         <div className="absolute bottom-6 left-0 right-0 text-center text-[10px] font-black text-gray-300 tracking-widest uppercase">Page {pIdx+1} of {pages.length}</div>
                                                     )}
                                                     <div className="absolute inset-0 pointer-events-none mix-blend-multiply opacity-5 bg-[url('https://www.transparenttextures.com/patterns/cardboard.png')]"/>
-                                                    {paper.id !== 'plain' && <div className="absolute top-0 bottom-0 left-[50px] w-px bg-red-300 opacity-20"/>}
                                                 </div>
                                             </div>
                                         </div>
@@ -1072,22 +1184,23 @@ export default function EditorPage() {
 
                         <div className="h-px bg-black/5 w-full my-2" />
 
-                        {/* 4. PAPER & SETUP (Cleaned up) */}
+                        {/* 4. PAPER & SETUP */}
                         <div>
-                            <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-neutral-400 mb-4"><Ruler size={12}/> Paper & Setup</label>
-                            <div className="grid grid-cols-1 gap-2">
-                                <div className="flex p-1 bg-white border border-black/5 rounded-xl shadow-xs">
-                                     {PAPERS.map(p=>(
+                            <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-neutral-400 mb-3"><Ruler size={12}/> Paper & Layout</label>
+                            <div className="space-y-2">
+                                <div className="grid grid-cols-1 gap-1.5 bg-white border border-black/5 p-1.5 rounded-2xl shadow-xs">
+                                     {PAPERS.map(p => (
                                         <button 
                                             key={p.id} 
-                                            onClick={()=>setPaper(p)} 
-                                            className={`flex-1 py-2 text-[10px] font-bold rounded-lg transition-all ${paper.id===p.id?'bg-neutral-900 text-white shadow-lg':'text-neutral-400 hover:text-neutral-900'}`}
+                                            onClick={() => setPaper(p)} 
+                                            className={`w-full py-2 px-3 text-[11px] font-bold rounded-xl transition-all text-left flex items-center justify-between ${paper.id === p.id ? 'bg-neutral-900 text-white shadow-xs' : 'text-neutral-600 hover:bg-neutral-100'}`}
                                         >
-                                            {p.name}
+                                            <span>{p.name}</span>
+                                            {paper.id === p.id && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />}
                                         </button>
                                      ))}
                                 </div>
-                                <div className="mt-4">
+                                <div className="pt-1">
                                     <label className="flex items-center gap-3 cursor-pointer group">
                                         <input type="checkbox" checked={showPageNumbers} onChange={e=>setPageOptions({ showPageNumbers:e.target.checked })} className="w-4 h-4 rounded border-black/10 text-neutral-900 focus:ring-0 transition-all"/><span className="text-[11px] font-bold text-neutral-600 group-hover:text-neutral-900 transition-colors uppercase tracking-tight">Show Page Numbers</span>
                                     </label>
@@ -1097,9 +1210,9 @@ export default function EditorPage() {
 
                         <div className="h-px bg-black/5 w-full my-2" />
 
-                        {/* 5. TYPOGRAPHY */}
+                        {/* 5. TYPOGRAPHY & PEN */}
                         <div>
-                            <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-neutral-400 mb-4"><Settings2 size={12}/> Typography</label>
+                            <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-neutral-400 mb-3"><Settings2 size={12}/> Typography & Style</label>
                             <div className="space-y-4">
                                 <div className="flex bg-white border border-black/5 p-1 rounded-xl shadow-xs">
                                     {[{id:'left', icon:AlignLeft},{id:'center', icon:AlignCenter},{id:'right', icon:AlignRight},{id:'justify', icon:AlignJustify}].map(opt=>(
@@ -1115,19 +1228,35 @@ export default function EditorPage() {
                                         {FONTS.map(f=><option key={f.name} value={f.name}>{f.label}</option>)}
                                     </select>
                                 </div>
-                                <div className="space-y-4">
-                                    <div><span className="text-[10px] font-bold text-neutral-400 uppercase tracking-tighter mb-2 flex justify-between">Font Size <span>{fontSize}px</span></span><input type="range" min="14" max="64" value={fontSize} onChange={e=>setFontSize(Number(e.target.value))} className="w-full h-1 bg-black/5 rounded-full appearance-none accent-neutral-900 cursor-pointer"/></div>
-                                    <div><span className="text-[10px] font-bold text-neutral-400 uppercase tracking-tighter mb-2 flex justify-between">Line Nudge <span>{baseline}</span></span><input type="range" min="-10" max="30" value={baseline} onChange={e=>setBaseline(Number(e.target.value))} className="w-full h-1 bg-black/5 rounded-full appearance-none accent-neutral-900 cursor-pointer"/></div>
+                                <div className="space-y-3">
+                                    <div><span className="text-[10px] font-bold text-neutral-400 uppercase tracking-tighter mb-1.5 flex justify-between">Font Size <span>{fontSize}px</span></span><input type="range" min="14" max="64" value={fontSize} onChange={e=>setFontSize(Number(e.target.value))} className="w-full h-1 bg-black/5 rounded-full appearance-none accent-neutral-900 cursor-pointer"/></div>
+                                    <div><span className="text-[10px] font-bold text-neutral-400 uppercase tracking-tighter mb-1.5 flex justify-between">Line Nudge <span>{baseline}</span></span><input type="range" min="-10" max="30" value={baseline} onChange={e=>setBaseline(Number(e.target.value))} className="w-full h-1 bg-black/5 rounded-full appearance-none accent-neutral-900 cursor-pointer"/></div>
                                 </div>
-                                <div className="flex gap-2 pt-2">{COLORS.map(c=>(<button key={c.name} onClick={()=>setColor(c.value)} className={`w-5 h-5 rounded-full border-2 ${color === c.value?'border-neutral-900 scale-110':'border-transparent'} shadow-xs transition-all overflow-hidden isolate`} style={{backgroundColor:c.value}}/>))}</div>
+                                
+                                {/* Pen Presets */}
+                                <PenPresetSelector />
                             </div>
                         </div>
 
                         <div className="h-px bg-black/5 w-full my-2" />
 
-                        {/* 6. RENDERING */}
+                        {/* 6. HUMAN ERRORS & REALISM */}
+                        <div className="bg-white border border-black/5 p-4 rounded-2xl shadow-xs">
+                            <HumanErrorsControls />
+                        </div>
+
+                        <div className="h-px bg-black/5 w-full my-2" />
+
+                        {/* 7. CAMERA & PHOTO PHYSICS */}
+                        <div className="bg-white border border-black/5 p-4 rounded-2xl shadow-xs">
+                            <CameraPhysicsControls />
+                        </div>
+
+                        <div className="h-px bg-black/5 w-full my-2" />
+
+                        {/* 8. RENDERING */}
                         <div>
-                            <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-neutral-400 mb-4"><Sparkles size={12}/> Rendering</label>
+                            <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-neutral-400 mb-4"><Sparkles size={12}/> Organic Jitter</label>
                             <div className="space-y-4">
                                  <button 
                                     onClick={() => setRandomSeed(prev => prev + 1)}
@@ -1135,10 +1264,10 @@ export default function EditorPage() {
                                 >
                                     <RefreshCw size={12} className={`group-hover:rotate-180 transition-transform duration-500 ${exportStatus === 'processing' ? 'animate-spin' : ''}`}/> Re-Randomize
                                 </button>
-                                <div className="space-y-4">
-                                    <div><span className="text-[10px] font-bold text-neutral-400 uppercase tracking-tighter mb-2 flex justify-between">Jitter <span>{jitter}</span></span><input type="range" min="0" max="6" step="0.5" value={jitter} onChange={(e) => setJitter(Number(e.target.value))} className="w-full h-1 bg-black/5 rounded-full appearance-none accent-neutral-900 cursor-pointer" /></div>
-                                    <div><span className="text-[10px] font-bold text-neutral-400 uppercase tracking-tighter mb-2 flex justify-between">Pressure <span>{Math.round(pressure*100)}%</span></span><input type="range" min="0" max="1" step="0.1" value={pressure} onChange={(e) => setPressure(Number(e.target.value))} className="w-full h-1 bg-black/5 rounded-full appearance-none accent-neutral-900 cursor-pointer" /></div>
-                                    <div><span className="text-[10px] font-bold text-neutral-400 uppercase tracking-tighter mb-2 flex justify-between">Smudge <span>{smudge}</span></span><input type="range" min="0" max="2" step="0.1" value={smudge} onChange={(e) => setSmudge(Number(e.target.value))} className="w-full h-1 bg-black/5 rounded-full appearance-none accent-neutral-900 cursor-pointer" /></div>
+                                <div className="space-y-3">
+                                    <div><span className="text-[10px] font-bold text-neutral-400 uppercase tracking-tighter mb-1.5 flex justify-between">Baseline Jitter <span>{jitter}</span></span><input type="range" min="0" max="6" step="0.5" value={jitter} onChange={(e) => setJitter(Number(e.target.value))} className="w-full h-1 bg-black/5 rounded-full appearance-none accent-neutral-900 cursor-pointer" /></div>
+                                    <div><span className="text-[10px] font-bold text-neutral-400 uppercase tracking-tighter mb-1.5 flex justify-between">Ink Pressure <span>{Math.round(pressure*100)}%</span></span><input type="range" min="0" max="1" step="0.1" value={pressure} onChange={(e) => setPressure(Number(e.target.value))} className="w-full h-1 bg-black/5 rounded-full appearance-none accent-neutral-900 cursor-pointer" /></div>
+                                    <div><span className="text-[10px] font-bold text-neutral-400 uppercase tracking-tighter mb-1.5 flex justify-between">Smudge <span>{smudge}</span></span><input type="range" min="0" max="2" step="0.1" value={smudge} onChange={(e) => setSmudge(Number(e.target.value))} className="w-full h-1 bg-black/5 rounded-full appearance-none accent-neutral-900 cursor-pointer" /></div>
                                 </div>
                             </div>
                         </div>
@@ -1239,12 +1368,28 @@ export default function EditorPage() {
                                  <div 
                                     className={`handwritten-page-render absolute top-0 left-0 w-[800px] aspect-[1/1.414] ${pIdx === 0 ? 'paper-stack' : 'shadow-2xl'} overflow-hidden bg-white ring-1 ring-black/5 rounded-none origin-top-left`} 
                                     style={{ 
-                                        transform: `scale(${scale})`,
-                                        transformOrigin: 'top left'
+                                        transform: perspectiveWarp 
+                                            ? `scale(${scale}) perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)` 
+                                            : `scale(${scale})`,
+                                        transformOrigin: 'top left',
+                                        transition: 'transform 0.3s ease'
                                     }}
                                  >
                                 {/* CLEAN EXPORT CONTAINER */}
                                 <div className={`handwritten-export-target w-full h-full relative ${paper.css}`} style={paper.style}>
+                                    {paper.hasRedMargin && (
+                                        <div className="absolute top-0 bottom-0 left-[65px] w-[2px] bg-red-400 opacity-60 pointer-events-none z-10" />
+                                    )}
+                                    {/* Physical Camera & Environment Overlay */}
+                                    <CameraOverlay
+                                        phoneShadow={phoneShadow}
+                                        phoneShadowAngle={phoneShadowAngle}
+                                        phoneShadowIntensity={phoneShadowIntensity}
+                                        lightingMode={lightingMode}
+                                        lightingWarmth={lightingWarmth}
+                                        paperCrease={paperCrease}
+                                        sensorNoise={sensorNoise}
+                                    />
                                     {/* MARGIN ANNOTATION */}
                                     {marginNote && pIdx === 0 && (
                                         <div 
@@ -1348,24 +1493,37 @@ export default function EditorPage() {
                                                 className="w-full whitespace-nowrap overflow-hidden"
                                             >
                                                 {line.text.split(' ').map((word, wIdx) => {
-                                                    const seed = `${pIdx}-${lIdx}-${wIdx}-${word}-${randomSeed}`;
-                                                    const y = (getDeterminRandom(seed+'y')-0.5)*jitter*3;
-                                                    const r = (getDeterminRandom(seed+'r')-0.5)*jitter*1.5;
-                                                    const op = 1-(getDeterminRandom(seed+'o')*pressure*0.2);
-                                                    const bl = smudge > 0 ? getDeterminRandom(seed+'b')*smudge*0.4 : 0;
-                                                    
                                                     const wordInLineOffset = line.text.split(' ').slice(0, wIdx).join(' ').length + (wIdx > 0 ? 1 : 0);
-
-                                                    return (
-                                                        <span 
-                                                            key={wIdx} 
-                                                            onClick={() => handleWordClick(line.charIndex + wordInLineOffset)}
-                                                            className="inline-block cursor-pointer transition-opacity hover:opacity-50" 
-                                                            style={{transform:`translateY(${y}px) rotate(${r}deg)`, opacity:op, filter:bl?`blur(${bl}px)`:'none', marginRight:'0.25em'}}
-                                                        >
-                                                            {word}
-                                                        </span>
+                                                    const tokens = parseWordToken(
+                                                        word,
+                                                        wIdx,
+                                                        lIdx,
+                                                        pIdx,
+                                                        String(randomSeed),
+                                                        autoTypoRate,
+                                                        strikeStyle,
+                                                        autoCaret
                                                     );
+                                                    return tokens.map((token, tIdx) => (
+                                                        <HandwrittenWord
+                                                            key={`${wIdx}-${tIdx}`}
+                                                            token={token}
+                                                            pageIndex={pIdx}
+                                                            lineIndex={lIdx}
+                                                            wordIndex={wIdx * 10 + tIdx}
+                                                            totalLines={page.lines.length}
+                                                            randomSeed={String(randomSeed)}
+                                                            fontFamily={font}
+                                                            fontSize={fontSize}
+                                                            color={color}
+                                                            jitter={jitter}
+                                                            charJitter={charJitter}
+                                                            fatigue={fatigue}
+                                                            pressure={pressure}
+                                                            smudge={smudge}
+                                                            onClick={() => handleWordClick(line.charIndex + wordInLineOffset)}
+                                                        />
+                                                    ));
                                                 })}
                                             </div>
                                         ))}
@@ -1374,13 +1532,12 @@ export default function EditorPage() {
                                         <div className="absolute bottom-6 left-0 right-0 text-center text-[10px] font-black text-gray-300 tracking-widest uppercase">Page {pIdx+1} of {pages.length}</div>
                                     )}
                                     <div className="absolute inset-0 pointer-events-none mix-blend-multiply opacity-5 bg-[url('https://www.transparenttextures.com/patterns/cardboard.png')]"/>
-                                    {paper.id !== 'plain' && <div className="absolute top-0 bottom-0 left-[50px] w-px bg-red-300 opacity-20"/>}
                                 </div>
-                                 </div>
+                            </div>
                         </div>
-                        ))}
-                    </div>
-                </main>
+                    ))}
+                </div>
+            </main>
             </div>
 
             {/* MOBILE BOTTOM SHEET PANEL - Completely Redesigned */}
@@ -1555,19 +1712,9 @@ export default function EditorPage() {
                                 />
                             </div>
                             
-                            {/* Ink Color */}
-                            <div>
-                                <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400 mb-3 block">Ink Color</label>
-                                <div className="flex gap-3 bg-white border border-black/5 rounded-2xl p-4 shadow-premium">
-                                    {COLORS.map(c => (
-                                        <button 
-                                            key={c.name} 
-                                            onClick={() => setColor(c.value)}
-                                            className={`w-10 h-10 rounded-xl border-2 transition-all shadow-sm overflow-hidden isolate ${color === c.value ? 'border-neutral-900 scale-110 shadow-md' : 'border-transparent'}`}
-                                            style={{ backgroundColor: c.value }}
-                                        />
-                                    ))}
-                                </div>
+                            {/* Pen Presets & Ink Color */}
+                            <div className="bg-white border border-black/5 rounded-2xl p-4 shadow-sm">
+                                <PenPresetSelector />
                             </div>
                             
                             {/* Text Alignment */}
@@ -1599,14 +1746,15 @@ export default function EditorPage() {
                             {/* Paper Type */}
                             <div>
                                 <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400 mb-3 block">Paper Style</label>
-                                <div className="flex bg-white border border-black/5 rounded-2xl p-1.5 shadow-sm">
+                                <div className="grid grid-cols-1 gap-2">
                                     {PAPERS.map(p => (
                                         <button 
                                             key={p.id} 
                                             onClick={() => setPaper(p)}
-                                            className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all ${paper.id === p.id ? 'bg-neutral-900 text-white shadow-lg' : 'text-neutral-400'}`}
+                                            className={`w-full py-3 px-4 text-xs font-bold rounded-xl transition-all flex items-center justify-between ${paper.id === p.id ? 'bg-neutral-900 text-white shadow-lg' : 'bg-white border border-black/5 text-neutral-600'}`}
                                         >
-                                            {p.name}
+                                            <span>{p.name}</span>
+                                            {paper.id === p.id && <span className="w-2 h-2 rounded-full bg-emerald-400" />}
                                         </button>
                                     ))}
                                 </div>
@@ -1633,7 +1781,7 @@ export default function EditorPage() {
                                     className={`w-full aspect-[1/1.414] bg-white rounded-lg shadow-lg border border-black/5 relative overflow-hidden ${paper.css}`}
                                     style={paper.style}
                                 >
-                                    {paper.id !== 'plain' && <div className="absolute top-0 bottom-0 left-[12%] w-px bg-red-300 opacity-30"/>}
+                                    {paper.hasRedMargin && <div className="absolute top-0 bottom-0 left-[12%] w-px bg-red-400 opacity-60"/>}
                                     <div className="absolute inset-0 flex items-center justify-center">
                                         <span className="text-neutral-300 text-xs font-medium">{paper.name}</span>
                                     </div>
@@ -1656,17 +1804,27 @@ export default function EditorPage() {
                                 <RefreshCw size={18} className="text-neutral-400" />
                                 Re-Randomize Handwriting
                             </button>
+
+                            {/* Human Errors & Strikes */}
+                            <div className="bg-white border border-black/5 p-4 rounded-2xl shadow-sm">
+                                <HumanErrorsControls />
+                            </div>
+
+                            {/* Camera & Photo Physics */}
+                            <div className="bg-white border border-black/5 p-4 rounded-2xl shadow-sm">
+                                <CameraPhysicsControls />
+                            </div>
                             
                             {/* Jitter */}
                             <div className="bg-white border border-black/5 rounded-2xl p-4 shadow-sm">
                                 <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400 mb-3 flex justify-between">
-                                    Jitter <span className="text-neutral-900">{jitter}</span>
+                                    Baseline Jitter <span className="text-neutral-900">{jitter}</span>
                                 </label>
                                 <input 
                                     type="range" 
                                     min="0" 
                                     max="6" 
-                                    step="0.5"
+                                    step="0.5" 
                                     value={jitter} 
                                     onChange={e => setJitter(Number(e.target.value))}
                                     className="w-full h-2 bg-neutral-100 rounded-full appearance-none accent-neutral-900 cursor-pointer"
@@ -1682,7 +1840,7 @@ export default function EditorPage() {
                                     type="range" 
                                     min="0" 
                                     max="1" 
-                                    step="0.1"
+                                    step="0.1" 
                                     value={pressure} 
                                     onChange={e => setPressure(Number(e.target.value))}
                                     className="w-full h-2 bg-neutral-100 rounded-full appearance-none accent-neutral-900 cursor-pointer"
@@ -1698,7 +1856,7 @@ export default function EditorPage() {
                                     type="range" 
                                     min="0" 
                                     max="2" 
-                                    step="0.1"
+                                    step="0.1" 
                                     value={smudge} 
                                     onChange={e => setSmudge(Number(e.target.value))}
                                     className="w-full h-2 bg-neutral-100 rounded-full appearance-none accent-neutral-900 cursor-pointer"

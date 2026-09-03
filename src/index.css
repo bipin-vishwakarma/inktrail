@@ -1,5 +1,82 @@
 @import "tailwindcss";
 
+/* === 15 AUTHENTIC HANDWRITING FONTS (SCRAPED & CURATED) === */
+@font-face {
+  font-family: 'Handwriting 1';
+  src: url('/fonts/handwriting-1.otf') format('opentype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 2';
+  src: url('/fonts/handwriting-2.otf') format('opentype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 3';
+  src: url('/fonts/handwriting-3.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 4';
+  src: url('/fonts/handwriting-4.otf') format('opentype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 5';
+  src: url('/fonts/handwriting-5.otf') format('opentype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 6';
+  src: url('/fonts/handwriting-6.otf') format('opentype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 7';
+  src: url('/fonts/handwriting-7.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 8';
+  src: url('/fonts/handwriting-8.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 9';
+  src: url('/fonts/handwriting-9.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 10';
+  src: url('/fonts/handwriting-10.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 11';
+  src: url('/fonts/handwriting-11.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 12';
+  src: url('/fonts/handwriting-12.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 13';
+  src: url('/fonts/handwriting-13.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 14';
+  src: url('/fonts/handwriting-14.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Hindi Handwriting';
+  src: url('/fonts/Hindi_Type.ttf') format('truetype');
+  font-display: swap;
+}
+
 @theme {
   /* Refined Paper & Ink */
   --color-paper: #ffffff; /* Cleaner white for modern look */
