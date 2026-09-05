@@ -141,6 +141,12 @@ export function clearWidthCache(): void {
     widthCache.clear();
 }
 
+if (typeof document !== 'undefined' && document.fonts) {
+    document.fonts.ready.then(() => {
+        clearWidthCache();
+    }).catch(() => {});
+}
+
 /**
  * Pixel-accurate word width measurement via Canvas 2D with fallback to font ratios.
  */
@@ -159,14 +165,16 @@ export function measureWordWidth(word: string, font: string, fontSize: number): 
         if (measureCtx) {
             measureCtx.font = `${fontSize}px ${fontCss}`;
             const width = measureCtx.measureText(word).width;
-            if (widthCache.size > 3000) widthCache.clear();
-            widthCache.set(key, width);
-            return width;
+            if (width > 0) {
+                if (widthCache.size > 3000) widthCache.clear();
+                widthCache.set(key, width);
+                return width;
+            }
         }
     }
 
     const ratio = getFontWidthRatio(font);
-    return word.length * (fontSize * ratio);
+    return word.length * (fontSize * ratio * 0.5);
 }
 
 export interface WordToken {
@@ -455,12 +463,12 @@ export function generateScribblePath(
     seed: string
 ): string {
     const rng = mulberry32(fastStringHash(seed));
-    const w = Math.max(width, 24);
-    const h = Math.max(height, 18);
+    const w = Math.max(width, 14);
+    const h = Math.max(height, 16);
     // Center directly on lowercase letter x-height
-    const centerY = h * 0.66;
-    const startX = -3 - rng() * 3;
-    const endX = w + 3 + rng() * 4;
+    const centerY = h * 0.62;
+    const startX = -2 - rng() * 1.5;
+    const endX = w + 2 + rng() * 1.5;
     const totalSpan = endX - startX;
 
     switch (style) {

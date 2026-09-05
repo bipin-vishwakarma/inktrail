@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { generateScribblePath, fastStringHash, mulberry32, getFontWidthRatio, getFontFamilyCss, measureWordWidth, type WordToken } from '../utils/humanErrorEngine';
+import React, { useMemo, useRef, useState, useLayoutEffect } from 'react';
+import { generateScribblePath, fastStringHash, mulberry32, getFontFamilyCss, measureWordWidth, type WordToken } from '../utils/humanErrorEngine';
 
 interface HandwrittenWordProps {
     token: WordToken;
@@ -75,18 +75,31 @@ const HandwrittenWordComponent: React.FC<HandwrittenWordProps> = ({
     const lowInkDrop = effectiveFade * 0.46;
     const finalWordOpacity = Math.max(0.25, baseOpacity - lowInkDrop);
 
-    // Accurate word measurement for SVG scribble dimensions using canvas metrics
-    const fontRatio = getFontWidthRatio(fontFamily);
-    const approxWidth = useMemo(() => {
-        return Math.max(measureWordWidth(token.text, fontFamily, fontSize), token.text.length * (fontSize * fontRatio * 0.95), 20);
-    }, [token.text, fontFamily, fontSize, fontRatio]);
-    const approxHeight = fontSize * 1.15;
+    // Track real DOM rendered width for pixel-perfect strike bounding boxes
+    const textRef = useRef<HTMLSpanElement>(null);
+    const [domWidth, setDomWidth] = useState<number>(0);
+
+    useLayoutEffect(() => {
+        if (textRef.current) {
+            const rect = textRef.current.getBoundingClientRect();
+            if (rect.width > 0 && Math.abs(rect.width - domWidth) > 0.5) {
+                setDomWidth(rect.width);
+            }
+        }
+    }, [token.text, fontFamily, fontSize, charJitter]);
+
+    const canvasWidth = useMemo(() => {
+        return Math.max(measureWordWidth(token.text, fontFamily, fontSize), 15);
+    }, [token.text, fontFamily, fontSize]);
+
+    const effectiveWidth = domWidth > 0 ? domWidth : canvasWidth;
+    const effectiveHeight = fontSize;
 
     // Generate SVG path for scribble if word is struck
     const scribblePath = useMemo(() => {
         if (!token.isStruck) return '';
-        return generateScribblePath(approxWidth, approxHeight, token.strikeStyle, seedString + '_sc');
-    }, [token.isStruck, token.strikeStyle, approxWidth, approxHeight, seedString]);
+        return generateScribblePath(effectiveWidth, effectiveHeight, token.strikeStyle, seedString + '_sc');
+    }, [token.isStruck, token.strikeStyle, effectiveWidth, effectiveHeight, seedString]);
 
     const fontCss = getFontFamilyCss(fontFamily);
 
@@ -96,6 +109,7 @@ const HandwrittenWordComponent: React.FC<HandwrittenWordProps> = ({
             className={`inline-block relative whitespace-nowrap select-text ${onClick ? 'cursor-pointer' : ''}`}
             style={{
                 fontFamily: fontCss,
+                lineHeight: 1,
                 transform: `translateY(${wordY + fatigueSag}px) rotate(${wordRot + fatigueSlant}deg)`,
                 opacity: finalWordOpacity,
                 filter: smudgeFilter,
@@ -106,6 +120,7 @@ const HandwrittenWordComponent: React.FC<HandwrittenWordProps> = ({
             {/* Unified Word Cursive Rendering with OpenType Connecting Ligatures & Human Realism */}
             {charJitter <= 0.8 ? (
                 <span 
+                    ref={textRef}
                     style={{ 
                         fontFamily: fontCss,
                         fontFeatureSettings: '"liga" 1, "calt" 1, "clig" 1, "dlig" 1',
@@ -117,26 +132,28 @@ const HandwrittenWordComponent: React.FC<HandwrittenWordProps> = ({
                 </span>
             ) : (
                 /* Disjointed Letter Jitter (for print/block styles when character jitter is explicitly cranked up) */
-                token.text.split('').map((char, cIdx) => {
-                    const cRng = mulberry32(intSeed + (cIdx + 1) * 31);
-                    const cy = (cRng() - 0.5) * charJitter * 1.5;
-                    const cr = (cRng() - 0.5) * charJitter * 0.9;
-                    const cop = 1 - cRng() * 0.1;
+                <span ref={textRef} className="inline-block">
+                    {token.text.split('').map((char, cIdx) => {
+                        const cRng = mulberry32(intSeed + (cIdx + 1) * 31);
+                        const cy = (cRng() - 0.5) * charJitter * 1.5;
+                        const cr = (cRng() - 0.5) * charJitter * 0.9;
+                        const cop = 1 - cRng() * 0.1;
 
-                    return (
-                        <span
-                            key={cIdx}
-                            className="inline-block"
-                            style={{
-                                fontFamily: fontCss,
-                                transform: cy || cr ? `translateY(${cy}px) rotate(${cr}deg)` : undefined,
-                                opacity: cop,
-                            }}
-                        >
-                            {char}
-                        </span>
-                    );
-                })
+                        return (
+                            <span
+                                key={cIdx}
+                                className="inline-block"
+                                style={{
+                                    fontFamily: fontCss,
+                                    transform: cy || cr ? `translateY(${cy}px) rotate(${cr}deg)` : undefined,
+                                    opacity: cop,
+                                }}
+                            >
+                                {char}
+                            </span>
+                        );
+                    })}
+                </span>
             )}
 
             {/* Scribble Strike Overlay */}
@@ -144,15 +161,15 @@ const HandwrittenWordComponent: React.FC<HandwrittenWordProps> = ({
                 <svg
                     className="absolute top-0 left-0 pointer-events-none overflow-visible"
                     style={{
-                        width: `${approxWidth}px`,
-                        height: `${approxHeight}px`,
+                        width: `${effectiveWidth}px`,
+                        height: `${effectiveHeight}px`,
                     }}
                 >
                     <path
                         d={scribblePath}
                         fill="none"
                         stroke={color}
-                        strokeWidth={Math.max(1.9, fontSize * 0.078)}
+                        strokeWidth={Math.max(1.8, fontSize * 0.075)}
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         opacity={0.92}
@@ -166,7 +183,8 @@ const HandwrittenWordComponent: React.FC<HandwrittenWordProps> = ({
                     className="absolute pointer-events-none whitespace-nowrap z-20 flex flex-col items-center"
                     style={{
                         left: '50%',
-                        bottom: `${approxHeight * 0.78}px`,
+                        bottom: '100%',
+                        marginBottom: `-${Math.max(3, Math.round(fontSize * 0.16))}px`,
                         transform: 'translateX(-50%)',
                         lineHeight: 1,
                     }}
@@ -175,25 +193,25 @@ const HandwrittenWordComponent: React.FC<HandwrittenWordProps> = ({
                     <span
                         style={{
                             fontFamily: fontCss,
-                            fontSize: `${fontSize * 0.78}px`,
+                            fontSize: `${Math.round(fontSize * 0.72)}px`,
                             color,
-                            transform: 'rotate(-2.5deg)',
+                            transform: 'rotate(-2.2deg)',
                             fontWeight: 600,
-                            marginBottom: '1px',
+                            marginBottom: '1.5px',
                         }}
                     >
                         {token.caretCorrection}
                     </span>
-                    {/* Hand-Drawn Vector Ink Caret Mark */}
-                    <svg width="12" height="7" viewBox="0 0 12 7" className="overflow-visible">
+                    {/* Hand-Drawn Vector Ink Caret Mark pointing up at replacement */}
+                    <svg width="11" height="7" viewBox="0 0 11 7" className="overflow-visible">
                         <path
-                            d="M 1 6 L 6 1 L 11 6"
+                            d="M 1.5 6.5 Q 3.5 3.5 5.5 1 L 9.5 6"
                             fill="none"
                             stroke={color}
                             strokeWidth={Math.max(1.7, fontSize * 0.065)}
                             strokeLinecap="round"
                             strokeLinejoin="round"
-                            opacity={0.88}
+                            opacity={0.9}
                         />
                     </svg>
                 </span>
