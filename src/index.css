@@ -141,14 +141,135 @@
   src: url('/fonts/handwriting-14.ttf') format('truetype');
   font-display: swap;
 }
+/* === 13 AUTHENTIC STUDENT CURSIVE HANDWRITING FONTS === */
 @font-face {
-  font-family: 'Hindi Handwriting';
-  src: url('/fonts/Hindi_Type.ttf') format('truetype');
+  font-family: 'Cedarville Cursive';
+  src: url('/fonts/CedarvilleCursive.ttf') format('truetype');
   font-display: swap;
 }
 @font-face {
-  font-family: 'hindi-type';
-  src: url('/fonts/Hindi_Type.ttf') format('truetype');
+  font-family: 'cedarville-cursive';
+  src: url('/fonts/CedarvilleCursive.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nothing You Could Do';
+  src: url('/fonts/NothingYouCouldDo.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'nothing-you-could-do';
+  src: url('/fonts/NothingYouCouldDo.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'La Belle Aurore';
+  src: url('/fonts/LaBelleAurore.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'la-belle-aurore';
+  src: url('/fonts/LaBelleAurore.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Just Me Again Down Here';
+  src: url('/fonts/JustMeAgainDownHere.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'just-me-again-down-here';
+  src: url('/fonts/JustMeAgainDownHere.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Dawning of a New Day';
+  src: url('/fonts/DawningofaNewDay.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'dawning-of-a-new-day';
+  src: url('/fonts/DawningofaNewDay.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Waiting for the Sunrise';
+  src: url('/fonts/WaitingfortheSunrise.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'waiting-for-the-sunrise';
+  src: url('/fonts/WaitingfortheSunrise.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Marck Script';
+  src: url('/fonts/MarckScript.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'marck-script';
+  src: url('/fonts/MarckScript.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Bad Script';
+  src: url('/fonts/BadScript.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'bad-script';
+  src: url('/fonts/BadScript.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Homemade Apple';
+  src: url('/fonts/HomemadeApple.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'homemade-apple';
+  src: url('/fonts/HomemadeApple.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Beth Ellen';
+  src: url('/fonts/BethEllen.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'beth-ellen';
+  src: url('/fonts/BethEllen.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Zeyada';
+  src: url('/fonts/Zeyada.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'zeyada';
+  src: url('/fonts/Zeyada.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Over the Rainbow';
+  src: url('/fonts/OvertheRainbow.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'over-the-rainbow';
+  src: url('/fonts/OvertheRainbow.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Annie Use Your Telescope';
+  src: url('/fonts/AnnieUseYourTelescope.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'annie-use-your-telescope';
+  src: url('/fonts/AnnieUseYourTelescope.ttf') format('truetype');
   font-display: swap;
 }
 

@@ -101,25 +101,25 @@ const HandwrittenWordComponent: React.FC<HandwrittenWordProps> = ({
                 verticalAlign: 'baseline',
             }}
         >
-            {/* Render Characters with Micro-Jitter and Microscopic Rail-Track Skips */}
-            {charJitter > 0.2 || effectiveFade > 0.05 ? (
+            {/* Unified Word Cursive Rendering with OpenType Connecting Ligatures & Human Realism */}
+            {charJitter <= 0.8 ? (
+                <span 
+                    style={{ 
+                        fontFamily: fontCss,
+                        fontFeatureSettings: '"liga" 1, "calt" 1, "clig" 1, "dlig" 1',
+                        fontVariantLigatures: 'normal contextual',
+                        textRendering: 'optimizeLegibility',
+                    }}
+                >
+                    {token.text}
+                </span>
+            ) : (
+                /* Disjointed Letter Jitter (for print/block styles when character jitter is explicitly cranked up) */
                 token.text.split('').map((char, cIdx) => {
                     const cRng = mulberry32(intSeed + (cIdx + 1) * 31);
-                    const cy = charJitter > 0.2 ? (cRng() - 0.5) * charJitter * 1.8 : 0;
-                    const cr = charJitter > 0.2 ? (cRng() - 0.5) * charJitter * 1.2 : 0;
-                    let cop = charJitter > 0.2 ? 1 - cRng() * 0.12 : 1;
-
-                    // Microscopic rail-track skip simulation over paper fibers
-                    let isRailTrackSkip = false;
-                    if (effectiveFade > 0.05) {
-                        const skipRng = mulberry32(intSeed + (cIdx + 1) * 79);
-                        const skipThreshold = effectiveFade * 0.35;
-                        if (skipRng() < skipThreshold) {
-                            // Ballpoint stutter / dry skip: center loses ink, faint line edges
-                            cop = Math.max(0.18, 0.22 + skipRng() * 0.25);
-                            isRailTrackSkip = true;
-                        }
-                    }
+                    const cy = (cRng() - 0.5) * charJitter * 1.5;
+                    const cr = (cRng() - 0.5) * charJitter * 0.9;
+                    const cop = 1 - cRng() * 0.1;
 
                     return (
                         <span
@@ -129,15 +129,12 @@ const HandwrittenWordComponent: React.FC<HandwrittenWordProps> = ({
                                 fontFamily: fontCss,
                                 transform: cy || cr ? `translateY(${cy}px) rotate(${cr}deg)` : undefined,
                                 opacity: cop,
-                                WebkitTextStroke: isRailTrackSkip ? '0.22px currentColor' : undefined,
                             }}
                         >
                             {char}
                         </span>
                     );
                 })
-            ) : (
-                <span style={{ fontFamily: fontCss }}>{token.text}</span>
             )}
 
             {/* Scribble Strike Overlay */}

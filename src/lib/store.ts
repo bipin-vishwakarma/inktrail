@@ -78,7 +78,7 @@ const initialState: StateValues = {
     
     // Editor Refinements & Biological Simulation
     jitter: 1.5,
-    charJitter: 1.2,
+    charJitter: 0.3,
     fatigue: 1.5,
     pressure: 1.0,
     smudge: 0,
@@ -214,7 +214,7 @@ export const useStore = create<AppState>()(
                 letterSpacing: DEFAULT_TYPOGRAPHY.letterSpacing,
                 wordSpacing: DEFAULT_TYPOGRAPHY.wordSpacing,
                 jitter: 1.5,
-                charJitter: 1.2,
+                charJitter: 0.3,
                 pressure: 1.0,
                 baseline: -1,
                 fatigue: 1.5,
@@ -365,8 +365,8 @@ export const useStore = create<AppState>()(
                             if (typeof data.state.handwritingStyle === 'string') {
                                 if (data.state.handwritingStyle.startsWith('handwriting-')) {
                                     data.state.handwritingStyle = data.state.handwritingStyle.replace('handwriting-', 'Handwriting ');
-                                } else if (data.state.handwritingStyle === 'hindi-type') {
-                                    data.state.handwritingStyle = 'Hindi Handwriting';
+                                } else if (data.state.handwritingStyle === 'hindi-type' || data.state.handwritingStyle === 'Hindi Handwriting') {
+                                    data.state.handwritingStyle = 'Cedarville Cursive';
                                 }
                             }
                         }
@@ -402,43 +402,52 @@ export const useStore = create<AppState>()(
 );
 
 export const getAvailableFonts = (state: AppState) => {
-    const scrapedFonts: FontPreference[] = [
+    const studentCursiveFonts: FontPreference[] = [
+        { id: 'cedarville-cursive', name: 'Cedarville Cursive (Natural Flow)', family: 'Cedarville Cursive', type: 'custom' },
+        { id: 'nothing-you-could-do', name: 'Student Homework (Authentic Ballpoint)', family: 'Nothing You Could Do', type: 'custom' },
+        { id: 'la-belle-aurore', name: 'Student Cursive (Fast Ink Pen)', family: 'La Belle Aurore', type: 'custom' },
+        { id: 'just-me-again-down-here', name: 'Student Notes (Rushed & Imperfect)', family: 'Just Me Again Down Here', type: 'custom' },
+        { id: 'dawning-of-a-new-day', name: 'Fine Ballpoint (Light Cursive)', family: 'Dawning of a New Day', type: 'custom' },
+        { id: 'waiting-for-the-sunrise', name: 'Notebook Cursive (Slanted Homework)', family: 'Waiting for the Sunrise', type: 'custom' },
+        { id: 'marck-script', name: 'School Cursive (Fluid Script)', family: 'Marck Script', type: 'custom' },
+        { id: 'bad-script', name: 'Casual Ballpoint (Homework Notes)', family: 'Bad Script', type: 'custom' },
+        { id: 'homemade-apple', name: 'Messy Cursive (Organic Pen)', family: 'Homemade Apple', type: 'custom' },
+        { id: 'beth-ellen', name: 'Organic Cursive (Real Hand Flow)', family: 'Beth Ellen', type: 'custom' },
+        { id: 'zeyada', name: 'Loose Cursive (Casual Student)', family: 'Zeyada', type: 'custom' },
+        { id: 'over-the-rainbow', name: 'Notebook Hand (Print & Script)', family: 'Over the Rainbow', type: 'custom' },
+        { id: 'annie-use-your-telescope', name: 'Junior Student (Casual Hand)', family: 'Annie Use Your Telescope', type: 'custom' },
+    ];
+
+    const studentCustomFonts: FontPreference[] = [
         { id: 'handwriting-1', name: 'Student Script 1 (Clean Pen)', family: 'Handwriting 1', type: 'custom' },
         { id: 'handwriting-2', name: 'Student Script 2 (Casual Slant)', family: 'Handwriting 2', type: 'custom' },
         { id: 'handwriting-3', name: 'Student Script 3 (Neat Ballpoint)', family: 'Handwriting 3', type: 'custom' },
         { id: 'handwriting-4', name: 'Student Script 4 (Fluid Cursive)', family: 'Handwriting 4', type: 'custom' },
         { id: 'handwriting-5', name: 'Student Script 5 (Fast Flow)', family: 'Handwriting 5', type: 'custom' },
         { id: 'handwriting-6', name: 'Student Script 6 (Compact Print)', family: 'Handwriting 6', type: 'custom' },
-        { id: 'handwriting-7', name: 'Student Script 7 (Loose Homework)', family: 'Handwriting 7', type: 'custom' },
         { id: 'handwriting-8', name: 'Student Script 8 (Fine Nib)', family: 'Handwriting 8', type: 'custom' },
-        { id: 'handwriting-9', name: 'Student Script 9 (Quick Notes)', family: 'Handwriting 9', type: 'custom' },
         { id: 'handwriting-10', name: 'Student Script 10 (Forward Lean)', family: 'Handwriting 10', type: 'custom' },
         { id: 'handwriting-11', name: 'Student Script 11 (Natural Cursive)', family: 'Handwriting 11', type: 'custom' },
         { id: 'handwriting-12', name: 'Student Script 12 (Rounded Junior)', family: 'Handwriting 12', type: 'custom' },
-        { id: 'handwriting-13', name: 'Student Script 13 (Micro Gel)', family: 'Handwriting 13', type: 'custom' },
         { id: 'handwriting-14', name: 'Student Script 14 (Expressive)', family: 'Handwriting 14', type: 'custom' },
         { id: 'handwriting-15', name: 'Braden Hill (Natural Lean)', family: 'Handwriting 15', type: 'custom' },
         { id: 'handwriting-16', name: 'David Reid (Rushed Notes)', family: 'Handwriting 16', type: 'custom' },
-        { id: 'handwriting-17', name: 'Donald Ross (Slanted Ink)', family: 'Handwriting 17', type: 'custom' },
         { id: 'handwriting-18', name: 'Garrett Moretz (Loose Hand)', family: 'Handwriting 18', type: 'custom' },
         { id: 'handwriting-19', name: 'Herbert Cooper (Neat Mix)', family: 'Handwriting 19', type: 'custom' },
         { id: 'handwriting-20', name: 'John Williams (Clean Flow)', family: 'Handwriting 20', type: 'custom' },
         { id: 'handwriting-21', name: 'Kevin Knowles (Bold Ballpoint)', family: 'Handwriting 21', type: 'custom' },
         { id: 'handwriting-22', name: 'Royston Such (Fluid Italic)', family: 'Handwriting 22', type: 'custom' },
-        { id: 'hindi-type', name: 'Hindi Devnagari Hand', family: 'Hindi Handwriting', type: 'custom' },
     ];
 
     const googleFonts: FontPreference[] = [
-        { id: 'caveat', name: 'Caveat (Casual)', family: 'Caveat', type: 'google' },
-        { id: 'indie-flower', name: 'Indie Flower (Cute)', family: 'Indie Flower', type: 'google' },
-        { id: 'patrick-hand', name: 'Patrick Hand (Print)', family: 'Patrick Hand', type: 'google' },
-        { id: 'homemade-apple', name: 'Homemade Apple (Messy Cursive)', family: 'Homemade Apple', type: 'google' },
+        { id: 'caveat', name: 'Caveat (Everyday School Hand)', family: 'Caveat', type: 'google' },
+        { id: 'indie-flower', name: 'Indie Flower (Relaxed)', family: 'Indie Flower', type: 'google' },
+        { id: 'patrick-hand', name: 'Patrick Hand (Print Notes)', family: 'Patrick Hand', type: 'google' },
         { id: 'shadows-into-light', name: 'Shadows Into Light (Quick)', family: 'Shadows Into Light', type: 'google' },
         { id: 'kalam', name: 'Kalam (Marker Pen)', family: 'Kalam', type: 'google' },
-        { id: 'gloria-hallelujah', name: 'Gloria Hallelujah (Bold)', family: 'Gloria Hallelujah', type: 'google' },
         { id: 'reenie-beanie', name: 'Reenie Beanie (Fine Pen)', family: 'Reenie Beanie', type: 'google' },
     ];
 
-    return [...scrapedFonts, ...googleFonts, ...state.customFonts];
+    return [...studentCursiveFonts, ...studentCustomFonts, ...googleFonts, ...state.customFonts];
 };
 

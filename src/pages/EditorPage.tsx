@@ -209,37 +209,48 @@ function paginateLines(lines: LineData[], linesPerPage: number, page1Capacity: n
 
 // --- DATA CONSTANTS ---
 const FONTS = [
+    // === Authentic Student Cursive & Homework Hands (Natural Connected Flow) ===
+    { name: 'Cedarville Cursive', label: 'Cedarville Cursive (Natural Connected Flow)' },
+    { name: 'Nothing You Could Do', label: 'Student Homework (Authentic Ballpoint)' },
+    { name: 'La Belle Aurore', label: 'Student Cursive (Fast Ink Pen)' },
+    { name: 'Just Me Again Down Here', label: 'Student Notes (Rushed & Imperfect)' },
+    { name: 'Dawning of a New Day', label: 'Fine Ballpoint (Light Cursive)' },
+    { name: 'Waiting for the Sunrise', label: 'Notebook Cursive (Slanted Homework)' },
+    { name: 'Marck Script', label: 'School Cursive (Fluid Script)' },
+    { name: 'Bad Script', label: 'Casual Ballpoint (Homework Notes)' },
+    { name: 'Homemade Apple', label: 'Messy Cursive (Organic Pen)' },
+    { name: 'Beth Ellen', label: 'Organic Cursive (Real Hand Flow)' },
+    { name: 'Zeyada', label: 'Loose Cursive (Casual Student)' },
+    { name: 'Over the Rainbow', label: 'Notebook Hand (Print & Script)' },
+    { name: 'Annie Use Your Telescope', label: 'Junior Student (Casual Hand)' },
+    { name: 'Caveat', label: 'Caveat (Everyday School Hand)' },
+
+    // === Authentic Pen & Pencil Hands ===
     { name: 'Handwriting 1', label: 'Student 1 (Clean Pen)' },
     { name: 'Handwriting 2', label: 'Student 2 (Casual Slant)' },
     { name: 'Handwriting 3', label: 'Student 3 (Neat Ballpoint)' },
     { name: 'Handwriting 4', label: 'Student 4 (Fluid Cursive)' },
     { name: 'Handwriting 5', label: 'Student 5 (Fast Flow)' },
     { name: 'Handwriting 6', label: 'Student 6 (Compact Print)' },
-    { name: 'Handwriting 7', label: 'Student 7 (Loose Homework)' },
     { name: 'Handwriting 8', label: 'Student 8 (Fine Nib)' },
-    { name: 'Handwriting 9', label: 'Student 9 (Quick Notes)' },
     { name: 'Handwriting 10', label: 'Student 10 (Forward Lean)' },
     { name: 'Handwriting 11', label: 'Student 11 (Natural Cursive)' },
     { name: 'Handwriting 12', label: 'Student 12 (Rounded Junior)' },
-    { name: 'Handwriting 13', label: 'Student 13 (Micro Gel)' },
-    { name: 'Handwriting 14', label: 'Student 14 (Expressive)' },
+    { name: 'Handwriting 14', label: 'Student 14 (Expressive Hand)' },
     { name: 'Handwriting 15', label: 'Braden Hill (Natural Lean)' },
     { name: 'Handwriting 16', label: 'David Reid (Rushed Notes)' },
-    { name: 'Handwriting 17', label: 'Donald Ross (Slanted Ink)' },
     { name: 'Handwriting 18', label: 'Garrett Moretz (Loose Hand)' },
     { name: 'Handwriting 19', label: 'Herbert Cooper (Neat Mix)' },
     { name: 'Handwriting 20', label: 'John Williams (Clean Flow)' },
     { name: 'Handwriting 21', label: 'Kevin Knowles (Bold Ballpoint)' },
     { name: 'Handwriting 22', label: 'Royston Such (Fluid Italic)' },
-    { name: 'Hindi Handwriting', label: 'Hindi Devnagari Hand' },
-    { name: 'Caveat', label: 'Caveat (Casual)' },
-    { name: 'Homemade Apple', label: 'Homemade Apple (Messy)' },
-    { name: 'Indie Flower', label: 'Indie Flower (Cute)' },
-    { name: 'Patrick Hand', label: 'Patrick Hand (Print)' },
-    { name: 'Shadows Into Light', label: 'Shadows (Quick)' },
-    { name: 'Kalam', label: 'Kalam (Marker)' },
-    { name: 'Gloria Hallelujah', label: 'Gloria (Bold)' },
-    { name: 'Reenie Beanie', label: 'Reenie Beanie (Fine)' },
+
+    // === Casual Handwritings ===
+    { name: 'Indie Flower', label: 'Indie Flower (Relaxed)' },
+    { name: 'Patrick Hand', label: 'Patrick Hand (Print Notes)' },
+    { name: 'Shadows Into Light', label: 'Shadows Into Light (Quick)' },
+    { name: 'Kalam', label: 'Kalam (Marker Pen)' },
+    { name: 'Reenie Beanie', label: 'Reenie Beanie (Fine Pen)' },
 ];
 
 const PAPERS = [
