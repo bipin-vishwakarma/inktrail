@@ -878,13 +878,13 @@ export default function EditorPage() {
                     </div>
 
                     {/* Tab Panels Content */}
-                    <div className="flex-1 overflow-y-auto custom-scrollbar p-5 space-y-6 text-sm bg-white">
+                    <div className={`flex-1 ${activeSidebarTab === 'write' ? 'flex flex-col min-h-0' : 'overflow-y-auto custom-scrollbar space-y-6'} p-5 text-sm bg-white`}>
                         
                         {/* TAB 1: WRITE */}
                         {activeSidebarTab === 'write' && (
-                            <div className="space-y-5">
+                            <div className="flex-1 flex flex-col min-h-0 space-y-4">
                                 {/* Heading Option */}
-                                <div className="bg-neutral-50 p-4 rounded-2xl border border-neutral-200/70 space-y-3">
+                                <div className="shrink-0 bg-neutral-50 p-4 rounded-2xl border border-neutral-200/70 space-y-3">
                                     <div className="flex items-center justify-between">
                                         <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400">
                                             Document Heading
@@ -910,8 +910,8 @@ export default function EditorPage() {
                                 </div>
 
                                 {/* Main Text Source - Instant 0ms Typing */}
-                                <div className="space-y-2">
-                                    <div className="flex items-center justify-between">
+                                <div className="flex-1 flex flex-col min-h-0 space-y-2">
+                                    <div className="flex items-center justify-between shrink-0">
                                         <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400">
                                             Your Text Content
                                         </label>
@@ -935,7 +935,7 @@ export default function EditorPage() {
                                         value={draftText}
                                         onChange={(e) => setDraftText(e.target.value)}
                                         placeholder="Start typing your text here...&#10;&#10;It transforms instantly into realistic human handwriting on the right."
-                                        className="w-full h-[420px] p-4 rounded-2xl bg-neutral-50 border border-neutral-200 text-neutral-900 text-sm leading-relaxed focus:bg-white focus:outline-none focus:ring-2 focus:ring-neutral-900/10 transition-all resize-none font-sans"
+                                        className="flex-1 w-full min-h-[220px] p-4 rounded-2xl bg-neutral-50 border border-neutral-200 text-neutral-900 text-sm leading-relaxed focus:bg-white focus:outline-none focus:ring-2 focus:ring-neutral-900/10 transition-all resize-none font-sans overflow-y-auto custom-scrollbar"
                                     />
                                 </div>
                             </div>
