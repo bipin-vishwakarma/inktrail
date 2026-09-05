@@ -20,6 +20,7 @@ import { HumanErrorsControls } from '../components/HumanErrorsControls';
 import { CameraPhysicsControls } from '../components/CameraPhysicsControls';
 import { PenPresetSelector } from '../components/PenPresetSelector';
 import { parseWordToken, measureWordWidth, getFontFamilyCss, clearWidthCache, type WordToken } from '../utils/humanErrorEngine';
+import { computePagePhoneShadow } from '../utils/cameraShadowEngine';
 import type { StrikeStyle } from '../types';
 
 // --- PIPELINE TYPES ---
@@ -327,6 +328,7 @@ export default function EditorPage() {
         phoneShadow,
         phoneShadowAngle,
         phoneShadowIntensity,
+        phoneShadowVariation,
         perspectiveWarp,
         tiltX,
         tiltY,
@@ -1283,10 +1285,16 @@ export default function EditorPage() {
                                 : baseTiltY;
                             const effectiveLighting = pageOverrides.lightingMode !== undefined ? pageOverrides.lightingMode : lightingMode;
                             const effectiveWarmth = pageOverrides.lightingWarmth !== undefined ? pageOverrides.lightingWarmth : lightingWarmth;
-                            const effectiveShadow = pageOverrides.phoneShadow !== undefined ? pageOverrides.phoneShadow : phoneShadow;
-                            const effectiveShadowIntensity = pageOverrides.phoneShadowIntensity !== undefined ? pageOverrides.phoneShadowIntensity : phoneShadowIntensity;
-                            const effectiveShadowAngle = pageOverrides.phoneShadowAngle !== undefined ? pageOverrides.phoneShadowAngle : phoneShadowAngle;
                             const effectiveNoise = pageOverrides.sensorNoise !== undefined ? pageOverrides.sensorNoise : sensorNoise;
+                            const pageShadow = computePagePhoneShadow(
+                                pIdx,
+                                phoneShadow,
+                                phoneShadowAngle,
+                                phoneShadowIntensity,
+                                randomSeed,
+                                phoneShadowVariation,
+                                pageOverrides
+                            );
 
                             return (
                                 <div 
@@ -1336,9 +1344,14 @@ export default function EditorPage() {
 
                                                 {/* Physical Camera & Environment Overlay */}
                                                 <CameraOverlay
-                                                    phoneShadow={effectiveShadow}
-                                                    phoneShadowAngle={effectiveShadowAngle}
-                                                    phoneShadowIntensity={effectiveShadowIntensity}
+                                                    phoneShadow={pageShadow.enabled}
+                                                    phoneShadowAngle={pageShadow.angle}
+                                                    phoneShadowIntensity={pageShadow.intensity}
+                                                    phoneShadowX={pageShadow.shadowX}
+                                                    phoneShadowY={pageShadow.shadowY}
+                                                    phoneShadowWidth={pageShadow.width}
+                                                    phoneShadowHeight={pageShadow.height}
+                                                    phoneShadowPenumbra={pageShadow.penumbra}
                                                     lightingMode={effectiveLighting}
                                                     lightingWarmth={effectiveWarmth}
                                                     paperCrease={effectiveCrease}
@@ -1644,6 +1657,7 @@ export default function EditorPage() {
                 phoneShadow={phoneShadow}
                 phoneShadowAngle={phoneShadowAngle}
                 phoneShadowIntensity={phoneShadowIntensity}
+                phoneShadowVariation={phoneShadowVariation}
                 lightingMode={lightingMode}
                 lightingWarmth={lightingWarmth}
                 paperCrease={paperCrease}

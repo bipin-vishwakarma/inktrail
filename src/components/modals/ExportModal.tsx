@@ -5,6 +5,7 @@ import { useScrollLock } from '../../hooks/useScrollLock';
 import { HandwrittenWord } from '../HandwrittenWord';
 import { CameraOverlay } from '../CameraOverlay';
 import { getFontFamilyCss } from '../../utils/humanErrorEngine';
+import { computePagePhoneShadow } from '../../utils/cameraShadowEngine';
 import type { LightingMode, PaperCrease, PageEffectOverrides } from '../../types';
 
 interface DocumentLine {
@@ -64,6 +65,7 @@ interface ExportModalProps {
     phoneShadow?: boolean;
     phoneShadowAngle?: number;
     phoneShadowIntensity?: number;
+    phoneShadowVariation?: boolean;
     lightingMode?: LightingMode;
     lightingWarmth?: number;
     paperCrease?: PaperCrease;
@@ -119,6 +121,7 @@ export default function ExportModal({
     phoneShadow = false,
     phoneShadowAngle = 120,
     phoneShadowIntensity = 0.3,
+    phoneShadowVariation = true,
     lightingMode = 'warm-lamp' as LightingMode,
     lightingWarmth = 0.25,
     paperCrease = 'none' as PaperCrease,
@@ -266,10 +269,16 @@ export default function ExportModal({
                                         : baseTiltY;
                                     const effectiveLighting = pageOverrides.lightingMode !== undefined ? pageOverrides.lightingMode : lightingMode;
                                     const effectiveWarmth = pageOverrides.lightingWarmth !== undefined ? pageOverrides.lightingWarmth : lightingWarmth;
-                                    const effectiveShadow = pageOverrides.phoneShadow !== undefined ? pageOverrides.phoneShadow : phoneShadow;
-                                    const effectiveShadowIntensity = pageOverrides.phoneShadowIntensity !== undefined ? pageOverrides.phoneShadowIntensity : phoneShadowIntensity;
-                                    const effectiveShadowAngle = pageOverrides.phoneShadowAngle !== undefined ? pageOverrides.phoneShadowAngle : phoneShadowAngle;
                                     const effectiveNoise = pageOverrides.sensorNoise !== undefined ? pageOverrides.sensorNoise : sensorNoise;
+                                    const pageShadow = computePagePhoneShadow(
+                                        pIdx,
+                                        phoneShadow,
+                                        phoneShadowAngle,
+                                        phoneShadowIntensity,
+                                        randomSeed,
+                                        phoneShadowVariation,
+                                        pageOverrides
+                                    );
 
                                     return (
                                         <div 
@@ -304,9 +313,14 @@ export default function ExportModal({
 
                                                 {/* Physical Camera & Environment Overlay */}
                                                 <CameraOverlay
-                                                    phoneShadow={effectiveShadow}
-                                                    phoneShadowAngle={effectiveShadowAngle}
-                                                    phoneShadowIntensity={effectiveShadowIntensity}
+                                                    phoneShadow={pageShadow.enabled}
+                                                    phoneShadowAngle={pageShadow.angle}
+                                                    phoneShadowIntensity={pageShadow.intensity}
+                                                    phoneShadowX={pageShadow.shadowX}
+                                                    phoneShadowY={pageShadow.shadowY}
+                                                    phoneShadowWidth={pageShadow.width}
+                                                    phoneShadowHeight={pageShadow.height}
+                                                    phoneShadowPenumbra={pageShadow.penumbra}
                                                     lightingMode={effectiveLighting}
                                                     lightingWarmth={effectiveWarmth}
                                                     paperCrease={effectiveCrease}

@@ -8,6 +8,7 @@ export const CameraPhysicsControls: React.FC = () => {
         phoneShadow, setPhoneShadow,
         phoneShadowAngle, setPhoneShadowAngle,
         phoneShadowIntensity, setPhoneShadowIntensity,
+        phoneShadowVariation, setPhoneShadowVariation,
         perspectiveWarp, setPerspectiveWarp,
         tiltX, setTiltX,
         tiltY, setTiltY,
@@ -33,6 +34,15 @@ export const CameraPhysicsControls: React.FC = () => {
     const effectiveCoffeeStain = effectScope === 'current' && currentPageOverrides.coffeeStain !== undefined
         ? currentPageOverrides.coffeeStain
         : coffeeStain;
+    const effectivePhoneShadow = effectScope === 'current' && currentPageOverrides.phoneShadow !== undefined
+        ? currentPageOverrides.phoneShadow
+        : phoneShadow;
+    const effectivePhoneShadowAngle = effectScope === 'current' && currentPageOverrides.phoneShadowAngle !== undefined
+        ? currentPageOverrides.phoneShadowAngle
+        : phoneShadowAngle;
+    const effectivePhoneShadowIntensity = effectScope === 'current' && currentPageOverrides.phoneShadowIntensity !== undefined
+        ? currentPageOverrides.phoneShadowIntensity
+        : phoneShadowIntensity;
 
     const handleSetCrease = (crease: PaperCrease) => {
         if (effectScope === 'current') {
@@ -47,6 +57,30 @@ export const CameraPhysicsControls: React.FC = () => {
             setPageEffectOverride(activePageIndex, { coffeeStain: enabled });
         } else {
             setCoffeeStain(enabled);
+        }
+    };
+
+    const handleSetPhoneShadow = (enabled: boolean) => {
+        if (effectScope === 'current') {
+            setPageEffectOverride(activePageIndex, { phoneShadow: enabled });
+        } else {
+            setPhoneShadow(enabled);
+        }
+    };
+
+    const handleSetPhoneShadowAngle = (angle: number) => {
+        if (effectScope === 'current') {
+            setPageEffectOverride(activePageIndex, { phoneShadowAngle: angle });
+        } else {
+            setPhoneShadowAngle(angle);
+        }
+    };
+
+    const handleSetPhoneShadowIntensity = (intensity: number) => {
+        if (effectScope === 'current') {
+            setPageEffectOverride(activePageIndex, { phoneShadowIntensity: intensity });
+        } else {
+            setPhoneShadowIntensity(intensity);
         }
     };
 
@@ -149,44 +183,58 @@ export const CameraPhysicsControls: React.FC = () => {
                     </div>
                     <input
                         type="checkbox"
-                        checked={phoneShadow}
-                        onChange={(e) => setPhoneShadow(e.target.checked)}
-                        className="w-4 h-4 rounded border-black/10 text-neutral-900 focus:ring-0"
+                        checked={effectivePhoneShadow}
+                        onChange={(e) => handleSetPhoneShadow(e.target.checked)}
+                        className="w-4 h-4 rounded border-black/10 text-neutral-900 focus:ring-0 cursor-pointer accent-neutral-900"
                     />
                 </label>
 
-                {phoneShadow && (
+                {effectivePhoneShadow && (
                     <div className="space-y-2.5 pt-1 border-t border-black/5">
                         <div>
                             <div className="flex justify-between text-[9px] font-bold text-neutral-400 uppercase tracking-tighter mb-1">
                                 <span>Shadow Angle</span>
-                                <span className="text-neutral-800">{phoneShadowAngle}°</span>
+                                <span className="text-neutral-800">{effectivePhoneShadowAngle}°</span>
                             </div>
                             <input
                                 type="range"
                                 min="0"
                                 max="360"
                                 step="15"
-                                value={phoneShadowAngle}
-                                onChange={(e) => setPhoneShadowAngle(Number(e.target.value))}
+                                value={effectivePhoneShadowAngle}
+                                onChange={(e) => handleSetPhoneShadowAngle(Number(e.target.value))}
                                 className="w-full h-1 bg-black/5 rounded-full appearance-none accent-neutral-900 cursor-pointer"
                             />
                         </div>
                         <div>
                             <div className="flex justify-between text-[9px] font-bold text-neutral-400 uppercase tracking-tighter mb-1">
                                 <span>Shadow Intensity</span>
-                                <span className="text-neutral-800">{Math.round(phoneShadowIntensity * 100)}%</span>
+                                <span className="text-neutral-800">{Math.round(effectivePhoneShadowIntensity * 100)}%</span>
                             </div>
                             <input
                                 type="range"
                                 min="0.1"
                                 max="0.8"
                                 step="0.05"
-                                value={phoneShadowIntensity}
-                                onChange={(e) => setPhoneShadowIntensity(Number(e.target.value))}
+                                value={effectivePhoneShadowIntensity}
+                                onChange={(e) => handleSetPhoneShadowIntensity(Number(e.target.value))}
                                 className="w-full h-1 bg-black/5 rounded-full appearance-none accent-neutral-900 cursor-pointer"
                             />
                         </div>
+
+                        {/* Per-Page Shadow Variations Toggle */}
+                        <label className="flex items-center justify-between cursor-pointer pt-2 border-t border-black/5">
+                            <div className="flex flex-col">
+                                <span className="text-[10px] font-bold text-neutral-800">Per-Page Shadow Variations</span>
+                                <span className="text-[9px] text-neutral-400">Natural shift in shadow angle, distance & position for each sheet</span>
+                            </div>
+                            <input
+                                type="checkbox"
+                                checked={phoneShadowVariation}
+                                onChange={(e) => setPhoneShadowVariation(e.target.checked)}
+                                className="w-3.5 h-3.5 rounded border-black/10 text-neutral-900 focus:ring-0 cursor-pointer accent-neutral-900"
+                            />
+                        </label>
                     </div>
                 )}
             </div>

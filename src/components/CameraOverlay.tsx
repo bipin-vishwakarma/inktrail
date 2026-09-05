@@ -5,6 +5,11 @@ interface CameraOverlayProps {
     phoneShadow: boolean;
     phoneShadowAngle: number;
     phoneShadowIntensity: number;
+    phoneShadowX?: number;
+    phoneShadowY?: number;
+    phoneShadowWidth?: number;
+    phoneShadowHeight?: number;
+    phoneShadowPenumbra?: number;
     lightingMode: LightingMode;
     lightingWarmth: number;
     paperCrease: PaperCrease;
@@ -16,16 +21,24 @@ const CameraOverlayComponent: React.FC<CameraOverlayProps> = ({
     phoneShadow,
     phoneShadowAngle,
     phoneShadowIntensity,
+    phoneShadowX,
+    phoneShadowY,
+    phoneShadowWidth,
+    phoneShadowHeight,
+    phoneShadowPenumbra,
     lightingMode,
     lightingWarmth,
     paperCrease,
     sensorNoise,
     coffeeStain = false,
 }) => {
-    // Calculate Phone Shadow gradient based on angle
+    // Calculate Phone Shadow coordinates based on angle or custom per-page values
     const rad = (phoneShadowAngle * Math.PI) / 180;
-    const shadowX = Math.round(50 + Math.cos(rad) * 45);
-    const shadowY = Math.round(50 + Math.sin(rad) * 45);
+    const shadowX = phoneShadowX !== undefined ? phoneShadowX : Math.round(50 + Math.cos(rad) * 45);
+    const shadowY = phoneShadowY !== undefined ? phoneShadowY : Math.round(50 + Math.sin(rad) * 45);
+    const shadowW = phoneShadowWidth !== undefined ? phoneShadowWidth : 72;
+    const shadowH = phoneShadowHeight !== undefined ? phoneShadowHeight : 56;
+    const penumbra = phoneShadowPenumbra !== undefined ? phoneShadowPenumbra : 75;
 
     return (
         <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-[inherit] z-20">
@@ -67,15 +80,26 @@ const CameraOverlayComponent: React.FC<CameraOverlayProps> = ({
                 />
             )}
 
-            {/* 2. REALISTIC SMARTPHONE CAST SHADOW */}
+            {/* 2. REALISTIC SMARTPHONE CAST SHADOW & NATURAL LIGHT OCCLUSION */}
             {phoneShadow && (
-                <div
-                    className="absolute inset-0 transition-opacity duration-300"
-                    style={{
-                        background: `radial-gradient(ellipse 70% 55% at ${shadowX}% ${shadowY}%, rgba(15, 23, 42, ${phoneShadowIntensity * 0.75}) 0%, rgba(30, 41, 59, ${phoneShadowIntensity * 0.35}) 40%, transparent 75%)`,
-                        mixBlendMode: 'multiply',
-                    }}
-                />
+                <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-[inherit]">
+                    {/* Primary phone body core shadow */}
+                    <div
+                        className="absolute inset-0 transition-opacity duration-300 pointer-events-none"
+                        style={{
+                            background: `radial-gradient(ellipse ${shadowW}% ${shadowH}% at ${shadowX}% ${shadowY}%, rgba(15, 23, 42, ${phoneShadowIntensity * 0.78}) 0%, rgba(30, 41, 59, ${phoneShadowIntensity * 0.38}) 42%, transparent ${penumbra}%)`,
+                            mixBlendMode: 'multiply',
+                        }}
+                    />
+                    {/* Subtle directional hand & device silhouette light falloff */}
+                    <div
+                        className="absolute inset-0 transition-opacity duration-300 pointer-events-none"
+                        style={{
+                            background: `linear-gradient(${phoneShadowAngle}deg, rgba(15, 23, 42, ${phoneShadowIntensity * 0.22}) 0%, transparent 48%)`,
+                            mixBlendMode: 'multiply',
+                        }}
+                    />
+                </div>
             )}
 
             {/* 3. PAPER CREASES & FOLDS */}

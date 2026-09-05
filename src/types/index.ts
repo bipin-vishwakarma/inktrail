@@ -79,6 +79,7 @@ export interface AppState {
     phoneShadow: boolean;
     phoneShadowAngle: number;
     phoneShadowIntensity: number;
+    phoneShadowVariation: boolean;
     perspectiveWarp: boolean;
     tiltX: number;
     tiltY: number;
@@ -156,6 +157,7 @@ export interface AppState {
     setPhoneShadow: (enabled: boolean) => void;
     setPhoneShadowAngle: (angle: number) => void;
     setPhoneShadowIntensity: (intensity: number) => void;
+    setPhoneShadowVariation: (enabled: boolean) => void;
     setPerspectiveWarp: (enabled: boolean) => void;
     setTiltX: (deg: number) => void;
     setTiltY: (deg: number) => void;
