@@ -477,7 +477,7 @@ const AboutSection = React.memo(() => {
                                 <p className="text-xs font-black tracking-widest uppercase text-ink/40 mb-8">Creator & Engineer</p>
                                 <div className="flex gap-4">
                                     <SocialLink href="https://github.com/bipin-vishwakarma" icon={Github} />
-                                    <SocialLink href="https://github.com/bipin-vishwakarma/papertrail" icon={PenTool} />
+                                    <SocialLink href="https://github.com/bipin-vishwakarma/inktrail" icon={PenTool} />
                                 </div>
                             </div>
 

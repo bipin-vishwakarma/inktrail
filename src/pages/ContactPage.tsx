@@ -14,7 +14,7 @@ export default function ContactPage() {
                     </div>
                     <h3 className="text-xl font-bold text-neutral-900 mb-2">GitHub Issues</h3>
                     <p className="text-neutral-500 mb-6">Found a bug or have a feature request? Open an issue.</p>
-                    <a href="https://github.com/bipin-vishwakarma/papertrail/issues" target="_blank" rel="noopener noreferrer" className="inline-block px-6 py-3 bg-neutral-900 text-white rounded-xl font-bold hover:bg-black transition-colors">
+                    <a href="https://github.com/bipin-vishwakarma/inktrail/issues" target="_blank" rel="noopener noreferrer" className="inline-block px-6 py-3 bg-neutral-900 text-white rounded-xl font-bold hover:bg-black transition-colors">
                         Open GitHub Issue →
                     </a>
                 </div>
@@ -25,7 +25,7 @@ export default function ContactPage() {
                     </div>
                     <h3 className="text-xl font-bold text-neutral-900 mb-2">Community & Feedback</h3>
                     <p className="text-neutral-500 mb-6">Join discussions and connect directly with the developer.</p>
-                    <a href="https://github.com/bipin-vishwakarma/papertrail/discussions" target="_blank" rel="noopener noreferrer" className="inline-block px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-colors">
+                    <a href="https://github.com/bipin-vishwakarma/inktrail/discussions" target="_blank" rel="noopener noreferrer" className="inline-block px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-colors">
                         GitHub Discussions →
                     </a>
                 </div>

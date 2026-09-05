@@ -18,7 +18,7 @@ export default function SupportPage() {
                         Found a rendering glitch or have a request? Open an issue directly on the repository.
                     </p>
                     <a 
-                        href="https://github.com/bipin-vishwakarma/papertrail/issues" 
+                        href="https://github.com/bipin-vishwakarma/inktrail/issues" 
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center font-bold text-neutral-900 hover:gap-2 transition-all"

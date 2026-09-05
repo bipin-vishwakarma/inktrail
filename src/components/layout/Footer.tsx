@@ -101,7 +101,7 @@ export default function Footer() {
                         <h4 className="font-black text-xs uppercase tracking-[0.2em] text-neutral-400 mb-6 focus:outline-none">Links</h4>
                         <ul className="space-y-3">
                             <li><a href="https://github.com/bipin-vishwakarma" target="_blank" rel="noopener noreferrer" className="text-neutral-500 hover:text-purple-600 transition-colors flex items-center gap-3 text-sm font-bold"><Github size={14} /> GitHub Profile</a></li>
-                            <li><a href="https://github.com/bipin-vishwakarma/papertrail" target="_blank" rel="noopener noreferrer" className="text-neutral-500 hover:text-neutral-900 transition-colors flex items-center gap-3 text-sm font-bold"><PenTool size={14} /> Repository</a></li>
+                            <li><a href="https://github.com/bipin-vishwakarma/inktrail" target="_blank" rel="noopener noreferrer" className="text-neutral-500 hover:text-neutral-900 transition-colors flex items-center gap-3 text-sm font-bold"><PenTool size={14} /> Repository</a></li>
                         </ul>
                     </motion.div>
                 </div>
@@ -112,7 +112,7 @@ export default function Footer() {
                         <p className="text-xs text-neutral-400 font-bold">
                             &copy; {new Date().getFullYear()} InkTrail. Open Source.
                         </p>
-                        <a href="https://github.com/bipin-vishwakarma/papertrail" target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-neutral-900 transition-colors" title="View Source on GitHub">
+                        <a href="https://github.com/bipin-vishwakarma/inktrail" target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-neutral-900 transition-colors" title="View Source on GitHub">
                             <Github size={14} />
                         </a>
                     </div>

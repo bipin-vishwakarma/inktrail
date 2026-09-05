@@ -40,7 +40,7 @@ export default function PrivacyPolicy() {
 
             <h3>5. Contact Us</h3>
             <p>
-                If you have questions about this policy, please open a discussion on our <a href="https://github.com/bipin-vishwakarma/papertrail" target="_blank" rel="noopener noreferrer">GitHub repository</a>.
+                If you have questions about this policy, please open a discussion on our <a href="https://github.com/bipin-vishwakarma/inktrail" target="_blank" rel="noopener noreferrer">GitHub repository</a>.
             </p>
 
             <p className="text-sm text-neutral-400 mt-8">

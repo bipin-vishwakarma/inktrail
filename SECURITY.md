@@ -13,6 +13,6 @@ currently being supported with security updates.
 
 ## Reporting a Vulnerability
 
-We take the security of PaperTrail seriously. If you believe you have found a security vulnerability in PaperTrail, please report it via [GitHub Security Advisories](https://github.com/bipin-vishwakarma/papertrail/security/advisories).
+We take the security of InkTrail seriously. If you believe you have found a security vulnerability in InkTrail, please report it via [GitHub Security Advisories](https://github.com/bipin-vishwakarma/inktrail/security/advisories).
 
 You should expect to receive a response within 24 hours.

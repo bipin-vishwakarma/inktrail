@@ -7,7 +7,7 @@
 ### Next-Gen Hyper-Realistic Text-to-Handwriting Studio with 3D Camera Physics, Smart Margin Indexing, and Organic Human Flaws
 
 [![Live Demo](https://img.shields.io/badge/Live-Demo%20on%20Vercel-black?style=for-the-badge&logo=vercel)](https://inktrail-omega.vercel.app)
-[![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/bipin-vishwakarma/papertrail)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/bipin-vishwakarma/inktrail)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
 [![React 19](https://img.shields.io/badge/React-19.0-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev)
@@ -139,7 +139,7 @@ Loaded locally in `/public/fonts/`:
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/bipin-vishwakarma/papertrail.git inktrail
+git clone https://github.com/bipin-vishwakarma/inktrail.git
 cd inktrail
 ```
 

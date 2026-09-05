@@ -1,21 +1,21 @@
 # Support Guide 🤝
 
-Thank you for using PaperTrail! We want to make sure you get the help you need as quickly as possible.
+Thank you for using InkTrail! We want to make sure you get the help you need as quickly as possible.
 
 ## ❓ Have a Question?
 
 If you have a question about how to use the app, technical setup, or general inquiries, please:
 
-1. **Open a [GitHub Discussion](https://github.com/bipin-vishwakarma/papertrail/discussions)**: Best for technical questions and community help.
-2. **Open an Issue**: Ask directly on the [Issue Tracker](https://github.com/bipin-vishwakarma/papertrail/issues).
+1. **Open a [GitHub Discussion](https://github.com/bipin-vishwakarma/inktrail/discussions)**: Best for technical questions and community help.
+2. **Open an Issue**: Ask directly on the [Issue Tracker](https://github.com/bipin-vishwakarma/inktrail/issues).
 
 ## 🐞 Found a Bug?
 
-Please report it using [GitHub Issues](https://github.com/bipin-vishwakarma/papertrail/issues).
+Please report it using [GitHub Issues](https://github.com/bipin-vishwakarma/inktrail/issues).
 
 ## ✨ Feature Requests
 
-We love hearing your ideas! Suggest them via [GitHub Feature Requests](https://github.com/bipin-vishwakarma/papertrail/issues).
+We love hearing your ideas! Suggest them via [GitHub Feature Requests](https://github.com/bipin-vishwakarma/inktrail/issues).
 
 ## 🔒 Security Vulnerabilities
 
