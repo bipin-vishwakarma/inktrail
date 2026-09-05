@@ -6,7 +6,7 @@ import { HandwrittenWord } from '../HandwrittenWord';
 import { CameraOverlay } from '../CameraOverlay';
 import { getFontFamilyCss } from '../../utils/humanErrorEngine';
 import { computePagePhoneShadow } from '../../utils/cameraShadowEngine';
-import type { LightingMode, PaperCrease, PageEffectOverrides } from '../../types';
+import type { LightingMode, PaperCrease, PageEffectOverrides, CorrectionColor } from '../../types';
 
 interface DocumentLine {
     tokens: any[];
@@ -48,6 +48,7 @@ interface ExportModalProps {
     font?: string;
     fontSize?: number;
     color?: string;
+    correctionColor?: CorrectionColor;
     baseline?: number;
     textAlign?: 'left' | 'center' | 'right' | 'justify';
     marginTop?: number;
@@ -101,6 +102,7 @@ export default function ExportModal({
     font = 'Handwriting 1',
     fontSize = 24,
     color = '#1e40af',
+    correctionColor = 'match',
     baseline = 6,
     textAlign = 'left',
     marginTop = 50,
@@ -417,6 +419,7 @@ export default function ExportModal({
                                                                         fontFamily={font}
                                                                         fontSize={fontSize}
                                                                         color={color}
+                                                                        correctionColor={correctionColor}
                                                                         jitter={jitter}
                                                                         charJitter={charJitter}
                                                                         fatigue={fatigue}

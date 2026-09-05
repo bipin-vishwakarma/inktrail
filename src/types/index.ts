@@ -12,7 +12,8 @@ export type PaperMaterial = 'white' | 'ruled' | 'graph' | 'dotted' | 'vintage' |
 export type PaperSize = 'a4' | 'letter' | 'a5' | 'a6' | 'legal' | 'tabloid';
 export type PaperOrientation = 'portrait' | 'landscape';
 
-export type StrikeStyle = 'wavy' | 'dense' | 'single' | 'double' | 'coil' | 'zigzag';
+export type StrikeStyle = 'wavy' | 'dense' | 'single' | 'double' | 'coil' | 'zigzag' | 'underline';
+export type CorrectionColor = 'match' | 'red' | 'green' | 'purple';
 export type LightingMode = 'flat' | 'warm-lamp' | 'cool-daylight' | 'scanner-contrast' | 'flash';
 export type PaperCrease = 'none' | 'center-h' | 'cross' | 'corner-fold' | 'letter-tri-fold' | 'crumpled' | 'spiral-holes' | 'diagonal-crease' | 'vintage-worn';
 export type PenType = 'ballpoint-blue' | 'gel-black' | 'fountain-blue' | 'pencil' | 'red-pen' | 'custom';
@@ -124,6 +125,8 @@ export interface AppState {
     autoTypoRate: number;
     strikeStyle: StrikeStyle;
     autoCaret: boolean;
+    correctionColor: CorrectionColor;
+    teacherGrading: boolean;
     lowInkFade: boolean;
     lowInkStart: number;
     lowInkIntensity: number;
@@ -189,6 +192,8 @@ export interface AppState {
     setAutoTypoRate: (rate: number) => void;
     setStrikeStyle: (style: StrikeStyle) => void;
     setAutoCaret: (enabled: boolean) => void;
+    setCorrectionColor: (color: CorrectionColor) => void;
+    setTeacherGrading: (enabled: boolean) => void;
     setLowInkFade: (enabled: boolean) => void;
     setLowInkStart: (val: number) => void;
     setLowInkIntensity: (val: number) => void;

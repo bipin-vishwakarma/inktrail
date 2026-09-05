@@ -375,8 +375,22 @@ export function parseWordToken(
     randomSeed: string,
     autoTypoRate: number,
     strikeStyle: StrikeStyle,
-    autoCaret: boolean
+    autoCaret: boolean,
+    teacherGrading: boolean = false
 ): WordToken[] {
+    // 0. Check standalone missing-word caret: ^word (e.g. ^to, ^from, ^because, ^at)
+    const caretOnlyMatch = rawWord.match(/^\^([a-zA-Z0-9.,!?'"#-]+)$/);
+    if (caretOnlyMatch) {
+        return [
+            {
+                text: '',
+                isStruck: false,
+                strikeStyle,
+                caretCorrection: caretOnlyMatch[1],
+            },
+        ];
+    }
+
     // 1. Check manual strike markup: ~~word~~^correction or ~~word~~
     const strikeWithCaretMatch = rawWord.match(/^~~(.*?)~~\^(.*?)$/);
     if (strikeWithCaretMatch) {
@@ -414,12 +428,13 @@ export function parseWordToken(
             if (misspelled !== rawWord) {
                 if (autoCaret) {
                     // Struck typo with caret correction above it
+                    const correctionText = teacherGrading ? `sp. ${rawWord}` : rawWord;
                     return [
                         {
                             text: misspelled,
                             isStruck: true,
                             strikeStyle,
-                            caretCorrection: rawWord,
+                            caretCorrection: correctionText,
                             isTypo: true,
                         },
                     ];
@@ -467,11 +482,21 @@ export function generateScribblePath(
     const h = Math.max(height, 16);
     // Center directly on lowercase letter x-height
     const centerY = h * 0.62;
-    const startX = -2 - rng() * 1.5;
-    const endX = w + 2 + rng() * 1.5;
+    // Tight bounds so strikes do not overextend past the word
+    const startX = -0.5 - rng() * 1.0;
+    const endX = w + 0.5 + rng() * 1.0;
     const totalSpan = endX - startX;
 
     switch (style) {
+        case 'underline': {
+            // Neat teacher/proofreader underline drawn just below the word baseline
+            const underY = h * 0.88 + (rng() - 0.5) * 1.5;
+            const yEnd = underY + (rng() - 0.5) * 2;
+            const midX = startX + totalSpan * 0.5;
+            const midY = underY + (rng() - 0.3) * 1.8;
+            return `M ${startX.toFixed(1)} ${underY.toFixed(1)} Q ${midX.toFixed(1)} ${midY.toFixed(1)} ${endX.toFixed(1)} ${yEnd.toFixed(1)}`;
+        }
+
         case 'single': {
             // Swift diagonal pen slash with natural wrist momentum & flick exit
             const y1 = centerY + (rng() - 0.4) * (h * 0.24);

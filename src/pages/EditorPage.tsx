@@ -51,7 +51,8 @@ function buildDocumentLines(
     typoRate: number,
     strikeStyle: StrikeStyle,
     autoCaret: boolean,
-    smartMarginIndexing: boolean = true
+    smartMarginIndexing: boolean = true,
+    teacherGrading: boolean = false
 ): LineData[] {
     const rawParagraphs = text.split('\n');
     const documentLines: LineData[] = [];
@@ -117,7 +118,7 @@ function buildDocumentLines(
 
         // Pre-parse tokens through Human Error Engine
         const tokens: WordToken[] = rawWords.flatMap((word, wIdx) => 
-            parseWordToken(word, wIdx, 0, pIndex, seed, typoRate, strikeStyle, autoCaret)
+            parseWordToken(word, wIdx, 0, pIndex, seed, typoRate, strikeStyle, autoCaret, teacherGrading)
         );
 
         // If bodyText was empty (e.g. line was just "Ans:"), create line with marker
@@ -341,6 +342,8 @@ export default function EditorPage() {
         autoTypoRate,
         strikeStyle,
         autoCaret,
+        correctionColor,
+        teacherGrading,
         lowInkFade,
         lowInkStart,
         lowInkIntensity,
@@ -621,10 +624,11 @@ export default function EditorPage() {
             autoTypoRate, 
             strikeStyle, 
             autoCaret,
-            smartMarginIndexing
+            smartMarginIndexing,
+            teacherGrading
         );
         return paginateLines(rawLines, linesPerPage, page1Lines);
-    }, [deferredText, fontSize, font, fontLoadedVersion, paper.lineHeight, marginTop, marginBottom, marginLeft, marginRight, showHeader, headerText, randomSeed, autoTypoRate, strikeStyle, autoCaret, smartMarginIndexing]);
+    }, [deferredText, fontSize, font, fontLoadedVersion, paper.lineHeight, marginTop, marginBottom, marginLeft, marginRight, showHeader, headerText, randomSeed, autoTypoRate, strikeStyle, autoCaret, smartMarginIndexing, teacherGrading]);
 
     // Synchronize active page index with scroll position
     useEffect(() => {
@@ -1538,6 +1542,7 @@ export default function EditorPage() {
                                                                                 fontFamily={font}
                                                                                 fontSize={fontSize}
                                                                                 color={color}
+                                                                                correctionColor={correctionColor}
                                                                                 jitter={jitter}
                                                                                 charJitter={charJitter}
                                                                                 fatigue={fatigue}
@@ -1663,6 +1668,7 @@ export default function EditorPage() {
                 font={font}
                 fontSize={fontSize}
                 color={color}
+                correctionColor={correctionColor}
                 baseline={baseline}
                 textAlign={textAlign}
                 marginTop={marginTop}

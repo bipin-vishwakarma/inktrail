@@ -8,6 +8,8 @@ export const HumanErrorsControls: React.FC = () => {
         autoTypoRate, setAutoTypoRate,
         strikeStyle, setStrikeStyle,
         autoCaret, setAutoCaret,
+        correctionColor, setCorrectionColor,
+        teacherGrading, setTeacherGrading,
         charJitter, setCharJitter,
         fatigue, setFatigue,
         lowInkFade, setLowInkFade,
@@ -16,8 +18,9 @@ export const HumanErrorsControls: React.FC = () => {
     } = useStore();
 
     const strikeOptions: { id: StrikeStyle; label: string; icon: string }[] = [
+        { id: 'underline', label: 'Underline', icon: '✍️' },
         { id: 'dense', label: 'Blackout', icon: '⬛' },
-        { id: 'coil', label: 'Coil Spring', icon: '➰' },
+        { id: 'coil', label: 'Coil', icon: '➰' },
         { id: 'wavy', label: 'Wavy', icon: '〰️' },
         { id: 'zigzag', label: 'Zigzag', icon: '⚡' },
         { id: 'single', label: 'Single', icon: '➖' },
@@ -60,7 +63,7 @@ export const HumanErrorsControls: React.FC = () => {
                 <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-tighter mb-1.5 block">
                     Pen Scratch Style
                 </span>
-                <div className="grid grid-cols-3 gap-1.5 bg-neutral-100 p-1.5 rounded-xl">
+                <div className="grid grid-cols-4 gap-1.5 bg-neutral-100 p-1.5 rounded-xl">
                     {strikeOptions.map((opt) => (
                         <button
                             key={opt.id}
@@ -79,6 +82,56 @@ export const HumanErrorsControls: React.FC = () => {
                 </div>
             </div>
 
+            {/* Correction Ink Color (Teacher / Proofreader) */}
+            <div>
+                <div className="flex justify-between text-[10px] font-bold text-neutral-400 uppercase tracking-tighter mb-1.5">
+                    <span>Correction Ink (Teacher / Proofreader)</span>
+                    <span className="text-neutral-900 font-black capitalize">{correctionColor}</span>
+                </div>
+                <div className="grid grid-cols-4 gap-1.5 bg-neutral-100 p-1.5 rounded-xl">
+                    <button
+                        type="button"
+                        onClick={() => setCorrectionColor('match')}
+                        className={`py-1.5 px-2 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1.5 transition-all ${
+                            correctionColor === 'match' ? 'bg-white text-neutral-900 shadow-xs' : 'text-neutral-500 hover:text-neutral-800'
+                        }`}
+                    >
+                        <span className="w-2.5 h-2.5 rounded-full border border-neutral-300 bg-neutral-400" />
+                        <span>Match</span>
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setCorrectionColor('red')}
+                        className={`py-1.5 px-2 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1.5 transition-all ${
+                            correctionColor === 'red' ? 'bg-white text-red-600 shadow-xs ring-1 ring-red-200' : 'text-neutral-500 hover:text-red-600'
+                        }`}
+                    >
+                        <span className="w-2.5 h-2.5 rounded-full bg-red-600 shadow-xs" />
+                        <span>Red</span>
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setCorrectionColor('green')}
+                        className={`py-1.5 px-2 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1.5 transition-all ${
+                            correctionColor === 'green' ? 'bg-white text-emerald-600 shadow-xs ring-1 ring-emerald-200' : 'text-neutral-500 hover:text-emerald-600'
+                        }`}
+                    >
+                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 shadow-xs" />
+                        <span>Green</span>
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setCorrectionColor('purple')}
+                        className={`py-1.5 px-2 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1.5 transition-all ${
+                            correctionColor === 'purple' ? 'bg-white text-purple-600 shadow-xs ring-1 ring-purple-200' : 'text-neutral-500 hover:text-purple-600'
+                        }`}
+                    >
+                        <span className="w-2.5 h-2.5 rounded-full bg-purple-600 shadow-xs" />
+                        <span>Purple</span>
+                    </button>
+                </div>
+            </div>
+
             {/* Caret Correction Mode Toggle */}
             <label className="flex items-center justify-between p-2.5 bg-neutral-50 rounded-xl cursor-pointer hover:bg-neutral-100/70 transition-colors">
                 <div className="flex flex-col">
@@ -89,7 +142,21 @@ export const HumanErrorsControls: React.FC = () => {
                     type="checkbox"
                     checked={autoCaret}
                     onChange={(e) => setAutoCaret(e.target.checked)}
-                    className="w-4 h-4 rounded border-black/10 text-neutral-900 focus:ring-0"
+                    className="w-4 h-4 rounded border-black/10 text-neutral-900 focus:ring-0 cursor-pointer"
+                />
+            </label>
+
+            {/* Teacher Grading Mode Toggle (sp. spelling codes from Kim Griffiths guide) */}
+            <label className="flex items-center justify-between p-2.5 bg-neutral-50 rounded-xl cursor-pointer hover:bg-neutral-100/70 transition-colors">
+                <div className="flex flex-col">
+                    <span className="text-[11px] font-bold text-neutral-700">Teacher Proofreading (<span className="text-red-600 font-mono text-[10px]">sp.</span>)</span>
+                    <span className="text-[9px] text-neutral-400">Auto-tags typo corrections with teacher error codes</span>
+                </div>
+                <input
+                    type="checkbox"
+                    checked={teacherGrading}
+                    onChange={(e) => setTeacherGrading(e.target.checked)}
+                    className="w-4 h-4 rounded border-black/10 text-neutral-900 focus:ring-0 cursor-pointer"
                 />
             </label>
 
@@ -197,13 +264,16 @@ export const HumanErrorsControls: React.FC = () => {
             <div className="p-2.5 bg-indigo-50/60 border border-indigo-100/80 rounded-xl text-[10px] text-indigo-950 space-y-1">
                 <div className="flex items-center gap-1 font-bold text-indigo-900">
                     <HelpCircle size={11} />
-                    <span>Manual Scratch Markup</span>
+                    <span>Correction Markup Tips</span>
                 </div>
                 <p className="leading-tight text-neutral-600">
                     • Type <code className="bg-white/80 px-1 py-0.5 rounded font-mono text-[9px]">~~wrong~~</code> to scratch out a word.
                 </p>
                 <p className="leading-tight text-neutral-600">
-                    • Type <code className="bg-white/80 px-1 py-0.5 rounded font-mono text-[9px]">~~bad~~^good</code> for caret correction!
+                    • Type <code className="bg-white/80 px-1 py-0.5 rounded font-mono text-[9px]">~~bad~~^good</code> for caret correction above strike.
+                </p>
+                <p className="leading-tight text-neutral-600">
+                    • Type <code className="bg-white/80 px-1 py-0.5 rounded font-mono text-[9px]">^missing</code> for standalone missing-word caret!
                 </p>
             </div>
         </div>
