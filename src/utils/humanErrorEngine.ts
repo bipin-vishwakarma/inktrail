@@ -183,6 +183,10 @@ export interface WordToken {
     strikeStyle: StrikeStyle;
     caretCorrection?: string;
     isTypo?: boolean;
+    isHighlighted?: boolean;
+    highlightColor?: 'yellow' | 'green' | 'pink' | 'blue';
+    isDoubleUnderline?: boolean;
+    isBoxed?: boolean;
 }
 
 // Common realistic typos for English words
@@ -585,3 +589,56 @@ export function generateScribblePath(
         }
     }
 }
+
+/**
+ * Generate hand-drawn double underline pen paths beneath a word or title
+ */
+export function generateDoubleUnderlinePath(width: number, height: number, seed: string): string {
+    const rng = mulberry32(fastStringHash(seed));
+    const w = Math.max(width, 12);
+    const h = Math.max(height, 16);
+    const startX = -1 - rng() * 1.2;
+    const endX = w + 1 + rng() * 1.2;
+    const totalSpan = endX - startX;
+
+    // Line 1: just beneath baseline (around h * 0.88)
+    const y1A = h * 0.88 + (rng() - 0.5) * 1.2;
+    const y1B = y1A + (rng() - 0.4) * 1.2;
+    const mid1X = startX + totalSpan * 0.5;
+    const mid1Y = y1A + (rng() - 0.2) * 1.5;
+
+    // Line 2: parallel second pen stroke (around h * 0.98)
+    const gap = 3.2 + rng() * 1.2;
+    const y2A = y1A + gap;
+    const y2B = y1B + gap;
+    const mid2X = startX + totalSpan * 0.52;
+    const mid2Y = mid1Y + gap + (rng() - 0.5) * 0.8;
+
+    return `M ${startX.toFixed(1)} ${y1A.toFixed(1)} Q ${mid1X.toFixed(1)} ${mid1Y.toFixed(1)} ${endX.toFixed(1)} ${y1B.toFixed(1)} ` +
+           `M ${(startX + 0.8).toFixed(1)} ${y2A.toFixed(1)} Q ${mid2X.toFixed(1)} ${mid2Y.toFixed(1)} ${(endX - 0.5).toFixed(1)} ${y2B.toFixed(1)}`;
+}
+
+/**
+ * Generate organic hand-drawn wobbly box enclosing an answer or formula
+ */
+export function generateWobblyBoxPath(width: number, height: number, seed: string): string {
+    const rng = mulberry32(fastStringHash(seed));
+    const padX = 3.5;
+    const padY = 2;
+    const x1 = -padX - (rng() - 0.5) * 1.2;
+    const y1 = -padY - (rng() - 0.5) * 1.2;
+    const x2 = width + padX + (rng() - 0.5) * 1.2;
+    const y2 = height + padY + (rng() - 0.5) * 1.2;
+
+    const topCpY = y1 + (rng() - 0.5) * 1.8;
+    const rightCpX = x2 + (rng() - 0.5) * 1.8;
+    const botCpY = y2 + (rng() - 0.5) * 1.8;
+    const leftCpX = x1 + (rng() - 0.5) * 1.8;
+
+    return `M ${x1.toFixed(1)} ${(y1 + 2).toFixed(1)} ` +
+           `Q ${(x1 + (x2 - x1) * 0.5).toFixed(1)} ${topCpY.toFixed(1)} ${(x2 + 0.5).toFixed(1)} ${y1.toFixed(1)} ` +
+           `Q ${rightCpX.toFixed(1)} ${(y1 + (y2 - y1) * 0.5).toFixed(1)} ${x2.toFixed(1)} ${(y2 + 1).toFixed(1)} ` +
+           `Q ${(x1 + (x2 - x1) * 0.5).toFixed(1)} ${botCpY.toFixed(1)} ${(x1 - 0.5).toFixed(1)} ${y2.toFixed(1)} ` +
+           `Q ${leftCpX.toFixed(1)} ${(y1 + (y2 - y1) * 0.5).toFixed(1)} ${x1.toFixed(1)} ${(y1 - 0.5).toFixed(1)}`;
+}
+

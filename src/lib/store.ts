@@ -91,6 +91,8 @@ const initialState: StateValues = {
     showPageNumbers: false,
     showHeader: false,
     headerText: '',
+    showNotebookHeaderBox: false,
+    notebookDate: new Date().toLocaleDateString('en-GB'),
 
     // Human Errors & Strikes (Off by default)
     autoTypoRate: 0,
@@ -349,6 +351,82 @@ export const useStore = create<AppState>()(
                 showHeader: options.showHeader ?? state.showHeader,
                 headerText: options.headerText ?? state.headerText,
             })),
+            setShowNotebookHeaderBox: (showNotebookHeaderBox) => set({ showNotebookHeaderBox }),
+            setNotebookDate: (notebookDate) => set({ notebookDate }),
+            applyVibePreset: (preset) => set((state) => {
+                switch (preset) {
+                    case 'topper':
+                        return {
+                            ...state,
+                            handwritingStyle: 'Cedarville Cursive',
+                            penType: 'ballpoint-blue',
+                            inkColor: '#1e40af',
+                            paperMaterial: 'college',
+                            smartMarginIndexing: true,
+                            jitter: 0.8,
+                            charJitter: 0.2,
+                            fatigue: 0,
+                            pressure: 1.0,
+                            smudge: 0,
+                            autoTypoRate: 0,
+                            showNotebookHeaderBox: true,
+                            phoneShadow: false,
+                            paperCrease: 'none',
+                            strikeStyle: 'wavy',
+                            correctionColor: 'match',
+                        };
+                    case 'midnight':
+                        return {
+                            ...state,
+                            handwritingStyle: 'Nothing You Could Do',
+                            penType: 'ballpoint-blue',
+                            inkColor: '#1e3a8a',
+                            paperMaterial: 'college',
+                            smartMarginIndexing: true,
+                            jitter: 2.2,
+                            charJitter: 0.6,
+                            fatigue: 3.0,
+                            pressure: 0.9,
+                            smudge: 0.35,
+                            lightingMode: 'warm-lamp',
+                            lightingWarmth: 0.5,
+                            phoneShadow: true,
+                            phoneShadowAngle: 125,
+                            phoneShadowIntensity: 0.45,
+                            paperCrease: 'center-h',
+                            showNotebookHeaderBox: true,
+                        };
+                    case 'graded':
+                        return {
+                            ...state,
+                            handwritingStyle: 'Handwriting 1',
+                            penType: 'ballpoint-blue',
+                            inkColor: '#1e40af',
+                            strikeStyle: 'underline',
+                            correctionColor: 'red',
+                            teacherGrading: true,
+                            autoTypoRate: 3,
+                            autoCaret: true,
+                            showNotebookHeaderBox: true,
+                        };
+                    case 'vintage':
+                        return {
+                            ...state,
+                            handwritingStyle: 'Homemade Apple',
+                            penType: 'fountain-blue',
+                            inkColor: '#172554',
+                            paperMaterial: 'vintage',
+                            lightingMode: 'warm-lamp',
+                            lightingWarmth: 0.35,
+                            paperCrease: 'vintage-worn',
+                            inkBlur: 0.3,
+                            pressure: 1.3,
+                            showNotebookHeaderBox: false,
+                        };
+                    default:
+                        return state;
+                }
+            }),
 
             resetStyles: () => set((state) => ({
                 ...initialState,

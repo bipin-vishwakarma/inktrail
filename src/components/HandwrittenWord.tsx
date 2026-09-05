@@ -1,6 +1,15 @@
 import React, { useMemo, useRef, useState, useLayoutEffect } from 'react';
 import type { CorrectionColor } from '../types';
-import { generateScribblePath, fastStringHash, mulberry32, getFontFamilyCss, measureWordWidth, type WordToken } from '../utils/humanErrorEngine';
+import { 
+    generateScribblePath, 
+    generateDoubleUnderlinePath, 
+    generateWobblyBoxPath, 
+    fastStringHash, 
+    mulberry32, 
+    getFontFamilyCss, 
+    measureWordWidth, 
+    type WordToken 
+} from '../utils/humanErrorEngine';
 
 interface HandwrittenWordProps {
     token: WordToken;
@@ -172,6 +181,18 @@ const HandwrittenWordComponent: React.FC<HandwrittenWordProps> = ({
         return generateScribblePath(effectiveWidth, effectiveHeight, token.strikeStyle, seedString + '_sc');
     }, [token.isStruck, token.strikeStyle, effectiveWidth, effectiveHeight, seedString]);
 
+    // Generate SVG path for double underline if present
+    const doubleUnderlinePath = useMemo(() => {
+        if (!token.isDoubleUnderline) return '';
+        return generateDoubleUnderlinePath(effectiveWidth, effectiveHeight, seedString + '_du');
+    }, [token.isDoubleUnderline, effectiveWidth, effectiveHeight, seedString]);
+
+    // Generate SVG path for wobbly box if present
+    const wobblyBoxPath = useMemo(() => {
+        if (!token.isBoxed) return '';
+        return generateWobblyBoxPath(effectiveWidth, effectiveHeight, seedString + '_box');
+    }, [token.isBoxed, effectiveWidth, effectiveHeight, seedString]);
+
     return (
         <span
             onClick={onClick}
@@ -186,6 +207,30 @@ const HandwrittenWordComponent: React.FC<HandwrittenWordProps> = ({
                 verticalAlign: 'baseline',
             }}
         >
+            {/* Chisel-Tip Translucent Highlighter Streak */}
+            {token.isHighlighted && (
+                <span
+                    className="absolute pointer-events-none"
+                    style={{
+                        left: '-3px',
+                        right: '-3px',
+                        top: '10%',
+                        bottom: '4%',
+                        backgroundColor:
+                            token.highlightColor === 'green'
+                                ? 'rgba(134, 239, 172, 0.68)'
+                                : token.highlightColor === 'pink'
+                                ? 'rgba(249, 168, 212, 0.68)'
+                                : token.highlightColor === 'blue'
+                                ? 'rgba(147, 197, 253, 0.68)'
+                                : 'rgba(253, 224, 71, 0.72)',
+                        borderRadius: '2px 4px 3px 2px',
+                        mixBlendMode: 'multiply',
+                        transform: `skewX(-2.5deg) rotate(${((rng() - 0.5) * 0.8).toFixed(2)}deg)`,
+                        zIndex: 0,
+                    }}
+                />
+            )}
             {/* Unified Word Cursive Rendering with OpenType Connecting Ligatures & Human Realism */}
             {charJitter <= 0.8 ? (
                 <span 
@@ -285,6 +330,50 @@ const HandwrittenWordComponent: React.FC<HandwrittenWordProps> = ({
                     </svg>
                 </span>
             )}
+
+            {/* Hand-Drawn Heading Double Underline */}
+            {token.isDoubleUnderline && (
+                <svg
+                    className="absolute top-0 left-0 pointer-events-none overflow-visible"
+                    style={{
+                        width: `${effectiveWidth}px`,
+                        height: `${effectiveHeight}px`,
+                        zIndex: 2,
+                    }}
+                >
+                    <path
+                        d={doubleUnderlinePath}
+                        fill="none"
+                        stroke={color}
+                        strokeWidth={Math.max(1.5, fontSize * 0.06)}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        opacity={0.88}
+                    />
+                </svg>
+            )}
+
+            {/* Hand-Drawn Wobbly Formula Box */}
+            {token.isBoxed && (
+                <svg
+                    className="absolute top-0 left-0 pointer-events-none overflow-visible"
+                    style={{
+                        width: `${effectiveWidth}px`,
+                        height: `${effectiveHeight}px`,
+                        zIndex: 2,
+                    }}
+                >
+                    <path
+                        d={wobblyBoxPath}
+                        fill="none"
+                        stroke={color}
+                        strokeWidth={Math.max(1.6, fontSize * 0.065)}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        opacity={0.85}
+                    />
+                </svg>
+            )}
         </span>
     );
 };
@@ -295,6 +384,10 @@ export const HandwrittenWord = React.memo(HandwrittenWordComponent, (prev, next)
         prev.token.isStruck === next.token.isStruck &&
         prev.token.strikeStyle === next.token.strikeStyle &&
         prev.token.caretCorrection === next.token.caretCorrection &&
+        prev.token.isHighlighted === next.token.isHighlighted &&
+        prev.token.highlightColor === next.token.highlightColor &&
+        prev.token.isDoubleUnderline === next.token.isDoubleUnderline &&
+        prev.token.isBoxed === next.token.isBoxed &&
         prev.correctionColor === next.correctionColor &&
         prev.pageIndex === next.pageIndex &&
         prev.lineIndex === next.lineIndex &&

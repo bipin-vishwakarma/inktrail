@@ -5,7 +5,8 @@ import {
     AlignLeft, AlignCenter, AlignRight, AlignJustify, 
     Download, Clock, 
     ZoomIn, ZoomOut, Palette,
-    RotateCcw, Camera, Scissors, X, Dices
+    RotateCcw, Camera, Scissors, X, Dices,
+    Sparkles
 } from 'lucide-react';
 
 import { useStore } from '../lib/store';
@@ -116,10 +117,68 @@ function buildDocumentLines(
         const effectiveLineWidth = maxLineWidth - (indentLevel * fontSize * 0.5);
         const rawWords = bodyText.split(/\s+/).filter(Boolean);
 
-        // Pre-parse tokens through Human Error Engine
-        const tokens: WordToken[] = rawWords.flatMap((word, wIdx) => 
-            parseWordToken(word, wIdx, 0, pIndex, seed, typoRate, strikeStyle, autoCaret, teacherGrading)
-        );
+        // Pre-parse tokens through Human Error Engine with multi-word highlighter, double-underline and box support
+        let activeHighlight: 'yellow' | 'green' | 'pink' | 'blue' | null = null;
+        let activeDoubleUnderline = false;
+        let activeBox = false;
+
+        const tokens: WordToken[] = rawWords.flatMap((w, wIdx) => {
+            let word = w;
+            let isHighlighted = false;
+            let highlightColor: 'yellow' | 'green' | 'pink' | 'blue' = 'yellow';
+            let isDoubleUnderline = false;
+            let isBoxed = false;
+
+            // 1. Highlighter check (==yellow:word== or ==word== or multi-word span)
+            const hlStart = word.match(/^==(yellow|green|pink|blue):/i) || (word.startsWith('==') ? ['=='] : null);
+            if (hlStart) {
+                activeHighlight = (hlStart as any)[1] ? ((hlStart as any)[1].toLowerCase() as any) : 'yellow';
+                word = word.slice(hlStart[0].length);
+            }
+            if (activeHighlight) {
+                isHighlighted = true;
+                highlightColor = activeHighlight;
+            }
+            if (word.endsWith('==') && (isHighlighted || activeHighlight)) {
+                word = word.slice(0, -2);
+                activeHighlight = null;
+            }
+
+            // 2. Double underline check (__word__ or multi-word span)
+            if (word.startsWith('__')) {
+                activeDoubleUnderline = true;
+                word = word.slice(2);
+            }
+            if (activeDoubleUnderline) {
+                isDoubleUnderline = true;
+            }
+            if (word.endsWith('__') && (isDoubleUnderline || activeDoubleUnderline)) {
+                word = word.slice(0, -2);
+                activeDoubleUnderline = false;
+            }
+
+            // 3. Formula/Answer Box check ([[word]] or multi-word span)
+            if (word.startsWith('[[')) {
+                activeBox = true;
+                word = word.slice(2);
+            }
+            if (activeBox) {
+                isBoxed = true;
+            }
+            if (word.endsWith(']]') && (isBoxed || activeBox)) {
+                word = word.slice(0, -2);
+                activeBox = false;
+            }
+
+            const parsed = parseWordToken(word, wIdx, 0, pIndex, seed, typoRate, strikeStyle, autoCaret, teacherGrading);
+            return parsed.map(tok => ({
+                ...tok,
+                isHighlighted: isHighlighted || tok.isHighlighted,
+                highlightColor: highlightColor || tok.highlightColor,
+                isDoubleUnderline: isDoubleUnderline || tok.isDoubleUnderline,
+                isBoxed: isBoxed || tok.isBoxed,
+            }));
+        });
 
         // If bodyText was empty (e.g. line was just "Ans:"), create line with marker
         if (tokens.length === 0 && marginMarker) {
@@ -332,6 +391,9 @@ export default function EditorPage() {
         paperMaterial, setPaperMaterial,
         marginTop, marginBottom, marginLeft, marginRight, setMargins,
         showPageNumbers, showHeader, headerText, setPageOptions,
+        showNotebookHeaderBox, setShowNotebookHeaderBox,
+        notebookDate, setNotebookDate,
+        applyVibePreset,
         jitter, setJitter,
         charJitter,
         fatigue,
@@ -721,6 +783,23 @@ export default function EditorPage() {
         }
     };
 
+    const insertMarkup = (prefix: string, suffix: string = prefix, defaultPlaceholder: string = 'text') => {
+        const textarea = sourceRef.current;
+        if (!textarea) return;
+        const start = textarea.selectionStart ?? 0;
+        const end = textarea.selectionEnd ?? 0;
+        const selected = draftText.slice(start, end);
+        const insertText = selected ? `${prefix}${selected}${suffix}` : `${prefix}${defaultPlaceholder}${suffix}`;
+        const updated = draftText.slice(0, start) + insertText + draftText.slice(end);
+        setDraftText(updated);
+        setText(updated);
+        setTimeout(() => {
+            textarea.focus();
+            const newCursor = start + prefix.length + (selected ? selected.length : defaultPlaceholder.length);
+            textarea.setSelectionRange(newCursor, newCursor);
+        }, 10);
+    };
+
     return (
         <div className="w-screen h-screen overflow-hidden flex flex-col bg-white text-neutral-900 font-sans select-none">
             
@@ -878,6 +957,36 @@ export default function EditorPage() {
                 {/* 1. LEFT SIDEBAR CONTROLS */}
                 <div className={`w-full lg:w-[400px] bg-white border-r border-neutral-200/80 flex flex-col shrink-0 overflow-hidden z-20 ${mobileTab === 'canvas' ? 'hidden lg:flex' : 'flex'}`}>
                     
+                    {/* Quick 1-Click Vibe Presets Strip */}
+                    <div className="px-3 py-2 bg-neutral-50/95 border-b border-neutral-200/70 flex items-center justify-between gap-1.5 shrink-0">
+                        <div className="flex items-center gap-1.5 text-[10px] font-black text-neutral-400 uppercase tracking-widest">
+                            <Sparkles size={11} className="text-amber-500" />
+                            <span>Vibes</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                            {[
+                                { id: 'topper' as const, label: 'Topper', icon: '🏆', desc: 'Neat & Clean' },
+                                { id: 'midnight' as const, label: 'Midnight', icon: '🌙', desc: 'Rushed & Tired' },
+                                { id: 'graded' as const, label: 'Graded', icon: '🔴', desc: 'Teacher Corrections' },
+                                { id: 'vintage' as const, label: 'Vintage', icon: '📜', desc: 'Aged Quill' },
+                            ].map((preset) => (
+                                <button
+                                    key={preset.id}
+                                    type="button"
+                                    onClick={() => {
+                                        applyVibePreset(preset.id);
+                                        addToast(`✨ Applied "${preset.label}" vibe preset!`, 'success');
+                                    }}
+                                    title={`${preset.label}: ${preset.desc}`}
+                                    className="px-2 py-1 bg-white hover:bg-neutral-100 active:scale-95 text-neutral-700 hover:text-neutral-900 rounded-lg text-[11px] font-bold border border-neutral-200/80 shadow-2xs transition-all flex items-center gap-1 cursor-pointer"
+                                >
+                                    <span>{preset.icon}</span>
+                                    <span>{preset.label}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
                     {/* Navigation Tabs (Apple/Linear Segmented Style) */}
                     <div className="grid grid-cols-5 bg-neutral-100/90 p-1.5 shrink-0 border-b border-neutral-200/80 gap-1">
                         {[
@@ -955,6 +1064,79 @@ export default function EditorPage() {
                                             )}
                                         </div>
                                     </div>
+
+                                    {/* Quick Markup Toolbar */}
+                                    <div className="flex items-center gap-1 flex-wrap p-1.5 bg-neutral-100/80 rounded-xl border border-neutral-200/70 text-xs shrink-0">
+                                        <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider px-1">
+                                            Mark:
+                                        </span>
+                                        <button
+                                            type="button"
+                                            onClick={() => insertMarkup('==', '==', 'highlight')}
+                                            title="Chisel Highlighter Yellow (==text==)"
+                                            className="px-2 py-0.5 bg-yellow-200 hover:bg-yellow-300 text-yellow-900 rounded-md text-[11px] font-bold transition-all active:scale-95 shadow-2xs cursor-pointer"
+                                        >
+                                            🖍️ Yellow
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => insertMarkup('==green:', '==', 'highlight')}
+                                            title="Chisel Highlighter Green (==green:text==)"
+                                            className="px-2 py-0.5 bg-emerald-200 hover:bg-emerald-300 text-emerald-900 rounded-md text-[11px] font-bold transition-all active:scale-95 shadow-2xs cursor-pointer"
+                                        >
+                                            🟢 Green
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => insertMarkup('==pink:', '==', 'highlight')}
+                                            title="Chisel Highlighter Pink (==pink:text==)"
+                                            className="px-2 py-0.5 bg-pink-200 hover:bg-pink-300 text-pink-900 rounded-md text-[11px] font-bold transition-all active:scale-95 shadow-2xs cursor-pointer"
+                                        >
+                                            🌸 Pink
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => insertMarkup('==blue:', '==', 'highlight')}
+                                            title="Chisel Highlighter Blue (==blue:text==)"
+                                            className="px-2 py-0.5 bg-blue-200 hover:bg-blue-300 text-blue-900 rounded-md text-[11px] font-bold transition-all active:scale-95 shadow-2xs cursor-pointer"
+                                        >
+                                            🔷 Blue
+                                        </button>
+                                        <div className="h-3 w-px bg-neutral-300 mx-0.5" />
+                                        <button
+                                            type="button"
+                                            onClick={() => insertMarkup('__', '__', 'Title')}
+                                            title="Heading Double Underline (__text__)"
+                                            className="px-2 py-0.5 bg-white hover:bg-neutral-100 text-neutral-800 rounded-md text-[11px] font-bold transition-all active:scale-95 border border-neutral-200 shadow-2xs cursor-pointer"
+                                        >
+                                            <u>__Double__</u>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => insertMarkup('[[', ']]', 'x = 42')}
+                                            title="Hand-Drawn Formula Box ([[text]])"
+                                            className="px-2 py-0.5 bg-white hover:bg-neutral-100 text-neutral-800 rounded-md text-[11px] font-bold transition-all active:scale-95 border border-neutral-200 shadow-2xs cursor-pointer font-mono"
+                                        >
+                                            [[Box]]
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => insertMarkup('~~', '~~', 'mistake')}
+                                            title="Human Scribble Strike (~~text~~)"
+                                            className="px-2 py-0.5 bg-white hover:bg-neutral-100 text-rose-600 rounded-md text-[11px] font-bold transition-all active:scale-95 border border-neutral-200 shadow-2xs cursor-pointer line-through"
+                                        >
+                                            ~~Strike~~
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => insertMarkup('^', '^', 'inserted')}
+                                            title="Caret insert missing word (^word^)"
+                                            className="px-2 py-0.5 bg-white hover:bg-neutral-100 text-neutral-800 rounded-md text-[11px] font-bold transition-all active:scale-95 border border-neutral-200 shadow-2xs cursor-pointer font-mono"
+                                        >
+                                            ^Caret^
+                                        </button>
+                                    </div>
+
                                     <textarea
                                         ref={sourceRef}
                                         value={draftText}
@@ -1121,6 +1303,37 @@ export default function EditorPage() {
                                     />
                                     <span className="text-xs font-bold text-neutral-800">Show Bottom Page Numbers (— 1 —)</span>
                                 </label>
+
+                                {/* Classic Student Notebook Date & Page Box */}
+                                <div className="p-3.5 rounded-2xl bg-neutral-50 border border-neutral-200/70 space-y-2.5">
+                                    <label className="flex items-center justify-between cursor-pointer">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-xs font-bold text-neutral-900">Classic Notebook Date & Page Box</span>
+                                            <span className="text-[9px] font-bold px-1.5 py-0.5 bg-rose-100 text-rose-800 rounded-md">Iconic</span>
+                                        </div>
+                                        <input 
+                                            type="checkbox" 
+                                            checked={showNotebookHeaderBox} 
+                                            onChange={e => setShowNotebookHeaderBox(e.target.checked)} 
+                                            className="w-4 h-4 rounded border-neutral-300 accent-neutral-900 cursor-pointer"
+                                        />
+                                    </label>
+                                    <p className="text-[10px] text-neutral-500 leading-relaxed">
+                                        Renders the pre-printed red Classmate/Navneet header box in the top-right corner with DATE and dynamic PAGE NO.
+                                    </p>
+                                    {showNotebookHeaderBox && (
+                                        <div className="pt-1 flex items-center gap-2">
+                                            <label className="text-[11px] font-bold text-neutral-600 shrink-0">Custom Date:</label>
+                                            <input 
+                                                type="text" 
+                                                value={notebookDate}
+                                                onChange={e => setNotebookDate(e.target.value)}
+                                                placeholder={new Date().toLocaleDateString('en-GB')}
+                                                className="flex-1 px-2.5 py-1 text-xs font-mono font-semibold bg-white border border-neutral-200 rounded-lg outline-none focus:border-neutral-900"
+                                            />
+                                        </div>
+                                    )}
+                                </div>
 
                                 {/* Smart Margin Indexing Option */}
                                 <div className="p-3.5 rounded-2xl bg-neutral-50 border border-neutral-200/70 space-y-1.5">
@@ -1389,6 +1602,51 @@ export default function EditorPage() {
                                                     >
                                                         <div className="w-12 h-3 bg-amber-300/60 -top-1.5 left-1/2 -translate-x-1/2 absolute rounded-xs" />
                                                         {stickyNoteText}
+                                                    </div>
+                                                )}
+
+                                                {/* Classic Student Notebook Date & Page No. Box */}
+                                                {showNotebookHeaderBox && (
+                                                    <div 
+                                                        className="absolute top-4 right-6 z-20 pointer-events-none select-none"
+                                                        style={{
+                                                            border: '1.5px solid #f87171',
+                                                            borderRadius: '5px',
+                                                            padding: '4px 10px',
+                                                            backgroundColor: 'rgba(255, 255, 255, 0.75)',
+                                                            boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
+                                                        }}
+                                                    >
+                                                        <div className="flex items-center justify-between gap-4 border-b border-rose-300/80 pb-0.5 mb-0.5">
+                                                            <span className="text-[9px] font-mono tracking-wider text-rose-500 font-extrabold">
+                                                                PAGE NO.
+                                                            </span>
+                                                            <span 
+                                                                style={{
+                                                                    fontFamily: getFontFamilyCss(font),
+                                                                    fontSize: Math.max(14, fontSize * 0.85),
+                                                                    color: color,
+                                                                    lineHeight: 1,
+                                                                }}
+                                                            >
+                                                                {String(pIdx + 1).padStart(2, '0')}
+                                                            </span>
+                                                        </div>
+                                                        <div className="flex items-center justify-between gap-4">
+                                                            <span className="text-[9px] font-mono tracking-wider text-rose-500 font-extrabold">
+                                                                DATE:
+                                                            </span>
+                                                            <span 
+                                                                style={{
+                                                                    fontFamily: getFontFamilyCss(font),
+                                                                    fontSize: Math.max(13, fontSize * 0.8),
+                                                                    color: color,
+                                                                    lineHeight: 1,
+                                                                }}
+                                                            >
+                                                                {notebookDate || new Date().toLocaleDateString('en-GB')}
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                 )}
 
@@ -1703,6 +1961,8 @@ export default function EditorPage() {
                 lowInkFade={lowInkFade}
                 lowInkStart={lowInkStart}
                 lowInkIntensity={lowInkIntensity}
+                showNotebookHeaderBox={showNotebookHeaderBox}
+                notebookDate={notebookDate}
                 randomSeed={randomSeed}
                 wordCount={wordCount}
             />

@@ -84,6 +84,8 @@ interface ExportModalProps {
     lowInkFade?: boolean;
     lowInkStart?: number;
     lowInkIntensity?: number;
+    showNotebookHeaderBox?: boolean;
+    notebookDate?: string;
     randomSeed?: number;
     wordCount?: number;
 }
@@ -138,6 +140,8 @@ export default function ExportModal({
     showCoffeeStain = false,
     showStickyNote = false,
     stickyNoteText = '',
+    showNotebookHeaderBox = false,
+    notebookDate = '',
     randomSeed = 0,
     wordCount = 0,
 }: ExportModalProps) {
@@ -337,6 +341,51 @@ export default function ExportModal({
                                                     >
                                                         <div className="w-12 h-3 bg-amber-300/60 -top-1.5 left-1/2 -translate-x-1/2 absolute rounded-xs" />
                                                         {stickyNoteText}
+                                                    </div>
+                                                )}
+
+                                                {/* Classic Student Notebook Date & Page No. Box */}
+                                                {showNotebookHeaderBox && (
+                                                    <div 
+                                                        className="absolute top-4 right-6 z-20 pointer-events-none select-none"
+                                                        style={{
+                                                            border: '1.5px solid #f87171',
+                                                            borderRadius: '5px',
+                                                            padding: '4px 10px',
+                                                            backgroundColor: 'rgba(255, 255, 255, 0.75)',
+                                                            boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
+                                                        }}
+                                                    >
+                                                        <div className="flex items-center justify-between gap-4 border-b border-rose-300/80 pb-0.5 mb-0.5">
+                                                            <span className="text-[9px] font-mono tracking-wider text-rose-500 font-extrabold">
+                                                                PAGE NO.
+                                                            </span>
+                                                            <span 
+                                                                style={{
+                                                                    fontFamily: getFontFamilyCss(font),
+                                                                    fontSize: Math.max(14, fontSize * 0.85),
+                                                                    color: color,
+                                                                    lineHeight: 1,
+                                                                }}
+                                                            >
+                                                                {String(pIdx + 1).padStart(2, '0')}
+                                                            </span>
+                                                        </div>
+                                                        <div className="flex items-center justify-between gap-4">
+                                                            <span className="text-[9px] font-mono tracking-wider text-rose-500 font-extrabold">
+                                                                DATE:
+                                                            </span>
+                                                            <span 
+                                                                style={{
+                                                                    fontFamily: getFontFamilyCss(font),
+                                                                    fontSize: Math.max(13, fontSize * 0.8),
+                                                                    color: color,
+                                                                    lineHeight: 1,
+                                                                }}
+                                                            >
+                                                                {notebookDate || new Date().toLocaleDateString('en-GB')}
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                 )}
 

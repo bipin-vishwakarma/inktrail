@@ -120,6 +120,8 @@ export interface AppState {
     showPageNumbers: boolean;
     showHeader: boolean;
     headerText: string;
+    showNotebookHeaderBox: boolean;
+    notebookDate: string;
 
     // Human Errors, Strikes & Ink Drying
     autoTypoRate: number;
@@ -219,6 +221,9 @@ export interface AppState {
     setTextAlign: (align: 'left' | 'center' | 'right' | 'justify') => void;
     setMargins: (margins: { top?: number; bottom?: number; left?: number; right?: number }) => void;
     setPageOptions: (options: { showPageNumbers?: boolean; showHeader?: boolean; headerText?: string }) => void;
+    setShowNotebookHeaderBox: (enabled: boolean) => void;
+    setNotebookDate: (date: string) => void;
+    applyVibePreset: (preset: 'topper' | 'midnight' | 'graded' | 'vintage') => void;
     
     applyPreset: (settings: Partial<AppState>) => void;
     addToHistory: (item: HistoryItem) => void;
