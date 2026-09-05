@@ -152,6 +152,88 @@
   font-display: swap;
 }
 
+/* === 8 PREMIUM VAULT FONTS (Quantum Enterprises) === */
+@font-face {
+  font-family: 'Handwriting 15';
+  src: url('/fonts/handwriting-15.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'handwriting-15';
+  src: url('/fonts/handwriting-15.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 16';
+  src: url('/fonts/handwriting-16.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'handwriting-16';
+  src: url('/fonts/handwriting-16.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 17';
+  src: url('/fonts/handwriting-17.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'handwriting-17';
+  src: url('/fonts/handwriting-17.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 18';
+  src: url('/fonts/handwriting-18.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'handwriting-18';
+  src: url('/fonts/handwriting-18.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 19';
+  src: url('/fonts/handwriting-19.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'handwriting-19';
+  src: url('/fonts/handwriting-19.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 20';
+  src: url('/fonts/handwriting-20.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'handwriting-20';
+  src: url('/fonts/handwriting-20.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 21';
+  src: url('/fonts/handwriting-21.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'handwriting-21';
+  src: url('/fonts/handwriting-21.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 22';
+  src: url('/fonts/handwriting-22.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'handwriting-22';
+  src: url('/fonts/handwriting-22.ttf') format('truetype');
+  font-display: swap;
+}
+
 @theme {
   /* Refined Paper & Ink */
   --color-paper: #ffffff; /* Cleaner white for modern look */

@@ -417,6 +417,14 @@ export const getAvailableFonts = (state: AppState) => {
         { id: 'handwriting-12', name: 'Student Script 12 (Rounded Junior)', family: 'Handwriting 12', type: 'custom' },
         { id: 'handwriting-13', name: 'Student Script 13 (Micro Gel)', family: 'Handwriting 13', type: 'custom' },
         { id: 'handwriting-14', name: 'Student Script 14 (Expressive)', family: 'Handwriting 14', type: 'custom' },
+        { id: 'handwriting-15', name: 'Braden Hill (Natural Lean)', family: 'Handwriting 15', type: 'custom' },
+        { id: 'handwriting-16', name: 'David Reid (Rushed Notes)', family: 'Handwriting 16', type: 'custom' },
+        { id: 'handwriting-17', name: 'Donald Ross (Slanted Ink)', family: 'Handwriting 17', type: 'custom' },
+        { id: 'handwriting-18', name: 'Garrett Moretz (Loose Hand)', family: 'Handwriting 18', type: 'custom' },
+        { id: 'handwriting-19', name: 'Herbert Cooper (Neat Mix)', family: 'Handwriting 19', type: 'custom' },
+        { id: 'handwriting-20', name: 'John Williams (Clean Flow)', family: 'Handwriting 20', type: 'custom' },
+        { id: 'handwriting-21', name: 'Kevin Knowles (Bold Ballpoint)', family: 'Handwriting 21', type: 'custom' },
+        { id: 'handwriting-22', name: 'Royston Such (Fluid Italic)', family: 'Handwriting 22', type: 'custom' },
         { id: 'hindi-type', name: 'Hindi Devnagari Hand', family: 'Hindi Handwriting', type: 'custom' },
     ];
 
