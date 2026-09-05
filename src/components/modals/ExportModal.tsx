@@ -393,7 +393,7 @@ export default function ExportModal({
                                                                         textAlign: 'center',
                                                                         color: color,
                                                                         fontFamily: getFontFamilyCss(font),
-                                                                        fontSize: line.marginIndex.length > 6 ? fontSize * 0.55 : line.marginIndex.length > 4 ? fontSize * 0.72 : fontSize * 0.95,
+                                                                        fontSize: fontSize * 0.95,
                                                                         opacity: 0.88,
                                                                         whiteSpace: 'nowrap',
                                                                         overflow: 'hidden',

@@ -87,7 +87,7 @@ function buildDocumentLines(
 
         if (smartMarginIndexing) {
             const marginMatch = paragraph.match(
-                /^(\s*)(Q(?:uestion|ues|ue)?\.?\s*\d+[\.\:\)]?|Ans(?:wer)?[\.\:\-]?|Sol(?:ution)?[\.\:\-]?|A\d+[\.\:\)]?|\(\s*[a-zA-Z0-9ivxlcdm]+\s*\)|\d+[\.\)]|[ivxlcdm]+[\.\)]|[a-zA-Z][\.\)])\s*(.*)$/i
+                /^(\s*)(Q(?:uestion|ues|ue)[\.:\-]?\s*(?:\d+[\.:\)]?)?|Q\.?\s*\d+[\.:\)]?|Ans(?:wer)?[\.:\-]?|Sol(?:ution)?[\.:\-]?|A\d+[\.:\)]?|\(\s*[a-zA-Z0-9ivxlcdm]+\s*\)|\d+[\.)]\s?|[ivxlcdm]+[\.)]\s?|[a-zA-Z][\.)])\s*(.*)$/i
             );
             if (marginMatch) {
                 marginMarker = marginMatch[2].trim();
@@ -1467,7 +1467,7 @@ export default function EditorPage() {
                                                                             style={{
                                                                                 color: color,
                                                                                 fontFamily: getFontFamilyCss(font),
-                                                                                fontSize: line.marginIndex.length > 6 ? fontSize * 0.55 : line.marginIndex.length > 4 ? fontSize * 0.72 : fontSize * 0.95,
+                                                                                fontSize: fontSize * 0.95,
                                                                                 opacity: 0.92,
                                                                                 whiteSpace: 'nowrap',
                                                                                 overflow: 'hidden',
