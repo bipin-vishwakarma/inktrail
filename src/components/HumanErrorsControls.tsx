@@ -1,7 +1,7 @@
 import React from 'react';
 import { useStore } from '../lib/store';
 import type { StrikeStyle } from '../types';
-import { Scissors, HelpCircle } from 'lucide-react';
+import { Scissors, HelpCircle, Droplet } from 'lucide-react';
 
 export const HumanErrorsControls: React.FC = () => {
     const {
@@ -10,6 +10,9 @@ export const HumanErrorsControls: React.FC = () => {
         autoCaret, setAutoCaret,
         charJitter, setCharJitter,
         fatigue, setFatigue,
+        lowInkFade, setLowInkFade,
+        lowInkStart, setLowInkStart,
+        lowInkIntensity, setLowInkIntensity,
     } = useStore();
 
     const strikeOptions: { id: StrikeStyle; label: string; icon: string }[] = [
@@ -123,6 +126,69 @@ export const HumanErrorsControls: React.FC = () => {
                 <p className="text-[9px] text-neutral-400 mt-1">
                     Gradually increases line slant and wobble towards the bottom of the page.
                 </p>
+            </div>
+
+            {/* Ballpoint Pen Low-Ink & Drying Simulation */}
+            <div className="p-3.5 bg-neutral-50 border border-neutral-200/70 rounded-2xl space-y-3">
+                <label className="flex items-center justify-between cursor-pointer">
+                    <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center">
+                            <Droplet size={13} />
+                        </div>
+                        <div>
+                            <span className="text-[11px] font-bold text-neutral-800 block">Low-Ink Fading & Rail-Track Skips</span>
+                            <span className="text-[9px] text-neutral-500">Ballpoint runs low on ink with dry fiber stutters</span>
+                        </div>
+                    </div>
+                    <input
+                        type="checkbox"
+                        checked={lowInkFade}
+                        onChange={(e) => setLowInkFade(e.target.checked)}
+                        className="w-4 h-4 rounded border-neutral-300 accent-neutral-900 cursor-pointer"
+                    />
+                </label>
+
+                {lowInkFade && (
+                    <div className="space-y-3 pt-2.5 border-t border-black/5">
+                        <div>
+                            <div className="flex justify-between text-[10px] font-bold text-neutral-400 uppercase tracking-tighter mb-1">
+                                <span>Drying Begins At</span>
+                                <span className="text-neutral-900 font-black">{lowInkStart}% of document</span>
+                            </div>
+                            <input
+                                type="range"
+                                min="10"
+                                max="90"
+                                step="5"
+                                value={lowInkStart}
+                                onChange={(e) => setLowInkStart(Number(e.target.value))}
+                                className="w-full h-1 bg-black/5 rounded-full appearance-none accent-neutral-900 cursor-pointer"
+                            />
+                            <p className="text-[9px] text-neutral-400 mt-1">
+                                Pen begins starving for ink past this point in your document.
+                            </p>
+                        </div>
+
+                        <div>
+                            <div className="flex justify-between text-[10px] font-bold text-neutral-400 uppercase tracking-tighter mb-1">
+                                <span>Fading & Skip Intensity</span>
+                                <span className="text-neutral-900 font-black">{Math.round(lowInkIntensity * 100)}%</span>
+                            </div>
+                            <input
+                                type="range"
+                                min="0.2"
+                                max="1.0"
+                                step="0.05"
+                                value={lowInkIntensity}
+                                onChange={(e) => setLowInkIntensity(Number(e.target.value))}
+                                className="w-full h-1 bg-black/5 rounded-full appearance-none accent-neutral-900 cursor-pointer"
+                            />
+                            <p className="text-[9px] text-neutral-400 mt-1">
+                                Severity of stroke lightening and microscopic rail-track skips.
+                            </p>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Syntax Tip Box */}

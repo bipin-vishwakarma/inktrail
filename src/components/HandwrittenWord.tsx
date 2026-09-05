@@ -16,6 +16,10 @@ interface HandwrittenWordProps {
     fatigue: number;
     pressure: number;
     smudge: number;
+    lowInkFade?: boolean;
+    lowInkStart?: number;
+    lowInkIntensity?: number;
+    docProgress?: number;
     onClick?: () => void;
 }
 
@@ -34,6 +38,10 @@ const HandwrittenWordComponent: React.FC<HandwrittenWordProps> = ({
     fatigue,
     pressure,
     smudge,
+    lowInkFade,
+    lowInkStart,
+    lowInkIntensity,
+    docProgress,
     onClick,
 }) => {
     // Fast integer seed - 0 string concatenation in the loop
@@ -53,6 +61,19 @@ const HandwrittenWordComponent: React.FC<HandwrittenWordProps> = ({
     // Opacity / pen pressure
     const baseOpacity = 1 - rng() * (1 - pressure) * 0.35;
     const smudgeFilter = smudge > 0 ? `blur(${rng() * smudge * 0.35}px)` : 'none';
+
+    // Low-Ink & Ballpoint Pen Drying Physics
+    const startRatio = (lowInkStart ?? 45) / 100;
+    const progress = docProgress ?? 0;
+    const isDryingActive = Boolean(lowInkFade && progress >= startRatio);
+    const fadeRatio = isDryingActive
+        ? Math.min(1, Math.max(0, (progress - startRatio) / Math.max(0.1, 1 - startRatio)))
+        : 0;
+    const effectiveFade = isDryingActive ? fadeRatio * (lowInkIntensity ?? 0.65) : 0;
+
+    // Gradual stroke lightening: as ink runs low, opacity drops smoothly down to 0.5 - 0.6
+    const lowInkDrop = effectiveFade * 0.46;
+    const finalWordOpacity = Math.max(0.25, baseOpacity - lowInkDrop);
 
     // Character length approximation for SVG scribble dimensions using font metrics
     const fontRatio = getFontWidthRatio(fontFamily);
@@ -74,19 +95,31 @@ const HandwrittenWordComponent: React.FC<HandwrittenWordProps> = ({
             style={{
                 fontFamily: fontCss,
                 transform: `translateY(${wordY + fatigueSag}px) rotate(${wordRot + fatigueSlant}deg)`,
-                opacity: baseOpacity,
+                opacity: finalWordOpacity,
                 filter: smudgeFilter,
                 marginRight: '0.28em',
                 verticalAlign: 'baseline',
             }}
         >
-            {/* Render Characters with Micro-Jitter (only when enabled to save DOM nodes) */}
-            {charJitter > 0.2 ? (
+            {/* Render Characters with Micro-Jitter and Microscopic Rail-Track Skips */}
+            {charJitter > 0.2 || effectiveFade > 0.05 ? (
                 token.text.split('').map((char, cIdx) => {
                     const cRng = mulberry32(intSeed + (cIdx + 1) * 31);
-                    const cy = (cRng() - 0.5) * charJitter * 1.8;
-                    const cr = (cRng() - 0.5) * charJitter * 1.2;
-                    const cop = 1 - cRng() * 0.12;
+                    const cy = charJitter > 0.2 ? (cRng() - 0.5) * charJitter * 1.8 : 0;
+                    const cr = charJitter > 0.2 ? (cRng() - 0.5) * charJitter * 1.2 : 0;
+                    let cop = charJitter > 0.2 ? 1 - cRng() * 0.12 : 1;
+
+                    // Microscopic rail-track skip simulation over paper fibers
+                    let isRailTrackSkip = false;
+                    if (effectiveFade > 0.05) {
+                        const skipRng = mulberry32(intSeed + (cIdx + 1) * 79);
+                        const skipThreshold = effectiveFade * 0.35;
+                        if (skipRng() < skipThreshold) {
+                            // Ballpoint stutter / dry skip: center loses ink, faint line edges
+                            cop = Math.max(0.18, 0.22 + skipRng() * 0.25);
+                            isRailTrackSkip = true;
+                        }
+                    }
 
                     return (
                         <span
@@ -94,8 +127,9 @@ const HandwrittenWordComponent: React.FC<HandwrittenWordProps> = ({
                             className="inline-block"
                             style={{
                                 fontFamily: fontCss,
-                                transform: `translateY(${cy}px) rotate(${cr}deg)`,
+                                transform: cy || cr ? `translateY(${cy}px) rotate(${cr}deg)` : undefined,
                                 opacity: cop,
+                                WebkitTextStroke: isRailTrackSkip ? '0.22px currentColor' : undefined,
                             }}
                         >
                             {char}
@@ -179,6 +213,10 @@ export const HandwrittenWord = React.memo(HandwrittenWordComponent, (prev, next)
         prev.charJitter === next.charJitter &&
         prev.fatigue === next.fatigue &&
         prev.pressure === next.pressure &&
-        prev.smudge === next.smudge
+        prev.smudge === next.smudge &&
+        prev.lowInkFade === next.lowInkFade &&
+        prev.lowInkStart === next.lowInkStart &&
+        prev.lowInkIntensity === next.lowInkIntensity &&
+        prev.docProgress === next.docProgress
     );
 });

@@ -78,7 +78,9 @@ interface ExportModalProps {
     showCoffeeStain?: boolean;
     showStickyNote?: boolean;
     stickyNoteText?: string;
-    marginNote?: string;
+    lowInkFade?: boolean;
+    lowInkStart?: number;
+    lowInkIntensity?: number;
     randomSeed?: number;
     wordCount?: number;
 }
@@ -111,6 +113,9 @@ export default function ExportModal({
     fatigue = 0.3,
     pressure = 1.0,
     smudge = 0,
+    lowInkFade = false,
+    lowInkStart = 45,
+    lowInkIntensity = 0.65,
     phoneShadow = false,
     phoneShadowAngle = 120,
     phoneShadowIntensity = 0.3,
@@ -128,7 +133,6 @@ export default function ExportModal({
     showCoffeeStain = false,
     showStickyNote = false,
     stickyNoteText = '',
-    marginNote = '',
     randomSeed = 0,
     wordCount = 0,
 }: ExportModalProps) {
@@ -310,16 +314,6 @@ export default function ExportModal({
                                                     coffeeStain={effectiveCoffeeStain}
                                                 />
 
-                                                {/* Margin Annotation */}
-                                                {marginNote && pIdx === 0 && (
-                                                    <div 
-                                                        className="absolute left-4 top-1/3 -rotate-90 origin-left z-20 pointer-events-none"
-                                                        style={{ fontFamily: getFontFamilyCss(font), color: color, opacity: 0.55, fontSize: fontSize * 0.6 }}
-                                                    >
-                                                        {marginNote}
-                                                    </div>
-                                                )}
-
                                                 {/* Sticky Note */}
                                                 {showStickyNote && pIdx === 0 && (
                                                     <div 
@@ -392,25 +386,33 @@ export default function ExportModal({
                                                                     {line.marginIndex}
                                                                 </span>
                                                             )}
-                                                            {line.tokens.map((tok, tIdx) => (
-                                                                <HandwrittenWord 
-                                                                    key={tIdx}
-                                                                    token={tok}
-                                                                    pageIndex={pIdx}
-                                                                    lineIndex={lIdx}
-                                                                    wordIndex={tIdx}
-                                                                    totalLines={page.lines.length}
-                                                                    randomSeed={String(randomSeed)}
-                                                                    fontFamily={font}
-                                                                    fontSize={fontSize}
-                                                                    color={color}
-                                                                    jitter={jitter}
-                                                                    charJitter={charJitter}
-                                                                    fatigue={fatigue}
-                                                                    pressure={pressure}
-                                                                    smudge={smudge}
-                                                                />
-                                                            ))}
+                                                            {line.tokens.map((tok, tIdx) => {
+                                                                const totalPages = pages.length;
+                                                                const docProgress = totalPages > 0 ? (pIdx + (page.lines.length > 0 ? lIdx / page.lines.length : 0)) / totalPages : 0;
+                                                                return (
+                                                                    <HandwrittenWord 
+                                                                        key={tIdx}
+                                                                        token={tok}
+                                                                        pageIndex={pIdx}
+                                                                        lineIndex={lIdx}
+                                                                        wordIndex={tIdx}
+                                                                        totalLines={page.lines.length}
+                                                                        randomSeed={String(randomSeed)}
+                                                                        fontFamily={font}
+                                                                        fontSize={fontSize}
+                                                                        color={color}
+                                                                        jitter={jitter}
+                                                                        charJitter={charJitter}
+                                                                        fatigue={fatigue}
+                                                                        pressure={pressure}
+                                                                        smudge={smudge}
+                                                                        lowInkFade={lowInkFade}
+                                                                        lowInkStart={lowInkStart}
+                                                                        lowInkIntensity={lowInkIntensity}
+                                                                        docProgress={docProgress}
+                                                                    />
+                                                                );
+                                                            })}
                                                         </div>
                                                     ))}
                                                 </div>

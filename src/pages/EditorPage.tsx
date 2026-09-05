@@ -14,6 +14,7 @@ import HistoryModal from '../components/modals/HistoryModal';
 import ExportModal from '../components/modals/ExportModal';
 import { CreatorModal } from '../components/modals/CreatorModal';
 import { HandwrittenWord } from '../components/HandwrittenWord';
+import { ThumbnailBar } from '../components/ThumbnailBar';
 import { CameraOverlay } from '../components/CameraOverlay';
 import { HumanErrorsControls } from '../components/HumanErrorsControls';
 import { CameraPhysicsControls } from '../components/CameraPhysicsControls';
@@ -320,6 +321,9 @@ export default function EditorPage() {
         autoTypoRate,
         strikeStyle,
         autoCaret,
+        lowInkFade,
+        lowInkStart,
+        lowInkIntensity,
         phoneShadow,
         phoneShadowAngle,
         phoneShadowIntensity,
@@ -442,8 +446,16 @@ export default function EditorPage() {
         return PAPERS.find(p => p.id === paperMaterial) || PAPERS[0];
     }, [paperMaterial]);
 
+    // Page Navigation & Thumbnail Jumping
+    const handleJumpToPage = useCallback((targetIdx: number) => {
+        setActivePageIndex(targetIdx);
+        const el = document.querySelector(`[data-page-index="${targetIdx}"]`);
+        if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }, [setActivePageIndex]);
+
     // Page Effects States
-    const [marginNote, setMarginNote] = useState("");
     const [showStickyNote, setShowStickyNote] = useState(false);
     const [stickyNoteText, setStickyNoteText] = useState("Don't forget!");
 
@@ -592,6 +604,32 @@ export default function EditorPage() {
         );
         return paginateLines(rawLines, linesPerPage, page1Lines);
     }, [deferredText, fontSize, font, fontLoadedVersion, paper.lineHeight, marginTop, marginBottom, marginLeft, marginRight, showHeader, headerText, randomSeed, autoTypoRate, strikeStyle, autoCaret, smartMarginIndexing]);
+
+    // Synchronize active page index with scroll position
+    useEffect(() => {
+        const container = canvasContainerRef.current;
+        if (!container) return;
+
+        const targets = container.querySelectorAll('.handwritten-export-target');
+        if (!targets.length) return;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                for (const entry of entries) {
+                    if (entry.isIntersecting) {
+                        const pageAttr = entry.target.getAttribute('data-page-index');
+                        if (pageAttr !== null) {
+                            setActivePageIndex(Number(pageAttr));
+                        }
+                    }
+                }
+            },
+            { root: container, threshold: 0.35 }
+        );
+
+        targets.forEach((t) => observer.observe(t));
+        return () => observer.disconnect();
+    }, [pages.length, setActivePageIndex]);
 
     // Word statistics
     const wordCount = useMemo(() => {
@@ -1212,21 +1250,7 @@ export default function EditorPage() {
                                             placeholder="Write reminder note..."
                                             className="w-full h-18 p-3 rounded-xl bg-amber-100 text-amber-950 border border-amber-300/60 text-xs font-sans font-semibold focus:outline-none resize-none shadow-xs"
                                         />
-                                    )}
-                                </div>
-
-                                {/* Margin Annotation Extra */}
-                                <div className="p-4 rounded-2xl bg-neutral-50 border border-neutral-200/70 space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400 block">
-                                        Side Margin Note
-                                    </label>
-                                    <input 
-                                        type="text" 
-                                        value={marginNote} 
-                                        onChange={e => setMarginNote(e.target.value)}
-                                        placeholder="e.g. Due Friday, Jan 15" 
-                                        className="w-full p-2.5 rounded-xl bg-white border border-neutral-200 text-xs font-semibold text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-900/10"
-                                    />
+                                     )}
                                 </div>
                             </div>
                         )}
@@ -1237,7 +1261,7 @@ export default function EditorPage() {
                 {/* 2. RIGHT DIGITAL CANVAS WORKSTATION (Edge-to-Edge Drafting Desk) */}
                 <main 
                     ref={canvasContainerRef}
-                    className={`flex-1 h-full overflow-auto custom-scrollbar flex flex-col items-center bg-[#F1F3F6] relative p-4 sm:p-8 select-text ${mobileTab !== 'canvas' ? 'hidden lg:flex' : 'flex'}`}
+                    className={`flex-1 h-full overflow-auto custom-scrollbar flex flex-col items-center bg-[#F1F3F6] relative p-4 sm:p-8 pb-28 select-text ${mobileTab !== 'canvas' ? 'hidden lg:flex' : 'flex'}`}
                 >
                     {/* Drafting Desk Dot Pattern */}
                     <div className="absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none opacity-60" />
@@ -1321,16 +1345,6 @@ export default function EditorPage() {
                                                     sensorNoise={effectiveNoise}
                                                     coffeeStain={effectiveCoffeeStain}
                                                 />
-
-                                                {/* Margin Annotation */}
-                                                {marginNote && pIdx === 0 && (
-                                                    <div 
-                                                        className="absolute left-4 top-1/3 -rotate-90 origin-left z-20 pointer-events-none"
-                                                        style={{ fontFamily: getFontFamilyCss(font), color: color, opacity: 0.55, fontSize: fontSize * 0.6 }}
-                                                    >
-                                                        {marginNote}
-                                                    </div>
-                                                )}
 
                                                 {/* Sticky Note */}
                                                 {showStickyNote && pIdx === 0 && (
@@ -1473,26 +1487,34 @@ export default function EditorPage() {
                                                                 />
                                                             ) : (
                                                                 <>
-                                                                    {line.tokens.map((tok, tIdx) => (
-                                                                        <HandwrittenWord 
-                                                                            key={tIdx}
-                                                                            token={tok}
-                                                                            pageIndex={pIdx}
-                                                                            lineIndex={lIdx}
-                                                                            wordIndex={tIdx}
-                                                                            totalLines={page.lines.length}
-                                                                            randomSeed={String(randomSeed)}
-                                                                            fontFamily={font}
-                                                                            fontSize={fontSize}
-                                                                            color={color}
-                                                                            jitter={jitter}
-                                                                            charJitter={charJitter}
-                                                                            fatigue={fatigue}
-                                                                            pressure={pressure}
-                                                                            smudge={smudge}
-                                                                            onClick={() => handleWordClick(line.charIndex)}
-                                                                        />
-                                                                    ))}
+                                                                    {line.tokens.map((tok, tIdx) => {
+                                                                        const totalPages = pages.length;
+                                                                        const docProgress = totalPages > 0 ? (pIdx + (page.lines.length > 0 ? lIdx / page.lines.length : 0)) / totalPages : 0;
+                                                                        return (
+                                                                            <HandwrittenWord 
+                                                                                key={tIdx}
+                                                                                token={tok}
+                                                                                pageIndex={pIdx}
+                                                                                lineIndex={lIdx}
+                                                                                wordIndex={tIdx}
+                                                                                totalLines={page.lines.length}
+                                                                                randomSeed={String(randomSeed)}
+                                                                                fontFamily={font}
+                                                                                fontSize={fontSize}
+                                                                                color={color}
+                                                                                jitter={jitter}
+                                                                                charJitter={charJitter}
+                                                                                fatigue={fatigue}
+                                                                                pressure={pressure}
+                                                                                smudge={smudge}
+                                                                                lowInkFade={lowInkFade}
+                                                                                lowInkStart={lowInkStart}
+                                                                                lowInkIntensity={lowInkIntensity}
+                                                                                docProgress={docProgress}
+                                                                                onClick={() => handleWordClick(line.charIndex)}
+                                                                            />
+                                                                        );
+                                                                    })}
                                                                     {/* Subtle edit pencil icon on line hover */}
                                                                     <button
                                                                         type="button"
@@ -1527,6 +1549,14 @@ export default function EditorPage() {
                             );
                         })}
                     </div>
+
+                    {/* Floating Multi-Page Thumbnail Navigation Dock */}
+                    <ThumbnailBar
+                        totalPages={pages.length}
+                        activePageIndex={activePageIndex}
+                        onSelectPage={handleJumpToPage}
+                        paperId={paperMaterial}
+                    />
                 </main>
             </div>
 
@@ -1627,7 +1657,9 @@ export default function EditorPage() {
                 pageEffectOverrides={pageEffectOverrides}
                 showStickyNote={showStickyNote}
                 stickyNoteText={stickyNoteText}
-                marginNote={marginNote}
+                lowInkFade={lowInkFade}
+                lowInkStart={lowInkStart}
+                lowInkIntensity={lowInkIntensity}
                 randomSeed={randomSeed}
                 wordCount={wordCount}
             />

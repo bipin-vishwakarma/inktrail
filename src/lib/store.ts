@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { AppState, FontPreference, PaperCrease } from '../types';
+import type { AppState, FontPreference } from '../types';
 
 // Default typography values for reset
 const DEFAULT_TYPOGRAPHY = {
@@ -95,6 +95,9 @@ const initialState: StateValues = {
     autoTypoRate: 0,
     strikeStyle: 'wavy',
     autoCaret: true,
+    lowInkFade: false,
+    lowInkStart: 45,
+    lowInkIntensity: 0.65,
 };
 
 let persistTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -216,6 +219,9 @@ export const useStore = create<AppState>()(
                 autoTypoRate: 0,
                 autoCaret: true,
                 strikeStyle: 'wavy',
+                lowInkFade: false,
+                lowInkStart: 45,
+                lowInkIntensity: 0.65,
             }),
             resetEffects: () => set({
                 paperTilt: false,
@@ -246,27 +252,45 @@ export const useStore = create<AppState>()(
                 marginLeft: 70,
                 marginRight: 25,
             }),
-            randomizeRealism: () => set(() => {
-                const randomJitter = Number((0.8 + Math.random() * 1.0).toFixed(2));
-                const randomPressure = Number((0.75 + Math.random() * 0.4).toFixed(2));
-                const randomTiltX = Number(((Math.random() * 5) - 2).toFixed(1));
-                const randomTiltY = Number(((Math.random() * 4) - 2).toFixed(1));
-                const randomShadowAngle = Math.floor(40 + Math.random() * 140);
-                const randomWarmth = Number((0.3 + Math.random() * 0.35).toFixed(2));
-                const creases: PaperCrease[] = ['none', 'center-h', 'cross', 'corner-fold', 'letter-tri-fold', 'diagonal-crease'];
-                const randomCrease = creases[Math.floor(Math.random() * creases.length)];
+            randomizeRealism: () => set((state) => {
+                const perturb = (base: number, delta: number, min: number, max: number, decimals = 2) => {
+                    const shift = (Math.random() * 2 - 1) * delta;
+                    return Number(Math.max(min, Math.min(max, base + shift)).toFixed(decimals));
+                };
+
+                // Subtle perturbation around current user settings
+                const newJitter = perturb(state.jitter || 1.5, 0.3, 0.8, 3.0, 2);
+                const newCharJitter = Number((newJitter * 0.82).toFixed(2));
+                const newPressure = perturb(state.pressure || 1.0, 0.08, 0.75, 1.0, 2);
+                const newBaseline = perturb(state.baseline || -1, 0.6, -3, 2, 1);
+                const newFatigue = perturb(state.fatigue || 1.5, 0.35, 0.5, 3.0, 2);
+
+                // Phone Cast Shadow perturbations (angle +-18 deg, intensity +-0.05)
+                const newShadowAngle = Math.round(perturb(state.phoneShadowAngle || 125, 18, 45, 165, 0));
+                const newShadowIntensity = perturb(state.phoneShadowIntensity || 0.45, 0.05, 0.28, 0.50, 2);
+
+                // Extremely subtle tilt (+-0.5 deg) so image capturing / export never clips
+                const currentTiltX = typeof state.tiltX === 'number' ? state.tiltX : 1.5;
+                const newTiltX = perturb(currentTiltX, 0.5, -1.8, 2.0, 1);
+                const currentTiltY = typeof state.tiltY === 'number' ? state.tiltY : -1.0;
+                const newTiltY = perturb(currentTiltY, 0.4, -1.5, 1.5, 1);
+
+                // Subtle desk lamp warmth variation
+                const newWarmth = perturb(state.lightingWarmth || 0.4, 0.06, 0.25, 0.55, 2);
+
                 return {
-                    jitter: randomJitter,
-                    charJitter: Number((randomJitter * 0.85).toFixed(2)),
-                    pressure: randomPressure,
-                    baseline: Number(((Math.random() * 3) - 2).toFixed(1)),
-                    phoneShadowAngle: randomShadowAngle,
-                    tiltX: Math.abs(randomTiltX) < 0.5 ? 1.5 : randomTiltX,
-                    tiltY: randomTiltY,
-                    lightingWarmth: randomWarmth,
-                    paperCrease: randomCrease,
+                    jitter: newJitter,
+                    charJitter: newCharJitter,
+                    pressure: newPressure,
+                    baseline: newBaseline,
+                    fatigue: newFatigue,
+                    phoneShadow: true,
+                    phoneShadowAngle: newShadowAngle,
+                    phoneShadowIntensity: newShadowIntensity,
+                    tiltX: newTiltX,
+                    tiltY: newTiltY,
+                    lightingWarmth: newWarmth,
                     randomTilt: true,
-                    coffeeStain: Math.random() > 0.6,
                 };
             }),
 
@@ -276,6 +300,9 @@ export const useStore = create<AppState>()(
             setAutoTypoRate: (autoTypoRate) => set({ autoTypoRate }),
             setStrikeStyle: (strikeStyle) => set({ strikeStyle }),
             setAutoCaret: (autoCaret) => set({ autoCaret }),
+            setLowInkFade: (lowInkFade) => set({ lowInkFade }),
+            setLowInkStart: (lowInkStart) => set({ lowInkStart }),
+            setLowInkIntensity: (lowInkIntensity) => set({ lowInkIntensity }),
 
             completeOnboarding: () => set({ hasSeenOnboarding: true }),
             completeTour: () => set({ hasSeenTour: true }),

@@ -119,10 +119,13 @@ export interface AppState {
     showHeader: boolean;
     headerText: string;
 
-    // Human Errors & Strikes
+    // Human Errors, Strikes & Ink Drying
     autoTypoRate: number;
     strikeStyle: StrikeStyle;
     autoCaret: boolean;
+    lowInkFade: boolean;
+    lowInkStart: number;
+    lowInkIntensity: number;
 
     // Actions
     setText: (text: string) => void;
@@ -184,6 +187,9 @@ export interface AppState {
     setAutoTypoRate: (rate: number) => void;
     setStrikeStyle: (style: StrikeStyle) => void;
     setAutoCaret: (enabled: boolean) => void;
+    setLowInkFade: (enabled: boolean) => void;
+    setLowInkStart: (val: number) => void;
+    setLowInkIntensity: (val: number) => void;
 
     // Onboarding Actions
     completeOnboarding: () => void;
