@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { AppState, FontPreference } from '../types';
+import type { AppState, FontPreference, PaperCrease } from '../types';
 
 // Default typography values for reset
 const DEFAULT_TYPOGRAPHY = {
@@ -57,6 +57,12 @@ const initialState: StateValues = {
     penType: 'ballpoint-blue',
     randomTilt: false,
     smartMarginIndexing: true,
+    coffeeStain: false,
+
+    // Per-Page Scoping
+    activePageIndex: 0,
+    effectScope: 'all',
+    pageEffectOverrides: {},
 
     // UI State
     hasSeenOnboarding: false,
@@ -165,6 +171,104 @@ export const useStore = create<AppState>()(
             },
             setRandomTilt: (randomTilt) => set({ randomTilt }),
             setSmartMarginIndexing: (smartMarginIndexing) => set({ smartMarginIndexing }),
+            setCoffeeStain: (coffeeStain) => set({ coffeeStain }),
+
+            // Per-Page Scoping Actions
+            setActivePageIndex: (activePageIndex) => set({ activePageIndex }),
+            setEffectScope: (effectScope) => set({ effectScope }),
+            setPageEffectOverride: (pageIndex, overrides) => set((state) => ({
+                pageEffectOverrides: {
+                    ...state.pageEffectOverrides,
+                    [pageIndex]: {
+                        ...state.pageEffectOverrides[pageIndex],
+                        ...overrides
+                    }
+                }
+            })),
+            clearPageEffectOverrides: (pageIndex) => set((state) => {
+                if (pageIndex !== undefined) {
+                    const next = { ...state.pageEffectOverrides };
+                    delete next[pageIndex];
+                    return { pageEffectOverrides: next };
+                }
+                return { pageEffectOverrides: {} };
+            }),
+            applyPageEffectsToAll: (pageIndex) => set((state) => {
+                const current = state.pageEffectOverrides[pageIndex];
+                if (!current) return state;
+                return {
+                    ...current,
+                    pageEffectOverrides: {}
+                };
+            }),
+
+            // Granular Reset Actions
+            resetFormatting: () => set({
+                fontSize: DEFAULT_TYPOGRAPHY.fontSize,
+                lineHeight: DEFAULT_TYPOGRAPHY.lineHeight,
+                letterSpacing: DEFAULT_TYPOGRAPHY.letterSpacing,
+                wordSpacing: DEFAULT_TYPOGRAPHY.wordSpacing,
+                jitter: 1.5,
+                charJitter: 1.2,
+                pressure: 1.0,
+                baseline: -1,
+                fatigue: 1.5,
+                autoTypoRate: 0,
+                autoCaret: true,
+                strikeStyle: 'wavy',
+            }),
+            resetEffects: () => set({
+                paperTilt: false,
+                perspectiveWarp: false,
+                tiltX: 0,
+                tiltY: 0,
+                randomTilt: false,
+                lightingMode: 'warm-lamp',
+                lightingWarmth: 0.4,
+                phoneShadow: true,
+                phoneShadowAngle: 125,
+                phoneShadowIntensity: 0.45,
+                paperCrease: 'center-h',
+                sensorNoise: 0.15,
+                coffeeStain: false,
+                pageEffectOverrides: {},
+            }),
+            resetPaperSettings: () => set({
+                paperMaterial: 'college',
+                paperSize: 'a4',
+                paperOrientation: 'portrait',
+                penType: 'ballpoint-blue',
+                inkColor: '#1e40af',
+                handwritingStyle: 'Handwriting 1',
+                smartMarginIndexing: true,
+                marginTop: 60,
+                marginBottom: 60,
+                marginLeft: 70,
+                marginRight: 25,
+            }),
+            randomizeRealism: () => set(() => {
+                const randomJitter = Number((0.8 + Math.random() * 1.0).toFixed(2));
+                const randomPressure = Number((0.75 + Math.random() * 0.4).toFixed(2));
+                const randomTiltX = Number(((Math.random() * 5) - 2).toFixed(1));
+                const randomTiltY = Number(((Math.random() * 4) - 2).toFixed(1));
+                const randomShadowAngle = Math.floor(40 + Math.random() * 140);
+                const randomWarmth = Number((0.3 + Math.random() * 0.35).toFixed(2));
+                const creases: PaperCrease[] = ['none', 'center-h', 'cross', 'corner-fold', 'letter-tri-fold', 'diagonal-crease'];
+                const randomCrease = creases[Math.floor(Math.random() * creases.length)];
+                return {
+                    jitter: randomJitter,
+                    charJitter: Number((randomJitter * 0.85).toFixed(2)),
+                    pressure: randomPressure,
+                    baseline: Number(((Math.random() * 3) - 2).toFixed(1)),
+                    phoneShadowAngle: randomShadowAngle,
+                    tiltX: Math.abs(randomTiltX) < 0.5 ? 1.5 : randomTiltX,
+                    tiltY: randomTiltY,
+                    lightingWarmth: randomWarmth,
+                    paperCrease: randomCrease,
+                    randomTilt: true,
+                    coffeeStain: Math.random() > 0.6,
+                };
+            }),
 
             // Human Error & Fatigue Actions
             setCharJitter: (charJitter) => set({ charJitter }),

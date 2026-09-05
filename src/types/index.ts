@@ -33,7 +33,22 @@ export interface HistoryItem {
     text: string;
 }
 
+export interface PageEffectOverrides {
+    paperCrease?: PaperCrease;
+    coffeeStain?: boolean;
+    perspectiveWarp?: boolean;
+    tiltX?: number;
+    tiltY?: number;
+    lightingMode?: LightingMode;
+    lightingWarmth?: number;
+    phoneShadow?: boolean;
+    phoneShadowIntensity?: number;
+    phoneShadowAngle?: number;
+    sensorNoise?: number;
+}
+
 export interface AppState {
+    penType: PenType;
     text: string;
     // History
     history: HistoryItem[];
@@ -71,9 +86,14 @@ export interface AppState {
     lightingWarmth: number;
     paperCrease: PaperCrease;
     sensorNoise: number;
-    penType: PenType;
     randomTilt: boolean;
     smartMarginIndexing: boolean;
+    coffeeStain: boolean;
+
+    // Per-Page Scoping & Overrides
+    activePageIndex: number;
+    effectScope: 'current' | 'all';
+    pageEffectOverrides: Record<number, PageEffectOverrides>;
 
     // UI State
     isSidebarCollapsed: boolean;
@@ -143,6 +163,20 @@ export interface AppState {
     setPenType: (pen: PenType) => void;
     setRandomTilt: (enabled: boolean) => void;
     setSmartMarginIndexing: (enabled: boolean) => void;
+    setCoffeeStain: (enabled: boolean) => void;
+
+    // Per-Page Scoping Actions
+    setActivePageIndex: (index: number) => void;
+    setEffectScope: (scope: 'current' | 'all') => void;
+    setPageEffectOverride: (pageIndex: number, overrides: Partial<PageEffectOverrides>) => void;
+    clearPageEffectOverrides: (pageIndex?: number) => void;
+    applyPageEffectsToAll: (pageIndex: number) => void;
+
+    // Granular Reset & Randomizer Actions
+    resetFormatting: () => void;
+    resetEffects: () => void;
+    resetPaperSettings: () => void;
+    randomizeRealism: () => void;
 
     // Human Error & Fatigue Actions
     setCharJitter: (val: number) => void;

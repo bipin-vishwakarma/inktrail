@@ -5,7 +5,7 @@ import { useScrollLock } from '../../hooks/useScrollLock';
 import { HandwrittenWord } from '../HandwrittenWord';
 import { CameraOverlay } from '../CameraOverlay';
 import { getFontFamilyCss } from '../../utils/humanErrorEngine';
-import type { LightingMode, PaperCrease } from '../../types';
+import type { LightingMode, PaperCrease, PageEffectOverrides } from '../../types';
 
 interface DocumentLine {
     tokens: any[];
@@ -73,6 +73,8 @@ interface ExportModalProps {
     tiltY?: number;
     randomTilt?: boolean;
     smartMarginIndexing?: boolean;
+    coffeeStain?: boolean;
+    pageEffectOverrides?: Record<number, PageEffectOverrides>;
     showCoffeeStain?: boolean;
     showStickyNote?: boolean;
     stickyNoteText?: string;
@@ -121,6 +123,8 @@ export default function ExportModal({
     tiltY = 0,
     randomTilt = false,
     smartMarginIndexing = true,
+    coffeeStain = false,
+    pageEffectOverrides = {},
     showCoffeeStain = false,
     showStickyNote = false,
     stickyNoteText = '',
@@ -244,12 +248,24 @@ export default function ExportModal({
                                 <div className="absolute inset-0 bg-[radial-gradient(#d1d5db_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none opacity-60" />
 
                                 {pages.map((page, pIdx) => {
-                                    const pageTiltX = (perspectiveWarp && randomTilt)
-                                        ? tiltX + Math.sin((pIdx + 1) * 7.91 + (randomSeed || 1)) * 3.5
-                                        : tiltX;
-                                    const pageTiltY = (perspectiveWarp && randomTilt)
-                                        ? tiltY + Math.cos((pIdx + 1) * 6.33 + (randomSeed || 1)) * 3.5
-                                        : tiltY;
+                                    const pageOverrides = pageEffectOverrides[pIdx] || {};
+                                    const effectiveCoffeeStain = pageOverrides.coffeeStain !== undefined ? pageOverrides.coffeeStain : (coffeeStain || showCoffeeStain);
+                                    const effectiveCrease = pageOverrides.paperCrease !== undefined ? pageOverrides.paperCrease : paperCrease;
+                                    const effectivePerspective = pageOverrides.perspectiveWarp !== undefined ? pageOverrides.perspectiveWarp : perspectiveWarp;
+                                    const baseTiltX = pageOverrides.tiltX !== undefined ? pageOverrides.tiltX : tiltX;
+                                    const baseTiltY = pageOverrides.tiltY !== undefined ? pageOverrides.tiltY : tiltY;
+                                    const pageTiltX = (effectivePerspective && randomTilt)
+                                        ? baseTiltX + Math.sin((pIdx + 1) * 7.91 + (randomSeed || 1)) * 3.5
+                                        : baseTiltX;
+                                    const pageTiltY = (effectivePerspective && randomTilt)
+                                        ? baseTiltY + Math.cos((pIdx + 1) * 6.33 + (randomSeed || 1)) * 3.5
+                                        : baseTiltY;
+                                    const effectiveLighting = pageOverrides.lightingMode !== undefined ? pageOverrides.lightingMode : lightingMode;
+                                    const effectiveWarmth = pageOverrides.lightingWarmth !== undefined ? pageOverrides.lightingWarmth : lightingWarmth;
+                                    const effectiveShadow = pageOverrides.phoneShadow !== undefined ? pageOverrides.phoneShadow : phoneShadow;
+                                    const effectiveShadowIntensity = pageOverrides.phoneShadowIntensity !== undefined ? pageOverrides.phoneShadowIntensity : phoneShadowIntensity;
+                                    const effectiveShadowAngle = pageOverrides.phoneShadowAngle !== undefined ? pageOverrides.phoneShadowAngle : phoneShadowAngle;
+                                    const effectiveNoise = pageOverrides.sensorNoise !== undefined ? pageOverrides.sensorNoise : sensorNoise;
 
                                     return (
                                         <div 
@@ -269,7 +285,7 @@ export default function ExportModal({
                                             <div 
                                                 className="absolute top-0 left-0 w-[800px] h-[1131px] bg-white shadow-[0_20px_50px_-10px_rgba(0,0,0,0.18)] rounded-xs overflow-hidden origin-top-left"
                                                 style={{
-                                                    transform: perspectiveWarp 
+                                                    transform: effectivePerspective 
                                                         ? `scale(${previewScale}) perspective(1000px) rotateX(${pageTiltX}deg) rotateY(${pageTiltY}deg)` 
                                                         : `scale(${previewScale})`,
                                                     transformOrigin: 'top left',
@@ -284,29 +300,15 @@ export default function ExportModal({
 
                                                 {/* Physical Camera & Environment Overlay */}
                                                 <CameraOverlay
-                                                    phoneShadow={phoneShadow}
-                                                    phoneShadowAngle={phoneShadowAngle}
-                                                    phoneShadowIntensity={phoneShadowIntensity}
-                                                    lightingMode={lightingMode}
-                                                    lightingWarmth={lightingWarmth}
-                                                    paperCrease={paperCrease}
-                                                    sensorNoise={sensorNoise}
+                                                    phoneShadow={effectiveShadow}
+                                                    phoneShadowAngle={effectiveShadowAngle}
+                                                    phoneShadowIntensity={effectiveShadowIntensity}
+                                                    lightingMode={effectiveLighting}
+                                                    lightingWarmth={effectiveWarmth}
+                                                    paperCrease={effectiveCrease}
+                                                    sensorNoise={effectiveNoise}
+                                                    coffeeStain={effectiveCoffeeStain}
                                                 />
-
-                                                {/* Coffee Stain */}
-                                                {showCoffeeStain && pIdx === 0 && (
-                                                    <div 
-                                                        className="absolute -top-10 -right-10 pointer-events-none opacity-[0.09] blur-[0.5px] z-30"
-                                                        style={{ 
-                                                            transform: `rotate(${((randomSeed * 137) % 360)}deg) scale(${0.85 + ((randomSeed * 29) % 30) / 100})` 
-                                                        }}
-                                                    >
-                                                        <svg width="300" height="300" viewBox="0 0 200 200">
-                                                            <path fill="#78350f" d="M100 20C55.8 20 20 55.8 20 100s35.8 80 80 80 80-35.8 80-80S144.2 20 100 20zm0 145c-35.9 0-65-29.1-65-65s29.1-65 65-65 65 29.1 65 65-29.1 65-65 65z"/>
-                                                            <circle cx="100" cy="100" r="55" fill="#78350f" opacity="0.3"/>
-                                                        </svg>
-                                                    </div>
-                                                )}
 
                                                 {/* Margin Annotation */}
                                                 {marginNote && pIdx === 0 && (
@@ -374,7 +376,7 @@ export default function ExportModal({
                                                             }} 
                                                             className="w-full whitespace-nowrap relative"
                                                         >
-                                                            {smartMarginIndexing && line.marginIndex && (
+                                                            {(smartMarginIndexing || line.marginIndex) && line.marginIndex && (
                                                                 <span 
                                                                     className="absolute text-center font-bold select-none pointer-events-none"
                                                                     style={{

@@ -5,13 +5,14 @@ import {
     AlignLeft, AlignCenter, AlignRight, AlignJustify, 
     Download, Clock, 
     ZoomIn, ZoomOut, Palette,
-    Shuffle, RotateCcw, Camera, Scissors, X
+    RotateCcw, Camera, Scissors, X, Dices
 } from 'lucide-react';
 
 import { useStore } from '../lib/store';
 import { useToast } from '../hooks/useToast';
 import HistoryModal from '../components/modals/HistoryModal';
 import ExportModal from '../components/modals/ExportModal';
+import { CreatorModal } from '../components/modals/CreatorModal';
 import { HandwrittenWord } from '../components/HandwrittenWord';
 import { CameraOverlay } from '../components/CameraOverlay';
 import { HumanErrorsControls } from '../components/HumanErrorsControls';
@@ -330,9 +331,15 @@ export default function EditorPage() {
         paperCrease,
         sensorNoise,
         randomTilt,
+        coffeeStain,
+        activePageIndex,
+        setActivePageIndex,
+        pageEffectOverrides,
         smartMarginIndexing, setSmartMarginIndexing,
         history: storeHistory, addToHistory,
-        resetStyles, reset
+        resetStyles, reset,
+        resetFormatting, resetPaperSettings,
+        randomizeRealism
     } = useStore();
 
     // 0ms Input Latency: Local Draft State with Debounced Sync to Store
@@ -437,7 +444,6 @@ export default function EditorPage() {
 
     // Page Effects States
     const [marginNote, setMarginNote] = useState("");
-    const [showCoffeeStain, setShowCoffeeStain] = useState(false);
     const [showStickyNote, setShowStickyNote] = useState(false);
     const [stickyNoteText, setStickyNoteText] = useState("Don't forget!");
 
@@ -499,6 +505,65 @@ export default function EditorPage() {
 
     const cancelInlineEdit = () => {
         setEditingLine(null);
+    };
+
+    // Creator Modal State
+    const [showCreatorModal, setShowCreatorModal] = useState(false);
+
+    // Empty Margin Text Editor State & Handlers
+    const [editingMargin, setEditingMargin] = useState<{ pIdx: number; lIdx: number } | null>(null);
+    const [marginInputText, setMarginInputText] = useState('');
+    const marginInputRef = useRef<HTMLInputElement>(null);
+
+    const startMarginEdit = (pIdx: number, lIdx: number, currentTag?: string) => {
+        setEditingMargin({ pIdx, lIdx });
+        setMarginInputText(currentTag || '');
+        setTimeout(() => {
+            if (marginInputRef.current) {
+                marginInputRef.current.focus();
+                marginInputRef.current.select();
+            }
+        }, 30);
+    };
+
+    const saveMarginEdit = (pIdx: number, lIdx: number) => {
+        const targetPage = pages[pIdx];
+        const line = targetPage?.lines[lIdx];
+        if (!line) {
+            setEditingMargin(null);
+            return;
+        }
+
+        const trimmed = marginInputText.trim();
+        const currentTag = line.marginIndex || '';
+        const lineFullText = text.slice(line.startChar, line.endChar);
+        let updatedLineText = lineFullText;
+
+        if (currentTag) {
+            if (lineFullText.startsWith(currentTag)) {
+                const remainder = lineFullText.slice(currentTag.length).trimStart();
+                updatedLineText = trimmed ? `${trimmed} ${remainder}` : remainder;
+            } else {
+                updatedLineText = trimmed ? `${trimmed} ${lineFullText.trimStart()}` : lineFullText;
+            }
+        } else {
+            if (trimmed) {
+                updatedLineText = `${trimmed} ${lineFullText}`;
+            }
+        }
+
+        const prefix = text.slice(0, line.startChar);
+        const suffix = text.slice(line.endChar);
+        const updated = prefix + updatedLineText + suffix;
+
+        setDraftText(updated);
+        setText(updated);
+        setEditingMargin(null);
+        addToast(trimmed ? `Margin set: "${trimmed}"` : 'Margin tag cleared', 'success');
+    };
+
+    const cancelMarginEdit = () => {
+        setEditingMargin(null);
     };
 
     // Deferred text for smooth background document compilation
@@ -679,26 +744,50 @@ export default function EditorPage() {
                     </button>
                 </div>
 
-                {/* Right: Shuffle Randomness, Reset, History, Export Preview */}
-                <div className="flex items-center gap-2 shrink-0">
-                    {/* Shuffle Randomness Button */}
+                {/* Right: Randomize, Reset, Creator, History, Export Preview */}
+                <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                    {/* Realism Randomizer Dice Button */}
                     <button 
-                        onClick={handleShuffleRandomness}
-                        title="Re-roll handwriting slant, jitter & error variations"
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-neutral-100 hover:bg-neutral-200/80 text-neutral-700 rounded-xl text-xs font-bold transition-all active:scale-95 border border-neutral-200/60"
+                        onClick={() => {
+                            randomizeRealism();
+                            handleShuffleRandomness();
+                            addToast('🎲 Rolled organic human realism variations!', 'success');
+                        }}
+                        title="Roll random organic handwriting flaws, slant & lighting"
+                        className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 rounded-xl text-xs font-bold transition-all active:scale-95 border border-amber-200/80 shadow-2xs"
                     >
-                        <Shuffle size={13} className="text-neutral-500" />
-                        <span className="hidden sm:inline">Shuffle</span>
+                        <Dices size={13} className="text-amber-600" />
+                        <span className="hidden sm:inline">Randomize</span>
                     </button>
 
                     {/* Reset Button */}
                     <button 
                         onClick={() => setShowResetModal(true)}
                         title="Reset document styles or clear page"
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-neutral-100 hover:bg-rose-50 hover:text-rose-600 text-neutral-600 rounded-xl text-xs font-bold transition-all active:scale-95 border border-neutral-200/60"
+                        className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-neutral-100 hover:bg-rose-50 hover:text-rose-600 text-neutral-600 rounded-xl text-xs font-bold transition-all active:scale-95 border border-neutral-200/60"
                     >
                         <RotateCcw size={13} />
                         <span className="hidden sm:inline">Reset</span>
+                    </button>
+
+                    {/* Creator Credits Button with Bipin's Picture */}
+                    <button 
+                        onClick={() => setShowCreatorModal(true)}
+                        title="Created with passion by Bipin Vishwakarma — View Profile & Socials"
+                        className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1.5 bg-neutral-100 hover:bg-neutral-200/70 text-neutral-700 rounded-xl text-xs font-bold transition-all active:scale-95 border border-neutral-200/60"
+                    >
+                        <div className="relative flex items-center justify-center">
+                            <img 
+                                src="https://avatars.githubusercontent.com/u/151464007?v=4" 
+                                alt="Bipin Vishwakarma" 
+                                className="w-5 h-5 rounded-full object-cover ring-1 ring-blue-500 shadow-2xs"
+                                onError={(e) => {
+                                    (e.target as HTMLImageElement).src = 'https://github.com/bipin-vishwakarma.png';
+                                }}
+                            />
+                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 absolute -bottom-0.5 -right-0.5 ring-1 ring-white" />
+                        </div>
+                        <span className="hidden md:inline text-[11px] font-semibold text-neutral-800">Bipin</span>
                     </button>
 
                     <button 
@@ -817,6 +906,21 @@ export default function EditorPage() {
                         {/* TAB 2: PEN & STYLE */}
                         {activeSidebarTab === 'pen' && (
                             <div className="space-y-6">
+                                <div className="flex justify-between items-center pb-1 border-b border-neutral-100">
+                                    <span className="text-xs font-bold text-neutral-800">Pen & Typography</span>
+                                    <button
+                                        onClick={() => {
+                                            resetFormatting();
+                                            addToast('Pen settings reset to defaults', 'info');
+                                        }}
+                                        className="flex items-center gap-1 text-[11px] text-neutral-400 hover:text-neutral-800 font-semibold px-2 py-0.5 rounded-md hover:bg-neutral-100 transition-colors"
+                                        title="Reset font size, line spacing and baseline"
+                                    >
+                                        <RotateCcw size={11} />
+                                        <span>Reset</span>
+                                    </button>
+                                </div>
+
                                 {/* Font Selection */}
                                 <div>
                                     <div className="flex justify-between items-center mb-2">
@@ -906,6 +1010,21 @@ export default function EditorPage() {
                         {/* TAB 3: PAPER & LAYOUT */}
                         {activeSidebarTab === 'paper' && (
                             <div className="space-y-6">
+                                <div className="flex justify-between items-center pb-1 border-b border-neutral-100">
+                                    <span className="text-xs font-bold text-neutral-800">Paper & Margins</span>
+                                    <button
+                                        onClick={() => {
+                                            resetPaperSettings();
+                                            addToast('Paper and margins reset to defaults', 'info');
+                                        }}
+                                        className="flex items-center gap-1 text-[11px] text-neutral-400 hover:text-neutral-800 font-semibold px-2 py-0.5 rounded-md hover:bg-neutral-100 transition-colors"
+                                        title="Reset paper sheet and margin dimensions"
+                                    >
+                                        <RotateCcw size={11} />
+                                        <span>Reset</span>
+                                    </button>
+                                </div>
+
                                 {/* Paper Type Selection */}
                                 <div>
                                     <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400 block mb-2.5">
@@ -1005,6 +1124,36 @@ export default function EditorPage() {
                         {/* TAB 4: REALISM & ERRORS */}
                         {activeSidebarTab === 'realism' && (
                             <div className="space-y-6">
+                                <div className="flex justify-between items-center pb-1 border-b border-neutral-100">
+                                    <span className="text-xs font-bold text-neutral-800">Human Imperfections</span>
+                                    <div className="flex items-center gap-1.5">
+                                        <button
+                                            onClick={() => {
+                                                randomizeRealism();
+                                                addToast('🎲 Organic realism variations rolled!', 'success');
+                                            }}
+                                            className="flex items-center gap-1 text-[11px] text-amber-800 hover:text-amber-900 font-semibold px-2 py-0.5 rounded-md bg-amber-50 hover:bg-amber-100 transition-colors border border-amber-200/60"
+                                            title="Roll random human flaws"
+                                        >
+                                            <Dices size={11} className="text-amber-600" />
+                                            <span>Randomize</span>
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                setJitter(1.5);
+                                                setPressure(1.0);
+                                                setSmudge(0);
+                                                addToast('Realism controls reset', 'info');
+                                            }}
+                                            className="flex items-center gap-1 text-[11px] text-neutral-400 hover:text-neutral-800 font-semibold px-2 py-0.5 rounded-md hover:bg-neutral-100 transition-colors"
+                                            title="Reset wobble, pressure and smudge"
+                                        >
+                                            <RotateCcw size={11} />
+                                            <span>Reset</span>
+                                        </button>
+                                    </div>
+                                </div>
+
                                 <div className="space-y-4 bg-neutral-50 p-4 rounded-2xl border border-neutral-200/70">
                                     <div>
                                         <div className="flex justify-between text-xs mb-1 text-neutral-600 font-bold">
@@ -1041,20 +1190,6 @@ export default function EditorPage() {
                             <div className="space-y-6">
                                 {/* Camera & Photo Physics */}
                                 <CameraPhysicsControls />
-
-                                {/* Coffee Stain Effect Toggle */}
-                                <label className="flex items-center gap-3 p-3.5 rounded-2xl bg-neutral-50 border border-neutral-200/70 cursor-pointer hover:bg-neutral-100 transition-colors">
-                                    <input 
-                                        type="checkbox" 
-                                        checked={showCoffeeStain} 
-                                        onChange={e => setShowCoffeeStain(e.target.checked)} 
-                                        className="w-4 h-4 rounded border-neutral-300 accent-neutral-900 cursor-pointer"
-                                    />
-                                    <div>
-                                        <span className="text-xs font-bold text-neutral-900 block">Coffee Cup Stain</span>
-                                        <span className="text-[10px] text-neutral-500 font-medium">Adds a realistic coffee ring mark on page 1</span>
-                                    </div>
-                                </label>
 
                                 {/* Sticky Note Extra */}
                                 <div className="p-4 rounded-2xl bg-neutral-50 border border-neutral-200/70 space-y-3">
@@ -1110,12 +1245,24 @@ export default function EditorPage() {
                     {/* Pages Container */}
                     <div className="flex flex-col items-center gap-10 sm:gap-14 py-6 relative z-10 w-full">
                         {pages.map((page, pIdx) => {
-                            const pageTiltX = (perspectiveWarp && randomTilt)
-                                ? tiltX + Math.sin((pIdx + 1) * 7.91 + (randomSeed || 1)) * 3.5
-                                : tiltX;
-                            const pageTiltY = (perspectiveWarp && randomTilt)
-                                ? tiltY + Math.cos((pIdx + 1) * 6.33 + (randomSeed || 1)) * 3.5
-                                : tiltY;
+                            const pageOverrides = pageEffectOverrides[pIdx] || {};
+                            const effectiveCoffeeStain = pageOverrides.coffeeStain !== undefined ? pageOverrides.coffeeStain : coffeeStain;
+                            const effectiveCrease = pageOverrides.paperCrease !== undefined ? pageOverrides.paperCrease : paperCrease;
+                            const effectivePerspective = pageOverrides.perspectiveWarp !== undefined ? pageOverrides.perspectiveWarp : perspectiveWarp;
+                            const baseTiltX = pageOverrides.tiltX !== undefined ? pageOverrides.tiltX : tiltX;
+                            const baseTiltY = pageOverrides.tiltY !== undefined ? pageOverrides.tiltY : tiltY;
+                            const pageTiltX = (effectivePerspective && randomTilt)
+                                ? baseTiltX + Math.sin((pIdx + 1) * 7.91 + (randomSeed || 1)) * 3.5
+                                : baseTiltX;
+                            const pageTiltY = (effectivePerspective && randomTilt)
+                                ? baseTiltY + Math.cos((pIdx + 1) * 6.33 + (randomSeed || 1)) * 3.5
+                                : baseTiltY;
+                            const effectiveLighting = pageOverrides.lightingMode !== undefined ? pageOverrides.lightingMode : lightingMode;
+                            const effectiveWarmth = pageOverrides.lightingWarmth !== undefined ? pageOverrides.lightingWarmth : lightingWarmth;
+                            const effectiveShadow = pageOverrides.phoneShadow !== undefined ? pageOverrides.phoneShadow : phoneShadow;
+                            const effectiveShadowIntensity = pageOverrides.phoneShadowIntensity !== undefined ? pageOverrides.phoneShadowIntensity : phoneShadowIntensity;
+                            const effectiveShadowAngle = pageOverrides.phoneShadowAngle !== undefined ? pageOverrides.phoneShadowAngle : phoneShadowAngle;
+                            const effectiveNoise = pageOverrides.sensorNoise !== undefined ? pageOverrides.sensorNoise : sensorNoise;
 
                             return (
                                 <div 
@@ -1124,11 +1271,16 @@ export default function EditorPage() {
                                         width: 800 * scale, 
                                         height: 1131 * scale,
                                     }}
-                                    className="relative shrink-0 transition-all duration-150 ease-out"
+                                    className="relative shrink-0 transition-all duration-150 ease-out cursor-pointer"
+                                    onClick={() => setActivePageIndex(pIdx)}
                                 >
                                     <div 
                                         className={`handwritten-page-render absolute top-0 left-0 w-[800px] h-[1131px] bg-white ${
-                                            pIdx === 0 ? 'shadow-[0_25px_60px_-15px_rgba(0,0,0,0.18)]' : 'shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)]'
+                                            pIdx === activePageIndex 
+                                                ? 'ring-2 ring-blue-500/70 shadow-[0_25px_60px_-15px_rgba(37,99,235,0.22)]' 
+                                                : pIdx === 0 
+                                                    ? 'shadow-[0_25px_60px_-15px_rgba(0,0,0,0.18)]' 
+                                                    : 'shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)]'
                                         } overflow-hidden rounded-xs origin-top-left`} 
                                         style={{ 
                                             transform: `scale(${scale})`,
@@ -1144,7 +1296,7 @@ export default function EditorPage() {
                                                 className={`w-full h-full relative ${paper.css} transition-transform duration-200`} 
                                                 style={{
                                                     ...paper.style,
-                                                    ...(perspectiveWarp ? {
+                                                    ...(effectivePerspective ? {
                                                         transform: `perspective(1000px) rotateX(${pageTiltX}deg) rotateY(${pageTiltY}deg) scale(0.92)`,
                                                         transformOrigin: 'center center',
                                                         boxShadow: '0 25px 60px -15px rgba(0,0,0,0.32), 0 0 0 1px rgba(0,0,0,0.06)',
@@ -1160,29 +1312,15 @@ export default function EditorPage() {
 
                                                 {/* Physical Camera & Environment Overlay */}
                                                 <CameraOverlay
-                                                    phoneShadow={phoneShadow}
-                                                    phoneShadowAngle={phoneShadowAngle}
-                                                    phoneShadowIntensity={phoneShadowIntensity}
-                                                    lightingMode={lightingMode}
-                                                    lightingWarmth={lightingWarmth}
-                                                    paperCrease={paperCrease}
-                                                    sensorNoise={sensorNoise}
+                                                    phoneShadow={effectiveShadow}
+                                                    phoneShadowAngle={effectiveShadowAngle}
+                                                    phoneShadowIntensity={effectiveShadowIntensity}
+                                                    lightingMode={effectiveLighting}
+                                                    lightingWarmth={effectiveWarmth}
+                                                    paperCrease={effectiveCrease}
+                                                    sensorNoise={effectiveNoise}
+                                                    coffeeStain={effectiveCoffeeStain}
                                                 />
-
-                                                {/* Coffee Stain */}
-                                                {showCoffeeStain && pIdx === 0 && (
-                                                    <div 
-                                                        className="absolute -top-10 -right-10 pointer-events-none opacity-[0.09] blur-[0.5px] z-30"
-                                                        style={{ 
-                                                            transform: `rotate(${((randomSeed * 137) % 360)}deg) scale(${0.85 + ((randomSeed * 29) % 30) / 100})` 
-                                                        }}
-                                                    >
-                                                        <svg width="300" height="300" viewBox="0 0 200 200">
-                                                            <path fill="#78350f" d="M100 20C55.8 20 20 55.8 20 100s35.8 80 80 80 80-35.8 80-80S144.2 20 100 20zm0 145c-35.9 0-65-29.1-65-65s29.1-65 65-65 65 29.1 65 65-29.1 65-65 65z"/>
-                                                            <circle cx="100" cy="100" r="55" fill="#78350f" opacity="0.3"/>
-                                                        </svg>
-                                                    </div>
-                                                )}
 
                                                 {/* Margin Annotation */}
                                                 {marginNote && pIdx === 0 && (
@@ -1251,23 +1389,60 @@ export default function EditorPage() {
                                                             }} 
                                                             className="w-full whitespace-nowrap relative group cursor-text"
                                                         >
-                                                            {/* Smart Margin Indexing Marker (rendered before the red margin line) */}
-                                                            {line.marginIndex && (
-                                                                <span 
-                                                                    className="absolute text-center font-bold select-none pointer-events-none"
+                                                            {/* Interactive Left Margin Slot (Empty or Indexed) */}
+                                                            {marginLeft >= 40 && (
+                                                                <div 
+                                                                    className="absolute top-0 flex items-center justify-center group/margin cursor-pointer transition-colors z-20"
                                                                     style={{
                                                                         left: `-${marginLeft}px`,
                                                                         width: `${Math.min(65, marginLeft)}px`,
-                                                                        textAlign: 'center',
-                                                                        color: color,
-                                                                        fontFamily: getFontFamilyCss(font),
-                                                                        fontSize: fontSize * 0.95,
-                                                                        opacity: 0.88,
+                                                                        height: `${paper.lineHeight}px`,
                                                                     }}
-                                                                    title="Question / Index Tag"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        if (editingMargin?.pIdx === pIdx && editingMargin?.lIdx === lIdx) return;
+                                                                        startMarginEdit(pIdx, lIdx, line.marginIndex);
+                                                                    }}
+                                                                    title={line.marginIndex ? `Margin: ${line.marginIndex} (click to edit)` : 'Click to write Question / Answer # in margin'}
                                                                 >
-                                                                    {line.marginIndex}
-                                                                </span>
+                                                                    {editingMargin?.pIdx === pIdx && editingMargin?.lIdx === lIdx ? (
+                                                                        <input
+                                                                            ref={marginInputRef}
+                                                                            type="text"
+                                                                            value={marginInputText}
+                                                                            onChange={(e) => setMarginInputText(e.target.value)}
+                                                                            onKeyDown={(e) => {
+                                                                                if (e.key === 'Enter') {
+                                                                                    e.preventDefault();
+                                                                                    saveMarginEdit(pIdx, lIdx);
+                                                                                } else if (e.key === 'Escape') {
+                                                                                    e.preventDefault();
+                                                                                    cancelMarginEdit();
+                                                                                }
+                                                                            }}
+                                                                            onBlur={() => saveMarginEdit(pIdx, lIdx)}
+                                                                            placeholder="Q1."
+                                                                            className="w-[90%] text-center text-xs font-bold bg-white/95 text-blue-900 border border-blue-500 rounded px-1 py-0.5 shadow-sm outline-none font-mono"
+                                                                            autoFocus
+                                                                        />
+                                                                    ) : line.marginIndex ? (
+                                                                        <span 
+                                                                            className="w-full text-center font-bold select-none group-hover/margin:text-blue-700 transition-colors"
+                                                                            style={{
+                                                                                color: color,
+                                                                                fontFamily: getFontFamilyCss(font),
+                                                                                fontSize: fontSize * 0.95,
+                                                                                opacity: 0.92,
+                                                                            }}
+                                                                        >
+                                                                            {line.marginIndex}
+                                                                        </span>
+                                                                    ) : (
+                                                                        <span className="opacity-0 group-hover/margin:opacity-60 text-[10px] text-neutral-400 font-mono select-none px-1 rounded hover:bg-neutral-200/50">
+                                                                            + Q.
+                                                                        </span>
+                                                                    )}
+                                                                </div>
                                                             )}
 
                                                             {/* Direct On-Paper Inline Input */}
@@ -1448,12 +1623,19 @@ export default function EditorPage() {
                 tiltY={tiltY}
                 randomTilt={randomTilt}
                 smartMarginIndexing={smartMarginIndexing}
-                showCoffeeStain={showCoffeeStain}
+                coffeeStain={coffeeStain}
+                pageEffectOverrides={pageEffectOverrides}
                 showStickyNote={showStickyNote}
                 stickyNoteText={stickyNoteText}
                 marginNote={marginNote}
                 randomSeed={randomSeed}
                 wordCount={wordCount}
+            />
+
+            {/* Creator Credits Modal */}
+            <CreatorModal 
+                isOpen={showCreatorModal} 
+                onClose={() => setShowCreatorModal(false)} 
             />
 
             <HistoryModal 

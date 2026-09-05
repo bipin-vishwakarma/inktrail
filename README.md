@@ -221,6 +221,22 @@ inktrail/
 
 ---
 
+## 👨‍💻 Creator & Author
+
+<div align="center">
+  <img src="https://avatars.githubusercontent.com/u/151464007?v=4" alt="Bipin Vishwakarma" width="90" style="border-radius: 50%; border: 3px solid #3b82f6;" />
+  <br />
+  <h3>Bipin Vishwakarma</h3>
+  <p><strong>Creator & Lead Engineer • InkTrail</strong><br />
+  Biomedical & AI Engineer at <strong>UPES Dehradun</strong>. Passionate about physics-accurate analog document simulations, human error modeling, and privacy-first web tools for students.</p>
+
+  <a href="https://github.com/bipin-vishwakarma"><img src="https://img.shields.io/badge/GitHub-Profile-181717?style=for-the-badge&logo=github" alt="GitHub" /></a>
+  <a href="https://instagram.com/bipin_vishwakarma"><img src="https://img.shields.io/badge/Instagram-@bipin__vishwakarma-E4405F?style=for-the-badge&logo=instagram&logoColor=white" alt="Instagram" /></a>
+  <a href="https://www.linkedin.com/in/bipin-vishwakarma-b407313b8"><img src="https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin" alt="LinkedIn" /></a>
+</div>
+
+---
+
 ## 📄 License
 
 This project is open source and available under the [MIT License](LICENSE).

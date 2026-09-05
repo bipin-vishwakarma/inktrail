@@ -1,7 +1,7 @@
 import React from 'react';
 import { useStore } from '../lib/store';
 import type { LightingMode, PaperCrease } from '../types';
-import { Camera, Smartphone, Maximize2 } from 'lucide-react';
+import { Camera, Smartphone, Maximize2, RotateCcw, Dices, Coffee, Copy } from 'lucide-react';
 
 export const CameraPhysicsControls: React.FC = () => {
     const {
@@ -16,7 +16,39 @@ export const CameraPhysicsControls: React.FC = () => {
         paperCrease, setPaperCrease,
         sensorNoise, setSensorNoise,
         randomTilt, setRandomTilt,
+        coffeeStain, setCoffeeStain,
+        activePageIndex,
+        effectScope, setEffectScope,
+        pageEffectOverrides, setPageEffectOverride,
+        applyPageEffectsToAll,
+        resetEffects,
+        randomizeRealism,
     } = useStore();
+
+    // Check if active page has any overrides
+    const currentPageOverrides = pageEffectOverrides[activePageIndex] || {};
+    const effectiveCrease = effectScope === 'current' && currentPageOverrides.paperCrease !== undefined
+        ? currentPageOverrides.paperCrease
+        : paperCrease;
+    const effectiveCoffeeStain = effectScope === 'current' && currentPageOverrides.coffeeStain !== undefined
+        ? currentPageOverrides.coffeeStain
+        : coffeeStain;
+
+    const handleSetCrease = (crease: PaperCrease) => {
+        if (effectScope === 'current') {
+            setPageEffectOverride(activePageIndex, { paperCrease: crease });
+        } else {
+            setPaperCrease(crease);
+        }
+    };
+
+    const handleSetCoffeeStain = (enabled: boolean) => {
+        if (effectScope === 'current') {
+            setPageEffectOverride(activePageIndex, { coffeeStain: enabled });
+        } else {
+            setCoffeeStain(enabled);
+        }
+    };
 
     const lightingModes: { id: LightingMode; label: string; icon: string }[] = [
         { id: 'warm-lamp', label: 'Desk Lamp', icon: '🛋️' },
@@ -40,14 +72,73 @@ export const CameraPhysicsControls: React.FC = () => {
 
     return (
         <div className="space-y-4">
-            <div className="flex items-center justify-between">
-                <label className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-neutral-400">
-                    <Camera size={12} /> Camera & Photo Physics
-                </label>
-                <span className="text-[9px] font-bold px-2 py-0.5 bg-indigo-100 text-indigo-800 rounded-full">
-                    Realistic Photo
-                </span>
+            {/* Header & Quick Action Buttons */}
+            <div className="flex items-center justify-between pb-2 border-b border-black/5">
+                <div className="flex items-center gap-1.5">
+                    <Camera size={13} className="text-neutral-500" />
+                    <span className="text-[11px] font-black uppercase tracking-wider text-neutral-600">Camera & Effects</span>
+                </div>
+                <div className="flex items-center gap-1">
+                    <button
+                        type="button"
+                        onClick={randomizeRealism}
+                        title="Roll organic human realism (angles, jitter, natural flaws)"
+                        className="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200/60 rounded-lg text-[10px] font-bold flex items-center gap-1 transition-all cursor-pointer shadow-2xs"
+                    >
+                        <Dices size={12} className="text-amber-700" />
+                        <span>Randomize 🎲</span>
+                    </button>
+                    <button
+                        type="button"
+                        onClick={resetEffects}
+                        title="Reset all camera & visual effects to defaults"
+                        className="px-2 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-600 rounded-lg text-[10px] font-bold flex items-center gap-1 transition-all cursor-pointer"
+                    >
+                        <RotateCcw size={11} />
+                        <span>Reset</span>
+                    </button>
+                </div>
             </div>
+
+            {/* Scope Pill: Current Page vs All Pages */}
+            <div className="bg-neutral-100 p-1 rounded-xl flex items-center gap-1 text-[10px] font-bold">
+                <button
+                    type="button"
+                    onClick={() => setEffectScope('all')}
+                    className={`flex-1 py-1.5 rounded-lg text-center transition-all ${
+                        effectScope === 'all'
+                            ? 'bg-white text-neutral-900 shadow-2xs'
+                            : 'text-neutral-500 hover:text-neutral-800'
+                    }`}
+                >
+                    📚 Apply to All Pages
+                </button>
+                <button
+                    type="button"
+                    onClick={() => setEffectScope('current')}
+                    className={`flex-1 py-1.5 rounded-lg text-center transition-all ${
+                        effectScope === 'current'
+                            ? 'bg-white text-indigo-700 shadow-2xs'
+                            : 'text-neutral-500 hover:text-neutral-800'
+                    }`}
+                >
+                    📄 Page {activePageIndex + 1} Only
+                </button>
+            </div>
+
+            {effectScope === 'current' && Object.keys(currentPageOverrides).length > 0 && (
+                <div className="flex items-center justify-between px-2.5 py-1.5 bg-indigo-50/70 border border-indigo-100 rounded-xl text-[10px]">
+                    <span className="text-indigo-800 font-medium">Page {activePageIndex + 1} has custom overrides</span>
+                    <button
+                        type="button"
+                        onClick={() => applyPageEffectsToAll(activePageIndex)}
+                        className="text-indigo-600 hover:text-indigo-900 font-bold flex items-center gap-1"
+                        title="Apply this page's custom effects to all other pages"
+                    >
+                        <Copy size={11} /> Apply to All
+                    </button>
+                </div>
+            )}
 
             {/* 1. Phone Cast Shadow Toggle & Controls */}
             <div className="bg-neutral-50 p-3 rounded-2xl space-y-3">
@@ -217,9 +308,9 @@ export const CameraPhysicsControls: React.FC = () => {
                         <button
                             key={c.id}
                             type="button"
-                            onClick={() => setPaperCrease(c.id)}
+                            onClick={() => handleSetCrease(c.id)}
                             className={`py-1.5 px-1 rounded-lg text-[10px] font-bold transition-all ${
-                                paperCrease === c.id
+                                effectiveCrease === c.id
                                     ? 'bg-white text-neutral-900 shadow-xs'
                                     : 'text-neutral-500 hover:text-neutral-800'
                             }`}
@@ -230,7 +321,26 @@ export const CameraPhysicsControls: React.FC = () => {
                 </div>
             </div>
 
-            {/* 5. Sensor Noise & Vignette */}
+            {/* 5. Realistic Coffee Mug Ring Stain Toggle */}
+            <div className="bg-amber-50/60 border border-amber-200/50 p-3 rounded-2xl">
+                <label className="flex items-center justify-between cursor-pointer">
+                    <div className="flex items-center gap-2">
+                        <Coffee size={14} className="text-amber-700" />
+                        <div>
+                            <span className="text-[11px] font-bold text-amber-950 block">Coffee Cup Ring Stain</span>
+                            <span className="text-[9px] text-amber-800/70 block">Authentic dried capillary edges & splash drops</span>
+                        </div>
+                    </div>
+                    <input
+                        type="checkbox"
+                        checked={effectiveCoffeeStain}
+                        onChange={(e) => handleSetCoffeeStain(e.target.checked)}
+                        className="w-4 h-4 rounded border-amber-300 text-amber-800 focus:ring-0 cursor-pointer"
+                    />
+                </label>
+            </div>
+
+            {/* 6. Sensor Noise & Vignette */}
             <div>
                 <div className="flex justify-between text-[10px] font-bold text-neutral-400 uppercase tracking-tighter mb-1.5">
                     <span>Camera Sensor Noise (Grain)</span>
