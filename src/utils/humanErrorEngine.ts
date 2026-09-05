@@ -230,6 +230,45 @@ const TYPO_MAP: Record<string, string> = {
     tomorrow: 'tommorrow',
     truly: 'truely',
     weird: 'wierd',
+    experiment: 'experiement',
+    laboratory: 'labratory',
+    hypothesis: 'hypotesis',
+    analysis: 'analisys',
+    conclusion: 'conclution',
+    reference: 'referance',
+    structure: 'structur',
+    pressure: 'presure',
+    temperature: 'temprature',
+    velocity: 'volocity',
+    frequency: 'frequencey',
+    circuit: 'circut',
+    current: 'currunt',
+    voltage: 'volatage',
+    chemical: 'chemcial',
+    reaction: 'reacton',
+    element: 'elemant',
+    compound: 'compund',
+    physics: 'phsics',
+    biology: 'bioligy',
+    science: 'sciance',
+    mathematics: 'mathamatics',
+    algorithm: 'algoritm',
+    computer: 'computre',
+    software: 'softwear',
+    system: 'systam',
+    diagram: 'daigram',
+    theory: 'theorey',
+    definition: 'defenition',
+    principle: 'principal',
+    constant: 'constent',
+    variable: 'varible',
+    graph: 'graaph',
+    measure: 'measur',
+    number: 'numbr',
+    integer: 'intger',
+    vector: 'vecter',
+    matrix: 'matirx',
+    theorem: 'theroem',
 };
 
 // Keyboard adjacency map for realistic slip typos (QWERTY layout)
@@ -415,55 +454,101 @@ export function generateScribblePath(
     style: StrikeStyle,
     seed: string
 ): string {
+    const rng = mulberry32(fastStringHash(seed));
     const w = Math.max(width, 24);
-    const h = Math.max(height, 16);
-    const centerY = h * 0.52;
+    const h = Math.max(height, 18);
+    // Center directly on lowercase letter x-height
+    const centerY = h * 0.66;
+    const startX = -3 - rng() * 3;
+    const endX = w + 3 + rng() * 4;
+    const totalSpan = endX - startX;
 
     switch (style) {
         case 'single': {
-            // A swift, slightly angled horizontal strike
-            const y1 = centerY + (getDeterministicRandom(seed + 's1') - 0.5) * 6;
-            const y2 = centerY + (getDeterministicRandom(seed + 's2') - 0.5) * 6;
-            return `M -3 ${y1} Q ${w * 0.5} ${centerY + (getDeterministicRandom(seed + 'sc') - 0.5) * 4}, ${w + 4} ${y2}`;
+            // Swift diagonal pen slash with natural wrist momentum & flick exit
+            const y1 = centerY + (rng() - 0.4) * (h * 0.24);
+            const y2 = centerY - (rng() - 0.3) * (h * 0.28);
+            const cpX = startX + totalSpan * (0.45 + (rng() - 0.5) * 0.12);
+            const cpY = centerY + (rng() - 0.5) * 4;
+            return `M ${startX.toFixed(1)} ${y1.toFixed(1)} Q ${cpX.toFixed(1)} ${cpY.toFixed(1)} ${endX.toFixed(1)} ${y2.toFixed(1)}`;
         }
 
         case 'double': {
-            // Two rapid parallel horizontal strikes
-            const y1 = centerY - 3 + (getDeterministicRandom(seed + 'd1') - 0.5) * 3;
-            const y2 = centerY + 3 + (getDeterministicRandom(seed + 'd2') - 0.5) * 3;
-            return `M -2 ${y1} L ${w + 3} ${y1 + (getDeterministicRandom(seed + 'd3') - 0.5) * 4} M -3 ${y2} L ${w + 4} ${y2 + (getDeterministicRandom(seed + 'd4') - 0.5) * 4}`;
+            // Two rapid parallel horizontal strikes slicing through letters
+            const gap = 3.5 + rng() * 2;
+            const y1A = centerY - gap + (rng() - 0.5) * 2;
+            const y2A = centerY - gap + (rng() - 0.5) * 2;
+            const y1B = centerY + gap + (rng() - 0.5) * 2;
+            const y2B = centerY + gap + (rng() - 0.5) * 2;
+            const cpYA = (y1A + y2A) * 0.5 + (rng() - 0.5) * 2;
+            const cpYB = (y1B + y2B) * 0.5 + (rng() - 0.5) * 2;
+            return `M ${startX.toFixed(1)} ${y1A.toFixed(1)} Q ${(startX + totalSpan * 0.5).toFixed(1)} ${cpYA.toFixed(1)} ${endX.toFixed(1)} ${y2A.toFixed(1)} ` +
+                   `M ${(startX - 1).toFixed(1)} ${y1B.toFixed(1)} Q ${(startX + totalSpan * 0.52).toFixed(1)} ${cpYB.toFixed(1)} ${(endX + 1).toFixed(1)} ${y2B.toFixed(1)}`;
         }
 
         case 'dense': {
-            // A dense, vigorous back-and-forth blackout scribble
-            const loops = Math.max(6, Math.floor(w / 7));
-            let path = `M -2 ${centerY}`;
-            const step = w / loops;
-            for (let i = 0; i <= loops; i++) {
-                const x = i * step;
-                const topY = centerY - (h * 0.38) + (getDeterministicRandom(seed + 'dt' + i) - 0.5) * 4;
-                const botY = centerY + (h * 0.38) + (getDeterministicRandom(seed + 'db' + i) - 0.5) * 4;
-                if (i % 2 === 0) {
-                    path += ` Q ${x - step * 0.2} ${topY}, ${x} ${topY}`;
-                } else {
-                    path += ` Q ${x - step * 0.2} ${botY}, ${x} ${botY}`;
-                }
+            // Frantic blackout scratch: overlapping loops that actually obscure the mistake
+            const passes = Math.max(8, Math.floor(totalSpan / 5));
+            const step = totalSpan / passes;
+            let d = `M ${startX.toFixed(1)} ${centerY.toFixed(1)}`;
+            for (let i = 0; i <= passes; i++) {
+                const x = startX + i * step + (rng() - 0.5) * 1.5;
+                const topY = centerY - (h * 0.28) + (rng() - 0.5) * 3;
+                const botY = centerY + (h * 0.28) + (rng() - 0.5) * 3;
+                const y = i % 2 === 0 ? topY : botY;
+                const cpx = x - step * 0.4 + (rng() - 0.5) * 2;
+                d += ` Q ${cpx.toFixed(1)} ${y.toFixed(1)}, ${x.toFixed(1)} ${y.toFixed(1)}`;
             }
-            return path;
+            return d;
+        }
+
+        case 'coil': {
+            // Continuous forward-moving elliptical loops (spring / coil scratch)
+            const loops = Math.max(5, Math.floor(totalSpan / 8));
+            const step = totalSpan / loops;
+            let d = `M ${startX.toFixed(1)} ${(centerY + 1).toFixed(1)}`;
+            for (let i = 0; i < loops; i++) {
+                const xBase = startX + i * step;
+                const topY = centerY - (h * 0.26) + (rng() - 0.5) * 2.5;
+                const botY = centerY + (h * 0.26) + (rng() - 0.5) * 2.5;
+                const xAdv = xBase + step;
+                d += ` C ${(xBase + step * 0.7).toFixed(1)} ${topY.toFixed(1)}, ${(xAdv + step * 0.2).toFixed(1)} ${(centerY - 2).toFixed(1)}, ${xAdv.toFixed(1)} ${botY.toFixed(1)}`;
+                d += ` S ${(xBase + step * 0.2).toFixed(1)} ${centerY.toFixed(1)}, ${xAdv.toFixed(1)} ${(centerY + 1).toFixed(1)}`;
+            }
+            return d;
+        }
+
+        case 'zigzag': {
+            // Sharp, erratic angular scratch
+            const points = Math.max(6, Math.floor(totalSpan / 7));
+            const step = totalSpan / points;
+            let d = `M ${startX.toFixed(1)} ${centerY.toFixed(1)}`;
+            for (let i = 1; i <= points; i++) {
+                const x = startX + i * step + (rng() - 0.5) * 2;
+                const yOffset = (i % 2 === 0 ? -1 : 1) * (h * 0.26 + (rng() - 0.5) * 3);
+                d += ` L ${x.toFixed(1)} ${(centerY + yOffset).toFixed(1)}`;
+            }
+            return d;
         }
 
         case 'wavy':
         default: {
-            // Natural wavy back-and-forth loops
-            const loops = Math.max(4, Math.floor(w / 12));
-            let path = `M -4 ${centerY}`;
-            const step = w / loops;
-            for (let i = 0; i <= loops; i++) {
-                const x = i * step;
-                const yOffset = (i % 2 === 0 ? -1 : 1) * (h * 0.28 + getDeterministicRandom(seed + 'w' + i) * 3);
-                path += ` S ${x - step * 0.5} ${centerY + yOffset}, ${x} ${centerY + (i % 2 === 0 ? 2 : -2)}`;
+            // Natural undulating wave across the word with varied amplitude
+            const waves = Math.max(4, Math.floor(totalSpan / 12));
+            const step = totalSpan / waves;
+            let d = `M ${startX.toFixed(1)} ${(centerY + (rng() - 0.5) * 2).toFixed(1)}`;
+            for (let i = 1; i <= waves; i++) {
+                const x = startX + i * step;
+                const prevX = startX + (i - 1) * step;
+                const ySign = i % 2 === 0 ? 1 : -1;
+                const amp = (h * 0.22) + (rng() - 0.5) * 2.5;
+                const cp1x = prevX + step * 0.33;
+                const cp1y = centerY + ySign * amp;
+                const cp2x = prevX + step * 0.66;
+                const cp2y = centerY - ySign * amp;
+                d += ` C ${cp1x.toFixed(1)} ${cp1y.toFixed(1)}, ${cp2x.toFixed(1)} ${cp2y.toFixed(1)}, ${x.toFixed(1)} ${centerY.toFixed(1)}`;
             }
-            return path;
+            return d;
         }
     }
 }

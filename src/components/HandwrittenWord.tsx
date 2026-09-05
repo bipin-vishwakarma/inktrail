@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { generateScribblePath, fastStringHash, mulberry32, getFontWidthRatio, getFontFamilyCss, type WordToken } from '../utils/humanErrorEngine';
+import { generateScribblePath, fastStringHash, mulberry32, getFontWidthRatio, getFontFamilyCss, measureWordWidth, type WordToken } from '../utils/humanErrorEngine';
 
 interface HandwrittenWordProps {
     token: WordToken;
@@ -75,10 +75,12 @@ const HandwrittenWordComponent: React.FC<HandwrittenWordProps> = ({
     const lowInkDrop = effectiveFade * 0.46;
     const finalWordOpacity = Math.max(0.25, baseOpacity - lowInkDrop);
 
-    // Character length approximation for SVG scribble dimensions using font metrics
+    // Accurate word measurement for SVG scribble dimensions using canvas metrics
     const fontRatio = getFontWidthRatio(fontFamily);
-    const approxWidth = Math.max(token.text.length * (fontSize * fontRatio * 1.15), 20);
-    const approxHeight = fontSize * 1.1;
+    const approxWidth = useMemo(() => {
+        return Math.max(measureWordWidth(token.text, fontFamily, fontSize), token.text.length * (fontSize * fontRatio * 0.95), 20);
+    }, [token.text, fontFamily, fontSize, fontRatio]);
+    const approxHeight = fontSize * 1.15;
 
     // Generate SVG path for scribble if word is struck
     const scribblePath = useMemo(() => {
@@ -150,7 +152,7 @@ const HandwrittenWordComponent: React.FC<HandwrittenWordProps> = ({
                         d={scribblePath}
                         fill="none"
                         stroke={color}
-                        strokeWidth={Math.max(1.8, fontSize * 0.075)}
+                        strokeWidth={Math.max(1.9, fontSize * 0.078)}
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         opacity={0.92}
@@ -158,34 +160,42 @@ const HandwrittenWordComponent: React.FC<HandwrittenWordProps> = ({
                 </svg>
             )}
 
-            {/* Caret Insertion Correction Mark */}
+            {/* Authentic Hand-Drawn Caret Insertion Mark & Replacement Word */}
             {token.caretCorrection && (
                 <span
-                    className="absolute pointer-events-none whitespace-nowrap"
+                    className="absolute pointer-events-none whitespace-nowrap z-20 flex flex-col items-center"
                     style={{
                         left: '50%',
-                        bottom: `${approxHeight * 0.82}px`,
+                        bottom: `${approxHeight * 0.78}px`,
                         transform: 'translateX(-50%)',
-                        fontFamily: fontCss,
-                        fontSize: `${fontSize * 0.72}px`,
-                        color,
                         lineHeight: 1,
                     }}
                 >
-                    {/* Handwritten Caret Icon */}
+                    {/* Handwritten Replacement Word floating above line */}
                     <span
-                        className="inline-block font-sans font-bold"
                         style={{
-                            fontSize: `${fontSize * 0.75}px`,
-                            marginRight: '2px',
-                            verticalAlign: '-2px',
+                            fontFamily: fontCss,
+                            fontSize: `${fontSize * 0.78}px`,
+                            color,
+                            transform: 'rotate(-2.5deg)',
+                            fontWeight: 600,
+                            marginBottom: '1px',
                         }}
                     >
-                        ^
-                    </span>
-                    <span className="underline decoration-wavy decoration-1 opacity-90">
                         {token.caretCorrection}
                     </span>
+                    {/* Hand-Drawn Vector Ink Caret Mark */}
+                    <svg width="12" height="7" viewBox="0 0 12 7" className="overflow-visible">
+                        <path
+                            d="M 1 6 L 6 1 L 11 6"
+                            fill="none"
+                            stroke={color}
+                            strokeWidth={Math.max(1.7, fontSize * 0.065)}
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            opacity={0.88}
+                        />
+                    </svg>
                 </span>
             )}
         </span>

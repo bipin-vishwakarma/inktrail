@@ -16,8 +16,10 @@ export const HumanErrorsControls: React.FC = () => {
     } = useStore();
 
     const strikeOptions: { id: StrikeStyle; label: string; icon: string }[] = [
+        { id: 'dense', label: 'Blackout', icon: '⬛' },
+        { id: 'coil', label: 'Coil Spring', icon: '➰' },
         { id: 'wavy', label: 'Wavy', icon: '〰️' },
-        { id: 'dense', label: 'Dense', icon: '⬛' },
+        { id: 'zigzag', label: 'Zigzag', icon: '⚡' },
         { id: 'single', label: 'Single', icon: '➖' },
         { id: 'double', label: 'Double', icon: '═' },
     ];
@@ -58,20 +60,20 @@ export const HumanErrorsControls: React.FC = () => {
                 <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-tighter mb-1.5 block">
                     Pen Scratch Style
                 </span>
-                <div className="grid grid-cols-4 gap-1 bg-neutral-100 p-1 rounded-xl">
+                <div className="grid grid-cols-3 gap-1.5 bg-neutral-100 p-1.5 rounded-xl">
                     {strikeOptions.map((opt) => (
                         <button
                             key={opt.id}
                             type="button"
                             onClick={() => setStrikeStyle(opt.id)}
-                            className={`py-1.5 px-1 rounded-lg text-[10px] font-bold flex flex-col items-center gap-0.5 transition-all ${
+                            className={`py-2 px-1 rounded-lg text-[10px] font-bold flex flex-col items-center gap-1 transition-all ${
                                 strikeStyle === opt.id
                                     ? 'bg-white text-neutral-900 shadow-xs'
-                                    : 'text-neutral-500 hover:text-neutral-800'
+                                    : 'text-neutral-500 hover:text-neutral-800 hover:bg-neutral-200/50'
                             }`}
                         >
-                            <span className="text-xs">{opt.icon}</span>
-                            <span className="truncate">{opt.label}</span>
+                            <span className="text-sm">{opt.icon}</span>
+                            <span className="truncate text-[10px]">{opt.label}</span>
                         </button>
                     ))}
                 </div>
