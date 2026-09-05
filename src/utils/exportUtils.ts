@@ -37,8 +37,6 @@ async function capturePage(element: HTMLElement, format: 'jpeg' | 'png'): Promis
         height: 1131, // Force standard height (A4 ratio) for export
         backgroundColor: '#ffffff',
         style: {
-            transform: 'none',
-            boxShadow: 'none',
             margin: '0',
             display: 'block',
             position: 'relative'

@@ -37,8 +37,9 @@ function InnerApp() {
     <Suspense fallback={<PageLoader />}>
       <Routes>
         <Route path="/" element={<RootLayout />}>
-          <Route index element={<LandingPage />} />
+          <Route index element={<EditorPage />} />
           <Route path="editor" element={<EditorPage />} />
+          <Route path="landing" element={<LandingPage />} />
           
           {/* Legal Pages */}
           <Route path="privacy" element={<PrivacyPolicy />} />

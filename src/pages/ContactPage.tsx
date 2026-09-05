@@ -5,7 +5,7 @@ export default function ContactPage() {
     return (
         <PageLayout 
             title="Contact & Support" 
-            subtitle="Get support, report issues, or suggest new handwriting features for PaperTrail."
+            subtitle="Get support, report issues, or suggest new handwriting features for InkTrail."
         >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 not-prose">
                 <div className="bg-white p-8 rounded-2xl border border-neutral-100 shadow-sm text-center">

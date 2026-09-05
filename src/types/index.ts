@@ -14,7 +14,7 @@ export type PaperOrientation = 'portrait' | 'landscape';
 
 export type StrikeStyle = 'wavy' | 'dense' | 'single' | 'double';
 export type LightingMode = 'flat' | 'warm-lamp' | 'cool-daylight' | 'scanner-contrast' | 'flash';
-export type PaperCrease = 'none' | 'center-h' | 'cross' | 'corner-fold';
+export type PaperCrease = 'none' | 'center-h' | 'cross' | 'corner-fold' | 'letter-tri-fold' | 'crumpled' | 'spiral-holes' | 'diagonal-crease' | 'vintage-worn';
 export type PenType = 'ballpoint-blue' | 'gel-black' | 'fountain-blue' | 'pencil' | 'red-pen' | 'custom';
 
 export type ToastType = 'success' | 'error' | 'info' | 'warning';
@@ -72,6 +72,8 @@ export interface AppState {
     paperCrease: PaperCrease;
     sensorNoise: number;
     penType: PenType;
+    randomTilt: boolean;
+    smartMarginIndexing: boolean;
 
     // UI State
     isSidebarCollapsed: boolean;
@@ -139,6 +141,8 @@ export interface AppState {
     setPaperCrease: (crease: PaperCrease) => void;
     setSensorNoise: (val: number) => void;
     setPenType: (pen: PenType) => void;
+    setRandomTilt: (enabled: boolean) => void;
+    setSmartMarginIndexing: (enabled: boolean) => void;
 
     // Human Error & Fatigue Actions
     setCharJitter: (val: number) => void;
@@ -172,6 +176,7 @@ export interface AppState {
     applyPreset: (settings: Partial<AppState>) => void;
     addToHistory: (item: HistoryItem) => void;
 
+    resetStyles: () => void;
     reset: () => void;
 }
 

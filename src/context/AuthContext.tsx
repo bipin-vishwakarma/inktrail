@@ -23,19 +23,20 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(() => {
-        const storedUser = localStorage.getItem('papertrail_user');
+        const storedUser = localStorage.getItem('inktrail_user') || localStorage.getItem('papertrail_user');
         return storedUser ? JSON.parse(storedUser) : null;
     });
     const [isAuthModalOpen, setAuthModalOpen] = useState(false);
     const [isLoading] = useState(false);
 
     const login = () => {
-        // PaperTrail is 100% free and client-side — no Google login required
+        // InkTrail is 100% free and client-side — no Google login required
         setAuthModalOpen(false);
     };
 
     const logout = () => {
         setUser(null);
+        localStorage.removeItem('inktrail_user');
         localStorage.removeItem('papertrail_user');
     };
 

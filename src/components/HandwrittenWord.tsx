@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { generateScribblePath, getDeterministicRandom, type WordToken } from '../utils/humanErrorEngine';
+import { generateScribblePath, fastStringHash, mulberry32, getFontWidthRatio, getFontFamilyCss, type WordToken } from '../utils/humanErrorEngine';
 
 interface HandwrittenWordProps {
     token: WordToken;
@@ -19,7 +19,7 @@ interface HandwrittenWordProps {
     onClick?: () => void;
 }
 
-export const HandwrittenWord: React.FC<HandwrittenWordProps> = ({
+const HandwrittenWordComponent: React.FC<HandwrittenWordProps> = ({
     token,
     pageIndex,
     lineIndex,
@@ -36,36 +36,43 @@ export const HandwrittenWord: React.FC<HandwrittenWordProps> = ({
     smudge,
     onClick,
 }) => {
-    const seed = `${pageIndex}-${lineIndex}-${wordIndex}-${token.text}-${randomSeed}`;
+    // Fast integer seed - 0 string concatenation in the loop
+    const seedString = `${pageIndex}_${lineIndex}_${wordIndex}_${token.text}_${randomSeed}`;
+    const intSeed = fastStringHash(seedString);
+    const rng = mulberry32(intSeed);
 
-    // Word-level jitter
-    const wordY = (getDeterministicRandom(seed + 'wy') - 0.5) * jitter * 2.8;
-    const wordRot = (getDeterministicRandom(seed + 'wr') - 0.5) * jitter * 1.6;
+    // Word-level organic jitter
+    const wordY = (rng() - 0.5) * jitter * 2.8;
+    const wordRot = (rng() - 0.5) * jitter * 1.6;
 
     // Progressive fatigue: as lines go down the page, fatigue increases slant and baseline drift
     const fatigueProgress = totalLines > 0 ? lineIndex / totalLines : 0;
-    const fatigueSag = fatigue * fatigueProgress * (getDeterministicRandom(seed + 'fatigue') * 2.5 - 0.5);
-    const fatigueSlant = fatigue * fatigueProgress * (getDeterministicRandom(seed + 'fatslant') * 1.8 - 0.9);
+    const fatigueSag = fatigue * fatigueProgress * (rng() * 2.5 - 0.5);
+    const fatigueSlant = fatigue * fatigueProgress * (rng() * 1.8 - 0.9);
 
     // Opacity / pen pressure
-    const baseOpacity = 1 - getDeterministicRandom(seed + 'op') * (1 - pressure) * 0.35;
-    const smudgeFilter = smudge > 0 ? `blur(${getDeterministicRandom(seed + 'sm') * smudge * 0.4}px)` : 'none';
+    const baseOpacity = 1 - rng() * (1 - pressure) * 0.35;
+    const smudgeFilter = smudge > 0 ? `blur(${rng() * smudge * 0.35}px)` : 'none';
 
-    // Character length approximation for SVG scribble dimensions
-    const approxWidth = Math.max(token.text.length * (fontSize * 0.55), 20);
+    // Character length approximation for SVG scribble dimensions using font metrics
+    const fontRatio = getFontWidthRatio(fontFamily);
+    const approxWidth = Math.max(token.text.length * (fontSize * fontRatio * 1.15), 20);
     const approxHeight = fontSize * 1.1;
 
     // Generate SVG path for scribble if word is struck
     const scribblePath = useMemo(() => {
         if (!token.isStruck) return '';
-        return generateScribblePath(approxWidth, approxHeight, token.strikeStyle, seed + 'scribble');
-    }, [token.isStruck, token.strikeStyle, approxWidth, approxHeight, seed]);
+        return generateScribblePath(approxWidth, approxHeight, token.strikeStyle, seedString + '_sc');
+    }, [token.isStruck, token.strikeStyle, approxWidth, approxHeight, seedString]);
+
+    const fontCss = getFontFamilyCss(fontFamily);
 
     return (
         <span
             onClick={onClick}
-            className={`inline-block relative whitespace-nowrap ${onClick ? 'cursor-pointer' : ''}`}
+            className={`inline-block relative whitespace-nowrap select-text ${onClick ? 'cursor-pointer' : ''}`}
             style={{
+                fontFamily: fontCss,
                 transform: `translateY(${wordY + fatigueSag}px) rotate(${wordRot + fatigueSlant}deg)`,
                 opacity: baseOpacity,
                 filter: smudgeFilter,
@@ -73,19 +80,20 @@ export const HandwrittenWord: React.FC<HandwrittenWordProps> = ({
                 verticalAlign: 'baseline',
             }}
         >
-            {/* Render Characters with Micro-Jitter */}
+            {/* Render Characters with Micro-Jitter (only when enabled to save DOM nodes) */}
             {charJitter > 0.2 ? (
                 token.text.split('').map((char, cIdx) => {
-                    const cSeed = `${seed}-c${cIdx}`;
-                    const cy = (getDeterministicRandom(cSeed + 'y') - 0.5) * charJitter * 1.8;
-                    const cr = (getDeterministicRandom(cSeed + 'r') - 0.5) * charJitter * 1.2;
-                    const cop = 1 - getDeterministicRandom(cSeed + 'o') * 0.12;
+                    const cRng = mulberry32(intSeed + (cIdx + 1) * 31);
+                    const cy = (cRng() - 0.5) * charJitter * 1.8;
+                    const cr = (cRng() - 0.5) * charJitter * 1.2;
+                    const cop = 1 - cRng() * 0.12;
 
                     return (
                         <span
                             key={cIdx}
                             className="inline-block"
                             style={{
+                                fontFamily: fontCss,
                                 transform: `translateY(${cy}px) rotate(${cr}deg)`,
                                 opacity: cop,
                             }}
@@ -95,7 +103,7 @@ export const HandwrittenWord: React.FC<HandwrittenWordProps> = ({
                     );
                 })
             ) : (
-                <span>{token.text}</span>
+                <span style={{ fontFamily: fontCss }}>{token.text}</span>
             )}
 
             {/* Scribble Strike Overlay */}
@@ -127,7 +135,7 @@ export const HandwrittenWord: React.FC<HandwrittenWordProps> = ({
                         left: '50%',
                         bottom: `${approxHeight * 0.82}px`,
                         transform: 'translateX(-50%)',
-                        fontFamily,
+                        fontFamily: fontCss,
                         fontSize: `${fontSize * 0.72}px`,
                         color,
                         lineHeight: 1,
@@ -152,3 +160,25 @@ export const HandwrittenWord: React.FC<HandwrittenWordProps> = ({
         </span>
     );
 };
+
+export const HandwrittenWord = React.memo(HandwrittenWordComponent, (prev, next) => {
+    return (
+        prev.token.text === next.token.text &&
+        prev.token.isStruck === next.token.isStruck &&
+        prev.token.strikeStyle === next.token.strikeStyle &&
+        prev.token.caretCorrection === next.token.caretCorrection &&
+        prev.pageIndex === next.pageIndex &&
+        prev.lineIndex === next.lineIndex &&
+        prev.wordIndex === next.wordIndex &&
+        prev.totalLines === next.totalLines &&
+        prev.randomSeed === next.randomSeed &&
+        prev.fontFamily === next.fontFamily &&
+        prev.fontSize === next.fontSize &&
+        prev.color === next.color &&
+        prev.jitter === next.jitter &&
+        prev.charJitter === next.charJitter &&
+        prev.fatigue === next.fatigue &&
+        prev.pressure === next.pressure &&
+        prev.smudge === next.smudge
+    );
+});

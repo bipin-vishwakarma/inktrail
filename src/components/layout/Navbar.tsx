@@ -27,10 +27,10 @@ export default function Navbar() {
                     <Link to="/" className="flex items-center gap-2 group relative">
                         <img 
                             src={logo} 
-                            alt="PaperTrail" 
-                            className="w-10 h-10 object-contain group-hover:rotate-12 transition-transform duration-500" 
+                            alt="InkTrail" 
+                            className="w-7 h-7 sm:w-8 sm:h-8 object-contain rounded-xl drop-shadow-sm group-hover:scale-105 transition-transform" 
                         />
-                        <span className="hidden sm:inline text-xl sm:text-2xl font-display font-black text-neutral-900 tracking-tighter">PaperTrail.</span>
+                        <span className="hidden sm:inline text-xl sm:text-2xl font-display font-black text-neutral-900 tracking-tighter">InkTrail.</span>
                     </Link>
 
                     {/* Actions */}

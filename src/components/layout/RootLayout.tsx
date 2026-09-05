@@ -6,6 +6,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export default function RootLayout() {
     const location = useLocation();
+    const isStudioRoute = location.pathname === '/' || location.pathname === '/editor';
+
+    if (isStudioRoute) {
+        return (
+            <div className="w-screen h-screen overflow-hidden bg-[#F3F4F6]">
+                <Outlet />
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen flex flex-col relative isolate">

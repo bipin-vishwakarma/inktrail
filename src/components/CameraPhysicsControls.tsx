@@ -15,6 +15,7 @@ export const CameraPhysicsControls: React.FC = () => {
         lightingWarmth, setLightingWarmth,
         paperCrease, setPaperCrease,
         sensorNoise, setSensorNoise,
+        randomTilt, setRandomTilt,
     } = useStore();
 
     const lightingModes: { id: LightingMode; label: string; icon: string }[] = [
@@ -30,6 +31,11 @@ export const CameraPhysicsControls: React.FC = () => {
         { id: 'center-h', label: 'Half Fold' },
         { id: 'cross', label: 'Quarter Fold' },
         { id: 'corner-fold', label: 'Dog-Ear' },
+        { id: 'letter-tri-fold', label: 'Tri-Fold' },
+        { id: 'crumpled', label: 'Crumpled' },
+        { id: 'spiral-holes', label: 'Spiral Holes' },
+        { id: 'diagonal-crease', label: 'Diagonal' },
+        { id: 'vintage-worn', label: 'Vintage Worn' },
     ];
 
     return (
@@ -141,6 +147,20 @@ export const CameraPhysicsControls: React.FC = () => {
                                 className="w-full h-1 bg-black/5 rounded-full appearance-none accent-neutral-900 cursor-pointer"
                             />
                         </div>
+
+                        {/* Random Handheld Variation Toggle */}
+                        <label className="flex items-center justify-between cursor-pointer pt-2 border-t border-black/5">
+                            <div className="flex flex-col">
+                                <span className="text-[10px] font-bold text-neutral-800">Random Angle per Page</span>
+                                <span className="text-[9px] text-neutral-400">Natural handheld variation for each sheet</span>
+                            </div>
+                            <input
+                                type="checkbox"
+                                checked={randomTilt}
+                                onChange={(e) => setRandomTilt(e.target.checked)}
+                                className="w-3.5 h-3.5 rounded border-black/10 text-neutral-900 focus:ring-0"
+                            />
+                        </label>
                     </div>
                 )}
             </div>
@@ -192,7 +212,7 @@ export const CameraPhysicsControls: React.FC = () => {
                 <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-tighter mb-1.5 block">
                     Paper Folds & Creases
                 </span>
-                <div className="grid grid-cols-4 gap-1 bg-neutral-100 p-1 rounded-xl">
+                <div className="grid grid-cols-3 gap-1 bg-neutral-100 p-1 rounded-xl">
                     {creaseOptions.map((c) => (
                         <button
                             key={c.id}

@@ -1,17 +1,132 @@
 import type { StrikeStyle } from '../types';
 
 /**
- * Deterministic hash function to generate consistent pseudo-random values
- * based on word, line, page, and seed.
+ * Fast 32-bit FNV-1a string hash to convert any string seed to an integer.
+ */
+export function fastStringHash(str: string): number {
+    let h = 0x811c9dc5;
+    for (let i = 0; i < str.length; i++) {
+        h ^= str.charCodeAt(i);
+        h = Math.imul(h, 0x01000193);
+    }
+    return h >>> 0;
+}
+
+/**
+ * Fast 32-bit Mulberry32 PRNG.
+ */
+export function mulberry32(a: number) {
+    return function() {
+        let t = (a += 0x6D2B79F5);
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+}
+
+/**
+ * Deterministic pseudo-random number generator [0, 1) based on a string seed.
  */
 export function getDeterministicRandom(seed: string): number {
-    let hash = 0;
-    for (let i = 0; i < seed.length; i++) {
-        const char = seed.charCodeAt(i);
-        hash = (hash << 5) - hash + char;
-        hash |= 0; // Convert to 32bit integer
+    const intSeed = fastStringHash(seed);
+    const rng = mulberry32(intSeed);
+    return rng();
+}
+
+/**
+ * Relative character width multipliers per handwriting font to ensure accurate word wrapping
+ */
+export const FONT_WIDTH_RATIOS: Record<string, number> = {
+    'Handwriting 1': 0.55,
+    'Handwriting 2': 0.58,
+    'Handwriting 3': 0.54,
+    'Handwriting 4': 0.60,
+    'Handwriting 5': 0.56,
+    'Handwriting 6': 0.55,
+    'Handwriting 7': 0.62,
+    'Handwriting 8': 0.54,
+    'Handwriting 9': 0.52,
+    'Handwriting 10': 0.56,
+    'Handwriting 11': 0.58,
+    'Handwriting 12': 0.57,
+    'Handwriting 13': 0.50,
+    'Handwriting 14': 0.62,
+    'Hindi Handwriting': 0.62,
+    'Hindi Devnagari Hand': 0.62,
+    'Caveat': 0.52,
+    'Indie Flower': 0.58,
+    'Patrick Hand': 0.56,
+    'Homemade Apple': 0.68,
+    'Shadows Into Light': 0.50,
+    'Kalam': 0.62,
+    'Gloria Hallelujah': 0.66,
+    'Reenie Beanie': 0.46,
+    // Hyphenated aliases
+    'handwriting-1': 0.58,
+    'handwriting-2': 0.56,
+    'handwriting-3': 0.52,
+    'handwriting-4': 0.60,
+    'handwriting-5': 0.58,
+    'handwriting-6': 0.54,
+    'handwriting-7': 0.54,
+    'handwriting-8': 0.50,
+    'handwriting-9': 0.58,
+    'handwriting-10': 0.56,
+    'handwriting-11': 0.58,
+    'handwriting-12': 0.57,
+    'handwriting-13': 0.50,
+    'handwriting-14': 0.62,
+};
+
+/**
+ * Ensures font-family is strictly valid CSS with quotes around custom names containing spaces/numbers,
+ * followed by organic cursive and sans-serif fallbacks.
+ */
+export function getFontFamilyCss(font: string): string {
+    if (!font) return '"Caveat", cursive, sans-serif';
+    const cleanFont = font.replace(/['"]/g, '').trim();
+    return `"${cleanFont}", cursive, sans-serif`;
+}
+
+export function getFontWidthRatio(fontFamily: string): number {
+    const clean = fontFamily.replace(/['"]/g, '').trim();
+    return FONT_WIDTH_RATIOS[clean] || FONT_WIDTH_RATIOS[fontFamily] || 0.56;
+}
+
+let measureCanvas: HTMLCanvasElement | null = null;
+let measureCtx: CanvasRenderingContext2D | null = null;
+const widthCache = new Map<string, number>();
+
+export function clearWidthCache(): void {
+    widthCache.clear();
+}
+
+/**
+ * Pixel-accurate word width measurement via Canvas 2D with fallback to font ratios.
+ */
+export function measureWordWidth(word: string, font: string, fontSize: number): number {
+    if (!word) return 0;
+    const fontCss = getFontFamilyCss(font);
+    const key = `${fontCss}:${fontSize}:${word}`;
+    const cached = widthCache.get(key);
+    if (cached !== undefined) return cached;
+
+    if (typeof document !== 'undefined') {
+        if (!measureCtx) {
+            measureCanvas = document.createElement('canvas');
+            measureCtx = measureCanvas.getContext('2d');
+        }
+        if (measureCtx) {
+            measureCtx.font = `${fontSize}px ${fontCss}`;
+            const width = measureCtx.measureText(word).width;
+            if (widthCache.size > 3000) widthCache.clear();
+            widthCache.set(key, width);
+            return width;
+        }
     }
-    return Math.abs(hash % 100000) / 100000;
+
+    const ratio = getFontWidthRatio(font);
+    return word.length * (fontSize * ratio);
 }
 
 export interface WordToken {
@@ -54,26 +169,48 @@ const TYPO_MAP: Record<string, string> = {
     method: 'mehtod',
     process: 'proccess',
     between: 'betewen',
+    sentence: 'sentance',
+    experience: 'experiance',
+    development: 'developement',
+    government: 'goverment',
+    environment: 'enviorment',
+    necessary: 'neccessary',
+    accommodate: 'accomodate',
+    beginning: 'begining',
+    calendar: 'calender',
+    discipline: 'descipline',
+    embarrass: 'embarass',
+    independent: 'independant',
+    knowledge: 'knowlege',
+    occurrence: 'occurance',
+    perseverance: 'perseverence',
+    possession: 'posession',
+    privilege: 'privelege',
+    rhythm: 'rythm',
+    tomorrow: 'tommorrow',
+    truly: 'truely',
+    weird: 'wierd',
 };
 
-// Adjacent QWERTY keyboard keys for typo generation
+// Keyboard adjacency map for realistic slip typos (QWERTY layout)
 const KEYBOARD_ADJACENT: Record<string, string[]> = {
-    a: ['s', 'q', 'z', 'w'],
+    a: ['q', 'w', 's', 'z'],
     b: ['v', 'g', 'h', 'n'],
     c: ['x', 'd', 'f', 'v'],
-    d: ['s', 'e', 'r', 'f', 'x', 'c'],
+    d: ['s', 'e', 'r', 'f', 'c', 'x'],
     e: ['w', 's', 'd', 'r'],
-    f: ['d', 'r', 't', 'g', 'c', 'v'],
-    g: ['f', 't', 'y', 'h', 'v', 'b'],
-    h: ['g', 'y', 'u', 'j', 'b', 'n'],
+    f: ['d', 'r', 't', 'g', 'v', 'c'],
+    g: ['f', 't', 'y', 'h', 'b', 'v'],
+    h: ['g', 'y', 'u', 'j', 'n', 'b'],
     i: ['u', 'j', 'k', 'o'],
-    j: ['h', 'u', 'i', 'k', 'n', 'm'],
+    j: ['h', 'u', 'i', 'k', 'm', 'n'],
     k: ['j', 'i', 'o', 'l', 'm'],
     l: ['k', 'o', 'p'],
     m: ['n', 'j', 'k'],
     n: ['b', 'h', 'j', 'm'],
     o: ['i', 'k', 'l', 'p'],
     p: ['o', 'l'],
+    q: ['w', 'a'],
     r: ['e', 'd', 'f', 't'],
     s: ['a', 'w', 'e', 'd', 'x', 'z'],
     t: ['r', 'f', 'g', 'y'],
@@ -85,24 +222,28 @@ const KEYBOARD_ADJACENT: Record<string, string[]> = {
 };
 
 /**
- * Generate a realistic simulated human typo from a clean word
+ * Generate a realistic simulated human typo from a clean word with punctuation preservation
  */
 export function generateTypo(word: string, seed: string): string {
-    const clean = word.replace(/[^a-zA-Z]/g, '').toLowerCase();
+    const leadingPunct = word.match(/^[^a-zA-Z0-9]+/)?.[0] || '';
+    const trailingPunct = word.match(/[^a-zA-Z0-9]+$/)?.[0] || '';
+    const clean = word.replace(/^[^a-zA-Z0-9]+/, '').replace(/[^a-zA-Z0-9]+$/, '');
+    const cleanLower = clean.toLowerCase();
     if (clean.length < 3) return word;
 
+    let typoWord = clean;
+
     // 1. Check known typo map
-    if (TYPO_MAP[clean]) {
-        const typo = TYPO_MAP[clean];
-        // Preserve original capitalization
-        if (word[0] === word[0].toUpperCase()) {
-            return typo.charAt(0).toUpperCase() + typo.slice(1);
-        }
-        return typo;
+    if (TYPO_MAP[cleanLower]) {
+        const mapped = TYPO_MAP[cleanLower];
+        typoWord = (clean[0] === clean[0].toUpperCase())
+            ? mapped.charAt(0).toUpperCase() + mapped.slice(1)
+            : mapped;
+        return leadingPunct + typoWord + trailingPunct;
     }
 
     const rand = getDeterministicRandom(seed + '-typomode');
-    const chars = word.split('');
+    const chars = clean.split('');
 
     if (rand < 0.4 && chars.length > 3) {
         // Swap adjacent letters
@@ -110,29 +251,29 @@ export function generateTypo(word: string, seed: string): string {
         const temp = chars[idx];
         chars[idx] = chars[idx + 1];
         chars[idx + 1] = temp;
-        return chars.join('');
+        typoWord = chars.join('');
     } else if (rand < 0.7) {
         // Adjacent key typo
         const idx = Math.floor(getDeterministicRandom(seed + '-adj') * chars.length);
-        const origChar = chars[idx].toLowerCase();
-        const adjList = KEYBOARD_ADJACENT[origChar];
+        const origChar = chars[idx]?.toLowerCase();
+        const adjList = origChar ? KEYBOARD_ADJACENT[origChar] : null;
         if (adjList && adjList.length > 0) {
             const replacement = adjList[Math.floor(getDeterministicRandom(seed + '-key') * adjList.length)];
-            chars[idx] = chars[idx] === chars[idx].toUpperCase() ? replacement.toUpperCase() : replacement;
-            return chars.join('');
+            chars[idx] = chars[idx] === chars[idx]?.toUpperCase() ? replacement.toUpperCase() : replacement;
+            typoWord = chars.join('');
         }
-    } else {
+    } else if (chars.length >= 3) {
         // Double letter or drop letter
         const idx = Math.floor(getDeterministicRandom(seed + '-drop') * chars.length);
-        if (getDeterministicRandom(seed + '-dd') > 0.5) {
+        if (chars[idx] && getDeterministicRandom(seed + '-dd') > 0.5) {
             chars.splice(idx, 0, chars[idx]); // Double letter
         } else if (chars.length > 4) {
             chars.splice(idx, 1); // Drop letter
         }
-        return chars.join('');
+        typoWord = chars.join('');
     }
 
-    return word;
+    return leadingPunct + typoWord + trailingPunct;
 }
 
 /**

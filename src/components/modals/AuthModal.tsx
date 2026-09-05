@@ -32,7 +32,7 @@ export default function AuthModal() {
                                     <div className="w-3 h-3 rounded-full bg-[#28C840] shadow-inner" />
                                 </div>
                                 <div>
-                                    <h2 className="text-lg sm:text-xl font-display font-bold text-neutral-900 leading-tight">PaperTrail Studio</h2>
+                                    <h2 className="text-lg sm:text-xl font-display font-bold text-neutral-900 leading-tight">InkTrail Studio</h2>
                                     <p className="text-xs text-emerald-600 font-bold">100% Free & Open Access</p>
                                 </div>
                             </div>
@@ -53,11 +53,11 @@ export default function AuthModal() {
                                 {/* Logo */}
                                 <div className="w-20 h-20 mb-6 bg-white rounded-2xl flex items-center justify-center shadow-sm border border-neutral-100 relative overflow-hidden group">
                                     <div className="absolute inset-0 bg-linear-to-br from-indigo-50/50 to-transparent" />
-                                    <img src={logo} alt="PaperTrail" className="w-12 h-12 object-contain relative z-10 drop-shadow-md group-hover:scale-110 transition-transform duration-500" />
+                                    <img src={logo} alt="InkTrail" className="w-12 h-12 object-contain relative z-10 drop-shadow-md group-hover:scale-110 transition-transform duration-500" />
                                 </div>
                                 
                                 <p className="text-sm text-neutral-600 mb-6 leading-relaxed max-w-[280px]">
-                                    PaperTrail runs 100% locally in your browser. No sign-up, accounts, or Google logins needed.
+                                    InkTrail runs 100% locally in your browser. No sign-up, accounts, or Google logins needed.
                                 </p>
 
                                 <motion.button

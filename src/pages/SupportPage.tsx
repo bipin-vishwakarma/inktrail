@@ -6,7 +6,7 @@ export default function SupportPage() {
     return (
         <PageLayout 
             title="Support Center" 
-            subtitle="Get support, submit issues, or contribute to PaperTrail."
+            subtitle="Get support, submit issues, or contribute to InkTrail."
         >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
                 <div className="p-8 bg-white border border-black/5 rounded-3xl hover:shadow-xl hover:shadow-neutral-900/5 transition-all">
@@ -33,7 +33,7 @@ export default function SupportPage() {
                     </div>
                     <h3 className="mt-0">Community & Developer</h3>
                     <p className="text-neutral-500 mb-6">
-                        Connect with Bipin Vishwakarma and explore the PaperTrail codebase.
+                        Connect with Bipin Vishwakarma and explore the InkTrail codebase.
                     </p>
                     <a 
                         href="https://github.com/bipin-vishwakarma" 

@@ -26,7 +26,7 @@ const initialState: StateValues = {
     zoom: 1,
     editorMode: 'plain',
     uploadedFileName: null,
-    handwritingStyle: 'handwriting-1',
+    handwritingStyle: 'Handwriting 1',
     fontSize: DEFAULT_TYPOGRAPHY.fontSize,
     letterSpacing: DEFAULT_TYPOGRAPHY.letterSpacing,
     lineHeight: DEFAULT_TYPOGRAPHY.lineHeight,
@@ -55,6 +55,8 @@ const initialState: StateValues = {
     paperCrease: 'center-h',
     sensorNoise: 0.15,
     penType: 'ballpoint-blue',
+    randomTilt: false,
+    smartMarginIndexing: true,
 
     // UI State
     hasSeenOnboarding: false,
@@ -83,11 +85,26 @@ const initialState: StateValues = {
     showHeader: false,
     headerText: '',
 
-    // Human Errors & Strikes
-    autoTypoRate: 2,
+    // Human Errors & Strikes (Off by default)
+    autoTypoRate: 0,
     strikeStyle: 'wavy',
     autoCaret: true,
 };
+
+let persistTimeout: ReturnType<typeof setTimeout> | null = null;
+let pendingPersistValue: string | null = null;
+
+if (typeof window !== 'undefined') {
+    window.addEventListener('beforeunload', () => {
+        if (pendingPersistValue !== null) {
+            try {
+                localStorage.setItem('handwritten-core-storage', pendingPersistValue);
+            } catch {
+                // Ignore quota errors
+            }
+        }
+    });
+}
 
 export const useStore = create<AppState>()(
     persist(
@@ -146,6 +163,8 @@ export const useStore = create<AppState>()(
                     inkBlur: penType === 'fountain-blue' ? 0.3 : 0
                 });
             },
+            setRandomTilt: (randomTilt) => set({ randomTilt }),
+            setSmartMarginIndexing: (smartMarginIndexing) => set({ smartMarginIndexing }),
 
             // Human Error & Fatigue Actions
             setCharJitter: (charJitter) => set({ charJitter }),
@@ -190,6 +209,11 @@ export const useStore = create<AppState>()(
                 headerText: options.headerText ?? state.headerText,
             })),
 
+            resetStyles: () => set((state) => ({
+                ...initialState,
+                text: state.text,
+                history: state.history,
+            })),
             reset: () => set(() => initialState),
         }),
         {
@@ -198,14 +222,45 @@ export const useStore = create<AppState>()(
                 getItem: (name) => {
                     const str = localStorage.getItem(name);
                     if (!str) return null;
-                    const data = JSON.parse(str);
-                    if (data.state.lastSaved) data.state.lastSaved = new Date(data.state.lastSaved);
-                    return data;
+                    try {
+                        const data = JSON.parse(str);
+                        if (data?.state) {
+                            if (data.state.lastSaved) data.state.lastSaved = new Date(data.state.lastSaved);
+                            if (data.state.autoTypoRate === 2) data.state.autoTypoRate = 0;
+                            if (typeof data.state.handwritingStyle === 'string') {
+                                if (data.state.handwritingStyle.startsWith('handwriting-')) {
+                                    data.state.handwritingStyle = data.state.handwritingStyle.replace('handwriting-', 'Handwriting ');
+                                } else if (data.state.handwritingStyle === 'hindi-type') {
+                                    data.state.handwritingStyle = 'Hindi Handwriting';
+                                }
+                            }
+                        }
+                        return data;
+                    } catch {
+                        return null;
+                    }
                 },
                 setItem: (name, value) => {
-                    localStorage.setItem(name, JSON.stringify(value));
+                    // Debounce localStorage writes to prevent frame drops during rapid typing
+                    pendingPersistValue = JSON.stringify(value);
+                    if (persistTimeout) return;
+                    persistTimeout = setTimeout(() => {
+                        if (pendingPersistValue !== null) {
+                            try {
+                                localStorage.setItem(name, pendingPersistValue);
+                            } catch (e) {
+                                console.warn('LocalStorage save failed:', e);
+                            }
+                            pendingPersistValue = null;
+                        }
+                        persistTimeout = null;
+                    }, 400);
                 },
-                removeItem: (name) => localStorage.removeItem(name),
+                removeItem: (name) => {
+                    if (persistTimeout) clearTimeout(persistTimeout);
+                    pendingPersistValue = null;
+                    localStorage.removeItem(name);
+                },
             }
         }
     )

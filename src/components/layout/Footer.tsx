@@ -57,8 +57,8 @@ export default function Footer() {
                     {/* Brand Column */}
                     <motion.div variants={itemVariants} className="col-span-2 lg:col-span-4">
                         <Link to="/" className="flex items-center gap-3 mb-6 group">
-                             <img src={logo} alt="PaperTrail" className="w-10 h-10 object-contain group-hover:rotate-12 transition-transform duration-500" />
-                             <span className="font-display font-bold text-2xl tracking-tight text-neutral-900">PaperTrail.</span>
+                             <img src={logo} alt="InkTrail" className="w-10 h-10 object-contain group-hover:rotate-12 transition-transform duration-500" />
+                             <span className="font-display font-bold text-2xl tracking-tight text-neutral-900">InkTrail.</span>
                         </Link>
                         <p className="text-neutral-500 leading-relaxed max-w-sm text-sm font-medium">
                             Hyper-realistic handwriting simulator with authentic human errors, pen scratch-outs, smartphone cast shadows, and 3D camera physics.
@@ -110,7 +110,7 @@ export default function Footer() {
                 <div className="border-t border-black/5 pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
                     <div className="flex items-center gap-4">
                         <p className="text-xs text-neutral-400 font-bold">
-                            &copy; {new Date().getFullYear()} PaperTrail. Open Source.
+                            &copy; {new Date().getFullYear()} InkTrail. Open Source.
                         </p>
                         <a href="https://github.com/bipin-vishwakarma/papertrail" target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-neutral-900 transition-colors" title="View Source on GitHub">
                             <Github size={14} />

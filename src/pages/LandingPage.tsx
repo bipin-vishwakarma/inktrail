@@ -492,7 +492,7 @@ const AboutSection = React.memo(() => {
                                      <motion.div variants={itemVariants} className="bg-white p-8 rounded-3xl shadow-premium border border-black/5">
                                          <h4 className="font-bold text-ink mb-4 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-rose-400" /> Philosophy</h4>
                                          <p className="text-ink/70 leading-relaxed font-serif text-lg">
-                                             Real handwriting isn't perfect—it has slips, ink pressure shifts, desk lamp shadows, and hasty scratches. PaperTrail makes digital handwriting feel genuinely <span className="font-handwriting text-2xl mx-2 text-accent">human</span>.
+                                             Real handwriting isn't perfect—it has slips, ink pressure shifts, desk lamp shadows, and hasty scratches. InkTrail makes digital handwriting feel genuinely <span className="font-handwriting text-2xl mx-2 text-accent">human</span>.
                                          </p>
                                      </motion.div>
                                   </div>
