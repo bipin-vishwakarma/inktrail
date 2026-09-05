@@ -389,12 +389,14 @@ export default function ExportModal({
                                                                     className="absolute text-center font-bold select-none pointer-events-none"
                                                                     style={{
                                                                         left: `-${marginLeft}px`,
-                                                                        width: `${Math.min(65, marginLeft)}px`,
+                                                                        width: `${marginLeft - 4}px`,
                                                                         textAlign: 'center',
                                                                         color: color,
                                                                         fontFamily: getFontFamilyCss(font),
-                                                                        fontSize: fontSize * 0.95,
+                                                                        fontSize: line.marginIndex.length > 6 ? fontSize * 0.55 : line.marginIndex.length > 4 ? fontSize * 0.72 : fontSize * 0.95,
                                                                         opacity: 0.88,
+                                                                        whiteSpace: 'nowrap',
+                                                                        overflow: 'hidden',
                                                                     }}
                                                                 >
                                                                     {line.marginIndex}

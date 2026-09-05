@@ -1430,8 +1430,9 @@ export default function EditorPage() {
                                                                     className="absolute top-0 flex items-center justify-center group/margin cursor-pointer transition-colors z-20"
                                                                     style={{
                                                                         left: `-${marginLeft}px`,
-                                                                        width: `${Math.min(65, marginLeft)}px`,
+                                                                        width: `${marginLeft - 4}px`,
                                                                         height: `${paper.lineHeight}px`,
+                                                                        overflow: 'hidden',
                                                                     }}
                                                                     onClick={(e) => {
                                                                         e.stopPropagation();
@@ -1466,8 +1467,11 @@ export default function EditorPage() {
                                                                             style={{
                                                                                 color: color,
                                                                                 fontFamily: getFontFamilyCss(font),
-                                                                                fontSize: fontSize * 0.95,
+                                                                                fontSize: line.marginIndex.length > 6 ? fontSize * 0.55 : line.marginIndex.length > 4 ? fontSize * 0.72 : fontSize * 0.95,
                                                                                 opacity: 0.92,
+                                                                                whiteSpace: 'nowrap',
+                                                                                overflow: 'hidden',
+                                                                                textOverflow: 'clip',
                                                                             }}
                                                                         >
                                                                             {line.marginIndex}
