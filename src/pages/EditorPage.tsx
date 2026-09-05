@@ -1261,7 +1261,7 @@ export default function EditorPage() {
                 {/* 2. RIGHT DIGITAL CANVAS WORKSTATION (Edge-to-Edge Drafting Desk) */}
                 <main 
                     ref={canvasContainerRef}
-                    className={`flex-1 h-full overflow-auto custom-scrollbar flex flex-col items-center bg-[#F1F3F6] relative p-4 sm:p-8 pb-28 select-text ${mobileTab !== 'canvas' ? 'hidden lg:flex' : 'flex'}`}
+                    className={`flex-1 h-full overflow-auto custom-scrollbar flex flex-col items-center bg-[#F1F3F6] relative p-4 sm:p-8 pr-14 sm:pr-20 pb-16 select-text ${mobileTab !== 'canvas' ? 'hidden lg:flex' : 'flex'}`}
                 >
                     {/* Drafting Desk Dot Pattern */}
                     <div className="absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none opacity-60" />
