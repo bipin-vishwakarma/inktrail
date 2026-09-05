@@ -379,8 +379,7 @@ export function parseWordToken(
     randomSeed: string,
     autoTypoRate: number,
     strikeStyle: StrikeStyle,
-    autoCaret: boolean,
-    teacherGrading: boolean = false
+    autoCaret: boolean
 ): WordToken[] {
     // 0. Check standalone missing-word caret: ^word (e.g. ^to, ^from, ^because, ^at)
     const caretOnlyMatch = rawWord.match(/^\^([a-zA-Z0-9.,!?'"#-]+)$/);
@@ -432,7 +431,7 @@ export function parseWordToken(
             if (misspelled !== rawWord) {
                 if (autoCaret) {
                     // Struck typo with caret correction above it
-                    const correctionText = teacherGrading ? `sp. ${rawWord}` : rawWord;
+                    const correctionText = rawWord;
                     return [
                         {
                             text: misspelled,
@@ -493,7 +492,7 @@ export function generateScribblePath(
 
     switch (style) {
         case 'underline': {
-            // Neat teacher/proofreader underline drawn just below the word baseline
+            // Neat pen underline drawn just below the word baseline
             const underY = h * 0.88 + (rng() - 0.5) * 1.5;
             const yEnd = underY + (rng() - 0.5) * 2;
             const midX = startX + totalSpan * 0.5;

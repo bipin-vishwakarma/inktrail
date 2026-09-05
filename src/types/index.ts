@@ -128,7 +128,6 @@ export interface AppState {
     strikeStyle: StrikeStyle;
     autoCaret: boolean;
     correctionColor: CorrectionColor;
-    teacherGrading: boolean;
     lowInkFade: boolean;
     lowInkStart: number;
     lowInkIntensity: number;
@@ -195,7 +194,6 @@ export interface AppState {
     setStrikeStyle: (style: StrikeStyle) => void;
     setAutoCaret: (enabled: boolean) => void;
     setCorrectionColor: (color: CorrectionColor) => void;
-    setTeacherGrading: (enabled: boolean) => void;
     setLowInkFade: (enabled: boolean) => void;
     setLowInkStart: (val: number) => void;
     setLowInkIntensity: (val: number) => void;
@@ -223,7 +221,6 @@ export interface AppState {
     setPageOptions: (options: { showPageNumbers?: boolean; showHeader?: boolean; headerText?: string }) => void;
     setShowNotebookHeaderBox: (enabled: boolean) => void;
     setNotebookDate: (date: string) => void;
-    applyVibePreset: (preset: 'topper' | 'midnight' | 'graded' | 'vintage') => void;
     
     applyPreset: (settings: Partial<AppState>) => void;
     addToHistory: (item: HistoryItem) => void;

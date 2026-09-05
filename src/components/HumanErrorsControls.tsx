@@ -9,7 +9,6 @@ export const HumanErrorsControls: React.FC = () => {
         strikeStyle, setStrikeStyle,
         autoCaret, setAutoCaret,
         correctionColor, setCorrectionColor,
-        teacherGrading, setTeacherGrading,
         charJitter, setCharJitter,
         fatigue, setFatigue,
         lowInkFade, setLowInkFade,
@@ -82,10 +81,10 @@ export const HumanErrorsControls: React.FC = () => {
                 </div>
             </div>
 
-            {/* Correction Ink Color (Teacher / Proofreader) */}
+            {/* Correction Ink Color */}
             <div>
                 <div className="flex justify-between text-[10px] font-bold text-neutral-400 uppercase tracking-tighter mb-1.5">
-                    <span>Correction Ink (Teacher / Proofreader)</span>
+                    <span>Correction Ink Color</span>
                     <span className="text-neutral-900 font-black capitalize">{correctionColor}</span>
                 </div>
                 <div className="grid grid-cols-4 gap-1.5 bg-neutral-100 p-1.5 rounded-xl">
@@ -142,20 +141,6 @@ export const HumanErrorsControls: React.FC = () => {
                     type="checkbox"
                     checked={autoCaret}
                     onChange={(e) => setAutoCaret(e.target.checked)}
-                    className="w-4 h-4 rounded border-black/10 text-neutral-900 focus:ring-0 cursor-pointer"
-                />
-            </label>
-
-            {/* Teacher Grading Mode Toggle (sp. spelling codes from Kim Griffiths guide) */}
-            <label className="flex items-center justify-between p-2.5 bg-neutral-50 rounded-xl cursor-pointer hover:bg-neutral-100/70 transition-colors">
-                <div className="flex flex-col">
-                    <span className="text-[11px] font-bold text-neutral-700">Teacher Proofreading (<span className="text-red-600 font-mono text-[10px]">sp.</span>)</span>
-                    <span className="text-[9px] text-neutral-400">Auto-tags typo corrections with teacher error codes</span>
-                </div>
-                <input
-                    type="checkbox"
-                    checked={teacherGrading}
-                    onChange={(e) => setTeacherGrading(e.target.checked)}
                     className="w-4 h-4 rounded border-black/10 text-neutral-900 focus:ring-0 cursor-pointer"
                 />
             </label>

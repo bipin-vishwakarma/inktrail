@@ -11,7 +11,7 @@ export const PenPresetSelector: React.FC = () => {
         { id: 'gel-black', label: 'Black Gel Pen', color: '#111827', desc: 'Deep dark ink' },
         { id: 'fountain-blue', label: 'Royal Fountain', color: '#1d4ed8', desc: 'Parker royal blue' },
         { id: 'pencil', label: 'HB #2 Pencil', color: '#4b5563', desc: 'Graphite texture' },
-        { id: 'red-pen', label: 'Teacher Red', color: '#dc2626', desc: 'Exam grading ink' },
+        { id: 'red-pen', label: 'Red Pen', color: '#dc2626', desc: 'Vibrant red ink' },
     ];
 
     return (

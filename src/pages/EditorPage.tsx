@@ -5,8 +5,7 @@ import {
     AlignLeft, AlignCenter, AlignRight, AlignJustify, 
     Download, Clock, 
     ZoomIn, ZoomOut, Palette,
-    RotateCcw, Camera, Scissors, X, Dices,
-    Sparkles
+    RotateCcw, Camera, Scissors, X, Dices
 } from 'lucide-react';
 
 import { useStore } from '../lib/store';
@@ -52,8 +51,7 @@ function buildDocumentLines(
     typoRate: number,
     strikeStyle: StrikeStyle,
     autoCaret: boolean,
-    smartMarginIndexing: boolean = true,
-    teacherGrading: boolean = false
+    smartMarginIndexing: boolean = true
 ): LineData[] {
     const rawParagraphs = text.split('\n');
     const documentLines: LineData[] = [];
@@ -170,7 +168,7 @@ function buildDocumentLines(
                 activeBox = false;
             }
 
-            const parsed = parseWordToken(word, wIdx, 0, pIndex, seed, typoRate, strikeStyle, autoCaret, teacherGrading);
+            const parsed = parseWordToken(word, wIdx, 0, pIndex, seed, typoRate, strikeStyle, autoCaret);
             return parsed.map(tok => ({
                 ...tok,
                 isHighlighted: isHighlighted || tok.isHighlighted,
@@ -393,7 +391,6 @@ export default function EditorPage() {
         showPageNumbers, showHeader, headerText, setPageOptions,
         showNotebookHeaderBox, setShowNotebookHeaderBox,
         notebookDate, setNotebookDate,
-        applyVibePreset,
         jitter, setJitter,
         charJitter,
         fatigue,
@@ -405,7 +402,6 @@ export default function EditorPage() {
         strikeStyle,
         autoCaret,
         correctionColor,
-        teacherGrading,
         lowInkFade,
         lowInkStart,
         lowInkIntensity,
@@ -686,11 +682,10 @@ export default function EditorPage() {
             autoTypoRate, 
             strikeStyle, 
             autoCaret,
-            smartMarginIndexing,
-            teacherGrading
+            smartMarginIndexing
         );
         return paginateLines(rawLines, linesPerPage, page1Lines);
-    }, [deferredText, fontSize, font, fontLoadedVersion, paper.lineHeight, marginTop, marginBottom, marginLeft, marginRight, showHeader, headerText, randomSeed, autoTypoRate, strikeStyle, autoCaret, smartMarginIndexing, teacherGrading]);
+    }, [deferredText, fontSize, font, fontLoadedVersion, paper.lineHeight, marginTop, marginBottom, marginLeft, marginRight, showHeader, headerText, randomSeed, autoTypoRate, strikeStyle, autoCaret, smartMarginIndexing]);
 
     // Synchronize active page index with scroll position
     useEffect(() => {
@@ -957,36 +952,6 @@ export default function EditorPage() {
                 {/* 1. LEFT SIDEBAR CONTROLS */}
                 <div className={`w-full lg:w-[400px] bg-white border-r border-neutral-200/80 flex flex-col shrink-0 overflow-hidden z-20 ${mobileTab === 'canvas' ? 'hidden lg:flex' : 'flex'}`}>
                     
-                    {/* Quick 1-Click Vibe Presets Strip */}
-                    <div className="px-3 py-2 bg-neutral-50/95 border-b border-neutral-200/70 flex items-center justify-between gap-1.5 shrink-0">
-                        <div className="flex items-center gap-1.5 text-[10px] font-black text-neutral-400 uppercase tracking-widest">
-                            <Sparkles size={11} className="text-amber-500" />
-                            <span>Vibes</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                            {[
-                                { id: 'topper' as const, label: 'Topper', icon: '🏆', desc: 'Neat & Clean' },
-                                { id: 'midnight' as const, label: 'Midnight', icon: '🌙', desc: 'Rushed & Tired' },
-                                { id: 'graded' as const, label: 'Graded', icon: '🔴', desc: 'Teacher Corrections' },
-                                { id: 'vintage' as const, label: 'Vintage', icon: '📜', desc: 'Aged Quill' },
-                            ].map((preset) => (
-                                <button
-                                    key={preset.id}
-                                    type="button"
-                                    onClick={() => {
-                                        applyVibePreset(preset.id);
-                                        addToast(`✨ Applied "${preset.label}" vibe preset!`, 'success');
-                                    }}
-                                    title={`${preset.label}: ${preset.desc}`}
-                                    className="px-2 py-1 bg-white hover:bg-neutral-100 active:scale-95 text-neutral-700 hover:text-neutral-900 rounded-lg text-[11px] font-bold border border-neutral-200/80 shadow-2xs transition-all flex items-center gap-1 cursor-pointer"
-                                >
-                                    <span>{preset.icon}</span>
-                                    <span>{preset.label}</span>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
                     {/* Navigation Tabs (Apple/Linear Segmented Style) */}
                     <div className="grid grid-cols-5 bg-neutral-100/90 p-1.5 shrink-0 border-b border-neutral-200/80 gap-1">
                         {[

@@ -61,7 +61,7 @@ const HandwrittenWordComponent: React.FC<HandwrittenWordProps> = ({
     const intSeed = fastStringHash(seedString);
     const rng = mulberry32(intSeed);
 
-    // Dynamic Teacher vs Student Ink Color
+    // Dynamic Correction vs Pen Ink Color
     const activeCorrectionColor = correctionColor === 'red'
         ? '#dc2626'
         : correctionColor === 'green'
