@@ -4,9 +4,9 @@ import { Heart, Sparkles, Shield, Zap } from 'lucide-react';
 export default function AboutPage() {
     return (
         <PageLayout 
-            title="About Handwritten" 
+            title="About InkTrail" 
             subtitle="We're on a mission to preserve the beauty of human touch in a digital-first world."
-            description="Discover the story behind Handwritten. Born from a student project at VIT Bhopal, we blend analog nostalgia with modern AI technology to bridge the gap in digital communication."
+            description="Discover the story behind InkTrail. Born from a student project at UPES Dehradun, we blend analog nostalgia with modern physics-accurate simulation to bridge the gap in digital communication."
         >
             <div className="space-y-12">
                 <section>

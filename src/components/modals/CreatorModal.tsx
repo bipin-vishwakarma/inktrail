@@ -68,11 +68,11 @@ export const CreatorModal: React.FC<CreatorModalProps> = ({ isOpen, onClose }) =
                             Bipin Vishwakarma
                         </h2>
                         <p className="text-xs font-bold uppercase tracking-wider text-indigo-600 mb-4 flex items-center gap-1.5">
-                            <Code2 size={13} /> Creator & Lead Engineer · InkTrail
+                            <Code2 size={13} /> Creator & Developer · InkTrail
                         </p>
 
                         <p className="text-sm text-neutral-600 max-w-md leading-relaxed mb-6 font-medium">
-                            Biomedical & AI Engineer at <strong>UPES Dehradun</strong>. Passionate about physics-accurate simulation, analog document craft, and building free, privacy-first tools for students and creators.
+                            Biomedical Engineering student at <strong>UPES Dehradun</strong> with a minor in <strong>Artificial Intelligence</strong>. Passionate about creative tech, analog document realism, and building free, privacy-first tools for students and creators.
                         </p>
 
                         {/* Social Links Grid */}
