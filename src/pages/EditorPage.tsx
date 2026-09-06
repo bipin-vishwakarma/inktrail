@@ -741,9 +741,16 @@ export default function EditorPage() {
 
     // --- PIPELINE EXECUTION: PRE-TOKENIZATION & PAGE PAGINATION ---
     const pages = useMemo(() => {
-        const bodyHeight = 1131 - marginTop - marginBottom;
+        const isSpiralActive = spiralBinding || paper.id === 'youva-spiral';
+        const effectiveLeftForPagination = isSpiralActive ? Math.max(marginLeft, 118) : marginLeft;
+        const effectiveRightForPagination = isSpiralActive ? Math.max(marginRight, 65) : marginRight;
+        const effectiveTopForPagination = (paper.hasRedMargin || paper.id === 'youva-spiral' || showNotebookHeaderBox) 
+            ? Math.max(marginTop, 80) 
+            : marginTop;
+
+        const bodyHeight = 1131 - effectiveTopForPagination - marginBottom;
         const linesPerPage = Math.max(1, Math.floor(bodyHeight / paper.lineHeight));
-        const maxLineWidth = Math.max(200, (800 - marginLeft - marginRight) - 16);
+        const maxLineWidth = Math.max(200, (800 - effectiveLeftForPagination - effectiveRightForPagination) - 16);
         
         // Calculate header lines to reduce page 1 capacity
         const headerLineCount = showHeader && headerText.trim() ? headerText.split('\n').length : 0;
@@ -761,7 +768,7 @@ export default function EditorPage() {
             smartMarginIndexing
         );
         return paginateLines(rawLines, linesPerPage, page1Lines);
-    }, [deferredText, fontSize, font, fontLoadedVersion, paper.lineHeight, marginTop, marginBottom, marginLeft, marginRight, showHeader, headerText, randomSeed, autoTypoRate, strikeStyle, autoCaret, smartMarginIndexing]);
+    }, [deferredText, fontSize, font, fontLoadedVersion, paper.lineHeight, paper.hasRedMargin, paper.id, spiralBinding, showNotebookHeaderBox, marginTop, marginBottom, marginLeft, marginRight, showHeader, headerText, randomSeed, autoTypoRate, strikeStyle, autoCaret, smartMarginIndexing]);
 
     // Synchronize active page index with scroll position
     useEffect(() => {
@@ -1667,6 +1674,16 @@ export default function EditorPage() {
                                 pageOverrides
                             );
 
+                            const isSpiralActive = spiralBinding || paper.id === 'youva-spiral';
+                            const isVerso = (pIdx + 1) % 2 === 0;
+                            const isLeftSpiral = isSpiralActive && !isVerso;
+                            const redMarginLeft = isLeftSpiral ? 104 : 65;
+                            const effectivePageMarginLeft = isLeftSpiral ? Math.max(marginLeft, 118) : marginLeft;
+                            const effectivePageMarginRight = (isSpiralActive && isVerso) ? Math.max(marginRight, 65) : marginRight;
+                            const effectivePageMarginTop = (paper.hasRedMargin || paper.id === 'youva-spiral' || showNotebookHeaderBox)
+                                ? Math.max(marginTop, 80)
+                                : marginTop;
+
                             return (
                                 <div 
                                     key={pIdx}
@@ -1710,12 +1727,15 @@ export default function EditorPage() {
                                                 
                                                 {/* Red Margin Line */}
                                                 {paper.hasRedMargin && (
-                                                    <div className="absolute top-0 bottom-0 left-[65px] w-[2px] bg-rose-400 opacity-60 pointer-events-none z-10" />
+                                                    <div 
+                                                        className="absolute top-0 bottom-0 w-[2px] bg-rose-400 opacity-60 pointer-events-none z-10 transition-all" 
+                                                        style={{ left: `${redMarginLeft}px` }}
+                                                    />
                                                 )}
 
                                                 {/* Double Red Top Header Rule (Classic Indian Student Notebook Style) */}
                                                 {(paper.hasRedMargin || paper.id === 'youva-spiral' || showNotebookHeaderBox) && (
-                                                    <div className="absolute left-0 right-0 top-[52px] pointer-events-none z-10">
+                                                    <div className="absolute left-0 right-0 top-[72px] pointer-events-none z-10">
                                                         <div className="w-full h-[1.5px] bg-rose-400 opacity-65" />
                                                         <div className="w-full h-[1.5px] bg-rose-400 opacity-65 mt-[3px]" />
                                                     </div>
@@ -1752,46 +1772,47 @@ export default function EditorPage() {
                                                     </div>
                                                 )}
 
-                                                {/* Classic Student Notebook Date & Page No. Box */}
+                                                {/* Standardized Student Notebook Date & Page No. Box (Matching Real Youva/Classmate) */}
                                                 {showNotebookHeaderBox && (
                                                     <div 
-                                                        className="absolute top-4 right-6 z-20 pointer-events-none select-none text-left"
+                                                        className="absolute top-[12px] z-20 pointer-events-none select-none text-left"
                                                         style={{
-                                                            border: '1.5px solid #f87171',
-                                                            borderRadius: '6px',
-                                                            padding: '3px 8px',
-                                                            backgroundColor: 'rgba(255, 255, 255, 0.82)',
-                                                            boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
-                                                            minWidth: '150px',
+                                                            right: (isSpiralActive && isVerso) ? '64px' : '24px',
+                                                            width: '162px',
+                                                            height: '52px',
+                                                            border: '1.2px solid rgba(244, 63, 94, 0.55)',
+                                                            borderRadius: '4px',
+                                                            backgroundColor: 'rgba(255, 255, 255, 0.76)',
+                                                            boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
+                                                            display: 'flex',
+                                                            overflow: 'hidden',
                                                         }}
                                                     >
-                                                        {/* Brand & Days Tracker Row */}
-                                                        <div className="flex items-center justify-between border-b border-rose-300/70 pb-0.5 mb-1 text-[8px] font-mono">
-                                                            <span className="font-black text-rose-500 tracking-wider">
-                                                                {notebookBrand || 'YOUVA'}
-                                                            </span>
-                                                            <div className="flex items-center gap-1.5 font-bold text-neutral-500">
+                                                        {/* Left Section: 3 Rows (Days Tracker, Page No, Date) */}
+                                                        <div className="flex-1 flex flex-col justify-between" style={{ width: '112px' }}>
+                                                            {/* Row 1: M T W T F S S Day Tracker */}
+                                                            <div className="h-[17px] border-b border-rose-400/45 flex items-center justify-around px-1 text-[7.5px] font-mono font-bold text-rose-500/80 select-none">
                                                                 {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, dIdx) => {
                                                                     const isToday = dIdx === ((new Date().getDay() + 6) % 7);
                                                                     return (
                                                                         <span key={dIdx} className="relative inline-flex items-center justify-center w-3 h-3">
-                                                                            <span className={isToday && notebookDayCircle ? 'text-blue-700 font-extrabold' : 'text-neutral-400'}>
+                                                                            <span className={isToday && notebookDayCircle ? 'text-blue-700 font-black' : 'text-neutral-500'}>
                                                                                 {day}
                                                                             </span>
                                                                             {isToday && notebookDayCircle && (
                                                                                 <svg 
-                                                                                    className="absolute -inset-0.5 w-4 h-4 pointer-events-none overflow-visible"
+                                                                                    className="absolute -inset-0.5 w-3.5 h-3.5 pointer-events-none overflow-visible"
                                                                                     viewBox="0 0 20 20"
                                                                                 >
                                                                                     <ellipse 
                                                                                         cx="10" 
                                                                                         cy="10" 
-                                                                                        rx="8" 
-                                                                                        ry="7.2" 
+                                                                                        rx="7.5" 
+                                                                                        ry="7" 
                                                                                         fill="none" 
                                                                                         stroke={color} 
-                                                                                        strokeWidth="1.4" 
-                                                                                        strokeDasharray="42" 
+                                                                                        strokeWidth="1.5" 
+                                                                                        strokeDasharray="40" 
                                                                                         strokeDashoffset="1"
                                                                                         transform="rotate(-8 10 10)" 
                                                                                         opacity="0.9"
@@ -1802,40 +1823,86 @@ export default function EditorPage() {
                                                                     );
                                                                 })}
                                                             </div>
+
+                                                            {/* Row 2: Page No. */}
+                                                            <div className="h-[17px] border-b border-rose-400/45 flex items-center justify-between px-1.5 leading-none">
+                                                                <span className="text-[8px] font-mono font-bold tracking-tight text-rose-500/85">
+                                                                    Page No. :
+                                                                </span>
+                                                                <span 
+                                                                    style={{
+                                                                        fontFamily: getFontFamilyCss(font),
+                                                                        fontSize: Math.max(13, fontSize * 0.8),
+                                                                        color: color,
+                                                                        lineHeight: 1,
+                                                                    }}
+                                                                >
+                                                                    {String(pIdx + 1).padStart(2, '0')}
+                                                                </span>
+                                                            </div>
+
+                                                            {/* Row 3: Date */}
+                                                            <div className="h-[17px] flex items-center justify-between px-1.5 leading-none">
+                                                                <span className="text-[8px] font-mono font-bold tracking-tight text-rose-500/85">
+                                                                    Date :
+                                                                </span>
+                                                                <span 
+                                                                    style={{
+                                                                        fontFamily: getFontFamilyCss(font),
+                                                                        fontSize: Math.max(12, fontSize * 0.75),
+                                                                        color: color,
+                                                                        lineHeight: 1,
+                                                                    }}
+                                                                >
+                                                                    {notebookDate || new Date().toLocaleDateString('en-GB')}
+                                                                </span>
+                                                            </div>
                                                         </div>
 
-                                                        {/* Page No. Row */}
-                                                        <div className="flex items-center justify-between gap-3 border-b border-rose-300/70 pb-0.5 mb-0.5">
-                                                            <span className="text-[9px] font-mono tracking-wider text-rose-500 font-extrabold">
-                                                                PAGE NO.
-                                                            </span>
-                                                            <span 
-                                                                style={{
-                                                                    fontFamily: getFontFamilyCss(font),
-                                                                    fontSize: Math.max(14, fontSize * 0.85),
-                                                                    color: color,
-                                                                    lineHeight: 1,
-                                                                }}
-                                                            >
-                                                                {String(pIdx + 1).padStart(2, '0')}
-                                                            </span>
-                                                        </div>
-
-                                                        {/* Date Row */}
-                                                        <div className="flex items-center justify-between gap-3">
-                                                            <span className="text-[9px] font-mono tracking-wider text-rose-500 font-extrabold">
-                                                                DATE:
-                                                            </span>
-                                                            <span 
-                                                                style={{
-                                                                    fontFamily: getFontFamilyCss(font),
-                                                                    fontSize: Math.max(13, fontSize * 0.8),
-                                                                    color: color,
-                                                                    lineHeight: 1,
-                                                                }}
-                                                            >
-                                                                {notebookDate || new Date().toLocaleDateString('en-GB')}
-                                                            </span>
+                                                        {/* Right Section: Brand Badge Compartment */}
+                                                        <div 
+                                                            className="w-[50px] border-l border-rose-400/45 flex flex-col items-center justify-center p-0.5 select-none bg-rose-50/20"
+                                                        >
+                                                            {(!notebookBrand || notebookBrand === 'YOUVA') && (
+                                                                <>
+                                                                    <span className="text-[10px] font-black tracking-wider text-rose-600/85 leading-none">
+                                                                        YOUVA
+                                                                    </span>
+                                                                    <span className="text-[6.5px] font-bold tracking-widest text-rose-400/85 mt-0.5 uppercase">
+                                                                        SPELLAR
+                                                                    </span>
+                                                                </>
+                                                            )}
+                                                            {notebookBrand === 'CLASSMATE' && (
+                                                                <>
+                                                                    <span className="text-[9.5px] font-black tracking-tight text-rose-600/85 italic leading-none">
+                                                                        classmate
+                                                                    </span>
+                                                                    <span className="text-[5.5px] font-bold tracking-widest text-rose-400/70 mt-0.5 uppercase scale-90">
+                                                                        by ITC
+                                                                    </span>
+                                                                </>
+                                                            )}
+                                                            {notebookBrand === 'SPELLAR' && (
+                                                                <>
+                                                                    <span className="text-[9.5px] font-black tracking-wider text-rose-600/85 leading-none">
+                                                                        SPELLAR
+                                                                    </span>
+                                                                    <span className="text-[6px] font-bold tracking-widest text-rose-400/75 mt-0.5 uppercase">
+                                                                        NAVNEET
+                                                                    </span>
+                                                                </>
+                                                            )}
+                                                            {notebookBrand === 'SUNDARAM' && (
+                                                                <>
+                                                                    <span className="text-[9px] font-black tracking-wider text-rose-600/85 leading-none">
+                                                                        SUNDARAM
+                                                                    </span>
+                                                                    <span className="text-[6px] font-bold tracking-widest text-rose-400/70 mt-0.5 uppercase">
+                                                                        CLASSIC
+                                                                    </span>
+                                                                </>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 )}
@@ -1845,9 +1912,9 @@ export default function EditorPage() {
                                                     <div 
                                                         className="absolute z-10 leading-tight whitespace-pre-wrap"
                                                         style={{
-                                                            top: marginTop,
-                                                            left: marginLeft,
-                                                            right: marginRight,
+                                                            top: effectivePageMarginTop,
+                                                            left: effectivePageMarginLeft,
+                                                            right: effectivePageMarginRight,
                                                             fontFamily: getFontFamilyCss(font),
                                                             fontSize: fontSize * 1.05,
                                                             color: color,
@@ -1863,11 +1930,11 @@ export default function EditorPage() {
                                                     className="w-full h-full relative select-text"
                                                     style={{
                                                         paddingTop: (pIdx === 0 && showHeader && headerText.trim())
-                                                            ? marginTop + (headerText.split('\n').length + 1) * paper.lineHeight
-                                                            : marginTop,
+                                                            ? effectivePageMarginTop + (headerText.split('\n').length + 1) * paper.lineHeight
+                                                            : effectivePageMarginTop,
                                                         paddingBottom: marginBottom,
-                                                        paddingLeft: marginLeft,
-                                                        paddingRight: marginRight
+                                                        paddingLeft: effectivePageMarginLeft,
+                                                        paddingRight: effectivePageMarginRight
                                                     }}
                                                 >
                                                     {page.lines.map((line, lIdx) => (
@@ -1887,13 +1954,13 @@ export default function EditorPage() {
                                                             }} 
                                                             className="w-full whitespace-nowrap relative group cursor-text"
                                                         >
-                                                            {/* Interactive Left Margin Slot (Empty or Indexed) */}
-                                                            {marginLeft >= 40 && (
+                                                            {/* Interactive Left Margin Slot (Empty or Indexed) - Positioned safely past spiral */}
+                                                            {effectivePageMarginLeft >= 30 && (
                                                                 <div 
                                                                     className="absolute top-0 flex items-center justify-center group/margin cursor-pointer transition-colors z-20"
                                                                     style={{
-                                                                        left: `-${marginLeft}px`,
-                                                                        width: `${marginLeft - 4}px`,
+                                                                        left: `-${effectivePageMarginLeft - (isLeftSpiral ? 48 : 0)}px`,
+                                                                        width: `${isLeftSpiral ? (redMarginLeft - 48) : (redMarginLeft - 4)}px`,
                                                                         height: `${paper.lineHeight}px`,
                                                                         overflow: 'hidden',
                                                                     }}
@@ -1930,7 +1997,9 @@ export default function EditorPage() {
                                                                             style={{
                                                                                 color: color,
                                                                                 fontFamily: getFontFamilyCss(font),
-                                                                                fontSize: fontSize * 0.95,
+                                                                                fontSize: (line.marginIndex && line.marginIndex.length > 3) 
+                                                                                    ? Math.min(fontSize * 0.85, 14) 
+                                                                                    : Math.min(fontSize * 0.95, 17),
                                                                                 opacity: 0.92,
                                                                                 whiteSpace: 'nowrap',
                                                                                 overflow: 'hidden',
