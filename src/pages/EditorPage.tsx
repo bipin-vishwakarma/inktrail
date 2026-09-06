@@ -348,6 +348,20 @@ const FONTS = [
     { name: 'Loved by the King', label: 'Messy Tall Scrawl (Fast Class Notes)' },
     { name: 'Give You Glory', label: 'Hurried Student Hand (Imperfect Exam Notes)' },
     { name: 'Bad Script', label: 'Casual Ballpoint (Homework Notes)' },
+
+    // === EXTREME MESSY / RAW HUMAN HANDWRITING ===
+    { name: 'Covered By Your Grace', label: 'Messy Classroom Scrawl (Raw Ballpoint)' },
+    { name: 'Walter Turncoat', label: 'Unhinged Student Scribble (Chaotic Natural Pen)' },
+    { name: 'Rock Salt', label: 'Rough Marker Scratch (Gritty Raw Hand)' },
+    { name: 'Grape Nuts', label: 'Shaky Rushed Notes (Trembling Ballpoint)' },
+    { name: 'Swanky and Moo Moo', label: 'Wild Messy Scrawl (Extreme Imperfect Hand)' },
+    { name: 'Sedgwick Ave', label: 'Street-Style Quick Scribble (Graffiti Pen)' },
+    { name: 'Liu Jian Mao Cao', label: 'Extreme Brush Scrawl (Raw Calligraphy Rush)' },
+    { name: 'Caveat', label: 'Natural Fast Handwriting (Organic Ballpoint Flow)' },
+    { name: 'Coming Soon', label: 'Casual Classroom Print (Relaxed Student Hand)' },
+    { name: 'Schoolbell', label: 'School Notebook Print (Natural Student Print)' },
+    { name: 'Reenie Beanie', label: 'Tall Messy Scribble (Thin Rushed Pen)' },
+    { name: 'Mr Dafoe', label: 'Illegible Doctor Signature (Extreme Cursive Scrawl)' },
 ];
 
 const PAPERS = [

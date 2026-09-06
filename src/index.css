@@ -248,6 +248,128 @@
   font-display: swap;
 }
 
+/* --- EXTREME MESSY / RAW HUMAN HANDWRITING --- */
+@font-face {
+  font-family: 'Covered By Your Grace';
+  src: url('/fonts/CoveredByYourGrace.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'covered-by-your-grace';
+  src: url('/fonts/CoveredByYourGrace.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Walter Turncoat';
+  src: url('/fonts/WalterTurncoat.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'walter-turncoat';
+  src: url('/fonts/WalterTurncoat.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Rock Salt';
+  src: url('/fonts/RockSalt.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'rock-salt';
+  src: url('/fonts/RockSalt.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Grape Nuts';
+  src: url('/fonts/GrapeNuts.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'grape-nuts';
+  src: url('/fonts/GrapeNuts.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Swanky and Moo Moo';
+  src: url('/fonts/SwankyandMooMoo.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'swanky-and-moo-moo';
+  src: url('/fonts/SwankyandMooMoo.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Sedgwick Ave';
+  src: url('/fonts/SedgwickAve.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'sedgwick-ave';
+  src: url('/fonts/SedgwickAve.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Liu Jian Mao Cao';
+  src: url('/fonts/LiuJianMaoCao.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'liu-jian-mao-cao';
+  src: url('/fonts/LiuJianMaoCao.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Caveat';
+  src: url('/fonts/Caveat.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'caveat';
+  src: url('/fonts/Caveat.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Coming Soon';
+  src: url('/fonts/ComingSoon.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'coming-soon';
+  src: url('/fonts/ComingSoon.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Schoolbell';
+  src: url('/fonts/Schoolbell.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'schoolbell';
+  src: url('/fonts/Schoolbell.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Reenie Beanie';
+  src: url('/fonts/ReeniBeanie.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'reenie-beanie';
+  src: url('/fonts/ReeniBeanie.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Mr Dafoe';
+  src: url('/fonts/MrDafoe.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'mr-dafoe';
+  src: url('/fonts/MrDafoe.ttf') format('truetype');
+  font-display: swap;
+}
+
 @theme {
   /* Refined Paper & Ink */
   --color-paper: #ffffff; /* Cleaner white for modern look */

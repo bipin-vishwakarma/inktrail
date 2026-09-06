@@ -90,6 +90,32 @@ export const FONT_WIDTH_RATIOS: Record<string, number> = {
     'handwriting-4': 0.60,
     'handwriting-5': 0.56,
     'handwriting-20': 0.55,
+
+    // Extreme Messy / Raw Human Handwriting
+    'Covered By Your Grace': 0.58,
+    'covered-by-your-grace': 0.58,
+    'Walter Turncoat': 0.62,
+    'walter-turncoat': 0.62,
+    'Rock Salt': 0.72,
+    'rock-salt': 0.72,
+    'Grape Nuts': 0.56,
+    'grape-nuts': 0.56,
+    'Swanky and Moo Moo': 0.60,
+    'swanky-and-moo-moo': 0.60,
+    'Sedgwick Ave': 0.58,
+    'sedgwick-ave': 0.58,
+    'Liu Jian Mao Cao': 0.65,
+    'liu-jian-mao-cao': 0.65,
+    'Caveat': 0.52,
+    'caveat': 0.52,
+    'Coming Soon': 0.54,
+    'coming-soon': 0.54,
+    'Schoolbell': 0.54,
+    'schoolbell': 0.54,
+    'Reenie Beanie': 0.44,
+    'reenie-beanie': 0.44,
+    'Mr Dafoe': 0.58,
+    'mr-dafoe': 0.58,
 };
 
 export const CURSIVE_CONNECTING_FONTS = new Set([
@@ -108,6 +134,12 @@ export const CURSIVE_CONNECTING_FONTS = new Set([
     'Handwriting 20', 'handwriting-20',
     'Handwriting 2', 'handwriting-2',
     'Handwriting 5', 'handwriting-5',
+    // Extreme connecting scripts
+    'Mr Dafoe', 'mr-dafoe',
+    'Caveat', 'caveat',
+    'Grape Nuts', 'grape-nuts',
+    'Sedgwick Ave', 'sedgwick-ave',
+    'Liu Jian Mao Cao', 'liu-jian-mao-cao',
 ]);
 
 export function isCursiveConnectingFont(font: string): boolean {

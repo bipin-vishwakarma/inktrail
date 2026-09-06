@@ -388,7 +388,10 @@ export const useStore = create<AppState>()(
                                     'La Belle Aurore', 'Waiting for the Sunrise', 'Marck Script', 'Zeyada', 'Dawning of a New Day',
                                     'Handwriting 4', 'Handwriting 20', 'Handwriting 2', 'Handwriting 5',
                                     'Nothing You Could Do', 'Mynerve', 'Just Me Again Down Here', 'Just Another Hand',
-                                    'The Girl Next Door', 'Sue Ellen Francisco', 'Loved by the King', 'Give You Glory', 'Bad Script'
+                                    'The Girl Next Door', 'Sue Ellen Francisco', 'Loved by the King', 'Give You Glory', 'Bad Script',
+                                    'Covered By Your Grace', 'Walter Turncoat', 'Rock Salt', 'Grape Nuts',
+                                    'Swanky and Moo Moo', 'Sedgwick Ave', 'Liu Jian Mao Cao', 'Caveat',
+                                    'Coming Soon', 'Schoolbell', 'Reenie Beanie', 'Mr Dafoe'
                                 ];
                                 if (!VALID_HANDWRITING_FONTS.includes(data.state.handwritingStyle)) {
                                     data.state.handwritingStyle = 'Cedarville Cursive';
@@ -455,6 +458,20 @@ export const getAvailableFonts = (state: AppState) => {
         { id: 'loved-by-the-king', name: 'Messy Tall Scrawl (Fast Class Notes)', family: 'Loved by the King', type: 'custom' },
         { id: 'give-you-glory', name: 'Hurried Student Hand (Imperfect Exam Notes)', family: 'Give You Glory', type: 'custom' },
         { id: 'bad-script', name: 'Casual Ballpoint (Homework Notes)', family: 'Bad Script', type: 'custom' },
+
+        // EXTREME MESSY / RAW HUMAN HANDWRITING
+        { id: 'covered-by-your-grace', name: 'Messy Classroom Scrawl (Raw Ballpoint)', family: 'Covered By Your Grace', type: 'custom' },
+        { id: 'walter-turncoat', name: 'Unhinged Student Scribble (Chaotic Natural Pen)', family: 'Walter Turncoat', type: 'custom' },
+        { id: 'rock-salt', name: 'Rough Marker Scratch (Gritty Raw Hand)', family: 'Rock Salt', type: 'custom' },
+        { id: 'grape-nuts', name: 'Shaky Rushed Notes (Trembling Ballpoint)', family: 'Grape Nuts', type: 'custom' },
+        { id: 'swanky-and-moo-moo', name: 'Wild Messy Scrawl (Extreme Imperfect Hand)', family: 'Swanky and Moo Moo', type: 'custom' },
+        { id: 'sedgwick-ave', name: 'Street-Style Quick Scribble (Graffiti Pen)', family: 'Sedgwick Ave', type: 'custom' },
+        { id: 'liu-jian-mao-cao', name: 'Extreme Brush Scrawl (Raw Calligraphy Rush)', family: 'Liu Jian Mao Cao', type: 'custom' },
+        { id: 'caveat', name: 'Natural Fast Handwriting (Organic Ballpoint Flow)', family: 'Caveat', type: 'custom' },
+        { id: 'coming-soon', name: 'Casual Classroom Print (Relaxed Student Hand)', family: 'Coming Soon', type: 'custom' },
+        { id: 'schoolbell', name: 'School Notebook Print (Natural Student Print)', family: 'Schoolbell', type: 'custom' },
+        { id: 'reenie-beanie', name: 'Tall Messy Scribble (Thin Rushed Pen)', family: 'Reenie Beanie', type: 'custom' },
+        { id: 'mr-dafoe', name: 'Illegible Doctor Signature (Extreme Cursive Scrawl)', family: 'Mr Dafoe', type: 'custom' },
     ];
 
     return [...curatedFonts, ...state.customFonts];
