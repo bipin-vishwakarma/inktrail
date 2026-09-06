@@ -384,17 +384,25 @@ export const useStore = create<AppState>()(
                                     data.state.handwritingStyle = data.state.handwritingStyle.replace('handwriting-', 'Handwriting ');
                                 }
                                 const VALID_HANDWRITING_FONTS = [
-                                    'Meddon', 'Kristi', 'WindSong', 'Cedarville Cursive', 'League Script', 'Square Peg',
-                                    'La Belle Aurore', 'Waiting for the Sunrise', 'Marck Script', 'Zeyada', 'Dawning of a New Day',
-                                    'Handwriting 4', 'Handwriting 20', 'Handwriting 2', 'Handwriting 5',
-                                    'Nothing You Could Do', 'Mynerve', 'Just Me Again Down Here', 'Just Another Hand',
-                                    'The Girl Next Door', 'Sue Ellen Francisco', 'Loved by the King', 'Give You Glory', 'Bad Script',
+                                    // TextToHandwriting Classic Vault (Handwriting 1-22)
+                                    'Handwriting 1', 'Handwriting 2', 'Handwriting 3', 'Handwriting 4', 'Handwriting 5',
+                                    'Handwriting 6', 'Handwriting 7', 'Handwriting 8', 'Handwriting 9', 'Handwriting 10',
+                                    'Handwriting 11', 'Handwriting 12', 'Handwriting 13', 'Handwriting 14', 'Handwriting 15',
+                                    'Handwriting 16', 'Handwriting 17', 'Handwriting 18', 'Handwriting 19', 'Handwriting 20',
+                                    'Handwriting 21', 'Handwriting 22',
+                                    // Extreme Messy & Raw Human
                                     'Covered By Your Grace', 'Walter Turncoat', 'Rock Salt', 'Grape Nuts',
                                     'Swanky and Moo Moo', 'Sedgwick Ave', 'Liu Jian Mao Cao', 'Caveat',
-                                    'Coming Soon', 'Schoolbell', 'Reenie Beanie', 'Mr Dafoe'
+                                    'Coming Soon', 'Schoolbell', 'Reenie Beanie', 'Mr Dafoe',
+                                    // Doctor & Student Cursive
+                                    'Meddon', 'Kristi', 'WindSong', 'Cedarville Cursive', 'League Script', 'Square Peg',
+                                    'La Belle Aurore', 'Waiting for the Sunrise', 'Marck Script', 'Zeyada', 'Dawning of a New Day',
+                                    // Student Homework & Ballpoint
+                                    'Nothing You Could Do', 'Mynerve', 'Just Me Again Down Here', 'Just Another Hand',
+                                    'The Girl Next Door', 'Sue Ellen Francisco', 'Loved by the King', 'Give You Glory', 'Bad Script'
                                 ];
                                 if (!VALID_HANDWRITING_FONTS.includes(data.state.handwritingStyle)) {
-                                    data.state.handwritingStyle = 'Cedarville Cursive';
+                                    data.state.handwritingStyle = 'Handwriting 1';
                                 }
                             }
                         }
@@ -431,35 +439,31 @@ export const useStore = create<AppState>()(
 
 export const getAvailableFonts = (state: AppState) => {
     const curatedFonts: FontPreference[] = [
-        // Rushed Doctor & Frantic Cursive Notes
-        { id: 'meddon', name: "Doctor's Prescription (Rapid Connecting Ink Scrawl)", family: 'Meddon', type: 'custom' },
-        { id: 'kristi', name: 'Frantic Student Cursive (Rushed Slanted Pen)', family: 'Kristi', type: 'custom' },
-        { id: 'windsong', name: 'Rapid Medical Script (Flowing Connected Cursive)', family: 'WindSong', type: 'custom' },
-        { id: 'cedarville-cursive', name: 'Student Cursive (Natural Continuous Flow)', family: 'Cedarville Cursive', type: 'custom' },
-        { id: 'league-script', name: 'School Running Hand (Continuous Connected Ligatures)', family: 'League Script', type: 'custom' },
-        { id: 'square-peg', name: 'Rapid Modern Cursive (Connected Flow)', family: 'Square Peg', type: 'custom' },
-        { id: 'la-belle-aurore', name: 'Student Cursive (Fast Ink Pen)', family: 'La Belle Aurore', type: 'custom' },
-        { id: 'waiting-for-the-sunrise', name: 'Notebook Cursive (Slanted Homework)', family: 'Waiting for the Sunrise', type: 'custom' },
-        { id: 'marck-script', name: 'School Cursive (Fluid Script)', family: 'Marck Script', type: 'custom' },
-        { id: 'zeyada', name: 'Loose Cursive (Casual Rushed Student)', family: 'Zeyada', type: 'custom' },
-        { id: 'dawning-of-a-new-day', name: 'Fine Ballpoint (Light Cursive)', family: 'Dawning of a New Day', type: 'custom' },
-        { id: 'handwriting-4', name: 'Student Cursive (Fluid Natural Slant)', family: 'Handwriting 4', type: 'custom' },
-        { id: 'handwriting-20', name: 'Student Cursive (Clean Rapid Flow)', family: 'Handwriting 20', type: 'custom' },
-        { id: 'handwriting-2', name: 'Student Pen (Casual Natural Slant)', family: 'Handwriting 2', type: 'custom' },
-        { id: 'handwriting-5', name: 'Student Pen (Fast Exam Flow)', family: 'Handwriting 5', type: 'custom' },
+        // TextToHandwriting Classic Vault (Handwriting 1-22)
+        { id: 'handwriting-1', name: 'Handwriting 1 (TextToHandwriting Classic Ballpoint)', family: 'Handwriting 1', type: 'custom' },
+        { id: 'handwriting-2', name: 'Handwriting 2 (Clean Cursive Slant)', family: 'Handwriting 2', type: 'custom' },
+        { id: 'handwriting-3', name: 'Handwriting 3 (Neat Student Pen)', family: 'Handwriting 3', type: 'custom' },
+        { id: 'handwriting-4', name: 'Handwriting 4 (Fluid Natural Slant)', family: 'Handwriting 4', type: 'custom' },
+        { id: 'handwriting-5', name: 'Handwriting 5 (Fast Exam Flow)', family: 'Handwriting 5', type: 'custom' },
+        { id: 'handwriting-6', name: 'Handwriting 6 (Compact Notebook Hand)', family: 'Handwriting 6', type: 'custom' },
+        { id: 'handwriting-7', name: 'Handwriting 7 (School Cursive Notes)', family: 'Handwriting 7', type: 'custom' },
+        { id: 'handwriting-8', name: 'Handwriting 8 (Natural Messy Ballpoint)', family: 'Handwriting 8', type: 'custom' },
+        { id: 'handwriting-9', name: 'Handwriting 9 (Rapid Loose Notes)', family: 'Handwriting 9', type: 'custom' },
+        { id: 'handwriting-10', name: 'Handwriting 10 (Neat Compact Print)', family: 'Handwriting 10', type: 'custom' },
+        { id: 'handwriting-11', name: 'Handwriting 11 (Fluid Student Ballpoint)', family: 'Handwriting 11', type: 'custom' },
+        { id: 'handwriting-12', name: 'Handwriting 12 (Hurried College Scrawl)', family: 'Handwriting 12', type: 'custom' },
+        { id: 'handwriting-13', name: 'Handwriting 13 (Bold Messy Scribble)', family: 'Handwriting 13', type: 'custom' },
+        { id: 'handwriting-14', name: 'Handwriting 14 (Casual Pen Notes)', family: 'Handwriting 14', type: 'custom' },
+        { id: 'handwriting-15', name: 'Handwriting 15 (Fine Line Flow)', family: 'Handwriting 15', type: 'custom' },
+        { id: 'handwriting-16', name: 'Handwriting 16 (Quick Homework Hand)', family: 'Handwriting 16', type: 'custom' },
+        { id: 'handwriting-17', name: 'Handwriting 17 (Loose Student Pen)', family: 'Handwriting 17', type: 'custom' },
+        { id: 'handwriting-18', name: 'Handwriting 18 (Natural Exam Script)', family: 'Handwriting 18', type: 'custom' },
+        { id: 'handwriting-19', name: 'Handwriting 19 (Casual Notebook Hand)', family: 'Handwriting 19', type: 'custom' },
+        { id: 'handwriting-20', name: 'Handwriting 20 (Clean Rapid Flow)', family: 'Handwriting 20', type: 'custom' },
+        { id: 'handwriting-21', name: 'Handwriting 21 (Fluid Study Notes)', family: 'Handwriting 21', type: 'custom' },
+        { id: 'handwriting-22', name: 'Handwriting 22 (Authentic Class Pen)', family: 'Handwriting 22', type: 'custom' },
 
-        // Authentic Rushed Student Homework & Ballpoint Scribbles
-        { id: 'nothing-you-could-do', name: 'Student Homework (Authentic Ballpoint)', family: 'Nothing You Could Do', type: 'custom' },
-        { id: 'mynerve', name: 'Rushed Student Scribble (Messy Ballpoint with Real Jitter)', family: 'Mynerve', type: 'custom' },
-        { id: 'just-me-again-down-here', name: 'Student Notes (Rushed & Imperfect)', family: 'Just Me Again Down Here', type: 'custom' },
-        { id: 'just-another-hand', name: 'Rapid Lecture Scrawl (Narrow Fast Pen)', family: 'Just Another Hand', type: 'custom' },
-        { id: 'the-girl-next-door', name: 'Quick Notebook Scrawl (Natural Casual Hand)', family: 'The Girl Next Door', type: 'custom' },
-        { id: 'sue-ellen-francisco', name: 'Hurried Fine Scrawl (Quick Notes)', family: 'Sue Ellen Francisco', type: 'custom' },
-        { id: 'loved-by-the-king', name: 'Messy Tall Scrawl (Fast Class Notes)', family: 'Loved by the King', type: 'custom' },
-        { id: 'give-you-glory', name: 'Hurried Student Hand (Imperfect Exam Notes)', family: 'Give You Glory', type: 'custom' },
-        { id: 'bad-script', name: 'Casual Ballpoint (Homework Notes)', family: 'Bad Script', type: 'custom' },
-
-        // EXTREME MESSY / RAW HUMAN HANDWRITING
+        // Extreme Messy & Raw Human Handwriting
         { id: 'covered-by-your-grace', name: 'Messy Classroom Scrawl (Raw Ballpoint)', family: 'Covered By Your Grace', type: 'custom' },
         { id: 'walter-turncoat', name: 'Unhinged Student Scribble (Chaotic Natural Pen)', family: 'Walter Turncoat', type: 'custom' },
         { id: 'rock-salt', name: 'Rough Marker Scratch (Gritty Raw Hand)', family: 'Rock Salt', type: 'custom' },
@@ -472,6 +476,30 @@ export const getAvailableFonts = (state: AppState) => {
         { id: 'schoolbell', name: 'School Notebook Print (Natural Student Print)', family: 'Schoolbell', type: 'custom' },
         { id: 'reenie-beanie', name: 'Tall Messy Scribble (Thin Rushed Pen)', family: 'Reenie Beanie', type: 'custom' },
         { id: 'mr-dafoe', name: 'Illegible Doctor Signature (Extreme Cursive Scrawl)', family: 'Mr Dafoe', type: 'custom' },
+
+        // Rushed Doctor & Frantic Cursive Notes
+        { id: 'meddon', name: "Doctor's Prescription (Rapid Connecting Ink Scrawl)", family: 'Meddon', type: 'custom' },
+        { id: 'kristi', name: 'Frantic Student Cursive (Rushed Slanted Pen)', family: 'Kristi', type: 'custom' },
+        { id: 'windsong', name: 'Rapid Medical Script (Flowing Connected Cursive)', family: 'WindSong', type: 'custom' },
+        { id: 'cedarville-cursive', name: 'Student Cursive (Natural Continuous Flow)', family: 'Cedarville Cursive', type: 'custom' },
+        { id: 'league-script', name: 'School Running Hand (Continuous Connected Ligatures)', family: 'League Script', type: 'custom' },
+        { id: 'square-peg', name: 'Rapid Modern Cursive (Connected Flow)', family: 'Square Peg', type: 'custom' },
+        { id: 'la-belle-aurore', name: 'Student Cursive (Fast Ink Pen)', family: 'La Belle Aurore', type: 'custom' },
+        { id: 'waiting-for-the-sunrise', name: 'Notebook Cursive (Slanted Homework)', family: 'Waiting for the Sunrise', type: 'custom' },
+        { id: 'marck-script', name: 'School Cursive (Fluid Script)', family: 'Marck Script', type: 'custom' },
+        { id: 'zeyada', name: 'Loose Cursive (Casual Rushed Student)', family: 'Zeyada', type: 'custom' },
+        { id: 'dawning-of-a-new-day', name: 'Fine Ballpoint (Light Cursive)', family: 'Dawning of a New Day', type: 'custom' },
+
+        // Authentic Rushed Student Homework & Ballpoint Scribbles
+        { id: 'nothing-you-could-do', name: 'Student Homework (Authentic Ballpoint)', family: 'Nothing You Could Do', type: 'custom' },
+        { id: 'mynerve', name: 'Rushed Student Scribble (Messy Ballpoint with Real Jitter)', family: 'Mynerve', type: 'custom' },
+        { id: 'just-me-again-down-here', name: 'Student Notes (Rushed & Imperfect)', family: 'Just Me Again Down Here', type: 'custom' },
+        { id: 'just-another-hand', name: 'Rapid Lecture Scrawl (Narrow Fast Pen)', family: 'Just Another Hand', type: 'custom' },
+        { id: 'the-girl-next-door', name: 'Quick Notebook Scrawl (Natural Casual Hand)', family: 'The Girl Next Door', type: 'custom' },
+        { id: 'sue-ellen-francisco', name: 'Hurried Fine Scrawl (Quick Notes)', family: 'Sue Ellen Francisco', type: 'custom' },
+        { id: 'loved-by-the-king', name: 'Messy Tall Scrawl (Fast Class Notes)', family: 'Loved by the King', type: 'custom' },
+        { id: 'give-you-glory', name: 'Hurried Student Hand (Imperfect Exam Notes)', family: 'Give You Glory', type: 'custom' },
+        { id: 'bad-script', name: 'Casual Ballpoint (Homework Notes)', family: 'Bad Script', type: 'custom' },
     ];
 
     return [...curatedFonts, ...state.customFonts];

@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import { useScrollLock } from '../../hooks/useScrollLock';
 import { HandwrittenWord } from '../HandwrittenWord';
 import { CameraOverlay } from '../CameraOverlay';
-import { getFontFamilyCss } from '../../utils/humanErrorEngine';
+import { getFontFamilyCss, getEffectiveFontSize } from '../../utils/humanErrorEngine';
 import { computePagePhoneShadow } from '../../utils/cameraShadowEngine';
 import type { LightingMode, PaperCrease, PageEffectOverrides, CorrectionColor } from '../../types';
 
@@ -163,6 +163,7 @@ export default function ExportModal({
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
     useScrollLock(isOpen);
+    const effectiveFontSize = getEffectiveFontSize(font, fontSize);
 
     const handleFormatSwitch = (newFormat: 'pdf' | 'zip') => {
         setActiveFormat(newFormat);
@@ -569,13 +570,13 @@ export default function ExportModal({
                                                             dir={line.dir}
                                                             style={{
                                                                 fontFamily: getFontFamilyCss(font), 
-                                                                fontSize, 
+                                                                fontSize: effectiveFontSize, 
                                                                 color, 
                                                                 height: paper.lineHeight, 
                                                                 lineHeight: `${paper.lineHeight}px`, 
                                                                 transform: `translateY(${baseline}px)`, 
                                                                 textAlign: line.dir === 'rtl' ? (textAlign === 'left' ? 'right' : textAlign === 'right' ? 'left' : textAlign) : textAlign, 
-                                                                paddingLeft: line.indent ? line.indent * (fontSize * 0.4) : 0,
+                                                                paddingLeft: line.indent ? line.indent * (effectiveFontSize * 0.4) : 0,
                                                             }} 
                                                             className="w-full whitespace-nowrap relative"
                                                         >
@@ -589,8 +590,8 @@ export default function ExportModal({
                                                                         color: color,
                                                                         fontFamily: getFontFamilyCss(font),
                                                                         fontSize: (line.marginIndex.length > 3) 
-                                                                            ? Math.min(fontSize * 0.85, 14) 
-                                                                            : Math.min(fontSize * 0.95, 17),
+                                                                            ? Math.min(effectiveFontSize * 0.85, 14) 
+                                                                            : Math.min(effectiveFontSize * 0.95, 17),
                                                                         opacity: 0.88,
                                                                         whiteSpace: 'nowrap',
                                                                         overflow: 'hidden',
@@ -616,7 +617,7 @@ export default function ExportModal({
                                                                                     totalLines={page.lines.length}
                                                                                     randomSeed={String(randomSeed)}
                                                                                     fontFamily={font}
-                                                                                    fontSize={fontSize}
+                                                                                    fontSize={effectiveFontSize}
                                                                                     color={color}
                                                                                     correctionColor={correctionColor}
                                                                                     jitter={jitter}
@@ -657,7 +658,7 @@ export default function ExportModal({
                                                                                     totalLines={page.lines.length}
                                                                                     randomSeed={String(randomSeed)}
                                                                                     fontFamily={font}
-                                                                                    fontSize={fontSize}
+                                                                                    fontSize={effectiveFontSize}
                                                                                     color={color}
                                                                                     correctionColor={correctionColor}
                                                                                     jitter={jitter}
@@ -688,7 +689,7 @@ export default function ExportModal({
                                                                             totalLines={page.lines.length}
                                                                             randomSeed={String(randomSeed)}
                                                                             fontFamily={font}
-                                                                            fontSize={fontSize}
+                                                                            fontSize={effectiveFontSize}
                                                                             color={color}
                                                                             correctionColor={correctionColor}
                                                                             jitter={jitter}

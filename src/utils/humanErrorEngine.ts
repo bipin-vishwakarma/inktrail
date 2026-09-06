@@ -49,10 +49,6 @@ export const FONT_WIDTH_RATIOS: Record<string, number> = {
     'Marck Script': 0.58,
     'Zeyada': 0.54,
     'Dawning of a New Day': 0.56,
-    'Handwriting 4': 0.60,
-    'Handwriting 20': 0.55,
-    'Handwriting 2': 0.58,
-    'Handwriting 5': 0.56,
 
     // Authentic Rushed Student Homework & Ballpoint Scribbles
     'Nothing You Could Do': 0.58,
@@ -86,10 +82,29 @@ export const FONT_WIDTH_RATIOS: Record<string, number> = {
     'sue-ellen-francisco': 0.40,
     'give-you-glory': 0.56,
     'bad-script': 0.56,
-    'handwriting-2': 0.58,
-    'handwriting-4': 0.60,
-    'handwriting-5': 0.56,
-    'handwriting-20': 0.55,
+    // TextToHandwriting Classic Vault (Handwriting 1 to 22)
+    'Handwriting 1': 0.62, 'handwriting-1': 0.62,
+    'Handwriting 2': 0.58, 'handwriting-2': 0.58,
+    'Handwriting 3': 0.60, 'handwriting-3': 0.60,
+    'Handwriting 4': 0.60, 'handwriting-4': 0.60,
+    'Handwriting 5': 0.56, 'handwriting-5': 0.56,
+    'Handwriting 6': 0.52, 'handwriting-6': 0.52,
+    'Handwriting 7': 0.58, 'handwriting-7': 0.58,
+    'Handwriting 8': 0.54, 'handwriting-8': 0.54,
+    'Handwriting 9': 0.50, 'handwriting-9': 0.50,
+    'Handwriting 10': 0.48, 'handwriting-10': 0.48,
+    'Handwriting 11': 0.52, 'handwriting-11': 0.52,
+    'Handwriting 12': 0.54, 'handwriting-12': 0.54,
+    'Handwriting 13': 0.50, 'handwriting-13': 0.50,
+    'Handwriting 14': 0.54, 'handwriting-14': 0.54,
+    'Handwriting 15': 0.55, 'handwriting-15': 0.55,
+    'Handwriting 16': 0.54, 'handwriting-16': 0.54,
+    'Handwriting 17': 0.52, 'handwriting-17': 0.52,
+    'Handwriting 18': 0.55, 'handwriting-18': 0.55,
+    'Handwriting 19': 0.52, 'handwriting-19': 0.52,
+    'Handwriting 20': 0.55, 'handwriting-20': 0.55,
+    'Handwriting 21': 0.54, 'handwriting-21': 0.54,
+    'Handwriting 22': 0.54, 'handwriting-22': 0.54,
 
     // Extreme Messy / Raw Human Handwriting
     'Covered By Your Grace': 0.58,
@@ -117,6 +132,52 @@ export const FONT_WIDTH_RATIOS: Record<string, number> = {
     'Mr Dafoe': 0.58,
     'mr-dafoe': 0.58,
 };
+
+/**
+ * Exact per-font scale multipliers calibrated to match real paper line heights
+ * (Calibrated from texttohandwriting.com specifications where each font has distinct optical sizing)
+ */
+export const FONT_SCALE_MULTIPLIERS: Record<string, number> = {
+    // texttohandwriting.com classic vault calibrations:
+    'Handwriting 1': 1.45, 'handwriting-1': 1.45,
+    'Handwriting 2': 1.18, 'handwriting-2': 1.18,
+    'Handwriting 3': 1.22, 'handwriting-3': 1.22,
+    'Handwriting 4': 1.10, 'handwriting-4': 1.10,
+    'Handwriting 5': 1.10, 'handwriting-5': 1.10,
+    'Handwriting 6': 0.98, 'handwriting-6': 0.98,
+    'Handwriting 7': 1.14, 'handwriting-7': 1.14,
+    'Handwriting 8': 1.02, 'handwriting-8': 1.02,
+    'Handwriting 9': 0.92, 'handwriting-9': 0.92,
+    'Handwriting 10': 0.88, 'handwriting-10': 0.88,
+    'Handwriting 11': 0.92, 'handwriting-11': 0.92,
+    'Handwriting 12': 0.94, 'handwriting-12': 0.94,
+    'Handwriting 13': 0.82, 'handwriting-13': 0.82,
+    'Handwriting 14': 0.98, 'handwriting-14': 0.98,
+    'Handwriting 15': 1.05, 'handwriting-15': 1.05,
+    'Handwriting 16': 1.00, 'handwriting-16': 1.00,
+    'Handwriting 17': 1.00, 'handwriting-17': 1.00,
+    'Handwriting 18': 1.02, 'handwriting-18': 1.02,
+    'Handwriting 19': 0.98, 'handwriting-19': 0.98,
+    'Handwriting 20': 1.08, 'handwriting-20': 1.08,
+    'Handwriting 21': 1.00, 'handwriting-21': 1.00,
+    'Handwriting 22': 1.00, 'handwriting-22': 1.00,
+    'Kristi': 1.38, 'kristi': 1.38,
+    'Reenie Beanie': 1.25, 'reenie-beanie': 1.25,
+    'Rock Salt': 0.88, 'rock-salt': 0.88,
+    'Caveat': 1.12, 'caveat': 1.12,
+    'Walter Turncoat': 1.05, 'walter-turncoat': 1.05,
+    'Covered By Your Grace': 1.08, 'covered-by-your-grace': 1.08,
+};
+
+export function getFontScaleMultiplier(font: string): number {
+    if (!font) return 1.0;
+    const clean = font.replace(/['"]/g, '').trim();
+    return FONT_SCALE_MULTIPLIERS[clean] || FONT_SCALE_MULTIPLIERS[clean.toLowerCase()] || 1.0;
+}
+
+export function getEffectiveFontSize(font: string, baseFontSize: number): number {
+    return Math.round(baseFontSize * getFontScaleMultiplier(font));
+}
 
 export const CURSIVE_CONNECTING_FONTS = new Set([
     'Cedarville Cursive', 'cedarville-cursive',

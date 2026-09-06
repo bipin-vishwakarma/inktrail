@@ -19,7 +19,7 @@ import { CameraOverlay } from '../components/CameraOverlay';
 import { HumanErrorsControls } from '../components/HumanErrorsControls';
 import { CameraPhysicsControls } from '../components/CameraPhysicsControls';
 import { PenPresetSelector } from '../components/PenPresetSelector';
-import { parseWordToken, measureWordWidth, getFontFamilyCss, clearWidthCache, type WordToken } from '../utils/humanErrorEngine';
+import { parseWordToken, measureWordWidth, getFontFamilyCss, getEffectiveFontSize, clearWidthCache, type WordToken } from '../utils/humanErrorEngine';
 import { computePagePhoneShadow } from '../utils/cameraShadowEngine';
 import type { StrikeStyle } from '../types';
 
@@ -321,33 +321,29 @@ function paginateLines(lines: LineData[], linesPerPage: number, page1Capacity: n
 
 // --- DATA CONSTANTS ---
 const FONTS = [
-    // === Rushed Doctor & Frantic Cursive Notes (Fast Connecting Script) ===
-    { name: 'Meddon', label: "Doctor's Prescription (Rapid Connecting Ink Scrawl)" },
-    { name: 'Kristi', label: 'Frantic Student Cursive (Rushed Slanted Pen)' },
-    { name: 'WindSong', label: 'Rapid Medical Script (Flowing Connected Cursive)' },
-    { name: 'Cedarville Cursive', label: 'Student Cursive (Natural Continuous Flow)' },
-    { name: 'League Script', label: 'School Running Hand (Continuous Connected Ligatures)' },
-    { name: 'Square Peg', label: 'Rapid Modern Cursive (Connected Flow)' },
-    { name: 'La Belle Aurore', label: 'Student Cursive (Fast Ink Pen)' },
-    { name: 'Waiting for the Sunrise', label: 'Notebook Cursive (Slanted Homework)' },
-    { name: 'Marck Script', label: 'School Cursive (Fluid Script)' },
-    { name: 'Zeyada', label: 'Loose Cursive (Casual Rushed Student)' },
-    { name: 'Dawning of a New Day', label: 'Fine Ballpoint (Light Cursive)' },
-    { name: 'Handwriting 4', label: 'Student Cursive (Fluid Natural Slant)' },
-    { name: 'Handwriting 20', label: 'Student Cursive (Clean Rapid Flow)' },
-    { name: 'Handwriting 2', label: 'Student Pen (Casual Natural Slant)' },
-    { name: 'Handwriting 5', label: 'Student Pen (Fast Exam Flow)' },
-
-    // === Authentic Rushed Student Homework & Ballpoint Scribbles ===
-    { name: 'Nothing You Could Do', label: 'Student Homework (Authentic Ballpoint)' },
-    { name: 'Mynerve', label: 'Rushed Student Scribble (Messy Ballpoint with Real Jitter)' },
-    { name: 'Just Me Again Down Here', label: 'Student Notes (Rushed & Imperfect)' },
-    { name: 'Just Another Hand', label: 'Rapid Lecture Scrawl (Narrow Fast Pen)' },
-    { name: 'The Girl Next Door', label: 'Quick Notebook Scrawl (Natural Casual Hand)' },
-    { name: 'Sue Ellen Francisco', label: 'Hurried Fine Scrawl (Quick Notes)' },
-    { name: 'Loved by the King', label: 'Messy Tall Scrawl (Fast Class Notes)' },
-    { name: 'Give You Glory', label: 'Hurried Student Hand (Imperfect Exam Notes)' },
-    { name: 'Bad Script', label: 'Casual Ballpoint (Homework Notes)' },
+    // === TextToHandwriting.com Classic Vault (Authentic Scanned Hands) ===
+    { name: 'Handwriting 1', label: 'Handwriting 1 (TextToHandwriting Classic Ballpoint)' },
+    { name: 'Handwriting 2', label: 'Handwriting 2 (Clean Cursive Slant)' },
+    { name: 'Handwriting 3', label: 'Handwriting 3 (Neat Student Pen)' },
+    { name: 'Handwriting 4', label: 'Handwriting 4 (Fluid Natural Slant)' },
+    { name: 'Handwriting 5', label: 'Handwriting 5 (Fast Exam Flow)' },
+    { name: 'Handwriting 6', label: 'Handwriting 6 (Compact Notebook Hand)' },
+    { name: 'Handwriting 7', label: 'Handwriting 7 (School Cursive Notes)' },
+    { name: 'Handwriting 8', label: 'Handwriting 8 (Natural Messy Ballpoint)' },
+    { name: 'Handwriting 9', label: 'Handwriting 9 (Rapid Loose Notes)' },
+    { name: 'Handwriting 10', label: 'Handwriting 10 (Neat Compact Print)' },
+    { name: 'Handwriting 11', label: 'Handwriting 11 (Fluid Student Ballpoint)' },
+    { name: 'Handwriting 12', label: 'Handwriting 12 (Hurried College Scrawl)' },
+    { name: 'Handwriting 13', label: 'Handwriting 13 (Bold Messy Scribble)' },
+    { name: 'Handwriting 14', label: 'Handwriting 14 (Casual Pen Notes)' },
+    { name: 'Handwriting 15', label: 'Handwriting 15 (Fine Line Flow)' },
+    { name: 'Handwriting 16', label: 'Handwriting 16 (Quick Homework Hand)' },
+    { name: 'Handwriting 17', label: 'Handwriting 17 (Loose Student Pen)' },
+    { name: 'Handwriting 18', label: 'Handwriting 18 (Natural Exam Script)' },
+    { name: 'Handwriting 19', label: 'Handwriting 19 (Casual Notebook Hand)' },
+    { name: 'Handwriting 20', label: 'Handwriting 20 (Clean Rapid Flow)' },
+    { name: 'Handwriting 21', label: 'Handwriting 21 (Fluid Study Notes)' },
+    { name: 'Handwriting 22', label: 'Handwriting 22 (Authentic Class Pen)' },
 
     // === EXTREME MESSY / RAW HUMAN HANDWRITING ===
     { name: 'Covered By Your Grace', label: 'Messy Classroom Scrawl (Raw Ballpoint)' },
@@ -362,6 +358,30 @@ const FONTS = [
     { name: 'Schoolbell', label: 'School Notebook Print (Natural Student Print)' },
     { name: 'Reenie Beanie', label: 'Tall Messy Scribble (Thin Rushed Pen)' },
     { name: 'Mr Dafoe', label: 'Illegible Doctor Signature (Extreme Cursive Scrawl)' },
+
+    // === Rushed Doctor & Frantic Cursive Notes (Fast Connecting Script) ===
+    { name: 'Meddon', label: "Doctor's Prescription (Rapid Connecting Ink Scrawl)" },
+    { name: 'Kristi', label: 'Frantic Student Cursive (Rushed Slanted Pen)' },
+    { name: 'WindSong', label: 'Rapid Medical Script (Flowing Connected Cursive)' },
+    { name: 'Cedarville Cursive', label: 'Student Cursive (Natural Continuous Flow)' },
+    { name: 'League Script', label: 'School Running Hand (Continuous Connected Ligatures)' },
+    { name: 'Square Peg', label: 'Rapid Modern Cursive (Connected Flow)' },
+    { name: 'La Belle Aurore', label: 'Student Cursive (Fast Ink Pen)' },
+    { name: 'Waiting for the Sunrise', label: 'Notebook Cursive (Slanted Homework)' },
+    { name: 'Marck Script', label: 'School Cursive (Fluid Script)' },
+    { name: 'Zeyada', label: 'Loose Cursive (Casual Rushed Student)' },
+    { name: 'Dawning of a New Day', label: 'Fine Ballpoint (Light Cursive)' },
+
+    // === Authentic Rushed Student Homework & Ballpoint Scribbles ===
+    { name: 'Nothing You Could Do', label: 'Student Homework (Authentic Ballpoint)' },
+    { name: 'Mynerve', label: 'Rushed Student Scribble (Messy Ballpoint with Real Jitter)' },
+    { name: 'Just Me Again Down Here', label: 'Student Notes (Rushed & Imperfect)' },
+    { name: 'Just Another Hand', label: 'Rapid Lecture Scrawl (Narrow Fast Pen)' },
+    { name: 'The Girl Next Door', label: 'Quick Notebook Scrawl (Natural Casual Hand)' },
+    { name: 'Sue Ellen Francisco', label: 'Hurried Fine Scrawl (Quick Notes)' },
+    { name: 'Loved by the King', label: 'Messy Tall Scrawl (Fast Class Notes)' },
+    { name: 'Give You Glory', label: 'Hurried Student Hand (Imperfect Exam Notes)' },
+    { name: 'Bad Script', label: 'Casual Ballpoint (Homework Notes)' },
 ];
 
 const PAPERS = [
@@ -527,12 +547,15 @@ export default function EditorPage() {
     const [showResetModal, setShowResetModal] = useState(false);
     const [fontLoadedVersion, setFontLoadedVersion] = useState(0);
 
+    // Dynamic optical font-size scaling per handwriting style (matches texttohandwriting.com calibration)
+    const effectiveFontSize = useMemo(() => getEffectiveFontSize(font, fontSize), [font, fontSize]);
+
     // Actively load the handwriting font via FontFaceSet API and trigger precise re-measurement
     useEffect(() => {
         let active = true;
         const fontCss = getFontFamilyCss(font);
         if (typeof document !== 'undefined' && document.fonts) {
-            document.fonts.load(`${fontSize}px ${fontCss}`).then(() => {
+            document.fonts.load(`${effectiveFontSize}px ${fontCss}`).then(() => {
                 if (active) {
                     clearWidthCache();
                     setFontLoadedVersion(v => v + 1);
@@ -540,7 +563,7 @@ export default function EditorPage() {
             }).catch(() => {});
         }
         return () => { active = false; };
-    }, [font, fontSize]);
+    }, [font, effectiveFontSize]);
 
     // Navigation & Tab States
     const [activeSidebarTab, setActiveSidebarTab] = useState<'write' | 'pen' | 'paper' | 'realism' | 'effects'>('write');
@@ -753,7 +776,7 @@ export default function EditorPage() {
             deferredText, 
             maxLineWidth,
             font,
-            fontSize,
+            effectiveFontSize,
             String(randomSeed), 
             autoTypoRate, 
             strikeStyle, 
@@ -761,7 +784,7 @@ export default function EditorPage() {
             smartMarginIndexing
         );
         return paginateLines(rawLines, linesPerPage, page1Lines);
-    }, [deferredText, fontSize, font, fontLoadedVersion, paper.lineHeight, paper.hasRedMargin, paper.id, spiralBinding, showNotebookHeaderBox, marginTop, marginBottom, marginLeft, marginRight, showHeader, headerText, randomSeed, autoTypoRate, strikeStyle, autoCaret, smartMarginIndexing]);
+    }, [deferredText, effectiveFontSize, font, fontLoadedVersion, paper.lineHeight, paper.hasRedMargin, paper.id, spiralBinding, showNotebookHeaderBox, marginTop, marginBottom, marginLeft, marginRight, showHeader, headerText, randomSeed, autoTypoRate, strikeStyle, autoCaret, smartMarginIndexing]);
 
     // Synchronize active page index with scroll position
     useEffect(() => {
@@ -1954,13 +1977,13 @@ export default function EditorPage() {
                                                             onDoubleClick={() => startInlineEdit(pIdx, lIdx, line)}
                                                             style={{
                                                                 fontFamily: getFontFamilyCss(font), 
-                                                                fontSize, 
+                                                                fontSize: effectiveFontSize, 
                                                                 color, 
                                                                 height: paper.lineHeight, 
                                                                 lineHeight: `${paper.lineHeight}px`, 
                                                                 transform: `translateY(${baseline}px)`, 
                                                                 textAlign: line.dir === 'rtl' ? (textAlign === 'left' ? 'right' : textAlign === 'right' ? 'left' : textAlign) : textAlign, 
-                                                                paddingLeft: line.indent ? line.indent * (fontSize * 0.4) : 0,
+                                                                paddingLeft: line.indent ? line.indent * (effectiveFontSize * 0.4) : 0,
                                                             }} 
                                                             className="w-full whitespace-nowrap relative group cursor-text"
                                                         >
@@ -2045,14 +2068,14 @@ export default function EditorPage() {
                                                                     onBlur={() => saveInlineEdit(pIdx, lIdx)}
                                                                     style={{
                                                                         fontFamily: getFontFamilyCss(font),
-                                                                        fontSize,
+                                                                        fontSize: effectiveFontSize,
                                                                         color,
                                                                         height: `${paper.lineHeight}px`,
                                                                         lineHeight: `${paper.lineHeight}px`,
                                                                     }}
                                                                     className="w-full bg-blue-50/80 border border-dashed border-blue-400 rounded-xs px-1 outline-none text-neutral-900 shadow-inner"
                                                                 />
-                                                             ) : line.type === 'comparison' && line.leftTokens && line.rightTokens ? (
+                                                            ) : line.type === 'comparison' && line.leftTokens && line.rightTokens ? (
                                                                 <div className="w-full flex items-center h-full relative">
                                                                     {/* Left Column (50%) */}
                                                                     <div className="w-1/2 pr-3 overflow-hidden flex items-center whitespace-nowrap">
@@ -2069,7 +2092,7 @@ export default function EditorPage() {
                                                                                     totalLines={page.lines.length}
                                                                                     randomSeed={String(randomSeed)}
                                                                                     fontFamily={font}
-                                                                                    fontSize={fontSize}
+                                                                                    fontSize={effectiveFontSize}
                                                                                     color={color}
                                                                                     correctionColor={correctionColor}
                                                                                     jitter={jitter}
@@ -2111,7 +2134,7 @@ export default function EditorPage() {
                                                                                     totalLines={page.lines.length}
                                                                                     randomSeed={String(randomSeed)}
                                                                                     fontFamily={font}
-                                                                                    fontSize={fontSize}
+                                                                                    fontSize={effectiveFontSize}
                                                                                     color={color}
                                                                                     correctionColor={correctionColor}
                                                                                     jitter={jitter}
@@ -2157,7 +2180,7 @@ export default function EditorPage() {
                                                                                 totalLines={page.lines.length}
                                                                                 randomSeed={String(randomSeed)}
                                                                                 fontFamily={font}
-                                                                                fontSize={fontSize}
+                                                                                fontSize={effectiveFontSize}
                                                                                 color={color}
                                                                                 correctionColor={correctionColor}
                                                                                 jitter={jitter}

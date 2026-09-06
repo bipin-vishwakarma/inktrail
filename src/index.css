@@ -2,7 +2,17 @@
 
 /* === 24 CURATED AUTHENTIC HANDWRITING FONTS (OFFLINE CACHED & DUAL-ALIASED) === */
 
-/* --- Organic Cursive Vault --- */
+/* --- TextToHandwriting Classic Vault (Handwriting 1 to 22) --- */
+@font-face {
+  font-family: 'Handwriting 1';
+  src: url('/fonts/handwriting-1.otf') format('opentype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'handwriting-1';
+  src: url('/fonts/handwriting-1.otf') format('opentype');
+  font-display: swap;
+}
 @font-face {
   font-family: 'Handwriting 2';
   src: url('/fonts/handwriting-2.otf') format('opentype');
@@ -11,6 +21,16 @@
 @font-face {
   font-family: 'handwriting-2';
   src: url('/fonts/handwriting-2.otf') format('opentype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 3';
+  src: url('/fonts/handwriting-3.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'handwriting-3';
+  src: url('/fonts/handwriting-3.ttf') format('truetype');
   font-display: swap;
 }
 @font-face {
@@ -34,6 +54,146 @@
   font-display: swap;
 }
 @font-face {
+  font-family: 'Handwriting 6';
+  src: url('/fonts/handwriting-6.otf') format('opentype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'handwriting-6';
+  src: url('/fonts/handwriting-6.otf') format('opentype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 7';
+  src: url('/fonts/handwriting-7.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'handwriting-7';
+  src: url('/fonts/handwriting-7.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 8';
+  src: url('/fonts/handwriting-8.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'handwriting-8';
+  src: url('/fonts/handwriting-8.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 9';
+  src: url('/fonts/handwriting-9.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'handwriting-9';
+  src: url('/fonts/handwriting-9.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 10';
+  src: url('/fonts/handwriting-10.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'handwriting-10';
+  src: url('/fonts/handwriting-10.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 11';
+  src: url('/fonts/handwriting-11.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'handwriting-11';
+  src: url('/fonts/handwriting-11.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 12';
+  src: url('/fonts/handwriting-12.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'handwriting-12';
+  src: url('/fonts/handwriting-12.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 13';
+  src: url('/fonts/handwriting-13.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'handwriting-13';
+  src: url('/fonts/handwriting-13.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 14';
+  src: url('/fonts/handwriting-14.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'handwriting-14';
+  src: url('/fonts/handwriting-14.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 15';
+  src: url('/fonts/handwriting-15.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'handwriting-15';
+  src: url('/fonts/handwriting-15.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 16';
+  src: url('/fonts/handwriting-16.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'handwriting-16';
+  src: url('/fonts/handwriting-16.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 17';
+  src: url('/fonts/handwriting-17.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'handwriting-17';
+  src: url('/fonts/handwriting-17.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 18';
+  src: url('/fonts/handwriting-18.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'handwriting-18';
+  src: url('/fonts/handwriting-18.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 19';
+  src: url('/fonts/handwriting-19.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'handwriting-19';
+  src: url('/fonts/handwriting-19.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
   font-family: 'Handwriting 20';
   src: url('/fonts/handwriting-20.ttf') format('truetype');
   font-display: swap;
@@ -41,6 +201,26 @@
 @font-face {
   font-family: 'handwriting-20';
   src: url('/fonts/handwriting-20.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 21';
+  src: url('/fonts/handwriting-21.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'handwriting-21';
+  src: url('/fonts/handwriting-21.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Handwriting 22';
+  src: url('/fonts/handwriting-22.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'handwriting-22';
+  src: url('/fonts/handwriting-22.ttf') format('truetype');
   font-display: swap;
 }
 
