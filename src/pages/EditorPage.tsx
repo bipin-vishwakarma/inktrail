@@ -5,7 +5,8 @@ import {
     AlignLeft, AlignCenter, AlignRight, AlignJustify, 
     Download, Clock, 
     ZoomIn, ZoomOut, Palette,
-    RotateCcw, Camera, Scissors, X, Dices
+    RotateCcw, Camera, Scissors, X, Dices,
+    Maximize2, Minimize2, Clipboard, Sparkles, Trash2
 } from 'lucide-react';
 
 import { useStore } from '../lib/store';
@@ -534,6 +535,129 @@ export default function EditorPage() {
         }, 150);
         return () => clearTimeout(handler);
     }, [draftText, text, setText]);
+
+    // Enhanced Textarea States & Handlers
+    const [cursorPos, setCursorPos] = useState({ line: 1, col: 1 });
+    const [editorFontSize, setEditorFontSize] = useState<'sm' | 'base' | 'lg'>('sm');
+    const [isEditorExpanded, setIsEditorExpanded] = useState(false);
+
+    const updateCursorPos = useCallback((e: React.SyntheticEvent<HTMLTextAreaElement>) => {
+        const target = e.currentTarget;
+        const selStart = target.selectionStart || 0;
+        const textBefore = target.value.slice(0, selStart);
+        const lines = textBefore.split('\n');
+        setCursorPos({
+            line: lines.length,
+            col: lines[lines.length - 1].length + 1
+        });
+    }, []);
+
+    const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.key === 'Tab') {
+            e.preventDefault();
+            const target = e.currentTarget;
+            const start = target.selectionStart;
+            const end = target.selectionEnd;
+            const next = draftText.slice(0, start) + '    ' + draftText.slice(end);
+            setDraftText(next);
+            setTimeout(() => {
+                target.setSelectionRange(start + 4, start + 4);
+            }, 0);
+        } else if (e.key === 'Enter') {
+            const target = e.currentTarget;
+            const start = target.selectionStart;
+            const textBefore = draftText.slice(0, start);
+            const currentLine = textBefore.split('\n').pop() || '';
+            
+            // Smart auto-bullet and list continuation
+            const bulletMatch = currentLine.match(/^(\s*)(•|-|\*)\s+/);
+            const numMatch = currentLine.match(/^(\s*)(\d+)[\.\)]\s+/);
+            
+            if (bulletMatch) {
+                if (currentLine.trim() === '•' || currentLine.trim() === '-' || currentLine.trim() === '*') {
+                    // Double Enter: cancel list
+                    e.preventDefault();
+                    const lineStart = start - currentLine.length;
+                    const next = draftText.slice(0, lineStart) + draftText.slice(start);
+                    setDraftText(next);
+                    setTimeout(() => {
+                        target.setSelectionRange(lineStart, lineStart);
+                    }, 0);
+                } else {
+                    e.preventDefault();
+                    const insert = '\n' + bulletMatch[1] + bulletMatch[2] + ' ';
+                    const next = draftText.slice(0, start) + insert + draftText.slice(start);
+                    setDraftText(next);
+                    setTimeout(() => {
+                        target.setSelectionRange(start + insert.length, start + insert.length);
+                    }, 0);
+                }
+            } else if (numMatch) {
+                const num = parseInt(numMatch[2], 10);
+                if (currentLine.trim() === `${num}.` || currentLine.trim() === `${num})`) {
+                    // Double Enter: cancel numbered list
+                    e.preventDefault();
+                    const lineStart = start - currentLine.length;
+                    const next = draftText.slice(0, lineStart) + draftText.slice(start);
+                    setDraftText(next);
+                    setTimeout(() => {
+                        target.setSelectionRange(lineStart, lineStart);
+                    }, 0);
+                } else {
+                    e.preventDefault();
+                    const insert = '\n' + numMatch[1] + (num + 1) + '. ';
+                    const next = draftText.slice(0, start) + insert + draftText.slice(start);
+                    setDraftText(next);
+                    setTimeout(() => {
+                        target.setSelectionRange(start + insert.length, start + insert.length);
+                    }, 0);
+                }
+            }
+        }
+    }, [draftText]);
+
+    const handlePasteClipboard = useCallback(async () => {
+        try {
+            const text = await navigator.clipboard.readText();
+            if (text) {
+                if (sourceRef.current) {
+                    const start = sourceRef.current.selectionStart;
+                    const end = sourceRef.current.selectionEnd;
+                    const next = draftText.slice(0, start) + text + draftText.slice(end);
+                    setDraftText(next);
+                    setTimeout(() => {
+                        sourceRef.current?.focus();
+                        sourceRef.current?.setSelectionRange(start + text.length, start + text.length);
+                    }, 0);
+                } else {
+                    setDraftText(prev => prev + text);
+                }
+            }
+        } catch (err) {
+            console.warn('Clipboard read failed:', err);
+        }
+    }, [draftText]);
+
+    const handleCleanSpacing = useCallback(() => {
+        const cleaned = draftText
+            .split('\n')
+            .map(l => l.trimEnd())
+            .join('\n')
+            .replace(/\n{3,}/g, '\n\n');
+        setDraftText(cleaned);
+    }, [draftText]);
+
+    // Close focus editor on Escape key
+    useEffect(() => {
+        if (!isEditorExpanded) return;
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                setIsEditorExpanded(false);
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [isEditorExpanded]);
 
     // Randomness Seed State for re-rolling variations
     const [randomSeed, setRandomSeed] = useState(0);
@@ -1080,156 +1204,236 @@ export default function EditorPage() {
                         
                         {/* TAB 1: WRITE */}
                         {activeSidebarTab === 'write' && (
-                            <div className="flex-1 flex flex-col min-h-0 space-y-4">
+                            <div className="flex-1 flex flex-col min-h-0 space-y-3.5">
                                 {/* Heading Option */}
-                                <div className="shrink-0 bg-neutral-50 p-4 rounded-2xl border border-neutral-200/70 space-y-3">
+                                <div className="shrink-0 bg-neutral-50/90 p-3.5 rounded-2xl border border-neutral-200/80 space-y-2.5 shadow-2xs">
                                     <div className="flex items-center justify-between">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400">
-                                            Document Heading
-                                        </label>
-                                        <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-neutral-700">
+                                        <div className="flex items-center gap-1.5">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-neutral-400">
+                                                Document Heading
+                                            </span>
+                                            {showHeader && (
+                                                <span className="text-[9px] font-bold px-1.5 py-0.2 bg-blue-100 text-blue-700 rounded-full">
+                                                    Active
+                                                </span>
+                                            )}
+                                        </div>
+                                        <label className="flex items-center gap-1.5 cursor-pointer text-xs font-bold text-neutral-700 select-none">
                                             <input 
                                                 type="checkbox" 
                                                 checked={showHeader} 
                                                 onChange={e => setPageOptions({ showHeader: e.target.checked })} 
-                                                className="w-4 h-4 rounded border-neutral-300 accent-neutral-900 cursor-pointer"
+                                                className="w-3.5 h-3.5 rounded border-neutral-300 accent-neutral-900 cursor-pointer"
                                             />
-                                            <span>Show Heading</span>
+                                            <span className="text-[11px]">Show Heading</span>
                                         </label>
                                     </div>
+
                                     {showHeader && (
-                                        <textarea
-                                            value={headerText}
-                                            onChange={e => setPageOptions({ headerText: e.target.value })}
-                                            placeholder="Assignment Title / Roll No / Subject..."
-                                            className="w-full h-18 p-3 rounded-xl bg-white border border-neutral-200 text-neutral-900 text-xs focus:outline-none focus:ring-2 focus:ring-neutral-900/10 transition-all resize-none font-sans font-medium"
-                                        />
+                                        <div className="space-y-2">
+                                            <textarea
+                                                value={headerText}
+                                                onChange={e => setPageOptions({ headerText: e.target.value })}
+                                                placeholder="Name: Bipin Vishwakarma     Sap ID: 500124214&#10;Subject: Human Computer Interaction"
+                                                rows={Math.min(4, Math.max(2, (headerText.split('\n').length)))}
+                                                className="w-full min-h-[58px] max-h-[120px] p-2.5 rounded-xl bg-white border border-neutral-200/90 text-neutral-900 text-xs leading-relaxed focus:bg-white focus:outline-none focus:ring-2 focus:ring-neutral-900/15 focus:border-neutral-400 transition-all resize-y font-sans font-medium custom-scrollbar"
+                                            />
+                                            {/* Quick Heading Template Chips */}
+                                            <div className="flex items-center gap-1.5 flex-wrap text-[10px]">
+                                                <span className="text-neutral-400 font-bold text-[9px] uppercase tracking-wider">Presets:</span>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setPageOptions({ headerText: 'Name: Bipin Vishwakarma     Sap ID: 500124214\nSubject: Assignment 1' })}
+                                                    className="px-2 py-0.5 rounded-md bg-white hover:bg-neutral-200/70 text-neutral-600 border border-neutral-200 transition-colors cursor-pointer"
+                                                >
+                                                    Name & Sap ID
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setPageOptions({ headerText: 'Assignment: Module 3 Notes\nDate: ' + new Date().toLocaleDateString('en-GB') })}
+                                                    className="px-2 py-0.5 rounded-md bg-white hover:bg-neutral-200/70 text-neutral-600 border border-neutral-200 transition-colors cursor-pointer"
+                                                >
+                                                    Assignment & Date
+                                                </button>
+                                                {headerText && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setPageOptions({ headerText: '' })}
+                                                        className="text-neutral-400 hover:text-rose-600 text-[10px] ml-auto transition-colors font-medium"
+                                                    >
+                                                        Clear
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
                                     )}
                                 </div>
 
-                                {/* Main Text Source - Instant 0ms Typing */}
+                                {/* Main Text Source Card - Instant 0ms Typing & Smooth Inset Scrollbar */}
                                 <div className="flex-1 flex flex-col min-h-0 space-y-2">
-                                    <div className="flex items-center justify-between shrink-0">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400">
-                                            Your Text Content
-                                        </label>
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-[10px] text-neutral-400 font-mono font-semibold">
-                                                {wordCount} words • {draftText.length} chars
+                                    {/* Action Bar & Stats */}
+                                    <div className="flex items-center justify-between shrink-0 gap-2">
+                                        <div className="flex items-center gap-1.5 flex-wrap">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-neutral-400">
+                                                Text Content
                                             </span>
+                                            <span className="text-[10px] font-semibold px-2 py-0.5 bg-neutral-100 text-neutral-600 rounded-full font-mono">
+                                                {wordCount} words
+                                            </span>
+                                            <span className="text-[10px] font-semibold px-1.5 py-0.5 bg-neutral-100 text-neutral-500 rounded-full font-mono hidden sm:inline-block">
+                                                {draftText.length} chars
+                                            </span>
+                                        </div>
+
+                                        <div className="flex items-center gap-1 shrink-0">
+                                            <button
+                                                type="button"
+                                                onClick={handlePasteClipboard}
+                                                title="Paste from clipboard"
+                                                className="px-2 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1 cursor-pointer border border-neutral-200/60"
+                                            >
+                                                <Clipboard size={11} />
+                                                <span className="hidden sm:inline">Paste</span>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={handleCleanSpacing}
+                                                title="Clean up excess blank lines and spacing"
+                                                className="px-2 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1 cursor-pointer border border-neutral-200/60"
+                                            >
+                                                <Sparkles size={11} />
+                                                <span className="hidden sm:inline">Clean</span>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setIsEditorExpanded(true)}
+                                                title="Expand Editor to Focus View"
+                                                className="px-2 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1 cursor-pointer border border-neutral-200/60"
+                                            >
+                                                <Maximize2 size={11} />
+                                                <span className="hidden sm:inline">Focus</span>
+                                            </button>
                                             {draftText.length > 0 && (
                                                 <button
+                                                    type="button"
                                                     onClick={() => setDraftText('')}
                                                     title="Clear All Text"
-                                                    className="text-[10px] font-bold text-neutral-400 hover:text-rose-600 transition-colors"
+                                                    className="p-1 text-neutral-400 hover:text-rose-600 rounded-lg transition-colors cursor-pointer"
                                                 >
-                                                    Clear
+                                                    <Trash2 size={12} />
                                                 </button>
                                             )}
                                         </div>
                                     </div>
 
-                                    {/* Quick Markup Toolbar */}
+                                    {/* Quick Markup Toolbar - Segmented Groups */}
                                     <div className="flex items-center gap-1 flex-wrap p-1.5 bg-neutral-100/80 rounded-xl border border-neutral-200/70 text-xs shrink-0">
-                                        <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider px-1">
-                                            Mark:
-                                        </span>
-                                        <button
-                                            type="button"
-                                            onClick={() => insertMarkup('==', '==', 'highlight')}
-                                            title="Chisel Highlighter Yellow (==text==)"
-                                            className="px-2 py-0.5 bg-yellow-200 hover:bg-yellow-300 text-yellow-900 rounded-md text-[11px] font-bold transition-all active:scale-95 shadow-2xs cursor-pointer"
-                                        >
-                                            🖍️ Yellow
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => insertMarkup('==green:', '==', 'highlight')}
-                                            title="Chisel Highlighter Green (==green:text==)"
-                                            className="px-2 py-0.5 bg-emerald-200 hover:bg-emerald-300 text-emerald-900 rounded-md text-[11px] font-bold transition-all active:scale-95 shadow-2xs cursor-pointer"
-                                        >
-                                            🟢 Green
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => insertMarkup('==pink:', '==', 'highlight')}
-                                            title="Chisel Highlighter Pink (==pink:text==)"
-                                            className="px-2 py-0.5 bg-pink-200 hover:bg-pink-300 text-pink-900 rounded-md text-[11px] font-bold transition-all active:scale-95 shadow-2xs cursor-pointer"
-                                        >
-                                            🌸 Pink
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => insertMarkup('==blue:', '==', 'highlight')}
-                                            title="Chisel Highlighter Blue (==blue:text==)"
-                                            className="px-2 py-0.5 bg-blue-200 hover:bg-blue-300 text-blue-900 rounded-md text-[11px] font-bold transition-all active:scale-95 shadow-2xs cursor-pointer"
-                                        >
-                                            🔷 Blue
-                                        </button>
+                                        <div className="flex items-center gap-1">
+                                            <button
+                                                type="button"
+                                                onClick={() => insertMarkup('==', '==', 'highlight')}
+                                                title="Yellow Chisel Highlighter (==text==)"
+                                                className="px-1.5 py-0.5 bg-yellow-200 hover:bg-yellow-300 text-yellow-900 rounded-md text-[10px] font-bold transition-all active:scale-95 shadow-2xs cursor-pointer"
+                                            >
+                                                🖍️ Yellow
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => insertMarkup('==green:', '==', 'highlight')}
+                                                title="Green Chisel Highlighter (==green:text==)"
+                                                className="px-1.5 py-0.5 bg-emerald-200 hover:bg-emerald-300 text-emerald-900 rounded-md text-[10px] font-bold transition-all active:scale-95 shadow-2xs cursor-pointer"
+                                            >
+                                                🟢 Green
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => insertMarkup('==pink:', '==', 'highlight')}
+                                                title="Pink Chisel Highlighter (==pink:text==)"
+                                                className="px-1.5 py-0.5 bg-pink-200 hover:bg-pink-300 text-pink-900 rounded-md text-[10px] font-bold transition-all active:scale-95 shadow-2xs cursor-pointer"
+                                            >
+                                                🌸 Pink
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => insertMarkup('==blue:', '==', 'highlight')}
+                                                title="Blue Chisel Highlighter (==blue:text==)"
+                                                className="px-1.5 py-0.5 bg-blue-200 hover:bg-blue-300 text-blue-900 rounded-md text-[10px] font-bold transition-all active:scale-95 shadow-2xs cursor-pointer"
+                                            >
+                                                🔷 Blue
+                                            </button>
+                                        </div>
+
                                         <div className="h-3 w-px bg-neutral-300 mx-0.5" />
-                                        <button
-                                            type="button"
-                                            onClick={() => insertMarkup('__', '__', 'Title')}
-                                            title="Heading Double Underline (__text__)"
-                                            className="px-2 py-0.5 bg-white hover:bg-neutral-100 text-neutral-800 rounded-md text-[11px] font-bold transition-all active:scale-95 border border-neutral-200 shadow-2xs cursor-pointer"
-                                        >
-                                            <u>__Double__</u>
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => insertMarkup('[[', ']]', 'x = 42')}
-                                            title="Hand-Drawn Formula Box ([[text]])"
-                                            className="px-2 py-0.5 bg-white hover:bg-neutral-100 text-neutral-800 rounded-md text-[11px] font-bold transition-all active:scale-95 border border-neutral-200 shadow-2xs cursor-pointer font-mono"
-                                        >
-                                            [[Box]]
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => insertMarkup('~~', '~~', 'mistake')}
-                                            title="Human Scribble Strike (~~text~~)"
-                                            className="px-2 py-0.5 bg-white hover:bg-neutral-100 text-rose-600 rounded-md text-[11px] font-bold transition-all active:scale-95 border border-neutral-200 shadow-2xs cursor-pointer line-through"
-                                        >
-                                            ~~Strike~~
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => insertMarkup('^', '^', 'inserted')}
-                                            title="Caret insert missing word (^word^)"
-                                            className="px-2 py-0.5 bg-white hover:bg-neutral-100 text-neutral-800 rounded-md text-[11px] font-bold transition-all active:scale-95 border border-neutral-200 shadow-2xs cursor-pointer font-mono"
-                                        >
-                                            ^Caret^
-                                        </button>
+
+                                        <div className="flex items-center gap-1">
+                                            <button
+                                                type="button"
+                                                onClick={() => insertMarkup('__', '__', 'Title')}
+                                                title="Heading Double Underline (__text__)"
+                                                className="px-1.5 py-0.5 bg-white hover:bg-neutral-100 text-neutral-800 rounded-md text-[10px] font-bold transition-all active:scale-95 border border-neutral-200 shadow-2xs cursor-pointer"
+                                            >
+                                                <u>__Double__</u>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => insertMarkup('[[', ']]', 'x = 42')}
+                                                title="Hand-Drawn Formula Box ([[text]])"
+                                                className="px-1.5 py-0.5 bg-white hover:bg-neutral-100 text-neutral-800 rounded-md text-[10px] font-bold transition-all active:scale-95 border border-neutral-200 shadow-2xs cursor-pointer font-mono"
+                                            >
+                                                [[Box]]
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => insertMarkup('~~', '~~', 'mistake')}
+                                                title="Human Scribble Strike (~~text~~)"
+                                                className="px-1.5 py-0.5 bg-white hover:bg-neutral-100 text-rose-600 rounded-md text-[10px] font-bold transition-all active:scale-95 border border-neutral-200 shadow-2xs cursor-pointer line-through"
+                                            >
+                                                ~~Strike~~
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => insertMarkup('^', '^', 'inserted')}
+                                                title="Caret insert missing word (^word^)"
+                                                className="px-1.5 py-0.5 bg-white hover:bg-neutral-100 text-neutral-800 rounded-md text-[10px] font-bold transition-all active:scale-95 border border-neutral-200 shadow-2xs cursor-pointer font-mono"
+                                            >
+                                                ^Caret^
+                                            </button>
+                                        </div>
+
                                         <div className="h-3 w-px bg-neutral-300 mx-0.5" />
-                                        <button
-                                            type="button"
-                                            onClick={() => insertMarkup('→ ', '', '')}
-                                            title="Student Handwritten Arrow (→)"
-                                            className="px-2 py-0.5 bg-white hover:bg-neutral-100 text-blue-700 rounded-md text-[11px] font-bold transition-all active:scale-95 border border-neutral-200 shadow-2xs cursor-pointer"
-                                        >
-                                            → Arrow
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                if (sourceRef.current) {
-                                                    const template = '\n[compare]\nPixel | Voxel\n• 2D picture element | • 3D volume element\n• Has length & width | • Has length, width & depth\n[/compare]\n';
-                                                    const start = sourceRef.current.selectionStart;
-                                                    const next = draftText.slice(0, start) + template + draftText.slice(start);
-                                                    setDraftText(next);
-                                                } else {
-                                                    setDraftText(prev => prev + '\n[compare]\nPixel | Voxel\n• 2D picture element | • 3D volume element\n[/compare]\n');
-                                                }
-                                            }}
-                                            title="2-Column Student Comparison Table ([compare] Col 1 | Col 2 [/compare])"
-                                            className="px-2 py-0.5 bg-blue-50 hover:bg-blue-100 text-blue-800 rounded-md text-[11px] font-bold transition-all active:scale-95 border border-blue-200/80 shadow-2xs cursor-pointer"
-                                        >
-                                            ⚖️ Compare
-                                        </button>
+
+                                        <div className="flex items-center gap-1">
+                                            <button
+                                                type="button"
+                                                onClick={() => insertMarkup('→ ', '', '')}
+                                                title="Student Handwritten Arrow (→)"
+                                                className="px-1.5 py-0.5 bg-white hover:bg-neutral-100 text-blue-700 rounded-md text-[10px] font-bold transition-all active:scale-95 border border-neutral-200 shadow-2xs cursor-pointer"
+                                            >
+                                                → Arrow
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    if (sourceRef.current) {
+                                                        const template = '\n[compare]\nPixel | Voxel\n• 2D picture element | • 3D volume element\n• Has length & width | • Has length, width & depth\n[/compare]\n';
+                                                        const start = sourceRef.current.selectionStart;
+                                                        const next = draftText.slice(0, start) + template + draftText.slice(start);
+                                                        setDraftText(next);
+                                                    } else {
+                                                        setDraftText(prev => prev + '\n[compare]\nPixel | Voxel\n• 2D picture element | • 3D volume element\n[/compare]\n');
+                                                    }
+                                                }}
+                                                title="2-Column Student Comparison Table ([compare] Col 1 | Col 2 [/compare])"
+                                                className="px-1.5 py-0.5 bg-blue-50 hover:bg-blue-100 text-blue-800 rounded-md text-[10px] font-bold transition-all active:scale-95 border border-blue-200/80 shadow-2xs cursor-pointer"
+                                            >
+                                                ⚖️ Compare
+                                            </button>
+                                        </div>
                                     </div>
 
                                     {/* Academic Assignment Quick Chips */}
                                     <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-[11px] shrink-0 custom-scrollbar">
-                                        <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider shrink-0">
+                                        <span className="text-[9px] font-bold text-neutral-400 uppercase tracking-wider shrink-0">
                                             Chips:
                                         </span>
                                         {[
@@ -1258,26 +1462,68 @@ export default function EditorPage() {
                                                         setDraftText(prev => prev + '\n' + chip.text);
                                                     }
                                                 }}
-                                                className="px-2 py-0.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-md text-[10px] font-semibold shrink-0 transition-colors cursor-pointer border border-neutral-200/60"
+                                                className="px-2 py-0.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-md text-[10px] font-semibold shrink-0 transition-colors cursor-pointer border border-neutral-200/60 active:scale-95"
                                             >
                                                 {chip.label}
                                             </button>
                                         ))}
                                     </div>
 
-                                    <textarea
-                                        ref={sourceRef}
-                                        value={draftText}
-                                        onChange={(e) => {
-                                            let val = e.target.value;
-                                            if (val.includes('->')) {
-                                                val = val.replace(/(^|\s)->(\s|$)/g, '$1→$2');
-                                            }
-                                            setDraftText(val);
-                                        }}
-                                        placeholder="Start typing your text here...&#10;&#10;It transforms instantly into realistic human handwriting on the right."
-                                        className="flex-1 w-full min-h-[220px] p-4 rounded-2xl bg-neutral-50 border border-neutral-200 text-neutral-900 text-sm leading-relaxed focus:bg-white focus:outline-none focus:ring-2 focus:ring-neutral-900/10 transition-all resize-none font-sans overflow-y-auto custom-scrollbar"
-                                    />
+                                    {/* Inset Textarea Container - Floating Scrollbar & Status Bar */}
+                                    <div className="flex-1 min-h-[260px] flex flex-col rounded-2xl bg-neutral-50/90 border border-neutral-200 focus-within:bg-white focus-within:border-neutral-400 focus-within:ring-2 focus-within:ring-neutral-900/10 transition-all shadow-2xs overflow-hidden">
+                                        <textarea
+                                            ref={sourceRef}
+                                            value={draftText}
+                                            onKeyDown={handleKeyDown}
+                                            onKeyUp={updateCursorPos}
+                                            onClick={updateCursorPos}
+                                            onSelect={updateCursorPos}
+                                            onChange={(e) => {
+                                                let val = e.target.value;
+                                                if (val.includes('->')) {
+                                                    val = val.replace(/(^|\s)->(\s|$)/g, '$1→$2');
+                                                }
+                                                setDraftText(val);
+                                                updateCursorPos(e);
+                                            }}
+                                            placeholder="Start typing your text here...&#10;&#10;Supports markdown bullets, Q1/Ans formatting, ==highlighters==, [[boxes]], and [compare] tables!"
+                                            className={`flex-1 w-full p-4 bg-transparent border-0 text-neutral-900 ${
+                                                editorFontSize === 'sm' ? 'text-xs' : editorFontSize === 'lg' ? 'text-base' : 'text-sm'
+                                            } leading-relaxed focus:outline-none transition-all resize-none font-sans overflow-y-auto custom-scrollbar pr-3`}
+                                        />
+
+                                        {/* Textarea Bottom Status Bar */}
+                                        <div className="px-3.5 py-1.5 bg-neutral-100/70 border-t border-neutral-200/60 flex items-center justify-between text-[11px] text-neutral-500 font-medium select-none shrink-0">
+                                            <div className="flex items-center gap-2.5">
+                                                <span className="font-mono text-[10px] text-neutral-600 bg-white/80 px-1.5 py-0.5 rounded border border-neutral-200/60">
+                                                    Ln {cursorPos.line}, Col {cursorPos.col}
+                                                </span>
+                                                <span className="text-neutral-300">•</span>
+                                                <span className="text-[10px] text-neutral-500">
+                                                    ~{Math.max(1, Math.ceil(wordCount / 220))} {Math.ceil(wordCount / 220) === 1 ? 'page' : 'pages'}
+                                                </span>
+                                            </div>
+
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setEditorFontSize(f => f === 'sm' ? 'base' : f === 'base' ? 'lg' : 'sm')}
+                                                    title="Toggle Editor Text Size"
+                                                    className="px-2 py-0.5 rounded-md hover:bg-neutral-200/80 text-[10px] font-bold text-neutral-600 transition-colors cursor-pointer"
+                                                >
+                                                    Text: {editorFontSize === 'sm' ? 'Compact' : editorFontSize === 'base' ? 'Medium' : 'Large'}
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setIsEditorExpanded(true)}
+                                                    title="Open Fullscreen Focus Mode"
+                                                    className="p-1 rounded-md hover:bg-neutral-200/80 text-neutral-600 transition-colors cursor-pointer"
+                                                >
+                                                    <Maximize2 size={12} />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -2364,6 +2610,231 @@ export default function EditorPage() {
                 isOpen={isHistoryOpen} 
                 onClose={() => setIsHistoryOpen(false)} 
             />
+
+            {/* Fullscreen / Focus Writing Modal */}
+            {isEditorExpanded && (
+                <div 
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="Distraction-Free Focus Editor"
+                    className="fixed inset-0 z-50 bg-neutral-950/75 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200"
+                >
+                    <div className="relative w-full max-w-5xl h-[92vh] bg-white rounded-3xl shadow-2xl flex flex-col border border-neutral-200 overflow-hidden ring-1 ring-black/10">
+                        {/* Top Toolbar */}
+                        <div className="px-5 py-3.5 bg-neutral-50/95 border-b border-neutral-200 flex items-center justify-between gap-4 select-none shrink-0">
+                            <div className="flex items-center gap-3">
+                                <span className="p-2 rounded-xl bg-neutral-900 text-white shadow-xs">
+                                    <Sparkles size={16} />
+                                </span>
+                                <div>
+                                    <h3 className="text-sm font-bold text-neutral-900 tracking-tight flex items-center gap-2">
+                                        Focus Writing Mode
+                                        <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-neutral-200/70 text-neutral-700">
+                                            Distraction Free
+                                        </span>
+                                    </h3>
+                                    <div className="flex items-center gap-2 text-[11px] text-neutral-500 font-medium">
+                                        <span>{wordCount} words</span>
+                                        <span>•</span>
+                                        <span>{draftText.length} characters</span>
+                                        <span>•</span>
+                                        <span className="text-neutral-700 font-semibold">
+                                            ~{Math.max(1, Math.ceil(wordCount / 220))} handwritten {Math.ceil(wordCount / 220) === 1 ? 'page' : 'pages'}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                                {/* Font Size Toggle */}
+                                <div className="hidden sm:flex items-center bg-neutral-200/60 p-0.5 rounded-lg text-[11px] font-semibold text-neutral-600">
+                                    <button
+                                        type="button"
+                                        onClick={() => setEditorFontSize('sm')}
+                                        className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                                            editorFontSize === 'sm' ? 'bg-white text-neutral-900 shadow-2xs' : 'hover:text-neutral-900'
+                                        }`}
+                                    >
+                                        Compact
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setEditorFontSize('base')}
+                                        className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                                            editorFontSize === 'base' ? 'bg-white text-neutral-900 shadow-2xs' : 'hover:text-neutral-900'
+                                        }`}
+                                    >
+                                        Medium
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setEditorFontSize('lg')}
+                                        className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                                            editorFontSize === 'lg' ? 'bg-white text-neutral-900 shadow-2xs' : 'hover:text-neutral-900'
+                                        }`}
+                                    >
+                                        Large
+                                    </button>
+                                </div>
+
+                                {/* Quick Tools */}
+                                <button
+                                    type="button"
+                                    onClick={handlePasteClipboard}
+                                    title="Paste from clipboard"
+                                    className="px-2.5 py-1.5 bg-white hover:bg-neutral-100 border border-neutral-200 rounded-lg text-neutral-700 text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
+                                >
+                                    <Clipboard size={13} />
+                                    <span className="hidden md:inline">Paste</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={handleCleanSpacing}
+                                    title="Clean extra empty lines"
+                                    className="px-2.5 py-1.5 bg-white hover:bg-neutral-100 border border-neutral-200 rounded-lg text-neutral-700 text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
+                                >
+                                    <Sparkles size={13} className="text-amber-500" />
+                                    <span className="hidden md:inline">Clean Spacing</span>
+                                </button>
+
+                                {/* Close / Minimize */}
+                                <button
+                                    type="button"
+                                    onClick={() => setIsEditorExpanded(false)}
+                                    className="px-3 py-1.5 bg-neutral-900 hover:bg-neutral-800 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-colors cursor-pointer ml-1"
+                                >
+                                    <Minimize2 size={13} />
+                                    <span>Done</span>
+                                    <kbd className="hidden lg:inline ml-1 text-[9px] bg-neutral-700 text-neutral-300 px-1 py-0.5 rounded">Esc</kbd>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Formatting Quick Ribbon */}
+                        <div className="px-5 py-2 bg-neutral-100/60 border-b border-neutral-200/70 flex items-center gap-2 overflow-x-auto custom-scrollbar select-none shrink-0">
+                            <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider shrink-0">
+                                Formatting:
+                            </span>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setDraftText(prev => prev + (prev.endsWith('\n') || !prev ? '' : '\n') + 'Q1: \nAns: ');
+                                }}
+                                className="px-2.5 py-1 bg-white hover:bg-neutral-50 text-neutral-700 border border-neutral-200/80 rounded-md text-[11px] font-semibold shrink-0 shadow-2xs cursor-pointer active:scale-95 transition-all"
+                            >
+                                📝 Q & Ans
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setDraftText(prev => prev + ' ==important keyword== ');
+                                }}
+                                className="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 rounded-md text-[11px] font-semibold shrink-0 shadow-2xs cursor-pointer active:scale-95 transition-all"
+                            >
+                                🖍️ ==Highlight==
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setDraftText(prev => prev + ' [[boxed formula or text]] ');
+                                }}
+                                className="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 rounded-md text-[11px] font-semibold shrink-0 shadow-2xs cursor-pointer active:scale-95 transition-all"
+                            >
+                                📦 [[Box Formula]]
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    const sampleCompare = '\n[compare: Key Parameter | Solution A | Solution B]\nLatency | 12ms | 95ms\nAccuracy | 99.4% | 84.1%\n[/compare]\n';
+                                    setDraftText(prev => prev + (prev.endsWith('\n') || !prev ? '' : '\n') + sampleCompare);
+                                }}
+                                className="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 rounded-md text-[11px] font-semibold shrink-0 shadow-2xs cursor-pointer active:scale-95 transition-all"
+                            >
+                                ⚖️ [compare] Table
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setDraftText(prev => prev + (prev.endsWith('\n') || !prev ? '' : '\n') + '• Bullet point ');
+                                }}
+                                className="px-2.5 py-1 bg-white hover:bg-neutral-50 text-neutral-700 border border-neutral-200/80 rounded-md text-[11px] font-semibold shrink-0 shadow-2xs cursor-pointer active:scale-95 transition-all"
+                            >
+                                • Bullet List
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setDraftText(prev => prev + (prev.endsWith('\n') || !prev ? '' : '\n') + '1. Numbered item ');
+                                }}
+                                className="px-2.5 py-1 bg-white hover:bg-neutral-50 text-neutral-700 border border-neutral-200/80 rounded-md text-[11px] font-semibold shrink-0 shadow-2xs cursor-pointer active:scale-95 transition-all"
+                            >
+                                1. Numbered List
+                            </button>
+                        </div>
+
+                        {/* Expanded Fullscreen Textarea */}
+                        <div className="flex-1 relative flex flex-col bg-white overflow-hidden">
+                            <textarea
+                                autoFocus
+                                value={draftText}
+                                onKeyDown={handleKeyDown}
+                                onKeyUp={updateCursorPos}
+                                onClick={updateCursorPos}
+                                onSelect={updateCursorPos}
+                                onChange={(e) => {
+                                    let val = e.target.value;
+                                    if (val.includes('->')) {
+                                        val = val.replace(/(^|\s)->(\s|$)/g, '$1→$2');
+                                    }
+                                    setDraftText(val);
+                                    updateCursorPos(e);
+                                }}
+                                placeholder="Write your long assignment or notes here in focus mode...&#10;&#10;Supports Tab indentation, smart Enter list continuation, and instant live sync to handwritten paper."
+                                className={`flex-1 w-full p-6 bg-transparent border-0 text-neutral-900 ${
+                                    editorFontSize === 'sm' ? 'text-sm' : editorFontSize === 'lg' ? 'text-lg' : 'text-base'
+                                } leading-relaxed focus:outline-none resize-none font-sans overflow-y-auto custom-scrollbar`}
+                            />
+                        </div>
+
+                        {/* Bottom Status Bar */}
+                        <div className="px-5 py-2.5 bg-neutral-50 border-t border-neutral-200 flex items-center justify-between text-xs text-neutral-500 font-medium select-none shrink-0">
+                            <div className="flex items-center gap-3">
+                                <span className="font-mono text-xs text-neutral-700 bg-white px-2 py-0.5 rounded border border-neutral-200 shadow-2xs">
+                                    Line {cursorPos.line}, Column {cursorPos.col}
+                                </span>
+                                <span className="text-neutral-400">•</span>
+                                <span>Tab: 4 spaces indent</span>
+                                <span className="text-neutral-400">•</span>
+                                <span>Enter: Auto-bullet continuation</span>
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                                {draftText.length > 0 && (
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            if (window.confirm('Are you sure you want to clear all text?')) {
+                                                setDraftText('');
+                                            }
+                                        }}
+                                        className="text-neutral-400 hover:text-red-600 transition-colors flex items-center gap-1 cursor-pointer"
+                                    >
+                                        <Trash2 size={12} />
+                                        <span>Clear</span>
+                                    </button>
+                                )}
+                                <button
+                                    type="button"
+                                    onClick={() => setIsEditorExpanded(false)}
+                                    className="text-neutral-900 font-semibold hover:underline cursor-pointer flex items-center gap-1"
+                                >
+                                    Return to Document & Preview →
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

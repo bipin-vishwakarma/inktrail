@@ -733,10 +733,16 @@ h1, h2, h3, h4, h5, h6 {
   opacity: 0.6;
 }
 
-/* Custom Indigo Scrollbar - Refined */
+/* ===== ULTRA-POLISHED MODERN SCROLLBARS ===== */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.65) transparent;
+  scroll-behavior: smooth;
+}
+
 .custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-  height: 6px; /* Also format horizontal scrollbar */
+  width: 7px;
+  height: 7px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
@@ -745,16 +751,51 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #e2e8f0;
-  border-radius: 999px;
-  border: 2px solid transparent; /* Creates padding effect */
-  background-clip: content-box;
+  background: rgba(148, 163, 184, 0.5);
+  border-radius: 9999px;
+  border: 1.5px solid transparent;
+  background-clip: padding-box;
+  transition: background-color 0.2s ease;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #a5b4fc; /* Lighter indigo on hover */
-  border: 1px solid transparent;
-  background-clip: content-box;
+  background: rgba(100, 116, 139, 0.9);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:active {
+  background: rgba(71, 85, 105, 1);
+}
+
+/* Global textarea scrollbar defaults - eliminate clumsy default browser tracks */
+textarea {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.55) transparent;
+}
+
+textarea::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+textarea::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 4px;
+}
+
+textarea::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.45);
+  border-radius: 9999px;
+  border: 1.5px solid transparent;
+  background-clip: padding-box;
+  transition: background-color 0.2s ease;
+}
+
+textarea::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.85);
+}
+
+textarea::-webkit-scrollbar-thumb:active {
+  background: rgba(71, 85, 105, 1);
 }
 
 .animate-fade-in-up {
