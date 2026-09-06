@@ -197,7 +197,7 @@ const HandwrittenWordComponent: React.FC<HandwrittenWordProps> = ({
     return (
         <span
             onClick={onClick}
-            className={`inline-block relative whitespace-nowrap select-text ${onClick ? 'cursor-pointer' : ''}`}
+            className={`handwritten-word inline-block relative whitespace-nowrap select-text ${onClick ? 'cursor-pointer' : ''}`}
             style={{
                 fontFamily: fontCss,
                 lineHeight: 1,

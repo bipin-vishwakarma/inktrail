@@ -22,6 +22,7 @@ import { CameraPhysicsControls } from '../components/CameraPhysicsControls';
 import { PenPresetSelector } from '../components/PenPresetSelector';
 import { parseWordToken, measureWordWidth, getFontFamilyCss, getEffectiveFontSize, clearWidthCache, type WordToken } from '../utils/humanErrorEngine';
 import { computePagePhoneShadow } from '../utils/cameraShadowEngine';
+import { cleanAIText, isLikelyAIText } from '../utils/aiTextCleaner';
 import type { StrikeStyle } from '../types';
 
 // --- PIPELINE TYPES ---
@@ -118,8 +119,8 @@ function buildDocumentLines(
             }
         }
 
-        // Empty line handling
-        if (paragraph.trim().length === 0) {
+        // Empty line or markdown horizontal divider handling (---, ***, ___)
+        if (paragraph.trim().length === 0 || /^(?:---|___|\*\*\*)\s*$/.test(paragraph.trim())) {
             documentLines.push({
                 tokens: [],
                 text: '',
@@ -132,16 +133,27 @@ function buildDocumentLines(
             continue;
         }
 
+        // Live Normalization of Markdown Headings & Answer Markers
+        let normalizedPara = paragraph;
+        if (/^#\s+/.test(normalizedPara)) {
+            normalizedPara = '__' + normalizedPara.replace(/^#\s+/, '').replace(/\*\*/g, '').trim().toUpperCase() + '__';
+        } else if (/^##\s+/.test(normalizedPara)) {
+            normalizedPara = '__' + normalizedPara.replace(/^##\s+/, '').replace(/\*\*/g, '').trim() + '__';
+        } else if (/^#{3,6}\s*/.test(normalizedPara)) {
+            normalizedPara = normalizedPara.replace(/^#{3,6}\s*/, '').replace(/\*\*/g, '').trim();
+        }
+        normalizedPara = normalizedPara.replace(/^(\s*)\*\*(Ans(?:wer)?[\.:\-]?)\*\*/i, '$1$2');
+
         // Smart Margin Indexing Engine:
         // Detects Question numbers (Q1., Q.1, Question 1:), Answer tags (Ans:, Answer:),
         // Item bullets, and Roman numerals ((i), i., 1., (a))
         let marginMarker: string | undefined = undefined;
         let indentLevel = 0;
         let lineType: 'text' | 'bullet' | 'number' = 'text';
-        let bodyText = paragraph;
+        let bodyText = normalizedPara;
 
         if (smartMarginIndexing) {
-            const marginMatch = paragraph.match(
+            const marginMatch = normalizedPara.match(
                 /^(\s*)(Q(?:uestion|ues|ue)[\.:\-]?\s*(?:\d+[\.:\)]?)?|Q\.?\s*\d+[\.:\)]?|Ans(?:wer)?[\.:\-]?|Sol(?:ution)?[\.:\-]?|A\d+[\.:\)]?|\(\s*[a-zA-Z0-9ivxlcdm]+\s*\)|\d+[\.)]\s?|[ivxlcdm]+[\.)]\s?|[a-zA-Z][\.)])\s*(.*)$/i
             );
             if (marginMatch) {
@@ -152,8 +164,8 @@ function buildDocumentLines(
         }
 
         if (!marginMarker) {
-            const bulletMatch = paragraph.match(/^(\s*)([-*•])\s+(.*)$/);
-            const numberMatch = paragraph.match(/^(\s*)(\d+[\.\)])\s+(.*)$/);
+            const bulletMatch = normalizedPara.match(/^(\s*)([-*•])\s+(.*)$/);
+            const numberMatch = normalizedPara.match(/^(\s*)(\d+[\.\)])\s+(.*)$/);
 
             if (bulletMatch) {
                 indentLevel = Math.min(3, Math.floor(bulletMatch[1].length / 2) + 1);
@@ -168,7 +180,7 @@ function buildDocumentLines(
 
         // Measure available line width after indent
         const effectiveLineWidth = maxLineWidth - (indentLevel * fontSize * 0.5);
-        const rawWords = bodyText.split(/\s+/).filter(Boolean);
+        const rawWords = bodyText.split(/\s+/).filter(Boolean).map(w => w.replace(/\*\*([^*]+)\*\*/g, '$1').replace(/\*\*/g, ''));
 
         // Pre-parse tokens through Human Error Engine with multi-word highlighter, double-underline and box support
         let activeHighlight: 'yellow' | 'green' | 'pink' | 'blue' | null = null;
@@ -618,25 +630,41 @@ export default function EditorPage() {
 
     const handlePasteClipboard = useCallback(async () => {
         try {
-            const text = await navigator.clipboard.readText();
-            if (text) {
+            const clipText = await navigator.clipboard.readText();
+            if (clipText) {
+                const toInsert = isLikelyAIText(clipText) ? cleanAIText(clipText) : clipText;
                 if (sourceRef.current) {
                     const start = sourceRef.current.selectionStart;
                     const end = sourceRef.current.selectionEnd;
-                    const next = draftText.slice(0, start) + text + draftText.slice(end);
+                    const next = draftText.slice(0, start) + toInsert + draftText.slice(end);
                     setDraftText(next);
+                    setText(next);
                     setTimeout(() => {
                         sourceRef.current?.focus();
-                        sourceRef.current?.setSelectionRange(start + text.length, start + text.length);
+                        sourceRef.current?.setSelectionRange(start + toInsert.length, start + toInsert.length);
                     }, 0);
                 } else {
-                    setDraftText(prev => prev + text);
+                    const next = draftText ? draftText + '\n\n' + toInsert : toInsert;
+                    setDraftText(next);
+                    setText(next);
+                }
+                if (isLikelyAIText(clipText)) {
+                    addToast('Pasted & auto-cleaned AI content for handwriting!', 'success');
+                } else {
+                    addToast('Pasted from clipboard!', 'success');
                 }
             }
         } catch (err) {
             console.warn('Clipboard read failed:', err);
         }
-    }, [draftText]);
+    }, [draftText, setText, addToast]);
+
+    const handleCleanAIText = useCallback(() => {
+        const cleaned = cleanAIText(draftText);
+        setDraftText(cleaned);
+        setText(cleaned);
+        addToast('Cleaned AI preambles, headers & Q/A formatting!', 'success');
+    }, [draftText, setText, addToast]);
 
     const handleCleanSpacing = useCallback(() => {
         const cleaned = draftText
@@ -646,6 +674,159 @@ export default function EditorPage() {
             .replace(/\n{3,}/g, '\n\n');
         setDraftText(cleaned);
     }, [draftText]);
+
+    // Floating MS Word-Style Context Toolbar for Text Selection
+    const [floatingToolbar, setFloatingToolbar] = useState<{
+        isOpen: boolean;
+        x: number;
+        y: number;
+        text: string;
+        source: 'canvas' | 'textarea';
+        start?: number;
+        end?: number;
+    }>({
+        isOpen: false,
+        x: 0,
+        y: 0,
+        text: '',
+        source: 'textarea',
+    });
+
+    const applyFormatToSelection = useCallback((prefix: string, suffix: string) => {
+        if (!floatingToolbar.text) return;
+
+        if (floatingToolbar.source === 'textarea' && floatingToolbar.start !== undefined && floatingToolbar.end !== undefined) {
+            const start = floatingToolbar.start;
+            const end = floatingToolbar.end;
+            const selected = draftText.slice(start, end);
+            
+            let replacement = `${prefix}${selected}${suffix}`;
+            if (prefix === '' && suffix === '') {
+                // Clear formatting
+                replacement = selected
+                    .replace(/==(?:yellow:|green:|pink:|blue:)?/gi, '')
+                    .replace(/==/g, '')
+                    .replace(/\[\[/g, '')
+                    .replace(/\]\]/g, '')
+                    .replace(/__/g, '')
+                    .replace(/~~/g, '')
+                    .replace(/\*\*/g, '');
+            }
+
+            const next = draftText.slice(0, start) + replacement + draftText.slice(end);
+            setDraftText(next);
+            setText(next);
+            setFloatingToolbar(prev => ({ ...prev, isOpen: false }));
+            setTimeout(() => {
+                sourceRef.current?.focus();
+                sourceRef.current?.setSelectionRange(start, start + replacement.length);
+            }, 10);
+            addToast('Applied formatting to text!', 'success');
+        } else if (floatingToolbar.source === 'canvas') {
+            const term = floatingToolbar.text;
+            const idx = draftText.indexOf(term);
+            if (idx !== -1) {
+                let replacement = `${prefix}${term}${suffix}`;
+                if (prefix === '' && suffix === '') {
+                    replacement = term
+                        .replace(/==(?:yellow:|green:|pink:|blue:)?/gi, '')
+                        .replace(/==/g, '')
+                        .replace(/\[\[/g, '')
+                        .replace(/\]\]/g, '')
+                        .replace(/__/g, '')
+                        .replace(/~~/g, '')
+                        .replace(/\*\*/g, '');
+                }
+                const next = draftText.slice(0, idx) + replacement + draftText.slice(idx + term.length);
+                setDraftText(next);
+                setText(next);
+                addToast(`Formatted "${term.slice(0, 20)}..." on paper!`, 'success');
+            } else {
+                addToast('Selection not found in source text', 'info');
+            }
+            setFloatingToolbar(prev => ({ ...prev, isOpen: false }));
+            window.getSelection()?.removeAllRanges();
+        }
+    }, [floatingToolbar, draftText, setText, addToast]);
+
+    // Detect selection on canvas preview (like MS Word)
+    useEffect(() => {
+        let timer: NodeJS.Timeout | null = null;
+        const handleCanvasSelection = () => {
+            if (timer) clearTimeout(timer);
+            timer = setTimeout(() => {
+                const selection = window.getSelection();
+                if (!selection || selection.isCollapsed) return;
+                const text = selection.toString().trim();
+                if (!text || text.length === 0) return;
+
+                const container = canvasContainerRef.current;
+                if (!container) return;
+
+                if (selection.rangeCount === 0) return;
+                const range = selection.getRangeAt(0);
+                const node = range.commonAncestorContainer.nodeType === Node.TEXT_NODE 
+                    ? range.commonAncestorContainer.parentElement 
+                    : range.commonAncestorContainer;
+                if (!node || !container.contains(node)) return;
+
+                const rect = range.getBoundingClientRect();
+                if (rect.width === 0 || rect.height === 0) return;
+
+                setFloatingToolbar({
+                    isOpen: true,
+                    x: Math.min(window.innerWidth - 200, Math.max(200, rect.left + rect.width / 2)),
+                    y: Math.max(16, rect.top - 50),
+                    text,
+                    source: 'canvas',
+                });
+            }, 30);
+        };
+
+        const container = canvasContainerRef.current;
+        if (!container) return;
+
+        container.addEventListener('mouseup', handleCanvasSelection);
+        return () => {
+            if (timer) clearTimeout(timer);
+            container.removeEventListener('mouseup', handleCanvasSelection);
+        };
+    }, []);
+
+    const handleTextareaSelect = useCallback((e: React.SyntheticEvent<HTMLTextAreaElement>) => {
+        updateCursorPos(e);
+        const target = e.currentTarget;
+        const start = target.selectionStart;
+        const end = target.selectionEnd;
+        if (end > start) {
+            const selText = target.value.slice(start, end).trim();
+            if (selText.length > 0) {
+                const rect = target.getBoundingClientRect();
+                setFloatingToolbar({
+                    isOpen: true,
+                    x: Math.min(window.innerWidth - 180, Math.max(180, rect.left + rect.width / 2)),
+                    y: Math.max(16, rect.top - 46),
+                    text: selText,
+                    source: 'textarea',
+                    start,
+                    end,
+                });
+                return;
+            }
+        }
+        setFloatingToolbar(prev => prev.source === 'textarea' ? { ...prev, isOpen: false } : prev);
+    }, [updateCursorPos]);
+
+    // Close floating toolbar on click outside
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            const target = e.target as HTMLElement;
+            if (target.closest('.ms-word-floating-toolbar')) return;
+            setFloatingToolbar(prev => prev.isOpen ? { ...prev, isOpen: false } : prev);
+        };
+        window.addEventListener('mousedown', handleClickOutside);
+        return () => window.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     // Close focus editor on Escape key
     useEffect(() => {
@@ -1001,23 +1182,6 @@ export default function EditorPage() {
         }
     };
 
-    const insertMarkup = (prefix: string, suffix: string = prefix, defaultPlaceholder: string = 'text') => {
-        const textarea = sourceRef.current;
-        if (!textarea) return;
-        const start = textarea.selectionStart ?? 0;
-        const end = textarea.selectionEnd ?? 0;
-        const selected = draftText.slice(start, end);
-        const insertText = selected ? `${prefix}${selected}${suffix}` : `${prefix}${defaultPlaceholder}${suffix}`;
-        const updated = draftText.slice(0, start) + insertText + draftText.slice(end);
-        setDraftText(updated);
-        setText(updated);
-        setTimeout(() => {
-            textarea.focus();
-            const newCursor = start + prefix.length + (selected ? selected.length : defaultPlaceholder.length);
-            textarea.setSelectionRange(newCursor, newCursor);
-        }, 10);
-    };
-
     return (
         <div className="w-screen h-screen overflow-hidden flex flex-col bg-white text-neutral-900 font-sans select-none">
             
@@ -1289,185 +1453,63 @@ export default function EditorPage() {
                                             <button
                                                 type="button"
                                                 onClick={handlePasteClipboard}
-                                                title="Paste from clipboard"
-                                                className="px-2 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1 cursor-pointer border border-neutral-200/60"
+                                                title="Paste text from clipboard (auto-cleans AI preambles)"
+                                                className="px-2.5 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer border border-neutral-200/70 shadow-2xs active:scale-95"
                                             >
-                                                <Clipboard size={11} />
-                                                <span className="hidden sm:inline">Paste</span>
+                                                <Clipboard size={12} />
+                                                <span>Paste</span>
                                             </button>
                                             <button
                                                 type="button"
-                                                onClick={handleCleanSpacing}
-                                                title="Clean up excess blank lines and spacing"
-                                                className="px-2 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1 cursor-pointer border border-neutral-200/60"
+                                                onClick={handleCleanAIText}
+                                                title="Clean AI formatting, remove chat intros, and format headers & Q/A"
+                                                className="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200/80 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer shadow-2xs active:scale-95"
                                             >
-                                                <Sparkles size={11} />
-                                                <span className="hidden sm:inline">Clean</span>
+                                                <Sparkles size={12} className="text-amber-600" />
+                                                <span>Clean AI</span>
                                             </button>
                                             <button
                                                 type="button"
                                                 onClick={() => setIsEditorExpanded(true)}
-                                                title="Expand Editor to Focus View"
-                                                className="px-2 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1 cursor-pointer border border-neutral-200/60"
+                                                title="Open Fullscreen Focus Mode"
+                                                className="px-2 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer border border-neutral-200/60"
                                             >
-                                                <Maximize2 size={11} />
+                                                <Maximize2 size={12} />
                                                 <span className="hidden sm:inline">Focus</span>
                                             </button>
                                             {draftText.length > 0 && (
                                                 <button
                                                     type="button"
-                                                    onClick={() => setDraftText('')}
+                                                    onClick={() => {
+                                                        if (window.confirm('Clear all document text?')) {
+                                                            setDraftText('');
+                                                        }
+                                                    }}
                                                     title="Clear All Text"
-                                                    className="p-1 text-neutral-400 hover:text-rose-600 rounded-lg transition-colors cursor-pointer"
+                                                    className="p-1.5 text-neutral-400 hover:text-rose-600 rounded-lg transition-colors cursor-pointer"
                                                 >
-                                                    <Trash2 size={12} />
+                                                    <Trash2 size={13} />
                                                 </button>
                                             )}
                                         </div>
                                     </div>
 
-                                    {/* Quick Markup Toolbar - Segmented Groups */}
-                                    <div className="flex items-center gap-1 flex-wrap p-1.5 bg-neutral-100/80 rounded-xl border border-neutral-200/70 text-xs shrink-0">
-                                        <div className="flex items-center gap-1">
+                                    {/* AI Detection & 1-Click Auto-Format Banner */}
+                                    {isLikelyAIText(draftText) && (
+                                        <div className="flex items-center justify-between px-3 py-1.5 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/80 rounded-xl text-[11px] text-amber-900 animate-in fade-in duration-150 shrink-0">
+                                            <div className="flex items-center gap-1.5 font-medium">
+                                                <Sparkles size={12} className="text-amber-600 shrink-0" />
+                                                <span>AI chat formatting detected</span>
+                                            </div>
                                             <button
                                                 type="button"
-                                                onClick={() => insertMarkup('==', '==', 'highlight')}
-                                                title="Yellow Chisel Highlighter (==text==)"
-                                                className="px-1.5 py-0.5 bg-yellow-200 hover:bg-yellow-300 text-yellow-900 rounded-md text-[10px] font-bold transition-all active:scale-95 shadow-2xs cursor-pointer"
+                                                onClick={handleCleanAIText}
+                                                className="px-2.5 py-0.5 bg-amber-600 hover:bg-amber-700 text-white rounded-md text-[10px] font-bold transition-all shadow-2xs cursor-pointer active:scale-95"
                                             >
-                                                🖍️ Yellow
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => insertMarkup('==green:', '==', 'highlight')}
-                                                title="Green Chisel Highlighter (==green:text==)"
-                                                className="px-1.5 py-0.5 bg-emerald-200 hover:bg-emerald-300 text-emerald-900 rounded-md text-[10px] font-bold transition-all active:scale-95 shadow-2xs cursor-pointer"
-                                            >
-                                                🟢 Green
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => insertMarkup('==pink:', '==', 'highlight')}
-                                                title="Pink Chisel Highlighter (==pink:text==)"
-                                                className="px-1.5 py-0.5 bg-pink-200 hover:bg-pink-300 text-pink-900 rounded-md text-[10px] font-bold transition-all active:scale-95 shadow-2xs cursor-pointer"
-                                            >
-                                                🌸 Pink
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => insertMarkup('==blue:', '==', 'highlight')}
-                                                title="Blue Chisel Highlighter (==blue:text==)"
-                                                className="px-1.5 py-0.5 bg-blue-200 hover:bg-blue-300 text-blue-900 rounded-md text-[10px] font-bold transition-all active:scale-95 shadow-2xs cursor-pointer"
-                                            >
-                                                🔷 Blue
+                                                Auto-Format →
                                             </button>
                                         </div>
-
-                                        <div className="h-3 w-px bg-neutral-300 mx-0.5" />
-
-                                        <div className="flex items-center gap-1">
-                                            <button
-                                                type="button"
-                                                onClick={() => insertMarkup('__', '__', 'Title')}
-                                                title="Heading Double Underline (__text__)"
-                                                className="px-1.5 py-0.5 bg-white hover:bg-neutral-100 text-neutral-800 rounded-md text-[10px] font-bold transition-all active:scale-95 border border-neutral-200 shadow-2xs cursor-pointer"
-                                            >
-                                                <u>__Double__</u>
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => insertMarkup('[[', ']]', 'x = 42')}
-                                                title="Hand-Drawn Formula Box ([[text]])"
-                                                className="px-1.5 py-0.5 bg-white hover:bg-neutral-100 text-neutral-800 rounded-md text-[10px] font-bold transition-all active:scale-95 border border-neutral-200 shadow-2xs cursor-pointer font-mono"
-                                            >
-                                                [[Box]]
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => insertMarkup('~~', '~~', 'mistake')}
-                                                title="Human Scribble Strike (~~text~~)"
-                                                className="px-1.5 py-0.5 bg-white hover:bg-neutral-100 text-rose-600 rounded-md text-[10px] font-bold transition-all active:scale-95 border border-neutral-200 shadow-2xs cursor-pointer line-through"
-                                            >
-                                                ~~Strike~~
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => insertMarkup('^', '^', 'inserted')}
-                                                title="Caret insert missing word (^word^)"
-                                                className="px-1.5 py-0.5 bg-white hover:bg-neutral-100 text-neutral-800 rounded-md text-[10px] font-bold transition-all active:scale-95 border border-neutral-200 shadow-2xs cursor-pointer font-mono"
-                                            >
-                                                ^Caret^
-                                            </button>
-                                        </div>
-
-                                        <div className="h-3 w-px bg-neutral-300 mx-0.5" />
-
-                                        <div className="flex items-center gap-1">
-                                            <button
-                                                type="button"
-                                                onClick={() => insertMarkup('→ ', '', '')}
-                                                title="Student Handwritten Arrow (→)"
-                                                className="px-1.5 py-0.5 bg-white hover:bg-neutral-100 text-blue-700 rounded-md text-[10px] font-bold transition-all active:scale-95 border border-neutral-200 shadow-2xs cursor-pointer"
-                                            >
-                                                → Arrow
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    if (sourceRef.current) {
-                                                        const template = '\n[compare]\nPixel | Voxel\n• 2D picture element | • 3D volume element\n• Has length & width | • Has length, width & depth\n[/compare]\n';
-                                                        const start = sourceRef.current.selectionStart;
-                                                        const next = draftText.slice(0, start) + template + draftText.slice(start);
-                                                        setDraftText(next);
-                                                    } else {
-                                                        setDraftText(prev => prev + '\n[compare]\nPixel | Voxel\n• 2D picture element | • 3D volume element\n[/compare]\n');
-                                                    }
-                                                }}
-                                                title="2-Column Student Comparison Table ([compare] Col 1 | Col 2 [/compare])"
-                                                className="px-1.5 py-0.5 bg-blue-50 hover:bg-blue-100 text-blue-800 rounded-md text-[10px] font-bold transition-all active:scale-95 border border-blue-200/80 shadow-2xs cursor-pointer"
-                                            >
-                                                ⚖️ Compare
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    {/* Academic Assignment Quick Chips */}
-                                    <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-[11px] shrink-0 custom-scrollbar">
-                                        <span className="text-[9px] font-bold text-neutral-400 uppercase tracking-wider shrink-0">
-                                            Chips:
-                                        </span>
-                                        {[
-                                            { label: '→ Arrow', text: '→ ' },
-                                            { label: 'Q1.', text: 'Q1. ' },
-                                            { label: 'Ans:', text: '→ Ans: ' },
-                                            { label: 'Advantages:', text: 'Advantages:\n• ' },
-                                            { label: 'Limitations:', text: 'Limitations:\n• ' },
-                                            { label: 'Applications:', text: 'Applications:\n• ' },
-                                            { label: 'Conclusion:', text: 'Conclusion:\n→ ' },
-                                        ].map((chip, cIdx) => (
-                                            <button
-                                                key={cIdx}
-                                                type="button"
-                                                onClick={() => {
-                                                    if (sourceRef.current) {
-                                                        const start = sourceRef.current.selectionStart;
-                                                        const end = sourceRef.current.selectionEnd;
-                                                        const next = draftText.slice(0, start) + chip.text + draftText.slice(end);
-                                                        setDraftText(next);
-                                                        setTimeout(() => {
-                                                            sourceRef.current?.focus();
-                                                            sourceRef.current?.setSelectionRange(start + chip.text.length, start + chip.text.length);
-                                                        }, 0);
-                                                    } else {
-                                                        setDraftText(prev => prev + '\n' + chip.text);
-                                                    }
-                                                }}
-                                                className="px-2 py-0.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-md text-[10px] font-semibold shrink-0 transition-colors cursor-pointer border border-neutral-200/60 active:scale-95"
-                                            >
-                                                {chip.label}
-                                            </button>
-                                        ))}
-                                    </div>
+                                    )}
 
                                     {/* Inset Textarea Container - Floating Scrollbar & Status Bar */}
                                     <div className="flex-1 min-h-[260px] flex flex-col rounded-2xl bg-neutral-50/90 border border-neutral-200 focus-within:bg-white focus-within:border-neutral-400 focus-within:ring-2 focus-within:ring-neutral-900/10 transition-all shadow-2xs overflow-hidden">
@@ -1475,9 +1517,10 @@ export default function EditorPage() {
                                             ref={sourceRef}
                                             value={draftText}
                                             onKeyDown={handleKeyDown}
-                                            onKeyUp={updateCursorPos}
-                                            onClick={updateCursorPos}
-                                            onSelect={updateCursorPos}
+                                            onKeyUp={handleTextareaSelect}
+                                            onClick={handleTextareaSelect}
+                                            onSelect={handleTextareaSelect}
+                                            onMouseUp={handleTextareaSelect}
                                             onChange={(e) => {
                                                 let val = e.target.value;
                                                 if (val.includes('->')) {
@@ -2710,66 +2753,188 @@ export default function EditorPage() {
                             </div>
                         </div>
 
-                        {/* Formatting Quick Ribbon */}
-                        <div className="px-5 py-2 bg-neutral-100/60 border-b border-neutral-200/70 flex items-center gap-2 overflow-x-auto custom-scrollbar select-none shrink-0">
-                            <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider shrink-0">
-                                Formatting:
-                            </span>
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    setDraftText(prev => prev + (prev.endsWith('\n') || !prev ? '' : '\n') + 'Q1: \nAns: ');
-                                }}
-                                className="px-2.5 py-1 bg-white hover:bg-neutral-50 text-neutral-700 border border-neutral-200/80 rounded-md text-[11px] font-semibold shrink-0 shadow-2xs cursor-pointer active:scale-95 transition-all"
-                            >
-                                📝 Q & Ans
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    setDraftText(prev => prev + ' ==important keyword== ');
-                                }}
-                                className="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 rounded-md text-[11px] font-semibold shrink-0 shadow-2xs cursor-pointer active:scale-95 transition-all"
-                            >
-                                🖍️ ==Highlight==
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    setDraftText(prev => prev + ' [[boxed formula or text]] ');
-                                }}
-                                className="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 rounded-md text-[11px] font-semibold shrink-0 shadow-2xs cursor-pointer active:scale-95 transition-all"
-                            >
-                                📦 [[Box Formula]]
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    const sampleCompare = '\n[compare: Key Parameter | Solution A | Solution B]\nLatency | 12ms | 95ms\nAccuracy | 99.4% | 84.1%\n[/compare]\n';
-                                    setDraftText(prev => prev + (prev.endsWith('\n') || !prev ? '' : '\n') + sampleCompare);
-                                }}
-                                className="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 rounded-md text-[11px] font-semibold shrink-0 shadow-2xs cursor-pointer active:scale-95 transition-all"
-                            >
-                                ⚖️ [compare] Table
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    setDraftText(prev => prev + (prev.endsWith('\n') || !prev ? '' : '\n') + '• Bullet point ');
-                                }}
-                                className="px-2.5 py-1 bg-white hover:bg-neutral-50 text-neutral-700 border border-neutral-200/80 rounded-md text-[11px] font-semibold shrink-0 shadow-2xs cursor-pointer active:scale-95 transition-all"
-                            >
-                                • Bullet List
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    setDraftText(prev => prev + (prev.endsWith('\n') || !prev ? '' : '\n') + '1. Numbered item ');
-                                }}
-                                className="px-2.5 py-1 bg-white hover:bg-neutral-50 text-neutral-700 border border-neutral-200/80 rounded-md text-[11px] font-semibold shrink-0 shadow-2xs cursor-pointer active:scale-95 transition-all"
-                            >
-                                1. Numbered List
-                            </button>
+                        {/* MS Word-Style Ribbon Toolbar */}
+                        <div className="px-5 py-2.5 bg-neutral-100/75 border-b border-neutral-200 flex items-center gap-3 overflow-x-auto custom-scrollbar select-none shrink-0">
+                            {/* Group 1: AI & Actions */}
+                            <div className="flex items-center gap-1.5 shrink-0 pr-2 border-r border-neutral-200">
+                                <button
+                                    type="button"
+                                    onClick={handleCleanAIText}
+                                    title="Auto-Clean ChatGPT / Claude dumps (removes chat greetings, formats headings & Q/A)"
+                                    className="px-2.5 py-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer"
+                                >
+                                    <Sparkles size={13} />
+                                    <span>Clean AI Text</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={handlePasteClipboard}
+                                    title="Paste from clipboard"
+                                    className="px-2 py-1 bg-white hover:bg-neutral-100 text-neutral-800 border border-neutral-200 rounded-lg text-xs font-semibold flex items-center gap-1 shadow-2xs active:scale-95 transition-all cursor-pointer"
+                                >
+                                    <Clipboard size={12} />
+                                    <span>Paste</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={handleCleanSpacing}
+                                    title="Clean extra empty lines"
+                                    className="px-2 py-1 bg-white hover:bg-neutral-100 text-neutral-700 border border-neutral-200 rounded-lg text-xs font-semibold flex items-center gap-1 shadow-2xs active:scale-95 transition-all cursor-pointer"
+                                >
+                                    <span>Clean Space</span>
+                                </button>
+                            </div>
+
+                            {/* Group 2: Document Structure & Headings */}
+                            <div className="flex items-center gap-1 shrink-0 pr-2 border-r border-neutral-200">
+                                <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider mr-1">Style:</span>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setDraftText(prev => prev + (prev.endsWith('\n') || !prev ? '' : '\n') + '__TITLE OF ASSIGNMENT__\n\n');
+                                    }}
+                                    title="Title / Double Underline (__TITLE__)"
+                                    className="px-2 py-1 bg-white hover:bg-neutral-100 text-neutral-800 border border-neutral-200 rounded-md text-xs font-bold shadow-2xs cursor-pointer active:scale-95 transition-all"
+                                >
+                                    Title (H1)
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setDraftText(prev => prev + (prev.endsWith('\n') || !prev ? '' : '\n') + '__Section Name__\n');
+                                    }}
+                                    title="Subheading (__Section__)"
+                                    className="px-2 py-1 bg-white hover:bg-neutral-100 text-neutral-800 border border-neutral-200 rounded-md text-xs font-semibold shadow-2xs cursor-pointer active:scale-95 transition-all"
+                                >
+                                    Section (H2)
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setDraftText(prev => prev + (prev.endsWith('\n') || !prev ? '' : '\n') + 'Q1: \nAns: ');
+                                    }}
+                                    title="Question & Answer block"
+                                    className="px-2 py-1 bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200/80 rounded-md text-xs font-bold shadow-2xs cursor-pointer active:scale-95 transition-all"
+                                >
+                                    📝 Q&A
+                                </button>
+                            </div>
+
+                            {/* Group 3: Formatting & Emphasis */}
+                            <div className="flex items-center gap-1 shrink-0 pr-2 border-r border-neutral-200">
+                                <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider mr-1">Font:</span>
+                                <button
+                                    type="button"
+                                    onClick={() => applyFormatToSelection('__', '__')}
+                                    title="Double Underline (__text__)"
+                                    className="w-7 h-7 bg-white hover:bg-neutral-100 text-neutral-900 border border-neutral-200 rounded-md text-xs font-bold flex items-center justify-center underline underline-offset-2 shadow-2xs cursor-pointer"
+                                >
+                                    U
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => applyFormatToSelection('[[', ']]')}
+                                    title="Hand-Drawn Formula Box ([[text]])"
+                                    className="px-2 h-7 bg-white hover:bg-neutral-100 text-neutral-900 border border-neutral-200 rounded-md text-xs font-mono font-bold flex items-center justify-center shadow-2xs cursor-pointer"
+                                >
+                                    [Box]
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => applyFormatToSelection('~~', '~~')}
+                                    title="Scribble Strike-Through (~~text~~)"
+                                    className="w-7 h-7 bg-white hover:bg-neutral-100 text-rose-600 border border-neutral-200 rounded-md text-xs font-bold flex items-center justify-center line-through shadow-2xs cursor-pointer"
+                                >
+                                    S
+                                </button>
+                            </div>
+
+                            {/* Group 4: Highlighters */}
+                            <div className="flex items-center gap-1.5 shrink-0 pr-2 border-r border-neutral-200">
+                                <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider mr-1">Highlight:</span>
+                                <button
+                                    type="button"
+                                    onClick={() => applyFormatToSelection('==', '==')}
+                                    title="Yellow Chisel Highlighter (==text==)"
+                                    className="px-2 py-1 bg-yellow-200 hover:bg-yellow-300 text-yellow-950 rounded-md text-xs font-bold shadow-2xs active:scale-95 cursor-pointer flex items-center gap-1"
+                                >
+                                    <span className="w-2.5 h-2.5 rounded-full bg-yellow-400 border border-yellow-500/50" />
+                                    <span>Yellow</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => applyFormatToSelection('==green:', '==')}
+                                    title="Green Chisel Highlighter (==green:text==)"
+                                    className="px-2 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-950 rounded-md text-xs font-bold shadow-2xs active:scale-95 cursor-pointer flex items-center gap-1"
+                                >
+                                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 border border-emerald-500/50" />
+                                    <span>Green</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => applyFormatToSelection('==pink:', '==')}
+                                    title="Pink Chisel Highlighter (==pink:text==)"
+                                    className="px-2 py-1 bg-rose-100 hover:bg-rose-200 text-rose-950 rounded-md text-xs font-bold shadow-2xs active:scale-95 cursor-pointer flex items-center gap-1"
+                                >
+                                    <span className="w-2.5 h-2.5 rounded-full bg-rose-400 border border-rose-500/50" />
+                                    <span>Pink</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => applyFormatToSelection('==blue:', '==')}
+                                    title="Blue Chisel Highlighter (==blue:text==)"
+                                    className="px-2 py-1 bg-sky-100 hover:bg-sky-200 text-sky-950 rounded-md text-xs font-bold shadow-2xs active:scale-95 cursor-pointer flex items-center gap-1"
+                                >
+                                    <span className="w-2.5 h-2.5 rounded-full bg-sky-400 border border-sky-500/50" />
+                                    <span>Blue</span>
+                                </button>
+                            </div>
+
+                            {/* Group 5: Inserts */}
+                            <div className="flex items-center gap-1 shrink-0">
+                                <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider mr-1">Insert:</span>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setDraftText(prev => prev + (prev.endsWith('\n') || !prev ? '' : '\n') + '• ');
+                                    }}
+                                    title="Bullet List Item (•)"
+                                    className="px-2 py-1 bg-white hover:bg-neutral-100 text-neutral-800 border border-neutral-200 rounded-md text-xs font-semibold shadow-2xs cursor-pointer active:scale-95 transition-all"
+                                >
+                                    • Bullet
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setDraftText(prev => prev + (prev.endsWith('\n') || !prev ? '' : '\n') + '1. ');
+                                    }}
+                                    title="Numbered List Item (1.)"
+                                    className="px-2 py-1 bg-white hover:bg-neutral-100 text-neutral-800 border border-neutral-200 rounded-md text-xs font-semibold shadow-2xs cursor-pointer active:scale-95 transition-all"
+                                >
+                                    1. Numbered
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        const sampleCompare = '\n[compare: Parameter | Method A | Method B]\nSpeed | Fast | Moderate\nAccuracy | 98.2% | 85.0%\n[/compare]\n';
+                                        setDraftText(prev => prev + (prev.endsWith('\n') || !prev ? '' : '\n') + sampleCompare);
+                                    }}
+                                    title="2-Column Student Comparison Table"
+                                    className="px-2 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 rounded-md text-xs font-semibold shadow-2xs cursor-pointer active:scale-95 transition-all"
+                                >
+                                    ⚖️ Table
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setDraftText(prev => prev + ' → ');
+                                    }}
+                                    title="Student Handwritten Arrow (→)"
+                                    className="px-2 py-1 bg-white hover:bg-neutral-100 text-blue-700 border border-neutral-200 rounded-md text-xs font-bold shadow-2xs cursor-pointer active:scale-95 transition-all"
+                                >
+                                    → Arrow
+                                </button>
+                            </div>
                         </div>
 
                         {/* Expanded Fullscreen Textarea */}
@@ -2778,9 +2943,10 @@ export default function EditorPage() {
                                 autoFocus
                                 value={draftText}
                                 onKeyDown={handleKeyDown}
-                                onKeyUp={updateCursorPos}
-                                onClick={updateCursorPos}
-                                onSelect={updateCursorPos}
+                                onKeyUp={handleTextareaSelect}
+                                onClick={handleTextareaSelect}
+                                onSelect={handleTextareaSelect}
+                                onMouseUp={handleTextareaSelect}
                                 onChange={(e) => {
                                     let val = e.target.value;
                                     if (val.includes('->')) {
@@ -2833,6 +2999,104 @@ export default function EditorPage() {
                             </div>
                         </div>
                     </div>
+                </div>
+            )}
+
+            {/* MS Word / Notion Style Floating Mini-Toolbar */}
+            {floatingToolbar.isOpen && (
+                <div
+                    className="ms-word-floating-toolbar fixed z-50 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1.5 bg-neutral-900/95 text-white rounded-2xl shadow-2xl border border-white/20 backdrop-blur-md animate-in fade-in zoom-in-95 duration-150 select-none pointer-events-auto"
+                    style={{
+                        left: `${floatingToolbar.x}px`,
+                        top: `${floatingToolbar.y}px`,
+                    }}
+                >
+                    {/* Highlighter color swatches */}
+                    <div className="flex items-center gap-1 pr-2 border-r border-white/20">
+                        <button
+                            type="button"
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={() => applyFormatToSelection('==', '==')}
+                            title="Yellow Highlighter (==text==)"
+                            className="w-5 h-5 rounded-full bg-yellow-400 hover:scale-120 active:scale-95 transition-transform shadow-xs cursor-pointer flex items-center justify-center text-neutral-950 text-[10px] font-bold"
+                        >
+                            Y
+                        </button>
+                        <button
+                            type="button"
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={() => applyFormatToSelection('==green:', '==')}
+                            title="Green Highlighter (==green:text==)"
+                            className="w-5 h-5 rounded-full bg-emerald-400 hover:scale-120 active:scale-95 transition-transform shadow-xs cursor-pointer flex items-center justify-center text-neutral-950 text-[10px] font-bold"
+                        >
+                            G
+                        </button>
+                        <button
+                            type="button"
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={() => applyFormatToSelection('==pink:', '==')}
+                            title="Pink Highlighter (==pink:text==)"
+                            className="w-5 h-5 rounded-full bg-pink-400 hover:scale-120 active:scale-95 transition-transform shadow-xs cursor-pointer flex items-center justify-center text-neutral-950 text-[10px] font-bold"
+                        >
+                            P
+                        </button>
+                        <button
+                            type="button"
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={() => applyFormatToSelection('==blue:', '==')}
+                            title="Blue Highlighter (==blue:text==)"
+                            className="w-5 h-5 rounded-full bg-sky-400 hover:scale-120 active:scale-95 transition-transform shadow-xs cursor-pointer flex items-center justify-center text-neutral-950 text-[10px] font-bold"
+                        >
+                            B
+                        </button>
+                    </div>
+
+                    {/* Word formatting options */}
+                    <button
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => applyFormatToSelection('__', '__')}
+                        title="Double Underline (__text__)"
+                        className="px-2 py-0.5 hover:bg-white/20 rounded-md text-xs font-bold transition-colors cursor-pointer underline underline-offset-2"
+                    >
+                        U
+                    </button>
+                    <button
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => applyFormatToSelection('[[', ']]')}
+                        title="Hand-Drawn Formula Box ([[text]])"
+                        className="px-2 py-0.5 hover:bg-white/20 rounded-md text-xs font-mono font-bold transition-colors cursor-pointer text-amber-300"
+                    >
+                        [Box]
+                    </button>
+                    <button
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => applyFormatToSelection('~~', '~~')}
+                        title="Scribble Strike-Through (~~text~~)"
+                        className="px-2 py-0.5 hover:bg-white/20 rounded-md text-xs font-bold transition-colors cursor-pointer line-through text-rose-300"
+                    >
+                        S
+                    </button>
+                    <button
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => applyFormatToSelection('^', '^')}
+                        title="Caret Missing Word (^word^)"
+                        className="px-1.5 py-0.5 hover:bg-white/20 rounded-md text-xs font-mono transition-colors cursor-pointer text-blue-300"
+                    >
+                        ^
+                    </button>
+                    <button
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => applyFormatToSelection('', '')}
+                        title="Clear Formatting from Selection"
+                        className="px-1.5 py-0.5 hover:bg-white/20 text-neutral-400 hover:text-white rounded-md text-xs transition-colors cursor-pointer"
+                    >
+                        ✕
+                    </button>
                 </div>
             )}
         </div>
