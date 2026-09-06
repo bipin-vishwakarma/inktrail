@@ -1735,14 +1735,11 @@ export default function EditorPage() {
                                                     />
                                                 )}
 
-                                                {/* Red Margin Line (Starts at double red top header rule) */}
+                                                {/* Red Margin Line (Full height top-to-bottom) */}
                                                 {paper.hasRedMargin && (
                                                     <div 
-                                                        className="absolute bottom-0 w-[2px] bg-rose-400 opacity-60 pointer-events-none z-10 transition-all" 
-                                                        style={{ 
-                                                            top: (paper.hasRedMargin || paper.id === 'youva-spiral' || showNotebookHeaderBox) ? '72px' : '0px',
-                                                            left: `${redMarginLeft}px` 
-                                                        }}
+                                                        className="absolute top-0 bottom-0 w-[2px] bg-rose-400 opacity-60 pointer-events-none z-10 transition-all" 
+                                                        style={{ left: `${redMarginLeft}px` }}
                                                     />
                                                 )}
 
