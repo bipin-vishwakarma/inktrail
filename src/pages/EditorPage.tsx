@@ -321,7 +321,7 @@ function paginateLines(lines: LineData[], linesPerPage: number, page1Capacity: n
 
 // --- DATA CONSTANTS ---
 const FONTS = [
-    // === Rushed Doctor & Frantic Cursive Handwriting (Fast Connecting Script) ===
+    // === Rushed Doctor & Frantic Cursive Notes (Fast Connecting Script) ===
     { name: 'Meddon', label: "Doctor's Prescription (Rapid Connecting Ink Scrawl)" },
     { name: 'Kristi', label: 'Frantic Student Cursive (Rushed Slanted Pen)' },
     { name: 'WindSong', label: 'Rapid Medical Script (Flowing Connected Cursive)' },
@@ -331,46 +331,23 @@ const FONTS = [
     { name: 'La Belle Aurore', label: 'Student Cursive (Fast Ink Pen)' },
     { name: 'Waiting for the Sunrise', label: 'Notebook Cursive (Slanted Homework)' },
     { name: 'Marck Script', label: 'School Cursive (Fluid Script)' },
-    { name: 'Homemade Apple', label: 'Messy Cursive (Organic Real Pen)' },
-    { name: 'Beth Ellen', label: 'Organic Cursive (Real Hand Flow)' },
     { name: 'Zeyada', label: 'Loose Cursive (Casual Rushed Student)' },
     { name: 'Dawning of a New Day', label: 'Fine Ballpoint (Light Cursive)' },
+    { name: 'Handwriting 4', label: 'Student Cursive (Fluid Natural Slant)' },
+    { name: 'Handwriting 20', label: 'Student Cursive (Clean Rapid Flow)' },
+    { name: 'Handwriting 2', label: 'Student Pen (Casual Natural Slant)' },
+    { name: 'Handwriting 5', label: 'Student Pen (Fast Exam Flow)' },
 
     // === Authentic Rushed Student Homework & Ballpoint Scribbles ===
     { name: 'Nothing You Could Do', label: 'Student Homework (Authentic Ballpoint)' },
     { name: 'Mynerve', label: 'Rushed Student Scribble (Messy Ballpoint with Real Jitter)' },
     { name: 'Just Me Again Down Here', label: 'Student Notes (Rushed & Imperfect)' },
     { name: 'Just Another Hand', label: 'Rapid Lecture Scrawl (Narrow Fast Pen)' },
-    { name: 'Reenie Beanie', label: 'Fast Ballpoint (Scratchy Student Notes)' },
-    { name: 'Give You Glory', label: 'Hurried Student Hand (Imperfect Exam Notes)' },
     { name: 'The Girl Next Door', label: 'Quick Notebook Scrawl (Natural Casual Hand)' },
-    { name: 'Loved by the King', label: 'Messy Tall Scrawl (Fast Class Notes)' },
     { name: 'Sue Ellen Francisco', label: 'Hurried Fine Scrawl (Quick Notes)' },
+    { name: 'Loved by the King', label: 'Messy Tall Scrawl (Fast Class Notes)' },
+    { name: 'Give You Glory', label: 'Hurried Student Hand (Imperfect Exam Notes)' },
     { name: 'Bad Script', label: 'Casual Ballpoint (Homework Notes)' },
-    { name: 'Over the Rainbow', label: 'Notebook Hand (Print & Script)' },
-    { name: 'Annie Use Your Telescope', label: 'Junior Student (Casual Hand)' },
-    { name: 'Caveat', label: 'Everyday School Notes (Caveat)' },
-    { name: 'Kalam', label: 'Fast Gel Pen (Kalam Notes)' },
-    { name: 'Shadows Into Light', label: 'Quick Assignment (Quick Slant)' },
-
-    // === Authentic Pen & Pencil Hands (Quantum Vault) ===
-    { name: 'Handwriting 1', label: 'Student 1 (Clean Pen)' },
-    { name: 'Handwriting 2', label: 'Student 2 (Casual Slant)' },
-    { name: 'Handwriting 3', label: 'Student 3 (Neat Ballpoint)' },
-    { name: 'Handwriting 4', label: 'Student 4 (Fluid Cursive)' },
-    { name: 'Handwriting 5', label: 'Student 5 (Fast Flow)' },
-    { name: 'Handwriting 8', label: 'Student 8 (Fine Nib)' },
-    { name: 'Handwriting 10', label: 'Student 10 (Forward Lean)' },
-    { name: 'Handwriting 11', label: 'Student 11 (Natural Cursive)' },
-    { name: 'Handwriting 12', label: 'Student 12 (Rounded Junior)' },
-    { name: 'Handwriting 14', label: 'Student 14 (Expressive Hand)' },
-    { name: 'Handwriting 15', label: 'Braden Hill (Natural Lean)' },
-    { name: 'Handwriting 16', label: 'David Reid (Rushed Notes)' },
-    { name: 'Handwriting 18', label: 'Garrett Moretz (Loose Hand)' },
-    { name: 'Handwriting 19', label: 'Herbert Cooper (Neat Mix)' },
-    { name: 'Handwriting 20', label: 'John Williams (Clean Flow)' },
-    { name: 'Handwriting 21', label: 'Kevin Knowles (Bold Ballpoint)' },
-    { name: 'Handwriting 22', label: 'Royston Such (Fluid Italic)' },
 ];
 
 const PAPERS = [
