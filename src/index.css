@@ -273,6 +273,118 @@
   font-display: swap;
 }
 
+/* === AUTHENTIC RUSHED DOCTOR & FAST STUDENT CONNECTING FONTS === */
+@font-face {
+  font-family: 'Meddon';
+  src: url('/fonts/Meddon.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'meddon';
+  src: url('/fonts/Meddon.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Kristi';
+  src: url('/fonts/Kristi.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'kristi';
+  src: url('/fonts/Kristi.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'WindSong';
+  src: url('/fonts/WindSong.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'windsong';
+  src: url('/fonts/WindSong.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Mynerve';
+  src: url('/fonts/Mynerve.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'mynerve';
+  src: url('/fonts/Mynerve.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Just Another Hand';
+  src: url('/fonts/JustAnotherHand.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'just-another-hand';
+  src: url('/fonts/JustAnotherHand.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Give You Glory';
+  src: url('/fonts/GiveYouGlory.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'give-you-glory';
+  src: url('/fonts/GiveYouGlory.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'League Script';
+  src: url('/fonts/LeagueScript.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'league-script';
+  src: url('/fonts/LeagueScript.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Square Peg';
+  src: url('/fonts/SquarePeg.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'square-peg';
+  src: url('/fonts/SquarePeg.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'The Girl Next Door';
+  src: url('/fonts/TheGirlNextDoor.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'the-girl-next-door';
+  src: url('/fonts/TheGirlNextDoor.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Loved by the King';
+  src: url('/fonts/LovedbytheKing.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'loved-by-the-king';
+  src: url('/fonts/LovedbytheKing.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Sue Ellen Francisco';
+  src: url('/fonts/SueEllenFrancisco.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'sue-ellen-francisco';
+  src: url('/fonts/SueEllenFrancisco.ttf') format('truetype');
+  font-display: swap;
+}
+
 /* === 8 PREMIUM VAULT FONTS (Quantum Enterprises) === */
 @font-face {
   font-family: 'Handwriting 15';
@@ -369,9 +481,9 @@
   --shadow-paper: 0 1px 1px rgba(0,0,0,0.08), 0 2px 2px rgba(0,0,0,0.08), 0 4px 4px rgba(0,0,0,0.08), 0 8px 8px rgba(0,0,0,0.08);
 
   /* ... fonts ... */
-  --font-handwriting: "Caveat", cursive;
+  --font-handwriting: "Cedarville Cursive", cursive;
   --font-script: "Dancing Script", cursive;
-  --font-print: "Patrick Hand", cursive;
+  --font-print: "Nothing You Could Do", cursive;
   --font-display: "Outfit", "Inter", sans-serif;
   --font-sans: "Inter", system-ui, sans-serif;
   --font-serif: "Merriweather", serif;

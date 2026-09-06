@@ -8,6 +8,7 @@ import {
     mulberry32, 
     getFontFamilyCss, 
     measureWordWidth, 
+    isCursiveConnectingFont,
     type WordToken 
 } from '../utils/humanErrorEngine';
 
@@ -232,7 +233,7 @@ const HandwrittenWordComponent: React.FC<HandwrittenWordProps> = ({
                 />
             )}
             {/* Unified Word Cursive Rendering with OpenType Connecting Ligatures & Human Realism */}
-            {charJitter <= 0.8 ? (
+            {(isCursiveConnectingFont(fontFamily) || charJitter <= 0.8) ? (
                 <span 
                     ref={textRef}
                     style={{ 
@@ -240,6 +241,7 @@ const HandwrittenWordComponent: React.FC<HandwrittenWordProps> = ({
                         fontFeatureSettings: '"liga" 1, "calt" 1, "clig" 1, "dlig" 1',
                         fontVariantLigatures: 'normal contextual',
                         textRendering: 'optimizeLegibility',
+                        letterSpacing: isCursiveConnectingFont(fontFamily) ? '-0.012em' : undefined,
                     }}
                 >
                     {token.text}

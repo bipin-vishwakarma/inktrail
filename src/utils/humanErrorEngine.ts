@@ -59,42 +59,60 @@ export const FONT_WIDTH_RATIOS: Record<string, number> = {
     'Handwriting 20': 0.55,
     'Handwriting 21': 0.62,
     'Handwriting 22': 0.57,
-    // Authentic Student Cursive Fonts
+    // Authentic Rushed Doctor & Connecting Cursive Fonts
+    'Meddon': 0.62,
+    'Kristi': 0.44,
+    'WindSong': 0.58,
     'Cedarville Cursive': 0.65,
-    'Nothing You Could Do': 0.58,
+    'League Script': 0.58,
+    'Square Peg': 0.52,
     'La Belle Aurore': 0.54,
-    'Just Me Again Down Here': 0.56,
-    'Dawning of a New Day': 0.56,
     'Waiting for the Sunrise': 0.55,
     'Marck Script': 0.58,
-    'Bad Script': 0.56,
     'Homemade Apple': 0.68,
     'Beth Ellen': 0.66,
     'Zeyada': 0.54,
+    'Dawning of a New Day': 0.56,
+    // Authentic Rushed Student Homework & Ballpoint Scribbles
+    'Nothing You Could Do': 0.58,
+    'Mynerve': 0.54,
+    'Just Me Again Down Here': 0.56,
+    'Just Another Hand': 0.42,
+    'Reenie Beanie': 0.46,
+    'Give You Glory': 0.56,
+    'The Girl Next Door': 0.54,
+    'Loved by the King': 0.46,
+    'Sue Ellen Francisco': 0.40,
+    'Bad Script': 0.56,
     'Over the Rainbow': 0.52,
     'Annie Use Your Telescope': 0.52,
     'Caveat': 0.52,
-    'Indie Flower': 0.58,
-    'Patrick Hand': 0.56,
     'Shadows Into Light': 0.50,
     'Kalam': 0.62,
-    'Reenie Beanie': 0.46,
-    'Shantell Sans': 0.54,
-    'Delius': 0.52,
-    'Pangolin': 0.54,
-    'Gochi Hand': 0.52,
     // Hyphenated aliases for CSS/Store compatibility
+    'meddon': 0.62,
+    'kristi': 0.44,
+    'windsong': 0.58,
     'cedarville-cursive': 0.65,
-    'nothing-you-could-do': 0.58,
+    'league-script': 0.58,
+    'square-peg': 0.52,
     'la-belle-aurore': 0.54,
-    'just-me-again-down-here': 0.56,
-    'dawning-of-a-new-day': 0.56,
     'waiting-for-the-sunrise': 0.55,
     'marck-script': 0.58,
-    'bad-script': 0.56,
     'homemade-apple': 0.68,
     'beth-ellen': 0.66,
     'zeyada': 0.54,
+    'dawning-of-a-new-day': 0.56,
+    'nothing-you-could-do': 0.58,
+    'mynerve': 0.54,
+    'just-me-again-down-here': 0.56,
+    'just-another-hand': 0.42,
+    'reenie-beanie': 0.46,
+    'give-you-glory': 0.56,
+    'the-girl-next-door': 0.54,
+    'loved-by-the-king': 0.46,
+    'sue-ellen-francisco': 0.40,
+    'bad-script': 0.56,
     'over-the-rainbow': 0.52,
     'annie-use-your-telescope': 0.52,
     // Hyphenated aliases
@@ -122,12 +140,37 @@ export const FONT_WIDTH_RATIOS: Record<string, number> = {
     'handwriting-22': 0.57,
 };
 
+export const CURSIVE_CONNECTING_FONTS = new Set([
+    'Cedarville Cursive', 'cedarville-cursive',
+    'Meddon', 'meddon',
+    'Kristi', 'kristi',
+    'WindSong', 'windsong',
+    'League Script', 'league-script',
+    'Square Peg', 'square-peg',
+    'La Belle Aurore', 'la-belle-aurore',
+    'Waiting for the Sunrise', 'waiting-for-the-sunrise',
+    'Marck Script', 'marck-script',
+    'Homemade Apple', 'homemade-apple',
+    'Beth Ellen', 'beth-ellen',
+    'Zeyada', 'zeyada',
+    'Dawning of a New Day', 'dawning-of-a-new-day',
+    'Handwriting 4', 'handwriting-4',
+    'Handwriting 11', 'handwriting-11',
+    'Handwriting 22', 'handwriting-22',
+]);
+
+export function isCursiveConnectingFont(font: string): boolean {
+    if (!font) return true;
+    const clean = font.replace(/['"]/g, '').trim();
+    return CURSIVE_CONNECTING_FONTS.has(clean) || CURSIVE_CONNECTING_FONTS.has(clean.toLowerCase());
+}
+
 /**
  * Ensures font-family is strictly valid CSS with quotes around custom names containing spaces/numbers,
  * followed by organic cursive and sans-serif fallbacks.
  */
 export function getFontFamilyCss(font: string): string {
-    if (!font) return '"Caveat", cursive, sans-serif';
+    if (!font) return '"Cedarville Cursive", cursive, sans-serif';
     const cleanFont = font.replace(/['"]/g, '').trim();
     return `"${cleanFont}", cursive, sans-serif`;
 }
