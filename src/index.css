@@ -1,16 +1,8 @@
 @import "tailwindcss";
 
-/* === 15 AUTHENTIC HANDWRITING FONTS (DUAL ALIAS REGISTERED) === */
-@font-face {
-  font-family: 'Handwriting 1';
-  src: url('/fonts/handwriting-1.otf') format('opentype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'handwriting-1';
-  src: url('/fonts/handwriting-1.otf') format('opentype');
-  font-display: swap;
-}
+/* === 24 CURATED AUTHENTIC HANDWRITING FONTS (OFFLINE CACHED & DUAL-ALIASED) === */
+
+/* --- Organic Cursive Vault --- */
 @font-face {
   font-family: 'Handwriting 2';
   src: url('/fonts/handwriting-2.otf') format('opentype');
@@ -19,16 +11,6 @@
 @font-face {
   font-family: 'handwriting-2';
   src: url('/fonts/handwriting-2.otf') format('opentype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Handwriting 3';
-  src: url('/fonts/handwriting-3.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'handwriting-3';
-  src: url('/fonts/handwriting-3.ttf') format('truetype');
   font-display: swap;
 }
 @font-face {
@@ -52,228 +34,17 @@
   font-display: swap;
 }
 @font-face {
-  font-family: 'Handwriting 6';
-  src: url('/fonts/handwriting-6.otf') format('opentype');
+  font-family: 'Handwriting 20';
+  src: url('/fonts/handwriting-20.ttf') format('truetype');
   font-display: swap;
 }
 @font-face {
-  font-family: 'handwriting-6';
-  src: url('/fonts/handwriting-6.otf') format('opentype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Handwriting 7';
-  src: url('/fonts/handwriting-7.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'handwriting-7';
-  src: url('/fonts/handwriting-7.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Handwriting 8';
-  src: url('/fonts/handwriting-8.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'handwriting-8';
-  src: url('/fonts/handwriting-8.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Handwriting 9';
-  src: url('/fonts/handwriting-9.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'handwriting-9';
-  src: url('/fonts/handwriting-9.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Handwriting 10';
-  src: url('/fonts/handwriting-10.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'handwriting-10';
-  src: url('/fonts/handwriting-10.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Handwriting 11';
-  src: url('/fonts/handwriting-11.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'handwriting-11';
-  src: url('/fonts/handwriting-11.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Handwriting 12';
-  src: url('/fonts/handwriting-12.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'handwriting-12';
-  src: url('/fonts/handwriting-12.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Handwriting 13';
-  src: url('/fonts/handwriting-13.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'handwriting-13';
-  src: url('/fonts/handwriting-13.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Handwriting 14';
-  src: url('/fonts/handwriting-14.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'handwriting-14';
-  src: url('/fonts/handwriting-14.ttf') format('truetype');
-  font-display: swap;
-}
-/* === 13 AUTHENTIC STUDENT CURSIVE HANDWRITING FONTS === */
-@font-face {
-  font-family: 'Cedarville Cursive';
-  src: url('/fonts/CedarvilleCursive.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'cedarville-cursive';
-  src: url('/fonts/CedarvilleCursive.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Nothing You Could Do';
-  src: url('/fonts/NothingYouCouldDo.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'nothing-you-could-do';
-  src: url('/fonts/NothingYouCouldDo.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'La Belle Aurore';
-  src: url('/fonts/LaBelleAurore.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'la-belle-aurore';
-  src: url('/fonts/LaBelleAurore.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Just Me Again Down Here';
-  src: url('/fonts/JustMeAgainDownHere.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'just-me-again-down-here';
-  src: url('/fonts/JustMeAgainDownHere.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Dawning of a New Day';
-  src: url('/fonts/DawningofaNewDay.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'dawning-of-a-new-day';
-  src: url('/fonts/DawningofaNewDay.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Waiting for the Sunrise';
-  src: url('/fonts/WaitingfortheSunrise.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'waiting-for-the-sunrise';
-  src: url('/fonts/WaitingfortheSunrise.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Marck Script';
-  src: url('/fonts/MarckScript.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'marck-script';
-  src: url('/fonts/MarckScript.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Bad Script';
-  src: url('/fonts/BadScript.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'bad-script';
-  src: url('/fonts/BadScript.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Homemade Apple';
-  src: url('/fonts/HomemadeApple.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'homemade-apple';
-  src: url('/fonts/HomemadeApple.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Beth Ellen';
-  src: url('/fonts/BethEllen.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'beth-ellen';
-  src: url('/fonts/BethEllen.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Zeyada';
-  src: url('/fonts/Zeyada.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'zeyada';
-  src: url('/fonts/Zeyada.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Over the Rainbow';
-  src: url('/fonts/OvertheRainbow.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'over-the-rainbow';
-  src: url('/fonts/OvertheRainbow.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Annie Use Your Telescope';
-  src: url('/fonts/AnnieUseYourTelescope.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'annie-use-your-telescope';
-  src: url('/fonts/AnnieUseYourTelescope.ttf') format('truetype');
+  font-family: 'handwriting-20';
+  src: url('/fonts/handwriting-20.ttf') format('truetype');
   font-display: swap;
 }
 
-/* === AUTHENTIC RUSHED DOCTOR & FAST STUDENT CONNECTING FONTS === */
+/* --- Rushed Doctor & Frantic Cursive Notes --- */
 @font-face {
   font-family: 'Meddon';
   src: url('/fonts/Meddon.ttf') format('truetype');
@@ -305,33 +76,13 @@
   font-display: swap;
 }
 @font-face {
-  font-family: 'Mynerve';
-  src: url('/fonts/Mynerve.ttf') format('truetype');
+  font-family: 'Cedarville Cursive';
+  src: url('/fonts/CedarvilleCursive.ttf') format('truetype');
   font-display: swap;
 }
 @font-face {
-  font-family: 'mynerve';
-  src: url('/fonts/Mynerve.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Just Another Hand';
-  src: url('/fonts/JustAnotherHand.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'just-another-hand';
-  src: url('/fonts/JustAnotherHand.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Give You Glory';
-  src: url('/fonts/GiveYouGlory.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'give-you-glory';
-  src: url('/fonts/GiveYouGlory.ttf') format('truetype');
+  font-family: 'cedarville-cursive';
+  src: url('/fonts/CedarvilleCursive.ttf') format('truetype');
   font-display: swap;
 }
 @font-face {
@@ -355,6 +106,98 @@
   font-display: swap;
 }
 @font-face {
+  font-family: 'La Belle Aurore';
+  src: url('/fonts/LaBelleAurore.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'la-belle-aurore';
+  src: url('/fonts/LaBelleAurore.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Waiting for the Sunrise';
+  src: url('/fonts/WaitingfortheSunrise.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'waiting-for-the-sunrise';
+  src: url('/fonts/WaitingfortheSunrise.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Marck Script';
+  src: url('/fonts/MarckScript.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'marck-script';
+  src: url('/fonts/MarckScript.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Zeyada';
+  src: url('/fonts/Zeyada.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'zeyada';
+  src: url('/fonts/Zeyada.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Dawning of a New Day';
+  src: url('/fonts/DawningofaNewDay.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'dawning-of-a-new-day';
+  src: url('/fonts/DawningofaNewDay.ttf') format('truetype');
+  font-display: swap;
+}
+
+/* --- Authentic Rushed Student Homework & Ballpoint Notes --- */
+@font-face {
+  font-family: 'Nothing You Could Do';
+  src: url('/fonts/NothingYouCouldDo.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'nothing-you-could-do';
+  src: url('/fonts/NothingYouCouldDo.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Mynerve';
+  src: url('/fonts/Mynerve.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'mynerve';
+  src: url('/fonts/Mynerve.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Just Me Again Down Here';
+  src: url('/fonts/JustMeAgainDownHere.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'just-me-again-down-here';
+  src: url('/fonts/JustMeAgainDownHere.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Just Another Hand';
+  src: url('/fonts/JustAnotherHand.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'just-another-hand';
+  src: url('/fonts/JustAnotherHand.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
   font-family: 'The Girl Next Door';
   src: url('/fonts/TheGirlNextDoor.ttf') format('truetype');
   font-display: swap;
@@ -362,6 +205,16 @@
 @font-face {
   font-family: 'the-girl-next-door';
   src: url('/fonts/TheGirlNextDoor.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Sue Ellen Francisco';
+  src: url('/fonts/SueEllenFrancisco.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'sue-ellen-francisco';
+  src: url('/fonts/SueEllenFrancisco.ttf') format('truetype');
   font-display: swap;
 }
 @font-face {
@@ -375,95 +228,23 @@
   font-display: swap;
 }
 @font-face {
-  font-family: 'Sue Ellen Francisco';
-  src: url('/fonts/SueEllenFrancisco.ttf') format('truetype');
+  font-family: 'Give You Glory';
+  src: url('/fonts/GiveYouGlory.ttf') format('truetype');
   font-display: swap;
 }
 @font-face {
-  font-family: 'sue-ellen-francisco';
-  src: url('/fonts/SueEllenFrancisco.ttf') format('truetype');
-  font-display: swap;
-}
-
-/* === 8 PREMIUM VAULT FONTS (Quantum Enterprises) === */
-@font-face {
-  font-family: 'Handwriting 15';
-  src: url('/fonts/handwriting-15.ttf') format('truetype');
+  font-family: 'give-you-glory';
+  src: url('/fonts/GiveYouGlory.ttf') format('truetype');
   font-display: swap;
 }
 @font-face {
-  font-family: 'handwriting-15';
-  src: url('/fonts/handwriting-15.ttf') format('truetype');
+  font-family: 'Bad Script';
+  src: url('/fonts/BadScript.ttf') format('truetype');
   font-display: swap;
 }
 @font-face {
-  font-family: 'Handwriting 16';
-  src: url('/fonts/handwriting-16.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'handwriting-16';
-  src: url('/fonts/handwriting-16.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Handwriting 17';
-  src: url('/fonts/handwriting-17.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'handwriting-17';
-  src: url('/fonts/handwriting-17.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Handwriting 18';
-  src: url('/fonts/handwriting-18.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'handwriting-18';
-  src: url('/fonts/handwriting-18.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Handwriting 19';
-  src: url('/fonts/handwriting-19.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'handwriting-19';
-  src: url('/fonts/handwriting-19.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Handwriting 20';
-  src: url('/fonts/handwriting-20.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'handwriting-20';
-  src: url('/fonts/handwriting-20.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Handwriting 21';
-  src: url('/fonts/handwriting-21.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'handwriting-21';
-  src: url('/fonts/handwriting-21.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Handwriting 22';
-  src: url('/fonts/handwriting-22.ttf') format('truetype');
-  font-display: swap;
-}
-@font-face {
-  font-family: 'handwriting-22';
-  src: url('/fonts/handwriting-22.ttf') format('truetype');
+  font-family: 'bad-script';
+  src: url('/fonts/BadScript.ttf') format('truetype');
   font-display: swap;
 }
 
@@ -478,12 +259,6 @@
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-soft: 0 10px 40px -10px rgba(0,0,0,0.08);
   --shadow-premium: 0 10px 50px -10px rgba(0,0,0,0.1), 0 5px 20px -10px rgba(0,0,0,0.05);
-  --shadow-paper: 0 1px 1px rgba(0,0,0,0.08), 0 2px 2px rgba(0,0,0,0.08), 0 4px 4px rgba(0,0,0,0.08), 0 8px 8px rgba(0,0,0,0.08);
-
-  /* ... fonts ... */
-  --font-handwriting: "Cedarville Cursive", cursive;
-  --font-script: "Dancing Script", cursive;
-  --font-print: "Nothing You Could Do", cursive;
   --font-display: "Outfit", "Inter", sans-serif;
   --font-sans: "Inter", system-ui, sans-serif;
   --font-serif: "Merriweather", serif;
