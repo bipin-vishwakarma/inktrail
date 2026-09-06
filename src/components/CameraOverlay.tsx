@@ -15,6 +15,10 @@ interface CameraOverlayProps {
     paperCrease: PaperCrease;
     sensorNoise: number;
     coffeeStain?: boolean;
+    pageIndex?: number;
+    spiralBinding?: boolean;
+    inkBleedThrough?: boolean;
+    inkBleedIntensity?: number;
 }
 
 const CameraOverlayComponent: React.FC<CameraOverlayProps> = ({
@@ -31,7 +35,13 @@ const CameraOverlayComponent: React.FC<CameraOverlayProps> = ({
     paperCrease,
     sensorNoise,
     coffeeStain = false,
+    pageIndex = 0,
+    spiralBinding = false,
+    inkBleedThrough = false,
+    inkBleedIntensity = 0.12,
 }) => {
+    const isEvenPage = (pageIndex ?? 0) % 2 === 1;
+    const showSpiral = spiralBinding || paperCrease === 'spiral-holes';
     // Calculate Phone Shadow coordinates based on angle or custom per-page values
     const rad = (phoneShadowAngle * Math.PI) / 180;
     const shadowX = phoneShadowX !== undefined ? phoneShadowX : Math.round(50 + Math.cos(rad) * 45);
@@ -78,6 +88,36 @@ const CameraOverlayComponent: React.FC<CameraOverlayProps> = ({
                         background: 'linear-gradient(to bottom, rgba(255,255,255,0.15), rgba(0,0,0,0.12))',
                     }}
                 />
+            )}
+
+            {/* 1.5. REVERSE-PAGE INK GHOSTING / SHOW-THROUGH (Thin 65 GSM Notebook Paper) */}
+            {inkBleedThrough && (
+                <div
+                    className="absolute inset-0 pointer-events-none mix-blend-multiply select-none"
+                    style={{
+                        opacity: inkBleedIntensity,
+                        filter: 'blur(1.6px)',
+                        transform: 'scaleX(-1)', // Mirrored since it is on the reverse side
+                    }}
+                >
+                    <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                        <g fill="none" stroke="#1e3a8a" strokeWidth="2.0" strokeLinecap="round" opacity="0.8">
+                            {Array.from({ length: 27 }).map((_, lIdx) => {
+                                const y = 70 + lIdx * 32;
+                                const widthPct = 65 + ((lIdx * 41) % 28);
+                                return (
+                                    <g key={lIdx} transform={`translate(${20 + ((lIdx * 17) % 18)}, ${y})`}>
+                                        <path
+                                            d={`M 0,0 Q 30,-3 65,-1 T 130,-2 Q 170,2 215,-1 T 290,0 Q 350,-3 410,-1 T 490,1 Q 550,-2 620,0`}
+                                            strokeDasharray="40 14 60 18 32 12 75 22 50 16"
+                                            style={{ maxWidth: `${widthPct}%` }}
+                                        />
+                                    </g>
+                                );
+                            })}
+                        </g>
+                    </svg>
+                </div>
             )}
 
             {/* 2. REALISTIC SMARTPHONE CAST SHADOW & NATURAL LIGHT OCCLUSION */}
@@ -183,17 +223,86 @@ const CameraOverlayComponent: React.FC<CameraOverlayProps> = ({
                 </div>
             )}
 
-            {paperCrease === 'spiral-holes' && (
-                <div className="absolute inset-0 pointer-events-none">
-                    <div className="absolute top-0 bottom-0 left-[26px] border-r border-dashed border-neutral-300 opacity-60" />
-                    <div className="absolute top-4 bottom-4 left-[8px] flex flex-col justify-between items-center w-[12px]">
-                        {Array.from({ length: 18 }).map((_, i) => (
-                            <div
-                                key={i}
-                                className="w-[10px] h-[10px] rounded-full bg-[#dce3ec] shadow-[inset_1px_1px_2px_rgba(0,0,0,0.4)] border border-neutral-300/40"
-                            />
-                        ))}
-                    </div>
+            {/* 3D TWIN-WIRE SPIRAL BINDING WITH ALTERNATING PAGE PARITY (Recto: Left / Verso: Right) */}
+            {showSpiral && (
+                <div 
+                    className={`absolute inset-y-0 ${isEvenPage ? 'right-0' : 'left-0'} w-[52px] pointer-events-none z-30 select-none overflow-visible`}
+                    style={{
+                        transform: isEvenPage ? 'scaleX(-1)' : 'none',
+                    }}
+                >
+                    {/* Perforated tear line / inner margin paper indentation */}
+                    <div className="absolute top-0 bottom-0 left-[38px] w-[1px] border-r border-dashed border-neutral-300/80" />
+                    <div className="absolute top-0 bottom-0 left-0 w-[38px] bg-gradient-to-r from-neutral-900/8 via-neutral-900/3 to-transparent pointer-events-none" />
+
+                    <svg className="w-full h-full overflow-visible" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="spiralWireGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stopColor="#1e293b" />
+                                <stop offset="28%" stopColor="#64748b" />
+                                <stop offset="50%" stopColor="#f8fafc" />
+                                <stop offset="72%" stopColor="#94a3b8" />
+                                <stop offset="100%" stopColor="#0f172a" />
+                            </linearGradient>
+                            <linearGradient id="holeDepthGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stopColor="#020617" stopOpacity="0.88" />
+                                <stop offset="55%" stopColor="#1e293b" stopOpacity="0.95" />
+                                <stop offset="100%" stopColor="#334155" stopOpacity="0.82" />
+                            </linearGradient>
+                            <filter id="spiralWireShadow" x="-25%" y="-25%" width="160%" height="160%">
+                                <feDropShadow dx="1.2" dy="1.8" stdDeviation="1.2" floodColor="#0f172a" floodOpacity="0.4" />
+                            </filter>
+                        </defs>
+
+                        {/* 26 Twin-wire spiral coils matching standard student spiral notebook */}
+                        {Array.from({ length: 26 }).map((_, idx) => {
+                            const y = 30 + idx * 37;
+                            return (
+                                <g key={idx}>
+                                    {/* Paper punch hole (oval/rounded rectangle) */}
+                                    <rect
+                                        x="16"
+                                        y={y - 9}
+                                        width="14"
+                                        height="20"
+                                        rx="4"
+                                        ry="4"
+                                        fill="url(#holeDepthGrad)"
+                                        stroke="#cbd5e1"
+                                        strokeWidth="0.5"
+                                    />
+                                    {/* Punch hole embossed bottom edge highlight */}
+                                    <line
+                                        x1="17"
+                                        y1={y + 11}
+                                        x2="29"
+                                        y2={y + 11}
+                                        stroke="rgba(255, 255, 255, 0.45)"
+                                        strokeWidth="0.7"
+                                    />
+
+                                    {/* Top wire loop of twin-wire coil */}
+                                    <path
+                                        d={`M -4,${y - 5} C 4,${y - 10} 16,${y - 8} 22,${y - 4} C 26,${y - 1} 25,${y + 4} 20,${y + 2}`}
+                                        fill="none"
+                                        stroke="url(#spiralWireGrad)"
+                                        strokeWidth="2.4"
+                                        strokeLinecap="round"
+                                        filter="url(#spiralWireShadow)"
+                                    />
+                                    {/* Bottom wire loop of twin-wire coil */}
+                                    <path
+                                        d={`M -4,${y + 4} C 4,${y - 1} 16,${y + 1} 22,${y + 5} C 26,${y + 8} 25,${y + 13} 20,${y + 11}`}
+                                        fill="none"
+                                        stroke="url(#spiralWireGrad)"
+                                        strokeWidth="2.4"
+                                        strokeLinecap="round"
+                                        filter="url(#spiralWireShadow)"
+                                    />
+                                </g>
+                            );
+                        })}
+                    </svg>
                 </div>
             )}
 

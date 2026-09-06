@@ -59,6 +59,9 @@ const initialState: StateValues = {
     randomTilt: false,
     smartMarginIndexing: true,
     coffeeStain: false,
+    spiralBinding: false,
+    inkBleedThrough: true,
+    inkBleedIntensity: 0.12,
 
     // Per-Page Scoping
     activePageIndex: 0,
@@ -93,6 +96,8 @@ const initialState: StateValues = {
     headerText: '',
     showNotebookHeaderBox: false,
     notebookDate: new Date().toLocaleDateString('en-GB'),
+    notebookBrand: 'YOUVA',
+    notebookDayCircle: true,
 
     // Human Errors & Strikes (Off by default)
     autoTypoRate: 0,
@@ -180,6 +185,9 @@ export const useStore = create<AppState>()(
             setRandomTilt: (randomTilt) => set({ randomTilt }),
             setSmartMarginIndexing: (smartMarginIndexing) => set({ smartMarginIndexing }),
             setCoffeeStain: (coffeeStain) => set({ coffeeStain }),
+            setSpiralBinding: (spiralBinding) => set({ spiralBinding }),
+            setInkBleedThrough: (inkBleedThrough) => set({ inkBleedThrough }),
+            setInkBleedIntensity: (inkBleedIntensity) => set({ inkBleedIntensity }),
 
             // Per-Page Scoping Actions
             setActivePageIndex: (activePageIndex) => set({ activePageIndex }),
@@ -350,6 +358,8 @@ export const useStore = create<AppState>()(
             })),
             setShowNotebookHeaderBox: (showNotebookHeaderBox) => set({ showNotebookHeaderBox }),
             setNotebookDate: (notebookDate) => set({ notebookDate }),
+            setNotebookBrand: (notebookBrand) => set({ notebookBrand }),
+            setNotebookDayCircle: (notebookDayCircle) => set({ notebookDayCircle }),
 
             resetStyles: () => set((state) => ({
                 ...initialState,

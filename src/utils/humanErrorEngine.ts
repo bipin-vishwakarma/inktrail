@@ -79,6 +79,10 @@ export const FONT_WIDTH_RATIOS: Record<string, number> = {
     'Shadows Into Light': 0.50,
     'Kalam': 0.62,
     'Reenie Beanie': 0.46,
+    'Shantell Sans': 0.54,
+    'Delius': 0.52,
+    'Pangolin': 0.54,
+    'Gochi Hand': 0.52,
     // Hyphenated aliases for CSS/Store compatibility
     'cedarville-cursive': 0.65,
     'nothing-you-could-do': 0.58,

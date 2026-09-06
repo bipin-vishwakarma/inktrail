@@ -27,13 +27,15 @@ import type { StrikeStyle } from '../types';
 interface LineData {
     tokens: WordToken[];
     text: string;
-    type: 'text' | 'bullet' | 'number' | 'empty';
+    type: 'text' | 'bullet' | 'number' | 'empty' | 'comparison';
     indent: number;
     dir?: 'ltr' | 'rtl';
     charIndex: number;
     marginIndex?: string;
     startChar: number;
     endChar: number;
+    leftTokens?: WordToken[];
+    rightTokens?: WordToken[];
 }
 
 interface PageData {
@@ -56,12 +58,64 @@ function buildDocumentLines(
     const rawParagraphs = text.split('\n');
     const documentLines: LineData[] = [];
     let globalCharOffset = 0;
+    let inCompareBlock = false;
 
     for (let pIndex = 0; pIndex < rawParagraphs.length; pIndex++) {
         const paragraph = rawParagraphs[pIndex];
         const paraStartOffset = globalCharOffset;
         const paraEndOffset = globalCharOffset + paragraph.length;
         globalCharOffset += paragraph.length + 1; // +1 for newline
+
+        const trimmed = paragraph.trim();
+
+        // 2-Column Comparison Block delimiters
+        if (trimmed.toLowerCase() === '[compare]' || trimmed.toLowerCase() === '[comparison]') {
+            inCompareBlock = true;
+            continue;
+        }
+        if (trimmed.toLowerCase() === '[/compare]' || trimmed.toLowerCase() === '[/comparison]') {
+            inCompareBlock = false;
+            continue;
+        }
+
+        // 2-Column Comparison Row Parsing (|| Col 1 | Col 2 || or within [compare] block)
+        const isInlineCompare = trimmed.startsWith('||') && trimmed.endsWith('||') && trimmed.length > 4;
+        const isBlockCompareLine = inCompareBlock && trimmed.includes('|');
+
+        if (isInlineCompare || isBlockCompareLine) {
+            let cleanLine = trimmed;
+            if (isInlineCompare) {
+                cleanLine = cleanLine.slice(2, -2).trim();
+            }
+            const pipeIdx = cleanLine.indexOf('|');
+            if (pipeIdx !== -1) {
+                const leftStr = cleanLine.slice(0, pipeIdx).trim();
+                const rightStr = cleanLine.slice(pipeIdx + 1).trim();
+
+                const parseTokens = (sideText: string, offsetMultiplier: number) => {
+                    const words = sideText.split(/\s+/).filter(Boolean);
+                    return words.flatMap((w, wIdx) =>
+                        parseWordToken(w, wIdx + offsetMultiplier, 0, pIndex, seed, typoRate, strikeStyle, autoCaret)
+                    );
+                };
+
+                const leftTokens = parseTokens(leftStr, 0);
+                const rightTokens = parseTokens(rightStr, 100);
+
+                documentLines.push({
+                    tokens: [...leftTokens, ...rightTokens],
+                    leftTokens,
+                    rightTokens,
+                    text: `${leftStr} | ${rightStr}`,
+                    type: 'comparison',
+                    indent: 0,
+                    charIndex: paraStartOffset,
+                    startChar: paraStartOffset,
+                    endChar: paraEndOffset,
+                });
+                continue;
+            }
+        }
 
         // Empty line handling
         if (paragraph.trim().length === 0) {
@@ -309,9 +363,26 @@ const FONTS = [
     { name: 'Shadows Into Light', label: 'Shadows Into Light (Quick)' },
     { name: 'Kalam', label: 'Kalam (Marker Pen)' },
     { name: 'Reenie Beanie', label: 'Reenie Beanie (Fine Pen)' },
+
+    // === Indian Student & Academic Hands (Reference PDFs) ===
+    { name: 'Shantell Sans', label: 'Student Notes (Shantell Sans)' },
+    { name: 'Delius', label: 'Indian School Hand (Delius)' },
+    { name: 'Pangolin', label: 'Classroom Notes (Pangolin)' },
+    { name: 'Gochi Hand', label: 'Quick Assignment (Gochi Hand)' },
 ];
 
 const PAPERS = [
+    { 
+        id: 'youva-spiral', 
+        name: 'Indian Student Spiral (Youva / Classmate)', 
+        css: 'bg-white', 
+        lineHeight: 32, 
+        hasRedMargin: true,
+        style: { 
+            backgroundImage: 'linear-gradient(#cbd5e1 1px, transparent 1px)', 
+            backgroundSize: '100% 32px' 
+        } 
+    },
     { 
         id: 'college', 
         name: 'College Ruled (Red Margin)', 
@@ -418,6 +489,11 @@ export default function EditorPage() {
         sensorNoise,
         randomTilt,
         coffeeStain,
+        spiralBinding,
+        inkBleedThrough,
+        inkBleedIntensity,
+        notebookBrand, setNotebookBrand,
+        notebookDayCircle, setNotebookDayCircle,
         activePageIndex,
         setActivePageIndex,
         pageEffectOverrides,
@@ -1100,12 +1176,82 @@ export default function EditorPage() {
                                         >
                                             ^Caret^
                                         </button>
+                                        <div className="h-3 w-px bg-neutral-300 mx-0.5" />
+                                        <button
+                                            type="button"
+                                            onClick={() => insertMarkup('→ ', '', '')}
+                                            title="Student Handwritten Arrow (→)"
+                                            className="px-2 py-0.5 bg-white hover:bg-neutral-100 text-blue-700 rounded-md text-[11px] font-bold transition-all active:scale-95 border border-neutral-200 shadow-2xs cursor-pointer"
+                                        >
+                                            → Arrow
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                if (sourceRef.current) {
+                                                    const template = '\n[compare]\nPixel | Voxel\n• 2D picture element | • 3D volume element\n• Has length & width | • Has length, width & depth\n[/compare]\n';
+                                                    const start = sourceRef.current.selectionStart;
+                                                    const next = draftText.slice(0, start) + template + draftText.slice(start);
+                                                    setDraftText(next);
+                                                } else {
+                                                    setDraftText(prev => prev + '\n[compare]\nPixel | Voxel\n• 2D picture element | • 3D volume element\n[/compare]\n');
+                                                }
+                                            }}
+                                            title="2-Column Student Comparison Table ([compare] Col 1 | Col 2 [/compare])"
+                                            className="px-2 py-0.5 bg-blue-50 hover:bg-blue-100 text-blue-800 rounded-md text-[11px] font-bold transition-all active:scale-95 border border-blue-200/80 shadow-2xs cursor-pointer"
+                                        >
+                                            ⚖️ Compare
+                                        </button>
+                                    </div>
+
+                                    {/* Academic Assignment Quick Chips */}
+                                    <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-[11px] shrink-0 custom-scrollbar">
+                                        <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider shrink-0">
+                                            Chips:
+                                        </span>
+                                        {[
+                                            { label: '→ Arrow', text: '→ ' },
+                                            { label: 'Q1.', text: 'Q1. ' },
+                                            { label: 'Ans:', text: '→ Ans: ' },
+                                            { label: 'Advantages:', text: 'Advantages:\n• ' },
+                                            { label: 'Limitations:', text: 'Limitations:\n• ' },
+                                            { label: 'Applications:', text: 'Applications:\n• ' },
+                                            { label: 'Conclusion:', text: 'Conclusion:\n→ ' },
+                                        ].map((chip, cIdx) => (
+                                            <button
+                                                key={cIdx}
+                                                type="button"
+                                                onClick={() => {
+                                                    if (sourceRef.current) {
+                                                        const start = sourceRef.current.selectionStart;
+                                                        const end = sourceRef.current.selectionEnd;
+                                                        const next = draftText.slice(0, start) + chip.text + draftText.slice(end);
+                                                        setDraftText(next);
+                                                        setTimeout(() => {
+                                                            sourceRef.current?.focus();
+                                                            sourceRef.current?.setSelectionRange(start + chip.text.length, start + chip.text.length);
+                                                        }, 0);
+                                                    } else {
+                                                        setDraftText(prev => prev + '\n' + chip.text);
+                                                    }
+                                                }}
+                                                className="px-2 py-0.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-md text-[10px] font-semibold shrink-0 transition-colors cursor-pointer border border-neutral-200/60"
+                                            >
+                                                {chip.label}
+                                            </button>
+                                        ))}
                                     </div>
 
                                     <textarea
                                         ref={sourceRef}
                                         value={draftText}
-                                        onChange={(e) => setDraftText(e.target.value)}
+                                        onChange={(e) => {
+                                            let val = e.target.value;
+                                            if (val.includes('->')) {
+                                                val = val.replace(/(^|\s)->(\s|$)/g, '$1→$2');
+                                            }
+                                            setDraftText(val);
+                                        }}
                                         placeholder="Start typing your text here...&#10;&#10;It transforms instantly into realistic human handwriting on the right."
                                         className="flex-1 w-full min-h-[220px] p-4 rounded-2xl bg-neutral-50 border border-neutral-200 text-neutral-900 text-sm leading-relaxed focus:bg-white focus:outline-none focus:ring-2 focus:ring-neutral-900/10 transition-all resize-none font-sans overflow-y-auto custom-scrollbar"
                                     />
@@ -1287,15 +1433,39 @@ export default function EditorPage() {
                                         Renders the pre-printed red Classmate/Navneet header box in the top-right corner with DATE and dynamic PAGE NO.
                                     </p>
                                     {showNotebookHeaderBox && (
-                                        <div className="pt-1 flex items-center gap-2">
-                                            <label className="text-[11px] font-bold text-neutral-600 shrink-0">Custom Date:</label>
-                                            <input 
-                                                type="text" 
-                                                value={notebookDate}
-                                                onChange={e => setNotebookDate(e.target.value)}
-                                                placeholder={new Date().toLocaleDateString('en-GB')}
-                                                className="flex-1 px-2.5 py-1 text-xs font-mono font-semibold bg-white border border-neutral-200 rounded-lg outline-none focus:border-neutral-900"
-                                            />
+                                        <div className="pt-2 space-y-2 border-t border-rose-200/60">
+                                            <div className="flex items-center gap-2">
+                                                <label className="text-[11px] font-bold text-neutral-600 shrink-0">Custom Date:</label>
+                                                <input 
+                                                    type="text" 
+                                                    value={notebookDate}
+                                                    onChange={e => setNotebookDate(e.target.value)}
+                                                    placeholder={new Date().toLocaleDateString('en-GB')}
+                                                    className="flex-1 px-2.5 py-1 text-xs font-mono font-semibold bg-white border border-neutral-200 rounded-lg outline-none focus:border-neutral-900"
+                                                />
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <label className="text-[11px] font-bold text-neutral-600 shrink-0">Brand Label:</label>
+                                                <select
+                                                    value={notebookBrand}
+                                                    onChange={e => setNotebookBrand(e.target.value)}
+                                                    className="flex-1 px-2 py-1 text-xs font-bold bg-white border border-neutral-200 rounded-lg outline-none focus:border-neutral-900 cursor-pointer"
+                                                >
+                                                    <option value="YOUVA">YOUVA (Navneet)</option>
+                                                    <option value="CLASSMATE">CLASSMATE</option>
+                                                    <option value="SPELLAR">SPELLAR</option>
+                                                    <option value="SUNDARAM">SUNDARAM</option>
+                                                </select>
+                                            </div>
+                                            <label className="flex items-center justify-between cursor-pointer pt-1">
+                                                <span className="text-[11px] font-bold text-neutral-600">Circle Today's Day (M T W T F S S)</span>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={notebookDayCircle}
+                                                    onChange={e => setNotebookDayCircle(e.target.checked)}
+                                                    className="w-3.5 h-3.5 rounded border-neutral-300 accent-neutral-900 cursor-pointer"
+                                                />
+                                            </label>
                                         </div>
                                     )}
                                 </div>
@@ -1543,6 +1713,14 @@ export default function EditorPage() {
                                                     <div className="absolute top-0 bottom-0 left-[65px] w-[2px] bg-rose-400 opacity-60 pointer-events-none z-10" />
                                                 )}
 
+                                                {/* Double Red Top Header Rule (Classic Indian Student Notebook Style) */}
+                                                {(paper.hasRedMargin || paper.id === 'youva-spiral' || showNotebookHeaderBox) && (
+                                                    <div className="absolute left-0 right-0 top-[52px] pointer-events-none z-10">
+                                                        <div className="w-full h-[1.5px] bg-rose-400 opacity-65" />
+                                                        <div className="w-full h-[1.5px] bg-rose-400 opacity-65 mt-[3px]" />
+                                                    </div>
+                                                )}
+
                                                 {/* Physical Camera & Environment Overlay */}
                                                 <CameraOverlay
                                                     phoneShadow={pageShadow.enabled}
@@ -1558,6 +1736,10 @@ export default function EditorPage() {
                                                     paperCrease={effectiveCrease}
                                                     sensorNoise={effectiveNoise}
                                                     coffeeStain={effectiveCoffeeStain}
+                                                    pageIndex={pIdx}
+                                                    spiralBinding={spiralBinding || paper.id === 'youva-spiral'}
+                                                    inkBleedThrough={inkBleedThrough}
+                                                    inkBleedIntensity={inkBleedIntensity}
                                                 />
 
                                                 {/* Sticky Note */}
@@ -1573,16 +1755,57 @@ export default function EditorPage() {
                                                 {/* Classic Student Notebook Date & Page No. Box */}
                                                 {showNotebookHeaderBox && (
                                                     <div 
-                                                        className="absolute top-4 right-6 z-20 pointer-events-none select-none"
+                                                        className="absolute top-4 right-6 z-20 pointer-events-none select-none text-left"
                                                         style={{
                                                             border: '1.5px solid #f87171',
-                                                            borderRadius: '5px',
-                                                            padding: '4px 10px',
-                                                            backgroundColor: 'rgba(255, 255, 255, 0.75)',
-                                                            boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
+                                                            borderRadius: '6px',
+                                                            padding: '3px 8px',
+                                                            backgroundColor: 'rgba(255, 255, 255, 0.82)',
+                                                            boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+                                                            minWidth: '150px',
                                                         }}
                                                     >
-                                                        <div className="flex items-center justify-between gap-4 border-b border-rose-300/80 pb-0.5 mb-0.5">
+                                                        {/* Brand & Days Tracker Row */}
+                                                        <div className="flex items-center justify-between border-b border-rose-300/70 pb-0.5 mb-1 text-[8px] font-mono">
+                                                            <span className="font-black text-rose-500 tracking-wider">
+                                                                {notebookBrand || 'YOUVA'}
+                                                            </span>
+                                                            <div className="flex items-center gap-1.5 font-bold text-neutral-500">
+                                                                {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, dIdx) => {
+                                                                    const isToday = dIdx === ((new Date().getDay() + 6) % 7);
+                                                                    return (
+                                                                        <span key={dIdx} className="relative inline-flex items-center justify-center w-3 h-3">
+                                                                            <span className={isToday && notebookDayCircle ? 'text-blue-700 font-extrabold' : 'text-neutral-400'}>
+                                                                                {day}
+                                                                            </span>
+                                                                            {isToday && notebookDayCircle && (
+                                                                                <svg 
+                                                                                    className="absolute -inset-0.5 w-4 h-4 pointer-events-none overflow-visible"
+                                                                                    viewBox="0 0 20 20"
+                                                                                >
+                                                                                    <ellipse 
+                                                                                        cx="10" 
+                                                                                        cy="10" 
+                                                                                        rx="8" 
+                                                                                        ry="7.2" 
+                                                                                        fill="none" 
+                                                                                        stroke={color} 
+                                                                                        strokeWidth="1.4" 
+                                                                                        strokeDasharray="42" 
+                                                                                        strokeDashoffset="1"
+                                                                                        transform="rotate(-8 10 10)" 
+                                                                                        opacity="0.9"
+                                                                                    />
+                                                                                </svg>
+                                                                            )}
+                                                                        </span>
+                                                                    );
+                                                                })}
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Page No. Row */}
+                                                        <div className="flex items-center justify-between gap-3 border-b border-rose-300/70 pb-0.5 mb-0.5">
                                                             <span className="text-[9px] font-mono tracking-wider text-rose-500 font-extrabold">
                                                                 PAGE NO.
                                                             </span>
@@ -1597,7 +1820,9 @@ export default function EditorPage() {
                                                                 {String(pIdx + 1).padStart(2, '0')}
                                                             </span>
                                                         </div>
-                                                        <div className="flex items-center justify-between gap-4">
+
+                                                        {/* Date Row */}
+                                                        <div className="flex items-center justify-between gap-3">
                                                             <span className="text-[9px] font-mono tracking-wider text-rose-500 font-extrabold">
                                                                 DATE:
                                                             </span>
@@ -1748,6 +1973,96 @@ export default function EditorPage() {
                                                                     }}
                                                                     className="w-full bg-blue-50/80 border border-dashed border-blue-400 rounded-xs px-1 outline-none text-neutral-900 shadow-inner"
                                                                 />
+                                                             ) : line.type === 'comparison' && line.leftTokens && line.rightTokens ? (
+                                                                <div className="w-full flex items-center h-full relative">
+                                                                    {/* Left Column (50%) */}
+                                                                    <div className="w-1/2 pr-3 overflow-hidden flex items-center whitespace-nowrap">
+                                                                        {line.leftTokens.map((tok, tIdx) => {
+                                                                            const totalPages = pages.length;
+                                                                            const docProgress = totalPages > 0 ? (pIdx + (page.lines.length > 0 ? lIdx / page.lines.length : 0)) / totalPages : 0;
+                                                                            return (
+                                                                                <HandwrittenWord 
+                                                                                    key={`left-${tIdx}`}
+                                                                                    token={tok}
+                                                                                    pageIndex={pIdx}
+                                                                                    lineIndex={lIdx}
+                                                                                    wordIndex={tIdx}
+                                                                                    totalLines={page.lines.length}
+                                                                                    randomSeed={String(randomSeed)}
+                                                                                    fontFamily={font}
+                                                                                    fontSize={fontSize}
+                                                                                    color={color}
+                                                                                    correctionColor={correctionColor}
+                                                                                    jitter={jitter}
+                                                                                    charJitter={charJitter}
+                                                                                    fatigue={fatigue}
+                                                                                    pressure={pressure}
+                                                                                    smudge={smudge}
+                                                                                    lowInkFade={lowInkFade}
+                                                                                    lowInkStart={lowInkStart}
+                                                                                    lowInkIntensity={lowInkIntensity}
+                                                                                    docProgress={docProgress}
+                                                                                    onClick={() => handleWordClick(line.charIndex)}
+                                                                                />
+                                                                            );
+                                                                        })}
+                                                                    </div>
+
+                                                                    {/* Center Pen-Drawn Vertical Divider */}
+                                                                    <div 
+                                                                        className="absolute left-1/2 -top-0.5 bottom-0 -translate-x-1/2 w-[1.5px] pointer-events-none opacity-60"
+                                                                        style={{
+                                                                            backgroundColor: color,
+                                                                            transform: `rotate(${((lIdx % 3) - 1) * 0.2}deg)`,
+                                                                        }}
+                                                                    />
+
+                                                                    {/* Right Column (50%) */}
+                                                                    <div className="w-1/2 pl-3 overflow-hidden flex items-center whitespace-nowrap">
+                                                                        {line.rightTokens.map((tok, tIdx) => {
+                                                                            const totalPages = pages.length;
+                                                                            const docProgress = totalPages > 0 ? (pIdx + (page.lines.length > 0 ? lIdx / page.lines.length : 0)) / totalPages : 0;
+                                                                            return (
+                                                                                <HandwrittenWord 
+                                                                                    key={`right-${tIdx}`}
+                                                                                    token={tok}
+                                                                                    pageIndex={pIdx}
+                                                                                    lineIndex={lIdx}
+                                                                                    wordIndex={tIdx + 100}
+                                                                                    totalLines={page.lines.length}
+                                                                                    randomSeed={String(randomSeed)}
+                                                                                    fontFamily={font}
+                                                                                    fontSize={fontSize}
+                                                                                    color={color}
+                                                                                    correctionColor={correctionColor}
+                                                                                    jitter={jitter}
+                                                                                    charJitter={charJitter}
+                                                                                    fatigue={fatigue}
+                                                                                    pressure={pressure}
+                                                                                    smudge={smudge}
+                                                                                    lowInkFade={lowInkFade}
+                                                                                    lowInkStart={lowInkStart}
+                                                                                    lowInkIntensity={lowInkIntensity}
+                                                                                    docProgress={docProgress}
+                                                                                    onClick={() => handleWordClick(line.charIndex)}
+                                                                                />
+                                                                            );
+                                                                        })}
+                                                                    </div>
+
+                                                                    {/* Subtle edit pencil icon on line hover */}
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            startInlineEdit(pIdx, lIdx, line);
+                                                                        }}
+                                                                        className="opacity-0 group-hover:opacity-60 hover:!opacity-100 transition-opacity ml-2 text-[10px] text-blue-500 align-middle inline-flex items-center cursor-pointer absolute right-0"
+                                                                        title="Edit this line directly on paper"
+                                                                    >
+                                                                        ✏️
+                                                                    </button>
+                                                                </div>
                                                             ) : (
                                                                 <>
                                                                     {line.tokens.map((tok, tIdx) => {
@@ -1928,6 +2243,11 @@ export default function EditorPage() {
                 lowInkIntensity={lowInkIntensity}
                 showNotebookHeaderBox={showNotebookHeaderBox}
                 notebookDate={notebookDate}
+                spiralBinding={spiralBinding || paper.id === 'youva-spiral'}
+                inkBleedThrough={inkBleedThrough}
+                inkBleedIntensity={inkBleedIntensity}
+                notebookBrand={notebookBrand}
+                notebookDayCircle={notebookDayCircle}
                 randomSeed={randomSeed}
                 wordCount={wordCount}
             />

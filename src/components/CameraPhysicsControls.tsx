@@ -18,6 +18,9 @@ export const CameraPhysicsControls: React.FC = () => {
         sensorNoise, setSensorNoise,
         randomTilt, setRandomTilt,
         coffeeStain, setCoffeeStain,
+        spiralBinding, setSpiralBinding,
+        inkBleedThrough, setInkBleedThrough,
+        inkBleedIntensity, setInkBleedIntensity,
         activePageIndex,
         effectScope, setEffectScope,
         pageEffectOverrides, setPageEffectOverride,
@@ -386,6 +389,55 @@ export const CameraPhysicsControls: React.FC = () => {
                         className="w-4 h-4 rounded border-amber-300 text-amber-800 focus:ring-0 cursor-pointer"
                     />
                 </label>
+            </div>
+
+            {/* 5.1. 3D Twin-Wire Spiral Binding Toggle */}
+            <div className="bg-neutral-50 border border-neutral-200/80 p-3 rounded-2xl">
+                <label className="flex items-center justify-between cursor-pointer">
+                    <div>
+                        <span className="text-[11px] font-bold text-neutral-900 block">3D Spiral Binding (Twin-Wire)</span>
+                        <span className="text-[9px] text-neutral-500 block">Metallic silver loops with Left/Right page parity</span>
+                    </div>
+                    <input
+                        type="checkbox"
+                        checked={spiralBinding}
+                        onChange={(e) => setSpiralBinding(e.target.checked)}
+                        className="w-4 h-4 rounded border-neutral-300 text-neutral-900 focus:ring-0 cursor-pointer"
+                    />
+                </label>
+            </div>
+
+            {/* 5.2. Reverse-Page Ink Ghosting (Bleed-Through) */}
+            <div className="bg-neutral-50 border border-neutral-200/80 p-3 rounded-2xl space-y-2">
+                <label className="flex items-center justify-between cursor-pointer">
+                    <div>
+                        <span className="text-[11px] font-bold text-neutral-900 block">Reverse-Page Ink Ghosting</span>
+                        <span className="text-[9px] text-neutral-500 block">Faint mirrored show-through on 65 GSM paper</span>
+                    </div>
+                    <input
+                        type="checkbox"
+                        checked={inkBleedThrough}
+                        onChange={(e) => setInkBleedThrough(e.target.checked)}
+                        className="w-4 h-4 rounded border-neutral-300 text-neutral-900 focus:ring-0 cursor-pointer"
+                    />
+                </label>
+                {inkBleedThrough && (
+                    <div className="pt-1 border-t border-neutral-200/60">
+                        <div className="flex justify-between text-[9px] font-bold text-neutral-400 uppercase tracking-tighter mb-1">
+                            <span>Ghosting Opacity</span>
+                            <span className="text-neutral-900 font-mono">{Math.round(inkBleedIntensity * 100)}%</span>
+                        </div>
+                        <input
+                            type="range"
+                            min="0.04"
+                            max="0.28"
+                            step="0.02"
+                            value={inkBleedIntensity}
+                            onChange={(e) => setInkBleedIntensity(Number(e.target.value))}
+                            className="w-full h-1 bg-black/5 rounded-full appearance-none accent-neutral-900 cursor-pointer"
+                        />
+                    </div>
+                )}
             </div>
 
             {/* 6. Sensor Noise & Vignette */}

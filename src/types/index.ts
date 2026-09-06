@@ -8,7 +8,7 @@ export interface FontPreference {
     url?: string;
 }
 
-export type PaperMaterial = 'white' | 'ruled' | 'graph' | 'dotted' | 'vintage' | 'aged' | 'cream' | 'college' | 'wide' | 'love-letter' | 'birthday' | 'christmas' | 'professional' | 'custom';
+export type PaperMaterial = 'white' | 'ruled' | 'graph' | 'dotted' | 'vintage' | 'aged' | 'cream' | 'college' | 'wide' | 'love-letter' | 'birthday' | 'christmas' | 'professional' | 'youva-spiral' | 'custom';
 export type PaperSize = 'a4' | 'letter' | 'a5' | 'a6' | 'legal' | 'tabloid';
 export type PaperOrientation = 'portrait' | 'landscape';
 
@@ -46,6 +46,9 @@ export interface PageEffectOverrides {
     phoneShadowIntensity?: number;
     phoneShadowAngle?: number;
     sensorNoise?: number;
+    spiralBinding?: boolean;
+    inkBleedThrough?: boolean;
+    inkBleedIntensity?: number;
 }
 
 export interface AppState {
@@ -91,6 +94,9 @@ export interface AppState {
     randomTilt: boolean;
     smartMarginIndexing: boolean;
     coffeeStain: boolean;
+    spiralBinding: boolean;
+    inkBleedThrough: boolean;
+    inkBleedIntensity: number;
 
     // Per-Page Scoping & Overrides
     activePageIndex: number;
@@ -122,6 +128,8 @@ export interface AppState {
     headerText: string;
     showNotebookHeaderBox: boolean;
     notebookDate: string;
+    notebookBrand: string;
+    notebookDayCircle: boolean;
 
     // Human Errors, Strikes & Ink Drying
     autoTypoRate: number;
@@ -221,6 +229,11 @@ export interface AppState {
     setPageOptions: (options: { showPageNumbers?: boolean; showHeader?: boolean; headerText?: string }) => void;
     setShowNotebookHeaderBox: (enabled: boolean) => void;
     setNotebookDate: (date: string) => void;
+    setNotebookBrand: (brand: string) => void;
+    setNotebookDayCircle: (enabled: boolean) => void;
+    setSpiralBinding: (enabled: boolean) => void;
+    setInkBleedThrough: (enabled: boolean) => void;
+    setInkBleedIntensity: (intensity: number) => void;
     
     applyPreset: (settings: Partial<AppState>) => void;
     addToHistory: (item: HistoryItem) => void;

@@ -50,15 +50,30 @@ Authentic felt marker simulation designed to highlight keywords, dates, and defi
 
 ---
 
-### 📅 2. Classic Student "Date & Page No." Notebook Box
-- **Iconic Notebook Header**: Authentic red/rose printed box in the top-right corner of ruled paper, matching classic **Classmate & Navneet** student notebooks.
-- **Dynamic Page Numbers**: Automatically numbers each page (`PAGE NO: 01`, `02`, `03`...) using the chosen handwriting style and pen ink.
-- **Custom Date**: Set any custom date or auto-default to today's date directly in the **Paper** tab.
+### 📅 2. Authentic Student Notebook Header Box & Double Top Rule
+- **Iconic Indian Notebook Header**: Multi-compartment coral/rose printed box in the top-right corner, matching authentic **Youva (Navneet), Classmate, Spellar & Sundaram** student notebooks.
+- **Day of Week Tracker**: Includes `M T W T F S S` day initials with an organic hand-drawn blue ballpoint circle around the active day.
+- **Dynamic Page Numbers & Date**: Automatically numbers each page (`PAGE NO: 01`, `02`, `03`...) using the chosen handwriting style and pen ink, with customizable date.
+- **Double Red Top Header Rule**: Authentic dual red lines across the top header margin.
 - **Full Fidelity Export**: Rendered on the live drafting desk and preserved pixel-for-pixel inside exported PDFs and Ultra-HD ZIP images.
 
 ---
 
-### ✍️ 3. Heading Double-Underlines & Formula Result Boxes
+### 🌀 3. 3D Twin-Wire Spiral Binding & Reverse-Page Ink Ghosting
+- **3D Twin-Wire Metallic Coils**: Procedural silver dual coils with realistic depth, specular highlights, dark shadow casting, and punched holes.
+- **Recto / Verso Parity**: Automatically mirrors spiral binding orientation across pages (odd pages bound on left margin, flipped even pages bound on right margin).
+- **Reverse-Page Ink Ghosting**: Simulates genuine 65 GSM Indian notebook paper where faint, blurred handwriting from the reverse side shines through with `mix-blend-mode: multiply` and customizable opacity (4%–28%).
+
+---
+
+### ⚖️ 4. 2-Column Comparison & Differentiation Tables
+- **Comparison Syntax**: Format side-by-side differentiations using `|| Advantage | Disadvantage ||` or `[compare]` blocks.
+- **Hand-Drawn Divider**: Automatically draws an organic, pen-colored vertical divider line down the center of the ruled lines with natural micro-wobble.
+- **Academic Formatting Toolbar**: 1-click heading chips for `[Q1.]`, `[Ans:]`, `[Advantages:]`, `[Limitations:]`, `[Applications:]`, and `[Conclusion:]`, plus automatic typing conversion of `->` to `→`.
+
+---
+
+### ✍️ 5. Heading Double-Underlines & Formula Result Boxes
 - **Heading Double Underline (`__Title__`)**: Draws two organic, dual-stroke pen underlines under headings with natural wrist curve and micro-tilt.
 - **Hand-Drawn Formula Box (`[[Result]]`)**: Wraps final answers, math formulas, or key definitions inside a wobbly, hand-drawn rectangular sketch box.
 
@@ -139,11 +154,12 @@ Real paper rarely stays completely flat. Choose from 9 authentic physical paper 
 
 ---
 
-### 🗂️ 10. 20+ Curated Authentic Handwriting Fonts
-Loaded locally for instant, offline, zero-latency rendering:
+### 🗂️ 10. 25+ Curated Authentic Handwriting Fonts
+Loaded locally & via Google Fonts for instant, zero-latency rendering:
+- **Indian Student Handwritings**: `Shantell Sans`, `Delius`, `Pangolin`, `Gochi Hand`, `Kalam`.
 - **Organic Student Handwritings**: `David Reid`, `Garrett Moretz`, `Herbert Cooper`, `John Williams`, `Kevin Knowles`, `Royston Such`.
 - **Classic Styles**: `Handwriting 1` through `Handwriting 14` (Clean Pen, Casual Slant, Neat Ballpoint, Fluid Cursive, Fast Flow, Loose Homework, Fine Nib, Quick Notes, etc.).
-- **Casual Everyday Fonts**: `Cedarville Cursive`, `Homemade Apple`, `Indie Flower`, `Patrick Hand`, `Shadows Into Light`, `Kalam`, `Reenie Beanie`.
+- **Casual Everyday Fonts**: `Cedarville Cursive`, `Homemade Apple`, `Indie Flower`, `Patrick Hand`, `Shadows Into Light`, `Reenie Beanie`.
 - **Full Devnagari Support**: Hindi handwriting font included.
 
 ---
@@ -168,6 +184,8 @@ Loaded locally for instant, offline, zero-latency rendering:
 | **Blue Highlighter** | `==blue:text==` | `==blue:1831==` | Cyan blue chisel marker |
 | **Double Underline** | `__text__` | `__Electromagnetic Induction__` | Organic dual-line heading underline |
 | **Formula / Answer Box** | `[[text]]` | `[[e = -dΦ/dt]]` | Hand-drawn wobbly answer box |
+| **2-Column Comparison** | `\|\| Left \| Right \|\|` | `\|\| RAM \| ROM \|\|` | Side-by-side columns with hand-drawn pen divider |
+| **Arrow Symbol** | `->` | `Input -> Output` | Automatically transforms to `→` on typing |
 | **Scratch-Out / Strike** | `~~text~~` | `~~incorrect~~` | Natural pen scratch-out over word |
 | **Strike with Caret** | `~~word~~^fix` | `~~proeprties~~^properties` | Scratches out word and puts fix above |
 | **Standalone Caret** | `^word^` or `^word` | `looked ^at the car` | Caret mark pointing up at inserted word |

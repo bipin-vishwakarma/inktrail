@@ -11,11 +11,13 @@ import type { LightingMode, PaperCrease, PageEffectOverrides, CorrectionColor } 
 interface DocumentLine {
     tokens: any[];
     text: string;
-    type: 'text' | 'bullet' | 'number' | 'empty' | string;
+    type: 'text' | 'bullet' | 'number' | 'empty' | 'comparison' | string;
     indent: number;
     charIndex: number;
     dir?: 'ltr' | 'rtl';
     marginIndex?: string;
+    leftTokens?: any[];
+    rightTokens?: any[];
 }
 
 interface DocumentPage {
@@ -86,6 +88,11 @@ interface ExportModalProps {
     lowInkIntensity?: number;
     showNotebookHeaderBox?: boolean;
     notebookDate?: string;
+    spiralBinding?: boolean;
+    inkBleedThrough?: boolean;
+    inkBleedIntensity?: number;
+    notebookBrand?: string;
+    notebookDayCircle?: boolean;
     randomSeed?: number;
     wordCount?: number;
 }
@@ -142,6 +149,11 @@ export default function ExportModal({
     stickyNoteText = '',
     showNotebookHeaderBox = false,
     notebookDate = '',
+    spiralBinding = false,
+    inkBleedThrough = true,
+    inkBleedIntensity = 0.12,
+    notebookBrand = 'YOUVA',
+    notebookDayCircle = true,
     randomSeed = 0,
     wordCount = 0,
 }: ExportModalProps) {
@@ -317,6 +329,14 @@ export default function ExportModal({
                                                     <div className="absolute top-0 bottom-0 left-[65px] w-[2px] bg-rose-400 opacity-60 pointer-events-none z-10" />
                                                 )}
 
+                                                {/* Double Red Top Header Rule (Classic Indian Student Notebook Style) */}
+                                                {(paper.hasRedMargin || paper.id === 'youva-spiral' || showNotebookHeaderBox) && (
+                                                    <div className="absolute left-0 right-0 top-[52px] pointer-events-none z-10">
+                                                        <div className="w-full h-[1.5px] bg-rose-400 opacity-65" />
+                                                        <div className="w-full h-[1.5px] bg-rose-400 opacity-65 mt-[3px]" />
+                                                    </div>
+                                                )}
+
                                                 {/* Physical Camera & Environment Overlay */}
                                                 <CameraOverlay
                                                     phoneShadow={pageShadow.enabled}
@@ -332,6 +352,10 @@ export default function ExportModal({
                                                     paperCrease={effectiveCrease}
                                                     sensorNoise={effectiveNoise}
                                                     coffeeStain={effectiveCoffeeStain}
+                                                    pageIndex={pIdx}
+                                                    spiralBinding={spiralBinding || paper.id === 'youva-spiral'}
+                                                    inkBleedThrough={inkBleedThrough}
+                                                    inkBleedIntensity={inkBleedIntensity}
                                                 />
 
                                                 {/* Sticky Note */}
@@ -347,16 +371,57 @@ export default function ExportModal({
                                                 {/* Classic Student Notebook Date & Page No. Box */}
                                                 {showNotebookHeaderBox && (
                                                     <div 
-                                                        className="absolute top-4 right-6 z-20 pointer-events-none select-none"
+                                                        className="absolute top-4 right-6 z-20 pointer-events-none select-none text-left"
                                                         style={{
                                                             border: '1.5px solid #f87171',
-                                                            borderRadius: '5px',
-                                                            padding: '4px 10px',
-                                                            backgroundColor: 'rgba(255, 255, 255, 0.75)',
-                                                            boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
+                                                            borderRadius: '6px',
+                                                            padding: '3px 8px',
+                                                            backgroundColor: 'rgba(255, 255, 255, 0.82)',
+                                                            boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+                                                            minWidth: '150px',
                                                         }}
                                                     >
-                                                        <div className="flex items-center justify-between gap-4 border-b border-rose-300/80 pb-0.5 mb-0.5">
+                                                        {/* Brand & Days Tracker Row */}
+                                                        <div className="flex items-center justify-between border-b border-rose-300/70 pb-0.5 mb-1 text-[8px] font-mono">
+                                                            <span className="font-black text-rose-500 tracking-wider">
+                                                                {notebookBrand || 'YOUVA'}
+                                                            </span>
+                                                            <div className="flex items-center gap-1.5 font-bold text-neutral-500">
+                                                                {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, dIdx) => {
+                                                                    const isToday = dIdx === ((new Date().getDay() + 6) % 7);
+                                                                    return (
+                                                                        <span key={dIdx} className="relative inline-flex items-center justify-center w-3 h-3">
+                                                                            <span className={isToday && notebookDayCircle ? 'text-blue-700 font-extrabold' : 'text-neutral-400'}>
+                                                                                {day}
+                                                                            </span>
+                                                                            {isToday && notebookDayCircle && (
+                                                                                <svg 
+                                                                                    className="absolute -inset-0.5 w-4 h-4 pointer-events-none overflow-visible"
+                                                                                    viewBox="0 0 20 20"
+                                                                                >
+                                                                                    <ellipse 
+                                                                                        cx="10" 
+                                                                                        cy="10" 
+                                                                                        rx="8" 
+                                                                                        ry="7.2" 
+                                                                                        fill="none" 
+                                                                                        stroke={color} 
+                                                                                        strokeWidth="1.4" 
+                                                                                        strokeDasharray="42" 
+                                                                                        strokeDashoffset="1"
+                                                                                        transform="rotate(-8 10 10)" 
+                                                                                        opacity="0.9"
+                                                                                    />
+                                                                                </svg>
+                                                                            )}
+                                                                        </span>
+                                                                    );
+                                                                })}
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Page No. Row */}
+                                                        <div className="flex items-center justify-between gap-3 border-b border-rose-300/70 pb-0.5 mb-0.5">
                                                             <span className="text-[9px] font-mono tracking-wider text-rose-500 font-extrabold">
                                                                 PAGE NO.
                                                             </span>
@@ -371,7 +436,9 @@ export default function ExportModal({
                                                                 {String(pIdx + 1).padStart(2, '0')}
                                                             </span>
                                                         </div>
-                                                        <div className="flex items-center justify-between gap-4">
+
+                                                        {/* Date Row */}
+                                                        <div className="flex items-center justify-between gap-3">
                                                             <span className="text-[9px] font-mono tracking-wider text-rose-500 font-extrabold">
                                                                 DATE:
                                                             </span>
@@ -453,34 +520,111 @@ export default function ExportModal({
                                                                     {line.marginIndex}
                                                                 </span>
                                                             )}
-                                                            {line.tokens.map((tok, tIdx) => {
-                                                                const totalPages = pages.length;
-                                                                const docProgress = totalPages > 0 ? (pIdx + (page.lines.length > 0 ? lIdx / page.lines.length : 0)) / totalPages : 0;
-                                                                return (
-                                                                    <HandwrittenWord 
-                                                                        key={tIdx}
-                                                                        token={tok}
-                                                                        pageIndex={pIdx}
-                                                                        lineIndex={lIdx}
-                                                                        wordIndex={tIdx}
-                                                                        totalLines={page.lines.length}
-                                                                        randomSeed={String(randomSeed)}
-                                                                        fontFamily={font}
-                                                                        fontSize={fontSize}
-                                                                        color={color}
-                                                                        correctionColor={correctionColor}
-                                                                        jitter={jitter}
-                                                                        charJitter={charJitter}
-                                                                        fatigue={fatigue}
-                                                                        pressure={pressure}
-                                                                        smudge={smudge}
-                                                                        lowInkFade={lowInkFade}
-                                                                        lowInkStart={lowInkStart}
-                                                                        lowInkIntensity={lowInkIntensity}
-                                                                        docProgress={docProgress}
+                                                            {line.type === 'comparison' && line.leftTokens && line.rightTokens ? (
+                                                                <div className="w-full flex items-center h-full relative">
+                                                                    {/* Left Column (50%) */}
+                                                                    <div className="w-1/2 pr-3 overflow-hidden flex items-center whitespace-nowrap">
+                                                                        {line.leftTokens.map((tok, tIdx) => {
+                                                                            const totalPages = pages.length;
+                                                                            const docProgress = totalPages > 0 ? (pIdx + (page.lines.length > 0 ? lIdx / page.lines.length : 0)) / totalPages : 0;
+                                                                            return (
+                                                                                <HandwrittenWord 
+                                                                                    key={`left-${tIdx}`}
+                                                                                    token={tok}
+                                                                                    pageIndex={pIdx}
+                                                                                    lineIndex={lIdx}
+                                                                                    wordIndex={tIdx}
+                                                                                    totalLines={page.lines.length}
+                                                                                    randomSeed={String(randomSeed)}
+                                                                                    fontFamily={font}
+                                                                                    fontSize={fontSize}
+                                                                                    color={color}
+                                                                                    correctionColor={correctionColor}
+                                                                                    jitter={jitter}
+                                                                                    charJitter={charJitter}
+                                                                                    fatigue={fatigue}
+                                                                                    pressure={pressure}
+                                                                                    smudge={smudge}
+                                                                                    lowInkFade={lowInkFade}
+                                                                                    lowInkStart={lowInkStart}
+                                                                                    lowInkIntensity={lowInkIntensity}
+                                                                                    docProgress={docProgress}
+                                                                                />
+                                                                            );
+                                                                        })}
+                                                                    </div>
+
+                                                                    {/* Center Pen-Drawn Vertical Divider */}
+                                                                    <div 
+                                                                        className="absolute left-1/2 -top-0.5 bottom-0 -translate-x-1/2 w-[1.5px] pointer-events-none opacity-60"
+                                                                        style={{
+                                                                            backgroundColor: color,
+                                                                            transform: `rotate(${((lIdx % 3) - 1) * 0.2}deg)`,
+                                                                        }}
                                                                     />
-                                                                );
-                                                            })}
+
+                                                                    {/* Right Column (50%) */}
+                                                                    <div className="w-1/2 pl-3 overflow-hidden flex items-center whitespace-nowrap">
+                                                                        {line.rightTokens.map((tok, tIdx) => {
+                                                                            const totalPages = pages.length;
+                                                                            const docProgress = totalPages > 0 ? (pIdx + (page.lines.length > 0 ? lIdx / page.lines.length : 0)) / totalPages : 0;
+                                                                            return (
+                                                                                <HandwrittenWord 
+                                                                                    key={`right-${tIdx}`}
+                                                                                    token={tok}
+                                                                                    pageIndex={pIdx}
+                                                                                    lineIndex={lIdx}
+                                                                                    wordIndex={tIdx + 100}
+                                                                                    totalLines={page.lines.length}
+                                                                                    randomSeed={String(randomSeed)}
+                                                                                    fontFamily={font}
+                                                                                    fontSize={fontSize}
+                                                                                    color={color}
+                                                                                    correctionColor={correctionColor}
+                                                                                    jitter={jitter}
+                                                                                    charJitter={charJitter}
+                                                                                    fatigue={fatigue}
+                                                                                    pressure={pressure}
+                                                                                    smudge={smudge}
+                                                                                    lowInkFade={lowInkFade}
+                                                                                    lowInkStart={lowInkStart}
+                                                                                    lowInkIntensity={lowInkIntensity}
+                                                                                    docProgress={docProgress}
+                                                                                />
+                                                                            );
+                                                                        })}
+                                                                    </div>
+                                                                </div>
+                                                            ) : (
+                                                                line.tokens.map((tok, tIdx) => {
+                                                                    const totalPages = pages.length;
+                                                                    const docProgress = totalPages > 0 ? (pIdx + (page.lines.length > 0 ? lIdx / page.lines.length : 0)) / totalPages : 0;
+                                                                    return (
+                                                                        <HandwrittenWord 
+                                                                            key={tIdx}
+                                                                            token={tok}
+                                                                            pageIndex={pIdx}
+                                                                            lineIndex={lIdx}
+                                                                            wordIndex={tIdx}
+                                                                            totalLines={page.lines.length}
+                                                                            randomSeed={String(randomSeed)}
+                                                                            fontFamily={font}
+                                                                            fontSize={fontSize}
+                                                                            color={color}
+                                                                            correctionColor={correctionColor}
+                                                                            jitter={jitter}
+                                                                            charJitter={charJitter}
+                                                                            fatigue={fatigue}
+                                                                            pressure={pressure}
+                                                                            smudge={smudge}
+                                                                            lowInkFade={lowInkFade}
+                                                                            lowInkStart={lowInkStart}
+                                                                            lowInkIntensity={lowInkIntensity}
+                                                                            docProgress={docProgress}
+                                                                        />
+                                                                    );
+                                                                })
+                                                            )}
                                                         </div>
                                                     ))}
                                                 </div>
