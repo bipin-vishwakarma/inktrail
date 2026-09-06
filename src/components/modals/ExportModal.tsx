@@ -334,11 +334,24 @@ export default function ExportModal({
                                             >
                                             <div className={`w-full h-full relative ${paper.css}`} style={paper.style}>
                                                 
-                                                {/* Red Margin Line */}
+                                                {/* Clean Top Margin Header Zone Mask (Clears any background ruled lines above double red rule) */}
+                                                {(paper.hasRedMargin || paper.id === 'youva-spiral' || showNotebookHeaderBox) && (
+                                                    <div 
+                                                        className="absolute top-0 left-0 right-0 h-[72px] pointer-events-none z-[5]"
+                                                        style={{
+                                                            backgroundColor: paper.style.backgroundColor || (paper.id === 'vintage' ? '#fef3c7' : '#ffffff'),
+                                                        }}
+                                                    />
+                                                )}
+
+                                                {/* Red Margin Line (Starts at double red top header rule) */}
                                                 {paper.hasRedMargin && (
                                                     <div 
-                                                        className="absolute top-0 bottom-0 w-[2px] bg-rose-400 opacity-60 pointer-events-none z-10 transition-all" 
-                                                        style={{ left: `${redMarginLeft}px` }}
+                                                        className="absolute bottom-0 w-[2px] bg-rose-400 opacity-60 pointer-events-none z-10 transition-all" 
+                                                        style={{ 
+                                                            top: (paper.hasRedMargin || paper.id === 'youva-spiral' || showNotebookHeaderBox) ? '72px' : '0px',
+                                                            left: `${redMarginLeft}px` 
+                                                        }}
                                                     />
                                                 )}
 
@@ -387,18 +400,18 @@ export default function ExportModal({
                                                         className="absolute top-[12px] z-20 pointer-events-none select-none text-left"
                                                         style={{
                                                             right: (isSpiralActive && isVerso) ? '64px' : '24px',
-                                                            width: '162px',
+                                                            width: '168px',
                                                             height: '52px',
                                                             border: '1.2px solid rgba(244, 63, 94, 0.55)',
                                                             borderRadius: '4px',
-                                                            backgroundColor: 'rgba(255, 255, 255, 0.76)',
+                                                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
                                                             boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
                                                             display: 'flex',
                                                             overflow: 'hidden',
                                                         }}
                                                     >
                                                         {/* Left Section: 3 Rows (Days Tracker, Page No, Date) */}
-                                                        <div className="flex-1 flex flex-col justify-between" style={{ width: '112px' }}>
+                                                        <div className="flex-1 flex flex-col justify-between" style={{ width: '110px' }}>
                                                             {/* Row 1: M T W T F S S Day Tracker */}
                                                             <div className="h-[17px] border-b border-rose-400/45 flex items-center justify-around px-1 text-[7.5px] font-mono font-bold text-rose-500/80 select-none">
                                                                 {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, dIdx) => {
@@ -470,47 +483,54 @@ export default function ExportModal({
 
                                                         {/* Right Section: Brand Badge Compartment */}
                                                         <div 
-                                                            className="w-[50px] border-l border-rose-400/45 flex flex-col items-center justify-center p-0.5 select-none bg-rose-50/20"
+                                                            className="w-[58px] border-l border-rose-400/45 flex flex-col items-center justify-center p-1 select-none bg-rose-50/25 overflow-hidden text-center"
                                                         >
                                                             {(!notebookBrand || notebookBrand === 'YOUVA') && (
-                                                                <>
-                                                                    <span className="text-[10px] font-black tracking-wider text-rose-600/85 leading-none">
+                                                                <div className="flex flex-col items-center justify-center w-full select-none">
+                                                                    <span className="text-[10px] font-black tracking-wider text-rose-600/90 leading-none">
                                                                         YOUVA
                                                                     </span>
-                                                                    <span className="text-[6.5px] font-bold tracking-widest text-rose-400/85 mt-0.5 uppercase">
+                                                                    <span className="text-[6px] font-extrabold tracking-widest text-rose-400/80 mt-0.5 uppercase">
                                                                         SPELLAR
                                                                     </span>
-                                                                </>
+                                                                </div>
                                                             )}
                                                             {notebookBrand === 'CLASSMATE' && (
-                                                                <>
-                                                                    <span className="text-[9.5px] font-black tracking-tight text-rose-600/85 italic leading-none">
+                                                                <div className="flex flex-col items-center justify-center w-full select-none">
+                                                                    <span className="text-[10px] font-black tracking-tight text-rose-600/90 italic leading-none font-serif">
                                                                         classmate
                                                                     </span>
-                                                                    <span className="text-[5.5px] font-bold tracking-widest text-rose-400/70 mt-0.5 uppercase scale-90">
-                                                                        by ITC
+                                                                    <span className="text-[5px] font-bold tracking-[0.2em] text-rose-400/75 mt-0.5 uppercase">
+                                                                        BY ITC
                                                                     </span>
-                                                                </>
+                                                                </div>
                                                             )}
                                                             {notebookBrand === 'SPELLAR' && (
-                                                                <>
-                                                                    <span className="text-[9.5px] font-black tracking-wider text-rose-600/85 leading-none">
+                                                                <div className="flex flex-col items-center justify-center w-full select-none">
+                                                                    <span className="text-[9px] font-black tracking-wider text-rose-600/90 leading-none">
                                                                         SPELLAR
                                                                     </span>
-                                                                    <span className="text-[6px] font-bold tracking-widest text-rose-400/75 mt-0.5 uppercase">
+                                                                    <span className="text-[5.5px] font-bold tracking-[0.16em] text-rose-400/75 mt-0.5 uppercase">
                                                                         NAVNEET
                                                                     </span>
-                                                                </>
+                                                                </div>
                                                             )}
                                                             {notebookBrand === 'SUNDARAM' && (
-                                                                <>
-                                                                    <span className="text-[9px] font-black tracking-wider text-rose-600/85 leading-none">
-                                                                        SUNDARAM
-                                                                    </span>
-                                                                    <span className="text-[6px] font-bold tracking-widest text-rose-400/70 mt-0.5 uppercase">
+                                                                <div className="flex flex-col items-center justify-center w-full px-0.5 select-none">
+                                                                    {/* Authentic Sundaram Seal Emblem */}
+                                                                    <div className="flex items-center justify-center gap-1 mb-0.5">
+                                                                        <svg className="w-3.5 h-3.5 text-rose-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                                                            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.8" fill="rgba(244, 63, 94, 0.08)" />
+                                                                            <path d="M15 9.5c-.8-.8-2-1.2-3-1.2-1.7 0-3 1-3 2.5 0 2.8 6 1.8 6 4.5 0 1.5-1.3 2.7-3 2.7-1.4 0-2.6-.6-3.2-1.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                                                                        </svg>
+                                                                        <span className="text-[7.5px] font-black tracking-normal text-rose-600/90 leading-none">
+                                                                            Sundaram
+                                                                        </span>
+                                                                    </div>
+                                                                    <span className="text-[5px] font-bold tracking-[0.18em] text-rose-400/80 uppercase scale-95">
                                                                         CLASSIC
                                                                     </span>
-                                                                </>
+                                                                </div>
                                                             )}
                                                         </div>
                                                     </div>
