@@ -208,30 +208,6 @@ const HandwrittenWordComponent: React.FC<HandwrittenWordProps> = ({
                 verticalAlign: 'baseline',
             }}
         >
-            {/* Chisel-Tip Translucent Highlighter Streak */}
-            {token.isHighlighted && (
-                <span
-                    className="absolute pointer-events-none"
-                    style={{
-                        left: '-3px',
-                        right: '-3px',
-                        top: '10%',
-                        bottom: '4%',
-                        backgroundColor:
-                            token.highlightColor === 'green'
-                                ? 'rgba(134, 239, 172, 0.68)'
-                                : token.highlightColor === 'pink'
-                                ? 'rgba(249, 168, 212, 0.68)'
-                                : token.highlightColor === 'blue'
-                                ? 'rgba(147, 197, 253, 0.68)'
-                                : 'rgba(253, 224, 71, 0.72)',
-                        borderRadius: '2px 4px 3px 2px',
-                        mixBlendMode: 'multiply',
-                        transform: `skewX(-2.5deg) rotate(${((rng() - 0.5) * 0.8).toFixed(2)}deg)`,
-                        zIndex: 0,
-                    }}
-                />
-            )}
             {/* Unified Word Cursive Rendering with OpenType Connecting Ligatures & Human Realism */}
             {(isCursiveConnectingFont(fontFamily) || charJitter <= 0.8) ? (
                 <span 

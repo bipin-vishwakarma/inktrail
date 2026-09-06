@@ -828,8 +828,9 @@ export default function EditorPage() {
         return () => window.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    // Close focus editor on Escape key
+    // Close focus editor on Escape key & dismiss floating toolbar on mode switch
     useEffect(() => {
+        setFloatingToolbar(prev => ({ ...prev, isOpen: false }));
         if (!isEditorExpanded) return;
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
@@ -1529,7 +1530,7 @@ export default function EditorPage() {
                                                 setDraftText(val);
                                                 updateCursorPos(e);
                                             }}
-                                            placeholder="Start typing your text here...&#10;&#10;Supports markdown bullets, Q1/Ans formatting, ==highlighters==, [[boxes]], and [compare] tables!"
+                                            placeholder="Start typing your text here...&#10;&#10;Supports markdown bullets, Q1/Ans formatting, [[boxes]], and [compare] tables!"
                                             className={`flex-1 w-full p-4 bg-transparent border-0 text-neutral-900 ${
                                                 editorFontSize === 'sm' ? 'text-xs' : editorFontSize === 'lg' ? 'text-base' : 'text-sm'
                                             } leading-relaxed focus:outline-none transition-all resize-none font-sans overflow-y-auto custom-scrollbar pr-3`}
@@ -2849,48 +2850,7 @@ export default function EditorPage() {
                                 </button>
                             </div>
 
-                            {/* Group 4: Highlighters */}
-                            <div className="flex items-center gap-1.5 shrink-0 pr-2 border-r border-neutral-200">
-                                <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider mr-1">Highlight:</span>
-                                <button
-                                    type="button"
-                                    onClick={() => applyFormatToSelection('==', '==')}
-                                    title="Yellow Chisel Highlighter (==text==)"
-                                    className="px-2 py-1 bg-yellow-200 hover:bg-yellow-300 text-yellow-950 rounded-md text-xs font-bold shadow-2xs active:scale-95 cursor-pointer flex items-center gap-1"
-                                >
-                                    <span className="w-2.5 h-2.5 rounded-full bg-yellow-400 border border-yellow-500/50" />
-                                    <span>Yellow</span>
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => applyFormatToSelection('==green:', '==')}
-                                    title="Green Chisel Highlighter (==green:text==)"
-                                    className="px-2 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-950 rounded-md text-xs font-bold shadow-2xs active:scale-95 cursor-pointer flex items-center gap-1"
-                                >
-                                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 border border-emerald-500/50" />
-                                    <span>Green</span>
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => applyFormatToSelection('==pink:', '==')}
-                                    title="Pink Chisel Highlighter (==pink:text==)"
-                                    className="px-2 py-1 bg-rose-100 hover:bg-rose-200 text-rose-950 rounded-md text-xs font-bold shadow-2xs active:scale-95 cursor-pointer flex items-center gap-1"
-                                >
-                                    <span className="w-2.5 h-2.5 rounded-full bg-rose-400 border border-rose-500/50" />
-                                    <span>Pink</span>
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => applyFormatToSelection('==blue:', '==')}
-                                    title="Blue Chisel Highlighter (==blue:text==)"
-                                    className="px-2 py-1 bg-sky-100 hover:bg-sky-200 text-sky-950 rounded-md text-xs font-bold shadow-2xs active:scale-95 cursor-pointer flex items-center gap-1"
-                                >
-                                    <span className="w-2.5 h-2.5 rounded-full bg-sky-400 border border-sky-500/50" />
-                                    <span>Blue</span>
-                                </button>
-                            </div>
-
-                            {/* Group 5: Inserts */}
+                            {/* Group 4: Inserts */}
                             <div className="flex items-center gap-1 shrink-0">
                                 <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider mr-1">Insert:</span>
                                 <button
@@ -3011,46 +2971,6 @@ export default function EditorPage() {
                         top: `${floatingToolbar.y}px`,
                     }}
                 >
-                    {/* Highlighter color swatches */}
-                    <div className="flex items-center gap-1 pr-2 border-r border-white/20">
-                        <button
-                            type="button"
-                            onMouseDown={(e) => e.preventDefault()}
-                            onClick={() => applyFormatToSelection('==', '==')}
-                            title="Yellow Highlighter (==text==)"
-                            className="w-5 h-5 rounded-full bg-yellow-400 hover:scale-120 active:scale-95 transition-transform shadow-xs cursor-pointer flex items-center justify-center text-neutral-950 text-[10px] font-bold"
-                        >
-                            Y
-                        </button>
-                        <button
-                            type="button"
-                            onMouseDown={(e) => e.preventDefault()}
-                            onClick={() => applyFormatToSelection('==green:', '==')}
-                            title="Green Highlighter (==green:text==)"
-                            className="w-5 h-5 rounded-full bg-emerald-400 hover:scale-120 active:scale-95 transition-transform shadow-xs cursor-pointer flex items-center justify-center text-neutral-950 text-[10px] font-bold"
-                        >
-                            G
-                        </button>
-                        <button
-                            type="button"
-                            onMouseDown={(e) => e.preventDefault()}
-                            onClick={() => applyFormatToSelection('==pink:', '==')}
-                            title="Pink Highlighter (==pink:text==)"
-                            className="w-5 h-5 rounded-full bg-pink-400 hover:scale-120 active:scale-95 transition-transform shadow-xs cursor-pointer flex items-center justify-center text-neutral-950 text-[10px] font-bold"
-                        >
-                            P
-                        </button>
-                        <button
-                            type="button"
-                            onMouseDown={(e) => e.preventDefault()}
-                            onClick={() => applyFormatToSelection('==blue:', '==')}
-                            title="Blue Highlighter (==blue:text==)"
-                            className="w-5 h-5 rounded-full bg-sky-400 hover:scale-120 active:scale-95 transition-transform shadow-xs cursor-pointer flex items-center justify-center text-neutral-950 text-[10px] font-bold"
-                        >
-                            B
-                        </button>
-                    </div>
-
                     {/* Word formatting options */}
                     <button
                         type="button"

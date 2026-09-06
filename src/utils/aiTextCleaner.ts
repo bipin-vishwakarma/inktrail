@@ -166,9 +166,10 @@ export function cleanAIText(raw: string): string {
         }
 
         // Clean inline asterisks: **important** -> important
-        // We preserve ==highlight==, [[box]], and __underline__ tags
         line = line.replace(/\*\*([^*]+)\*\*/g, '$1');
         line = line.replace(/\*([^*\s][^*]*[^*\s])\*/g, '$1');
+        // Clean any ==highlight== syntax
+        line = line.replace(/==(?:yellow:|green:|pink:|blue:)?([^=]+)==/gi, '$1');
 
         processedLines.push(line);
     }
