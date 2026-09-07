@@ -6,7 +6,8 @@ import {
     Download, Clock, 
     ZoomIn, ZoomOut, Palette,
     RotateCcw, Camera, Scissors, X, Dices,
-    Maximize2, Minimize2, Clipboard, Sparkles, Trash2
+    Maximize2, Minimize2, Clipboard, Sparkles, Trash2,
+    FileUp, Upload, Loader2
 } from 'lucide-react';
 
 import { useStore } from '../lib/store';
@@ -23,6 +24,7 @@ import { PenPresetSelector } from '../components/PenPresetSelector';
 import { parseWordToken, measureWordWidth, getFontFamilyCss, getEffectiveFontSize, clearWidthCache, type WordToken } from '../utils/humanErrorEngine';
 import { computePagePhoneShadow } from '../utils/cameraShadowEngine';
 import { cleanAIText, isLikelyAIText } from '../utils/aiTextCleaner';
+import { importDocumentFile } from '../utils/documentImporter';
 import type { StrikeStyle } from '../types';
 
 // --- PIPELINE TYPES ---
@@ -674,6 +676,56 @@ export default function EditorPage() {
             .replace(/\n{3,}/g, '\n\n');
         setDraftText(cleaned);
     }, [draftText]);
+
+    // Document File Import State & Handlers (.docx, .pdf, .md, .txt, .rtf, OCR)
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [isImporting, setIsImporting] = useState(false);
+    const [importProgress, setImportProgress] = useState<string | null>(null);
+    const [isDraggingFile, setIsDraggingFile] = useState(false);
+
+    const handleImportDocument = useCallback(async (file: File) => {
+        if (!file) return;
+        setIsImporting(true);
+        setImportProgress(`Reading ${file.name}...`);
+
+        try {
+            const doc = await importDocumentFile(file, (msg) => {
+                setImportProgress(msg);
+            });
+
+            if (!doc.text || doc.text.trim().length === 0) {
+                addToast(`No readable text found in ${file.name}`, 'warning');
+                return;
+            }
+
+            setDraftText(doc.text);
+            setText(doc.text);
+
+            // Auto-update document title if default or empty
+            if (!headerText.trim() || headerText === 'Untitled Assignment') {
+                setPageOptions({ headerText: doc.title });
+            }
+
+            const pageInfo = doc.pageCount ? ` (${doc.pageCount} pages)` : '';
+            addToast(`Imported ${doc.title} from ${doc.originalFormat}${pageInfo} — ${doc.wordCount} words!`, 'success');
+        } catch (err) {
+            console.error('Document import failed:', err);
+            addToast(`Import failed: ${(err as Error).message || 'Unsupported or corrupted file'}`, 'error');
+        } finally {
+            setIsImporting(false);
+            setImportProgress(null);
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+        }
+    }, [headerText, setPageOptions, setText, addToast]);
+
+    const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            handleImportDocument(file);
+        }
+    };
 
     // Floating MS Word-Style Context Toolbar for Text Selection
     const [floatingToolbar, setFloatingToolbar] = useState<{
@@ -1453,6 +1505,20 @@ export default function EditorPage() {
                                         <div className="flex items-center gap-1 shrink-0">
                                             <button
                                                 type="button"
+                                                onClick={() => fileInputRef.current?.click()}
+                                                disabled={isImporting}
+                                                title="Import Word (.docx), PDF (.pdf), Markdown (.md), Text (.txt), or Image OCR"
+                                                className="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200/80 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer shadow-2xs active:scale-95 disabled:opacity-50"
+                                            >
+                                                {isImporting ? (
+                                                    <Loader2 size={12} className="animate-spin text-blue-600" />
+                                                ) : (
+                                                    <Upload size={12} className="text-blue-600" />
+                                                )}
+                                                <span>{isImporting ? 'Importing...' : 'Import'}</span>
+                                            </button>
+                                            <button
+                                                type="button"
                                                 onClick={handlePasteClipboard}
                                                 title="Paste text from clipboard (auto-cleans AI preambles)"
                                                 className="px-2.5 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer border border-neutral-200/70 shadow-2xs active:scale-95"
@@ -1513,7 +1579,52 @@ export default function EditorPage() {
                                     )}
 
                                     {/* Inset Textarea Container - Floating Scrollbar & Status Bar */}
-                                    <div className="flex-1 min-h-[260px] flex flex-col rounded-2xl bg-neutral-50/90 border border-neutral-200 focus-within:bg-white focus-within:border-neutral-400 focus-within:ring-2 focus-within:ring-neutral-900/10 transition-all shadow-2xs overflow-hidden">
+                                    <div 
+                                        className={`flex-1 min-h-[260px] flex flex-col rounded-2xl bg-neutral-50/90 border transition-all shadow-2xs overflow-hidden relative ${
+                                            isDraggingFile 
+                                                ? 'border-blue-500 ring-2 ring-blue-500/20 bg-blue-50/30' 
+                                                : 'border-neutral-200 focus-within:bg-white focus-within:border-neutral-400 focus-within:ring-2 focus-within:ring-neutral-900/10'
+                                        }`}
+                                        onDragOver={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            setIsDraggingFile(true);
+                                        }}
+                                        onDragLeave={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                                                setIsDraggingFile(false);
+                                            }
+                                        }}
+                                        onDrop={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            setIsDraggingFile(false);
+                                            const droppedFile = e.dataTransfer.files?.[0];
+                                            if (droppedFile) {
+                                                handleImportDocument(droppedFile);
+                                            }
+                                        }}
+                                    >
+                                        {/* Drag & Drop Visual Dropzone Overlay */}
+                                        {isDraggingFile && (
+                                            <div className="absolute inset-0 z-30 bg-blue-600/90 text-white rounded-2xl flex flex-col items-center justify-center gap-2.5 p-6 backdrop-blur-xs pointer-events-none animate-in fade-in duration-150 border-2 border-white/40 shadow-2xl">
+                                                <FileUp size={36} className="animate-bounce text-blue-200" />
+                                                <div className="text-center">
+                                                    <p className="font-bold text-sm text-white">Drop document to import</p>
+                                                    <p className="text-[11px] text-blue-100 font-medium mt-0.5">Supports .docx, .pdf, .md, .txt, .rtf, image OCR</p>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* Loading / Extraction Progress Badge */}
+                                        {isImporting && importProgress && (
+                                            <div className="absolute top-3 right-3 z-30 bg-neutral-900/95 text-white text-[11px] font-medium px-3 py-1.5 rounded-xl shadow-xl flex items-center gap-2 border border-white/20 backdrop-blur-md animate-in fade-in">
+                                                <Loader2 size={13} className="animate-spin text-blue-400" />
+                                                <span>{importProgress}</span>
+                                            </div>
+                                        )}
                                         <textarea
                                             ref={sourceRef}
                                             value={draftText}
@@ -2760,6 +2871,20 @@ export default function EditorPage() {
                             <div className="flex items-center gap-1.5 shrink-0 pr-2 border-r border-neutral-200">
                                 <button
                                     type="button"
+                                    onClick={() => fileInputRef.current?.click()}
+                                    disabled={isImporting}
+                                    title="Import Word (.docx), PDF (.pdf), Markdown (.md), Text (.txt), or Image OCR"
+                                    className="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200/80 rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all cursor-pointer disabled:opacity-50"
+                                >
+                                    {isImporting ? (
+                                        <Loader2 size={13} className="animate-spin text-blue-600" />
+                                    ) : (
+                                        <FileUp size={13} className="text-blue-600" />
+                                    )}
+                                    <span>{isImporting ? 'Importing...' : 'Import Doc'}</span>
+                                </button>
+                                <button
+                                    type="button"
                                     onClick={handleCleanAIText}
                                     title="Auto-Clean ChatGPT / Claude dumps (removes chat greetings, formats headings & Q/A)"
                                     className="px-2.5 py-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer"
@@ -2898,7 +3023,50 @@ export default function EditorPage() {
                         </div>
 
                         {/* Expanded Fullscreen Textarea */}
-                        <div className="flex-1 relative flex flex-col bg-white overflow-hidden">
+                        <div 
+                            className={`flex-1 relative flex flex-col bg-white overflow-hidden transition-colors ${
+                                isDraggingFile ? 'bg-blue-50/40 ring-4 ring-blue-500/20 ring-inset' : ''
+                            }`}
+                            onDragOver={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setIsDraggingFile(true);
+                            }}
+                            onDragLeave={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                                    setIsDraggingFile(false);
+                                }
+                            }}
+                            onDrop={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setIsDraggingFile(false);
+                                const droppedFile = e.dataTransfer.files?.[0];
+                                if (droppedFile) {
+                                    handleImportDocument(droppedFile);
+                                }
+                            }}
+                        >
+                            {/* Drag & Drop Visual Dropzone Overlay */}
+                            {isDraggingFile && (
+                                <div className="absolute inset-0 z-30 bg-blue-600/90 text-white flex flex-col items-center justify-center gap-3 p-8 backdrop-blur-xs pointer-events-none animate-in fade-in duration-150 border-4 border-dashed border-white/50 shadow-2xl">
+                                    <FileUp size={48} className="animate-bounce text-blue-200" />
+                                    <div className="text-center">
+                                        <p className="font-bold text-lg text-white">Drop document to import into Focus Mode</p>
+                                        <p className="text-xs text-blue-100 font-medium mt-1">Supports Word (.docx), PDF (.pdf), Markdown (.md), Text (.txt), Image OCR</p>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Loading / Extraction Progress Badge */}
+                            {isImporting && importProgress && (
+                                <div className="absolute top-4 right-6 z-30 bg-neutral-900/95 text-white text-xs font-medium px-4 py-2 rounded-xl shadow-2xl flex items-center gap-2.5 border border-white/20 backdrop-blur-md animate-in fade-in">
+                                    <Loader2 size={14} className="animate-spin text-blue-400" />
+                                    <span>{importProgress}</span>
+                                </div>
+                            )}
                             <textarea
                                 autoFocus
                                 value={draftText}
@@ -3019,6 +3187,15 @@ export default function EditorPage() {
                     </button>
                 </div>
             )}
+
+            {/* Hidden Native File Input for Document Import */}
+            <input
+                ref={fileInputRef}
+                type="file"
+                accept=".docx,.pdf,.md,.markdown,.txt,.rtf,.png,.jpg,.jpeg,.webp"
+                onChange={handleFileInputChange}
+                className="hidden"
+            />
         </div>
     );
 }
