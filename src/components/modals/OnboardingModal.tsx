@@ -75,7 +75,7 @@ const SLIDES = [
     {
         id: 'realism',
         title: 'Biological Fatigue & Shadows',
-        badge: 'Photo-Realistic Physics',
+        badge: 'Natural Studio Lighting',
         icon: Camera,
         color: 'from-amber-500/10 to-orange-500/10 text-amber-600',
         headline: 'Authentic smartphone shadows, desk lamps & natural mistakes',

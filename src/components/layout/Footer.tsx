@@ -44,7 +44,7 @@ export default function Footer() {
                              <span className="font-display font-bold text-2xl tracking-tight text-neutral-900">InkTrail.</span>
                         </Link>
                         <p className="text-neutral-500 leading-relaxed max-w-sm text-sm font-medium">
-                            Hyper-realistic handwriting simulator with authentic human errors, pen scratch-outs, smartphone cast shadows, and 3D camera physics.
+                            Hyper-realistic handwriting simulator with authentic human errors, pen scratch-outs, smartphone cast shadows, and realistic desk lighting.
                         </p>
                     </motion.div>
 

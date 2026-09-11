@@ -70,7 +70,7 @@ export default function HowItWorksPage() {
                                 <Share2 size={14} />
                                 Step Four
                             </div>
-                            <h3 className="text-xl font-bold text-neutral-900 m-0">Apply Camera Physics & Export High-Res PDF</h3>
+                            <h3 className="text-xl font-bold text-neutral-900 m-0">Apply Realistic Desk Lighting & Export High-Res PDF</h3>
                             <p className="text-sm text-neutral-600 max-w-2xl leading-relaxed m-0">
                                 Toggle smartphone overhead shadows, warm desk lamp lighting, and paper fold creases. When satisfied, export a razor-sharp 2x resolution multi-page PDF or individual high-DPI images with one click.
                             </p>

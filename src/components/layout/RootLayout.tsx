@@ -7,7 +7,7 @@ import OnboardingModal from '../modals/OnboardingModal';
 
 export default function RootLayout() {
     const location = useLocation();
-    const isStudioRoute = location.pathname === '/' || location.pathname === '/editor';
+    const isStudioRoute = location.pathname === '/editor';
 
     return (
         <>

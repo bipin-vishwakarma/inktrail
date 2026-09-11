@@ -15,7 +15,7 @@ export const SpiralNotebook3D: React.FC = () => {
                 <div>
                     <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 text-xs font-black uppercase tracking-wider mb-2">
                         <BookOpen size={12} className="text-amber-700" />
-                        <span>3D Physics Simulation</span>
+                        <span>Authentic Stationery Details</span>
                     </span>
                     <h3 className="text-2xl sm:text-3xl font-black font-display text-neutral-900 tracking-tight">
                         Authentic Indian Spiral Registers & Lab Manuals

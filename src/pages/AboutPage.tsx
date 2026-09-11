@@ -6,7 +6,7 @@ export default function AboutPage() {
     return (
         <PageLayout 
             title="About InkTrail" 
-            subtitle="Bridging analog nostalgia and physics-accurate simulation for students and creators worldwide."
+            subtitle="Bridging analog nostalgia and hyper-realistic handwriting simulation for students and creators worldwide."
             description="Discover the story behind InkTrail. Born from authentic student coursework challenges, built with human error algorithms, authentic lab practical notebooks, and local-first privacy."
         >
             <div className="space-y-12">

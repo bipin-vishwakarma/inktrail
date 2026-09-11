@@ -22,11 +22,11 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
         // 1. Scene
         const scene = new THREE.Scene();
 
-        // 2. Camera: Wide studio lens with perspective depth
-        const camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 100);
-        camera.position.set(0, 0.4, 7.6);
+        // 2. Camera: Studio perspective lens with realistic depth
+        const camera = new THREE.PerspectiveCamera(34, width / height, 0.1, 100);
+        camera.position.set(0.05, 0.75, 7.8);
 
-        // 3. Renderer with antialiasing & soft shadows
+        // 3. High-Fidelity Renderer
         const renderer = new THREE.WebGLRenderer({
             canvas,
             alpha: true,
@@ -38,52 +38,51 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-        // 4. Studio Lighting
-        const ambientLight = new THREE.AmbientLight(0xffffff, 1.3);
+        // 4. Lighting Rig
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1.45);
         scene.add(ambientLight);
 
-        // Warm Key Light (Top-right studio daylight)
-        const keyLight = new THREE.DirectionalLight(0xfffdf5, 2.8);
-        keyLight.position.set(5.0, 8.0, 6.5);
+        // Warm Key Light (Top-right studio lamp)
+        const keyLight = new THREE.DirectionalLight(0xfffdf0, 2.7);
+        keyLight.position.set(5.0, 7.5, 6.0);
         keyLight.castShadow = true;
-        keyLight.shadow.mapSize.width = 1024;
-        keyLight.shadow.mapSize.height = 1024;
-        keyLight.shadow.bias = -0.0002;
+        keyLight.shadow.mapSize.set(1024, 1024);
+        keyLight.shadow.bias = -0.0001;
         scene.add(keyLight);
 
-        // Sky Fill Light (Cool daylight fill)
+        // Cool Sky Fill Light
         const fillLight = new THREE.DirectionalLight(0xdbeafe, 1.2);
-        fillLight.position.set(-6, 3, 4.5);
+        fillLight.position.set(-5, 4, 4);
         scene.add(fillLight);
 
-        // Desk Bounce (Warm tabletop bounce)
-        const bounceLight = new THREE.DirectionalLight(0xfef3c7, 0.6);
-        bounceLight.position.set(0, -6, 3);
+        // Soft Tabletop Bounce
+        const bounceLight = new THREE.DirectionalLight(0xfef3c7, 0.5);
+        bounceLight.position.set(0, -4, 2);
         scene.add(bounceLight);
 
-        // Coil glint spotlight
-        const coilGlint = new THREE.PointLight(0x6366f1, 2.5, 12);
-        coilGlint.position.set(0, 1.5, 2.5);
+        // Specular glint for spiral rings
+        const coilGlint = new THREE.PointLight(0x818cf8, 2.0, 10);
+        coilGlint.position.set(0, 1.2, 2.2);
         scene.add(coilGlint);
 
-        // 5. Open Dual-Page Spiral Notebook Group
+        // 5. Notebook Master Assembly Group
         const notebookGroup = new THREE.Group();
         scene.add(notebookGroup);
 
-        // --- Realistic Ground Contact Shadow Plane ---
+        // Ground Soft Contact Shadow
         const shadowCanvas = document.createElement('canvas');
         shadowCanvas.width = 512;
         shadowCanvas.height = 512;
         const sCtx = shadowCanvas.getContext('2d')!;
-        const radGrad = sCtx.createRadialGradient(256, 256, 40, 256, 256, 250);
-        radGrad.addColorStop(0, 'rgba(15, 23, 42, 0.22)');
-        radGrad.addColorStop(0.5, 'rgba(30, 41, 59, 0.08)');
+        const radGrad = sCtx.createRadialGradient(256, 256, 30, 256, 256, 240);
+        radGrad.addColorStop(0, 'rgba(15, 23, 42, 0.28)');
+        radGrad.addColorStop(0.45, 'rgba(30, 41, 59, 0.10)');
         radGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
         sCtx.fillStyle = radGrad;
         sCtx.fillRect(0, 0, 512, 512);
 
         const shadowTexture = new THREE.CanvasTexture(shadowCanvas);
-        const shadowGeo = new THREE.PlaneGeometry(7.2, 5.0);
+        const shadowGeo = new THREE.PlaneGeometry(7.4, 5.2);
         const shadowMat = new THREE.MeshBasicMaterial({
             map: shadowTexture,
             transparent: true,
@@ -91,11 +90,24 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
             depthWrite: false,
         });
         const shadowMesh = new THREE.Mesh(shadowGeo, shadowMat);
-        shadowMesh.position.set(0, -0.6, -0.4);
-        shadowMesh.rotation.x = -Math.PI * 0.15;
+        shadowMesh.position.set(0, -0.7, -0.35);
+        shadowMesh.rotation.x = -Math.PI * 0.18;
         scene.add(shadowMesh);
 
-        // --- LEFT PAGE (Diagram & Schematic Canvas) ---
+        // Helper: Procedural paper grain for tactile realism
+        const applyPaperGrain = (ctx: CanvasRenderingContext2D, w: number, h: number) => {
+            const imgData = ctx.getImageData(0, 0, w, h);
+            const data = imgData.data;
+            for (let i = 0; i < data.length; i += 4) {
+                const grain = (Math.random() - 0.5) * 6;
+                data[i] = Math.min(255, Math.max(0, data[i] + grain));
+                data[i + 1] = Math.min(255, Math.max(0, data[i + 1] + grain));
+                data[i + 2] = Math.min(255, Math.max(0, data[i + 2] + grain));
+            }
+            ctx.putImageData(imgData, 0, 0);
+        };
+
+        // --- LEFT PAGE: Circuit Diagram & Schematic Canvas ---
         const leftCanvas = document.createElement('canvas');
         leftCanvas.width = 1024;
         leftCanvas.height = 1360;
@@ -126,13 +138,12 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
         lCtx.fillStyle = '#1e40af';
         lCtx.fillText("Fig 4.1: Circuit Schematic · Ohm's Law", 100, 130);
 
-        // Hand-drawn circuit schematic in blue ink
+        // Hand-drawn circuit schematic
         lCtx.strokeStyle = '#1e3a8a';
         lCtx.lineWidth = 3.5;
         lCtx.lineCap = 'round';
         lCtx.lineJoin = 'round';
 
-        // Main circuit loop
         lCtx.beginPath();
         lCtx.moveTo(180, 260);
         lCtx.lineTo(760, 260);
@@ -141,7 +152,7 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
         lCtx.closePath();
         lCtx.stroke();
 
-        // Battery symbol (+ -)
+        // Battery symbol
         lCtx.fillStyle = '#fdfbf7';
         lCtx.fillRect(420, 240, 100, 40);
         lCtx.strokeStyle = '#1e3a8a';
@@ -166,7 +177,7 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
         lCtx.font = 'bold 28px Caveat, cursive';
         lCtx.fillText("A", 752, 478);
 
-        // Unknown Resistor (Zig-zag)
+        // Resistor
         lCtx.fillStyle = '#fdfbf7';
         lCtx.fillRect(400, 660, 140, 40);
         lCtx.beginPath();
@@ -182,21 +193,21 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
         lCtx.stroke();
         lCtx.fillText("Unknown Resistance (R)", 375, 735);
 
-        // V-I Characteristic Graph Box
+        // V-I Graph Box
         lCtx.strokeStyle = '#64748b';
         lCtx.lineWidth = 2;
         lCtx.beginPath();
         lCtx.moveTo(200, 1140);
-        lCtx.lineTo(820, 1140); // X axis
+        lCtx.lineTo(820, 1140);
         lCtx.moveTo(200, 1140);
-        lCtx.lineTo(200, 840);  // Y axis
+        lCtx.lineTo(200, 840);
         lCtx.stroke();
 
         lCtx.font = '22px Caveat, cursive';
         lCtx.fillText("Voltage V (Volts) →", 460, 1175);
         lCtx.fillText("Current I (mA) ↑", 90, 840);
 
-        // Linear slope line with experimental data dots
+        // Linear slope line
         lCtx.strokeStyle = '#ef4444';
         lCtx.lineWidth = 3;
         lCtx.beginPath();
@@ -220,11 +231,10 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
             lCtx.stroke();
         });
 
-        lCtx.fillStyle = '#1e3a8a';
         lCtx.font = 'bold 24px Caveat, cursive';
         lCtx.fillText("Slope = ΔV/ΔI = 4.82 Ω", 540, 970);
 
-        // Left Page Puncture Holes along the right spine
+        // Spiral puncture holes along inner edge
         for (let y = 140; y < 1260; y += 44) {
             lCtx.fillStyle = '#cbd5e1';
             lCtx.beginPath();
@@ -232,20 +242,20 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
             lCtx.fill();
         }
 
+        applyPaperGrain(lCtx, 1024, 1360);
         const leftTexture = new THREE.CanvasTexture(leftCanvas);
         leftTexture.anisotropy = 8;
 
-        // --- RIGHT PAGE (Ruled Handwriting Write-Up) ---
+        // --- RIGHT PAGE: Ruled Handwritten Write-Up ---
         const rightCanvas = document.createElement('canvas');
         rightCanvas.width = 1024;
         rightCanvas.height = 1360;
         const rCtx = rightCanvas.getContext('2d')!;
 
-        // Cream paper base
         rCtx.fillStyle = '#fdfbf7';
         rCtx.fillRect(0, 0, 1024, 1360);
 
-        // Right Page Puncture Holes along left spine
+        // Puncture holes
         for (let y = 140; y < 1260; y += 44) {
             rCtx.fillStyle = '#cbd5e1';
             rCtx.beginPath();
@@ -279,18 +289,17 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
             rCtx.stroke();
         }
 
-        // Date & Page Header
+        // Header & Title
         rCtx.font = 'bold 24px Caveat, cursive, sans-serif';
         rCtx.fillStyle = '#64748b';
         rCtx.fillText("PAGE: 04", 170, 105);
         rCtx.fillText("DATE: 12 / 09 / 2026", 750, 105);
 
-        // Main Title
         rCtx.font = 'bold 36px Caveat, cursive, sans-serif';
         rCtx.fillStyle = '#1e3a8a';
         rCtx.fillText("Verification of Ohm's Law & Wire Resistance", 170, 175);
 
-        // Handwritten Text Lines in dark fountain pen ink
+        // Handwritten Text Lines in authentic fountain pen ink
         rCtx.font = '28px Caveat, cursive, sans-serif';
         rCtx.fillStyle = '#1e293b';
         const notes = [
@@ -313,7 +322,7 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
             rCtx.fillText(text, 170, y);
         });
 
-        // Stamp badge at the bottom
+        // Verified Stamp Badge
         rCtx.strokeStyle = '#059669';
         rCtx.lineWidth = 2;
         rCtx.strokeRect(680, 1180, 240, 70);
@@ -323,159 +332,193 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
         rCtx.font = '16px Caveat, cursive';
         rCtx.fillText("Sign: Prof. Dr. Sharma", 700, 1240);
 
+        applyPaperGrain(rCtx, 1024, 1360);
         const rightTexture = new THREE.CanvasTexture(rightCanvas);
         rightTexture.anisotropy = 8;
 
-        // --- BUILD 3D CURVED PAGES (Natural Organic Curvature) ---
-        const pageW = 2.7;
+        // --- 3D CURVED PAGES (Natural Arched Geometry Resting on Desk) ---
+        const pageW = 2.65;
         const pageH = 3.8;
 
-        // Left Curved Page Mesh
-        const leftGeo = new THREE.PlaneGeometry(pageW, pageH, 24, 24);
+        // Left Page: Natural organic arch (z remains strictly positive: +0.01 to +0.06)
+        const leftGeo = new THREE.PlaneGeometry(pageW, pageH, 32, 32);
         const posL = leftGeo.attributes.position;
         for (let i = 0; i < posL.count; i++) {
             const x = posL.getX(i);
-            // x runs from -1.35 to +1.35
-            const normX = (x + 1.35) / 2.7; // 0 at left edge, 1 at center spine
-            const curve = -Math.sin(normX * Math.PI * 0.5) * 0.12;
-            const edgeLift = normX < 0.15 ? Math.sin((0.15 - normX) * 8) * 0.04 : 0;
-            posL.setZ(i, curve + edgeLift);
+            const normX = (x + 1.325) / 2.65; // 0 = outer left, 1 = spine
+            const arch = Math.sin(normX * Math.PI) * 0.05;
+            const cornerCurl = normX < 0.12 ? Math.pow(0.12 - normX, 2) * 1.5 : 0;
+            posL.setZ(i, arch + cornerCurl + 0.01);
         }
         leftGeo.computeVertexNormals();
 
+        const pageMatConfig = {
+            roughness: 0.85,
+            metalness: 0.0,
+            side: THREE.FrontSide,
+        };
         const leftMat = new THREE.MeshStandardMaterial({
             map: leftTexture,
-            roughness: 0.82,
-            metalness: 0.02,
-            side: THREE.DoubleSide,
+            ...pageMatConfig
         });
         const leftMesh = new THREE.Mesh(leftGeo, leftMat);
-        leftMesh.position.set(-1.38, 0, 0);
+        leftMesh.position.set(-1.35, 0, 0);
         leftMesh.castShadow = true;
         leftMesh.receiveShadow = true;
         notebookGroup.add(leftMesh);
 
-        // Right Curved Page Mesh
-        const rightGeo = new THREE.PlaneGeometry(pageW, pageH, 24, 24);
+        // Right Page: Symmetrical natural arch
+        const rightGeo = new THREE.PlaneGeometry(pageW, pageH, 32, 32);
         const posR = rightGeo.attributes.position;
         for (let i = 0; i < posR.count; i++) {
             const x = posR.getX(i);
-            // x runs from -1.35 to +1.35
-            const normX = (1.35 - x) / 2.7; // 0 at right edge, 1 at center spine
-            const curve = -Math.sin(normX * Math.PI * 0.5) * 0.12;
-            const edgeLift = normX < 0.15 ? Math.sin((0.15 - normX) * 8) * 0.04 : 0;
-            posR.setZ(i, curve + edgeLift);
+            const normX = (1.325 - x) / 2.65; // 0 = outer right, 1 = spine
+            const arch = Math.sin(normX * Math.PI) * 0.05;
+            const cornerCurl = normX < 0.12 ? Math.pow(0.12 - normX, 2) * 1.5 : 0;
+            posR.setZ(i, arch + cornerCurl + 0.01);
         }
         rightGeo.computeVertexNormals();
 
         const rightMat = new THREE.MeshStandardMaterial({
             map: rightTexture,
-            roughness: 0.82,
-            metalness: 0.02,
-            side: THREE.DoubleSide,
+            ...pageMatConfig
         });
         const rightMesh = new THREE.Mesh(rightGeo, rightMat);
-        rightMesh.position.set(1.38, 0, 0);
+        rightMesh.position.set(1.35, 0, 0);
         rightMesh.castShadow = true;
         rightMesh.receiveShadow = true;
         notebookGroup.add(rightMesh);
 
-        // --- SUBTLE PAPER STACK BASE & COVER ---
-        const baseMat = new THREE.MeshStandardMaterial({
-            color: 0x1e293b,
-            roughness: 0.6,
+        // --- SUBTLE PAPER STACK RIM (Physical 100-Sheet Edge Underneath) ---
+        // Sits strictly underneath at Z = -0.02, colored warm ivory paper
+        const paperStackMat = new THREE.MeshStandardMaterial({
+            color: 0xf4f0ea, // Warm page edge rim
+            roughness: 0.9,
+            metalness: 0.0,
+        });
+        const stackGeo = new THREE.BoxGeometry(2.62, 3.76, 0.025);
+
+        const leftStackMesh = new THREE.Mesh(stackGeo, paperStackMat);
+        leftStackMesh.position.set(-1.35, 0, -0.018);
+        notebookGroup.add(leftStackMesh);
+
+        const rightStackMesh = new THREE.Mesh(stackGeo, paperStackMat);
+        rightStackMesh.position.set(1.35, 0, -0.018);
+        notebookGroup.add(rightStackMesh);
+
+        // --- ELEGANT BACK COVER (Hardboard Backing Strictly Underneath) ---
+        // Sits safely behind the stack at Z = -0.045, extending 2mm beyond paper
+        const coverMat = new THREE.MeshStandardMaterial({
+            color: 0x1e293b, // Deep matte slate-indigo backing
+            roughness: 0.5,
             metalness: 0.1,
         });
-        const leftBaseGeo = new THREE.BoxGeometry(2.72, 3.82, 0.04);
-        const leftBaseMesh = new THREE.Mesh(leftBaseGeo, baseMat);
-        leftBaseMesh.position.set(-1.39, 0, -0.06);
-        leftBaseMesh.castShadow = true;
-        notebookGroup.add(leftBaseMesh);
+        const coverGeo = new THREE.BoxGeometry(2.72, 3.86, 0.02);
 
-        const rightBaseGeo = new THREE.BoxGeometry(2.72, 3.82, 0.04);
-        const rightBaseMesh = new THREE.Mesh(rightBaseGeo, baseMat);
-        rightBaseMesh.position.set(1.39, 0, -0.06);
-        rightBaseMesh.castShadow = true;
-        notebookGroup.add(rightBaseMesh);
+        const leftCoverMesh = new THREE.Mesh(coverGeo, coverMat);
+        leftCoverMesh.position.set(-1.38, 0, -0.045);
+        leftCoverMesh.castShadow = true;
+        notebookGroup.add(leftCoverMesh);
 
-        // --- CENTER 3D METALLIC TWIN-WIRE SPIRAL BINDING ---
+        const rightCoverMesh = new THREE.Mesh(coverGeo, coverMat);
+        rightCoverMesh.position.set(1.38, 0, -0.045);
+        rightCoverMesh.castShadow = true;
+        notebookGroup.add(rightCoverMesh);
+
+        // --- 3D METALLIC CHROME TWIN-WIRE SPIRAL ---
         const coilsGroup = new THREE.Group();
         const coilCount = 28;
-        const coilRadius = 0.14;
-        const tubeRadius = 0.02;
+        const coilRadius = 0.13;
+        const tubeRadius = 0.018;
         const coilSpacing = 3.6 / (coilCount - 1);
         const startY = 1.8;
 
-        const coilGeo = new THREE.TorusGeometry(coilRadius, tubeRadius, 14, 26, Math.PI * 1.95);
+        const coilGeo = new THREE.TorusGeometry(coilRadius, tubeRadius, 14, 28, Math.PI * 1.96);
         const coilMat = new THREE.MeshStandardMaterial({
-            color: 0xf1f5f9,
-            metalness: 0.96,
+            color: 0xf8fafc,
+            metalness: 0.95,
             roughness: 0.12,
         });
 
         for (let i = 0; i < coilCount; i++) {
             const coil = new THREE.Mesh(coilGeo, coilMat);
-            coil.position.set(0, startY - i * coilSpacing, -0.01);
+            coil.position.set(0, startY - i * coilSpacing, 0.02);
             coil.rotation.z = Math.PI / 2;
-            coil.rotation.y = 0.2;
+            coil.rotation.y = 0.15;
             coil.castShadow = true;
             coilsGroup.add(coil);
         }
         notebookGroup.add(coilsGroup);
 
-        // --- FLOATING AIRBORNE INK MOTES ---
-        const particleCount = 45;
-        const particleGeo = new THREE.BufferGeometry();
-        const positions = new Float32Array(particleCount * 3);
-
-        for (let i = 0; i < particleCount; i++) {
-            positions[i * 3] = (Math.random() - 0.5) * 11;
-            positions[i * 3 + 1] = (Math.random() - 0.5) * 8;
-            positions[i * 3 + 2] = (Math.random() - 0.5) * 6;
-        }
-        particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-
-        const particleMat = new THREE.PointsMaterial({
-            color: 0x4338ca,
-            size: 0.05,
-            transparent: true,
-            opacity: 0.3,
+        // --- LUXURY FOUNTAIN PEN ACCENT (Resting Beside Notebook) ---
+        const penGroup = new THREE.Group();
+        // Barrel
+        const barrelGeo = new THREE.CylinderGeometry(0.045, 0.04, 2.2, 16);
+        const barrelMat = new THREE.MeshStandardMaterial({
+            color: 0x0f172a, // Deep obsidian lacquer
+            roughness: 0.25,
+            metalness: 0.85,
         });
-        const particles = new THREE.Points(particleGeo, particleMat);
-        scene.add(particles);
+        const barrel = new THREE.Mesh(barrelGeo, barrelMat);
+        penGroup.add(barrel);
 
-        // Orientation targets for silky smooth interpolation
-        let targetRotX = 0.22;
-        let targetRotY = -0.06;
-        let targetZ = 0;
-        let targetScale = 1;
+        // Gold Trim Band
+        const ringGeo = new THREE.CylinderGeometry(0.047, 0.047, 0.06, 16);
+        const goldMat = new THREE.MeshStandardMaterial({
+            color: 0xf59e0b,
+            roughness: 0.2,
+            metalness: 0.95,
+        });
+        const ring = new THREE.Mesh(ringGeo, goldMat);
+        ring.position.y = 0.3;
+        penGroup.add(ring);
 
+        // Gold Nib
+        const nibGeo = new THREE.ConeGeometry(0.04, 0.25, 12);
+        const nib = new THREE.Mesh(nibGeo, goldMat);
+        nib.position.y = 1.22;
+        penGroup.add(nib);
+
+        // Position pen angled on the desk beside the notebook
+        penGroup.position.set(2.80, -0.35, 0.04);
+        penGroup.rotation.z = -0.35;
+        penGroup.rotation.x = 0.2;
+        penGroup.castShadow = true;
+        notebookGroup.add(penGroup);
+
+        // Dynamic Viewport & Orientation Targets
+        const baseScale = 0.88;
+        let targetRotX = 0.38;
+        let targetRotY = -0.14;
+        let targetZ = 0.02;
+        let targetScale = baseScale;
+
+        notebookGroup.scale.set(baseScale, baseScale, baseScale);
         notebookGroup.rotation.x = targetRotX;
         notebookGroup.rotation.y = targetRotY;
+        notebookGroup.rotation.z = targetZ;
 
-        // Pointer tracking
-        const handlePointerMove = (e: PointerEvent) => {
+        // Window-wide pointer tracking for hero
+        const handlePointerMove = (e: MouseEvent) => {
             if (!interactive) return;
-            const rect = container.getBoundingClientRect();
-            const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-            const y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
+            const x = (e.clientX / window.innerWidth) * 2 - 1;
+            const y = -(e.clientY / window.innerHeight) * 2 + 1;
 
-            targetRotY = -0.06 + x * 0.35;
-            targetRotX = 0.22 - y * 0.25;
-            targetZ = x * 0.06;
+            targetRotY = -0.14 + x * 0.22;
+            targetRotX = 0.38 - y * 0.18;
+            targetZ = 0.02 + x * 0.04;
         };
 
         const handleScroll = () => {
             const scrollY = window.scrollY || window.pageYOffset;
-            const progress = Math.min(scrollY / 700, 1);
-            targetRotX = 0.22 + progress * 0.28;
-            targetScale = 1 - progress * 0.06;
+            const progress = Math.min(scrollY / 800, 1);
+            targetRotX = 0.38 + progress * 0.22;
+            targetScale = baseScale - progress * 0.05;
         };
 
+        window.addEventListener('mousemove', handlePointerMove, { passive: true });
         window.addEventListener('scroll', handleScroll, { passive: true });
-        container.addEventListener('pointermove', handlePointerMove);
 
-        // Resize
         const handleResize = () => {
             if (!container || !renderer) return;
             width = container.clientWidth;
@@ -492,49 +535,51 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
             animationFrameId = requestAnimationFrame(animate);
             const elapsedTime = clock.getElapsedTime();
 
-            // Gentle natural floating wave
-            const idleFloat = Math.sin(elapsedTime * 1.3) * 0.06;
-            const idleTilt = Math.cos(elapsedTime * 1.1) * 0.02;
+            // Organic breathing float
+            const idleFloat = Math.sin(elapsedTime * 1.2) * 0.05;
+            const idleTilt = Math.cos(elapsedTime * 1.0) * 0.015;
 
-            notebookGroup.position.y = THREE.MathUtils.lerp(notebookGroup.position.y, idleFloat, 0.05);
-            notebookGroup.rotation.x = THREE.MathUtils.lerp(notebookGroup.rotation.x, targetRotX + idleTilt, 0.05);
-            notebookGroup.rotation.y = THREE.MathUtils.lerp(notebookGroup.rotation.y, targetRotY, 0.05);
-            notebookGroup.rotation.z = THREE.MathUtils.lerp(notebookGroup.rotation.z, targetZ, 0.05);
+            notebookGroup.position.y = THREE.MathUtils.lerp(notebookGroup.position.y, idleFloat, 0.06);
+            notebookGroup.rotation.x = THREE.MathUtils.lerp(notebookGroup.rotation.x, targetRotX + idleTilt, 0.06);
+            notebookGroup.rotation.y = THREE.MathUtils.lerp(notebookGroup.rotation.y, targetRotY, 0.06);
+            notebookGroup.rotation.z = THREE.MathUtils.lerp(notebookGroup.rotation.z, targetZ, 0.06);
 
-            const s = THREE.MathUtils.lerp(notebookGroup.scale.x, targetScale, 0.05);
+            const s = THREE.MathUtils.lerp(notebookGroup.scale.x, targetScale, 0.06);
             notebookGroup.scale.set(s, s, s);
 
-            // Shadow reacts to notebook float & tilt
-            shadowMesh.scale.set(1 + idleFloat * 0.3, 1 + idleFloat * 0.3, 1);
-            shadowMesh.position.x = notebookGroup.rotation.y * 0.5;
+            // Shadow follows tilt
+            shadowMesh.scale.set(1 + idleFloat * 0.25, 1 + idleFloat * 0.25, 1);
+            shadowMesh.position.x = notebookGroup.rotation.y * 0.4;
 
-            // Animate particles
-            particles.rotation.y = elapsedTime * 0.02;
-
-            // Specular coil glint breath
-            coilGlint.position.y = Math.sin(elapsedTime * 1.8) * 1.6;
+            // Specular glint movement
+            coilGlint.position.y = 1.2 + Math.sin(elapsedTime * 1.5) * 1.2;
 
             renderer.render(scene, camera);
         };
         animate();
 
+        // Cleanup
         return () => {
             cancelAnimationFrame(animationFrameId);
+            window.removeEventListener('mousemove', handlePointerMove);
             window.removeEventListener('scroll', handleScroll);
-            container.removeEventListener('pointermove', handlePointerMove);
             window.removeEventListener('resize', handleResize);
 
             leftGeo.dispose();
             leftMat.dispose();
             rightGeo.dispose();
             rightMat.dispose();
-            leftBaseGeo.dispose();
-            rightBaseGeo.dispose();
-            baseMat.dispose();
+            stackGeo.dispose();
+            paperStackMat.dispose();
+            coverGeo.dispose();
+            coverMat.dispose();
             coilGeo.dispose();
             coilMat.dispose();
-            particleGeo.dispose();
-            particleMat.dispose();
+            barrelGeo.dispose();
+            barrelMat.dispose();
+            ringGeo.dispose();
+            goldMat.dispose();
+            nibGeo.dispose();
             shadowGeo.dispose();
             shadowMat.dispose();
             shadowTexture.dispose();
@@ -547,7 +592,7 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
     return (
         <div
             ref={containerRef}
-            className={`relative w-full h-[440px] sm:h-[560px] lg:h-[640px] select-none ${className}`}
+            className={`relative w-full h-[460px] sm:h-[580px] lg:h-[660px] select-none ${className}`}
         >
             <canvas ref={canvasRef} className="w-full h-full block" />
         </div>

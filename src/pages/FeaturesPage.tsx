@@ -6,8 +6,8 @@ export default function FeaturesPage() {
     return (
         <PageLayout 
             title="Features & Capabilities" 
-            subtitle="Everything students and creators need to produce authentic, physics-accurate handwritten documents."
-            description="Explore the advanced capabilities of InkTrail: Lab practical interleaved pages, diagram workspaces, AI humanizer, authentic human errors, smartphone lighting physics, and multi-auth student vaults."
+            subtitle="Everything students and creators need to produce authentic, hyper-realistic handwritten documents."
+            description="Explore the advanced capabilities of InkTrail: Lab practical interleaved pages, diagram workspaces, AI humanizer, authentic human errors, smartphone cast shadows, and multi-auth student vaults."
         >
             <div className="space-y-16">
                 <section className="prose prose-neutral max-w-none">
@@ -47,7 +47,7 @@ export default function FeaturesPage() {
                         <div className="w-13 h-13 bg-violet-50 text-violet-600 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
                             <span className="text-2xl">📸</span>
                         </div>
-                        <h3 className="text-xl font-bold mb-2.5 text-neutral-900">Camera & Lighting Physics</h3>
+                        <h3 className="text-xl font-bold mb-2.5 text-neutral-900">Camera Angles & Desk Lighting</h3>
                         <p className="text-neutral-600 text-sm leading-relaxed">
                             Render realistic overhead smartphone shadows with customizable angle and intensity, warm desk lamp lighting, 3D perspective tilts, sensor ISO noise, and authentic paper creases.
                         </p>

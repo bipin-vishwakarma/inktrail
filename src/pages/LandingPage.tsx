@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import {
     Sparkles, ArrowRight, BookOpen, Zap, 
     ChevronDown, Camera, Flame, MousePointerClick,
@@ -128,21 +128,38 @@ export default function LandingPage() {
 
     // Parallax Scroll Tracking
     const { scrollYProgress } = useScroll();
-    const yHeroNotebook = useTransform(scrollYProgress, [0, 0.4], [0, 80]);
-    const yHeroContent = useTransform(scrollYProgress, [0, 0.4], [0, -25]);
-    const yFloatingCard1 = useTransform(scrollYProgress, [0, 0.4], [0, -120]);
-    const yFloatingCard2 = useTransform(scrollYProgress, [0, 0.4], [0, -170]);
-    const rotateCard1 = useTransform(scrollYProgress, [0, 0.4], [-3, 10]);
-    const rotateCard2 = useTransform(scrollYProgress, [0, 0.4], [4, -12]);
+    const yHeroNotebook = useTransform(scrollYProgress, [0, 0.4], [0, 50]);
+    const yHeroContent = useTransform(scrollYProgress, [0, 0.4], [0, -20]);
+    const yFloatingCard1 = useTransform(scrollYProgress, [0, 0.3], [0, -35]);
+    const yFloatingCard2 = useTransform(scrollYProgress, [0, 0.3], [0, -45]);
+    const rotateCard1 = useTransform(scrollYProgress, [0, 0.4], [-2, 5]);
+    const rotateCard2 = useTransform(scrollYProgress, [0, 0.4], [3, -6]);
     const yBgBlooms = useTransform(scrollYProgress, [0, 1], [0, 200]);
 
-    // Subtle Interactive Mouse Parallax in Hero
-    const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 });
+    // High-performance Spring-damped Mouse Parallax (Zero component re-renders)
+    const mouseX = useMotionValue(0);
+    const mouseY = useMotionValue(0);
+    const springX = useSpring(mouseX, { stiffness: 65, damping: 22 });
+    const springY = useSpring(mouseY, { stiffness: 65, damping: 22 });
+
+    const card1X = useTransform(springX, v => v * -0.5);
+    const card1Y = useTransform(springY, v => v * -0.5);
+    const card2X = useTransform(springX, v => v * 0.4);
+    const card2Y = useTransform(springY, v => v * 0.4);
+    const card3X = useTransform(springX, v => v * -0.3);
+    const card3Y = useTransform(springY, v => v * -0.3);
+
     const handleHeroMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         const rect = e.currentTarget.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width - 0.5) * 24;
-        const y = ((e.clientY - rect.top) / rect.height - 0.5) * 24;
-        setMouseOffset({ x, y });
+        const x = ((e.clientX - rect.left) / rect.width - 0.5) * 32;
+        const y = ((e.clientY - rect.top) / rect.height - 0.5) * 32;
+        mouseX.set(x);
+        mouseY.set(y);
+    };
+
+    const handleHeroMouseLeave = () => {
+        mouseX.set(0);
+        mouseY.set(0);
     };
 
     // Interactive Sandbox State
@@ -196,20 +213,22 @@ export default function LandingPage() {
             </motion.div>
 
             {/* =========================================================
-                1. TOP STATUS TICKER (Clean & Confident)
+                1. TOP ANNOUNCEMENT PILL (Gracefully below floating Navbar)
             ========================================================= */}
-            <div className="relative z-40 bg-gradient-to-r from-violet-50/90 via-indigo-50/80 to-purple-50/90 border-b border-violet-200/60 backdrop-blur-md text-stone-800 py-2.5 px-4 text-center text-xs font-semibold flex items-center justify-center gap-2">
-                <span className="flex h-2 w-2 relative">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
-                </span>
-                <span className="tracking-wide">
-                    <b className="text-violet-950 font-extrabold uppercase">InkTrail 2.4:</b> Turn typed assignments into authentic handwritten pages in seconds · <b className="text-emerald-700">100% Free for Students</b>.
-                </span>
-                <Link to="/editor" className="hidden sm:inline-flex items-center gap-1 ml-2 text-violet-700 hover:text-violet-950 underline font-bold transition-colors">
-                    <span>Open Studio</span>
-                    <ArrowRight size={13} />
-                </Link>
+            <div className="pt-24 sm:pt-28 px-4 flex justify-center relative z-20">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 border border-violet-200/80 backdrop-blur-md text-stone-800 text-xs font-semibold shadow-xs">
+                    <span className="flex h-2 w-2 relative">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
+                    </span>
+                    <span className="tracking-wide">
+                        <b className="text-violet-950 font-extrabold uppercase">InkTrail 2.4:</b> Turn typed assignments into authentic handwritten pages · <b className="text-emerald-700">100% Free for Students</b>
+                    </span>
+                    <Link to="/editor" className="hidden sm:inline-flex items-center gap-1 ml-1.5 text-violet-700 hover:text-violet-950 font-bold transition-colors">
+                        <span>Open Studio</span>
+                        <ArrowRight size={12} />
+                    </Link>
+                </div>
             </div>
 
             {/* =========================================================
@@ -217,7 +236,8 @@ export default function LandingPage() {
             ========================================================= */}
             <section 
                 onMouseMove={handleHeroMouseMove}
-                className="relative pt-12 pb-16 sm:pt-20 sm:pb-24 px-4 sm:px-6 max-w-7xl mx-auto"
+                onMouseLeave={handleHeroMouseLeave}
+                className="relative pt-6 pb-16 sm:pt-10 sm:pb-24 px-4 sm:px-6 max-w-7xl mx-auto"
             >
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-6 items-center">
                     
@@ -345,34 +365,60 @@ export default function LandingPage() {
                         
                         {/* Parallax Floating Note 1: Yellow Post-it Scrap */}
                         <motion.div
-                            style={{ y: yFloatingCard1, rotate: rotateCard1 }}
-                            animate={{ x: mouseOffset.x * -0.6, y: mouseOffset.y * -0.6 }}
-                            transition={{ type: 'spring', damping: 25 }}
-                            className="hidden sm:flex absolute -top-2 right-4 lg:right-8 z-30 items-center gap-2 px-3.5 py-2 rounded-xl bg-[#FEF08A] text-amber-950 font-display font-bold text-xs shadow-xl shadow-amber-900/10 border border-yellow-300 select-none pointer-events-none"
+                            style={{ 
+                                y: yFloatingCard1, 
+                                rotate: rotateCard1,
+                                x: card1X,
+                                translateY: card1Y
+                            }}
+                            className="hidden sm:flex absolute top-6 right-2 sm:right-6 lg:right-10 z-30 select-none pointer-events-none"
                         >
-                            <span className="text-emerald-700 font-black">✓</span>
-                            <span>Lab Record #04 · Verified (10/10)</span>
+                            <motion.div
+                                animate={{ y: [0, -6, 0] }}
+                                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                                className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#FEF08A] text-amber-950 font-display font-bold text-xs shadow-xl shadow-amber-900/10 border border-yellow-300"
+                            >
+                                <span className="text-emerald-700 font-black">✓</span>
+                                <span>Lab Record #04 · Verified (10/10)</span>
+                            </motion.div>
                         </motion.div>
 
                         {/* Parallax Floating Note 2: Circuit Formula Badge */}
                         <motion.div
-                            style={{ y: yFloatingCard2, rotate: rotateCard2 }}
-                            animate={{ x: mouseOffset.x * 0.5, y: mouseOffset.y * 0.5 }}
-                            transition={{ type: 'spring', damping: 25 }}
-                            className="hidden md:flex absolute top-10 -left-2 lg:left-2 z-30 items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/95 backdrop-blur-md text-stone-800 font-mono text-xs shadow-lg border border-stone-200/90 select-none pointer-events-none"
+                            style={{ 
+                                y: yFloatingCard2, 
+                                rotate: rotateCard2,
+                                x: card2X,
+                                translateY: card2Y
+                            }}
+                            className="hidden md:flex absolute top-12 left-2 sm:left-4 lg:left-6 z-30 select-none pointer-events-none"
                         >
-                            <span className="w-2 h-2 rounded-full bg-blue-600" />
-                            <span>V = I · R &nbsp;(Slope = 4.82 Ω)</span>
+                            <motion.div
+                                animate={{ y: [0, 7, 0] }}
+                                transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+                                className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/95 backdrop-blur-md text-stone-800 font-mono text-xs shadow-lg border border-stone-200/90"
+                            >
+                                <span className="w-2 h-2 rounded-full bg-blue-600" />
+                                <span>V = I · R &nbsp;(Slope = 4.82 Ω)</span>
+                            </motion.div>
                         </motion.div>
 
                         {/* Parallax Floating Note 3: Dual-page practical label */}
                         <motion.div
-                            animate={{ x: mouseOffset.x * -0.4, y: mouseOffset.y * -0.4 }}
-                            transition={{ type: 'spring', damping: 25 }}
-                            className="hidden lg:flex absolute bottom-4 left-6 z-30 items-center gap-2 px-3 py-1.5 rounded-xl bg-white/95 backdrop-blur-md text-stone-700 text-xs shadow-md border border-stone-200/90 select-none pointer-events-none font-medium"
+                            style={{
+                                x: card3X,
+                                translateY: card3Y
+                            }}
+                            className="hidden lg:flex absolute bottom-6 left-8 z-30 select-none pointer-events-none font-medium"
                         >
-                            <span className="text-violet-600 font-bold">●</span>
-                            <span>Facing Diagram & Write-up</span>
+                            <motion.div
+                                animate={{ y: [0, -5, 0] }}
+                                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+                                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/95 backdrop-blur-md text-stone-700 text-xs shadow-md border border-stone-200/90"
+                            >
+                                <span className="text-violet-600 font-bold">●</span>
+                                <span>Facing Diagram & Write-up</span>
+                            </motion.div>
                         </motion.div>
 
                         {/* Uncaged 3D Notebook Canvas (No Box Frame, Free Floating) */}
@@ -753,7 +799,7 @@ export default function LandingPage() {
                             </p>
                         </div>
                         <div className="mt-6 pt-4 border-t border-stone-100 text-xs font-mono text-purple-600 font-semibold">
-                            Organic pen physics
+                            Organic pen flow & ink absorption
                         </div>
                     </div>
 
@@ -823,11 +869,11 @@ export default function LandingPage() {
                             <span>ZERO COST · PUBLIC BETA</span>
                         </div>
 
-                        <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight font-display">
+                        <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight font-display drop-shadow-md">
                             Start Creating Handwritten Assignments in Seconds.
                         </h2>
 
-                        <p className="text-stone-300 text-sm sm:text-base leading-relaxed">
+                        <p className="text-stone-200 text-sm sm:text-base leading-relaxed max-w-xl mx-auto">
                             No download, no credit card. Join students at over 200+ universities saving hours every week.
                         </p>
 
