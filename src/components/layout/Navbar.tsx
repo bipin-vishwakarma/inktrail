@@ -89,10 +89,10 @@ export default function Navbar() {
                         <Link
                             to="/account"
                             className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gradient-to-r from-amber-500/10 to-orange-500/15 border border-amber-500/30 text-[11px] font-black text-amber-800 hover:scale-105 transition-all shadow-2xs"
-                            title="InkTrail Pro is 100% Free during Beta!"
+                            title="InkTrail is 100% Free during Beta!"
                         >
                             <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-                            <span>Pro: Free Beta 🔥</span>
+                            <span>100% Free Beta 🔥</span>
                         </Link>
 
                         <div className="hidden sm:block">

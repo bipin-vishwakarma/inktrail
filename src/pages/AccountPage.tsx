@@ -176,15 +176,15 @@ export default function AccountPage() {
                                 <span>100% FREE PUBLIC BETA</span>
                             </div>
                             <span className="px-2.5 py-0.5 rounded-full bg-white/20 text-white/90 text-xs font-semibold backdrop-blur-xs">
-                                Paid Tier Coming Soon (₹199 / $4.99/mo)
+                                Early Student Access
                             </span>
                         </div>
 
                         <h3 className="text-xl sm:text-2xl font-black mb-2 text-white">
-                            All Pro Features Unlocked For You 🔥
+                            All Features Are 100% Free Right Now 🔥
                         </h3>
                         <p className="text-white/85 text-sm sm:text-base leading-relaxed mb-5 max-w-xl">
-                            InkTrail is currently in <b>early access</b>. Every single pro feature — unlimited 4K PDF exports, 3D metallic spirals, lab diagram canvases, and all 15+ student paper types — is <b>completely free</b> for you right now.
+                            InkTrail is currently in <b>active public beta</b>. Because we are testing and perfecting the platform, every single feature — unlimited 4K PDF exports, 3D metallic spirals, lab diagram canvases, and all 15+ student paper types — is <b>completely free for all students</b>. No credit card, no paywalls.
                         </p>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
@@ -194,7 +194,7 @@ export default function AccountPage() {
                                 'All 30+ Realistic Indian & International Fonts',
                                 '3D Metallic Twin-Wire Coil Bindings',
                                 'Smart Margin Indexing & Comparison Columns',
-                                'Early Adopter 50% Lifetime Discount Token'
+                                'Full Pro Access Included Free During Beta'
                             ].map(f => (
                                 <div key={f} className="flex items-center gap-2 text-xs sm:text-sm text-white/95">
                                     <div className="w-4 h-4 rounded-full bg-emerald-400/20 flex items-center justify-center shrink-0">
@@ -208,22 +208,22 @@ export default function AccountPage() {
                         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2 border-t border-white/15">
                             <div className="flex-1">
                                 <p className="text-xs text-white/70">
-                                    Locked status: <span className="text-emerald-300 font-bold">Early Adopter VIP Pass Active</span>
+                                    Account status: <span className="text-emerald-300 font-bold">Free Beta Student Pass Active</span>
                                 </p>
                                 <p className="text-[11px] text-white/50">
-                                    You will be grandfathered into preferential student pricing before public launch.
+                                    Enjoy zero-cost exports and unlimited digital notebooks during this testing period.
                                 </p>
                             </div>
                             <button
                                 type="button"
                                 onClick={() => {
-                                    localStorage.setItem('inktrail_vip_claimed', 'true');
-                                    alert('🎉 Early Adopter VIP status saved! You have secured free beta access and a 50% lifetime launch discount.');
+                                    localStorage.setItem('inktrail_beta_claimed', 'true');
+                                    alert('🎉 Free Beta Pass confirmed! You have full unlimited access to all InkTrail tools.');
                                 }}
                                 className="px-5 py-3 bg-white text-violet-900 hover:bg-violet-50 rounded-xl font-bold text-sm shadow-md hover:scale-102 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
                             >
                                 <Sparkles size={16} className="text-violet-700" />
-                                <span>Lock In VIP Perks</span>
+                                <span>Claim Free Beta Access</span>
                             </button>
                         </div>
                     </div>

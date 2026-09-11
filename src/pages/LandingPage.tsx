@@ -401,9 +401,9 @@ const HeroSection = React.memo(() => {
                             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-linear-to-r from-violet-600 via-indigo-600 to-purple-600 text-white text-xs sm:text-sm font-black tracking-wide shadow-lg shadow-indigo-500/25 mb-6 hover:scale-105 transition-transform cursor-pointer"
                         >
                             <Sparkles size={14} className="text-yellow-300 animate-pulse" />
-                            <span>PUBLIC BETA: ALL PRO FEATURES 100% FREE</span>
+                            <span>PUBLIC BETA: ALL TOOLS 100% FREE</span>
                             <span className="bg-white/20 px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-extrabold text-white">
-                                Paid Soon
+                                Student Access
                             </span>
                         </motion.div>
 
@@ -424,7 +424,7 @@ const HeroSection = React.memo(() => {
                             variants={itemVariants}
                             className="text-neutral-500 text-sm sm:text-base max-w-xl text-center font-medium"
                         >
-                            Used by university students for instant assignments & lab practical notebooks. Free during early access before InkTrail Pro launches.
+                            Used by university students for instant assignments & lab practical notebooks. Currently in active public beta — enjoy unlimited free access to every tool and paper style.
                         </motion.p>
                     </div>
                 </div>
