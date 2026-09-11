@@ -254,9 +254,9 @@ const CameraOverlayComponent: React.FC<CameraOverlayProps> = ({
                             </filter>
                         </defs>
 
-                        {/* 26 Twin-wire spiral coils matching standard student spiral notebook */}
-                        {Array.from({ length: 26 }).map((_, idx) => {
-                            const y = 30 + idx * 37;
+                        {/* 30 Twin-wire spiral coils matching standard student spiral notebook (spanning full 1131px page height) */}
+                        {Array.from({ length: 30 }).map((_, idx) => {
+                            const y = 26 + idx * 37.2;
                             return (
                                 <g key={idx}>
                                     {/* Paper punch hole (oval/rounded rectangle) */}
@@ -283,7 +283,7 @@ const CameraOverlayComponent: React.FC<CameraOverlayProps> = ({
 
                                     {/* Top wire loop of twin-wire coil */}
                                     <path
-                                        d={`M -4,${y - 5} C 4,${y - 10} 16,${y - 8} 22,${y - 4} C 26,${y - 1} 25,${y + 4} 20,${y + 2}`}
+                                        d={`M 1,${y - 6} C 6,${y - 10} 16,${y - 8} 22,${y - 4} C 26,${y - 1} 25,${y + 4} 20,${y + 2}`}
                                         fill="none"
                                         stroke="url(#spiralWireGrad)"
                                         strokeWidth="2.4"
@@ -292,7 +292,7 @@ const CameraOverlayComponent: React.FC<CameraOverlayProps> = ({
                                     />
                                     {/* Bottom wire loop of twin-wire coil */}
                                     <path
-                                        d={`M -4,${y + 4} C 4,${y - 1} 16,${y + 1} 22,${y + 5} C 26,${y + 8} 25,${y + 13} 20,${y + 11}`}
+                                        d={`M 1,${y + 3} C 6,${y - 1} 16,${y + 1} 22,${y + 5} C 26,${y + 8} 25,${y + 13} 20,${y + 11}`}
                                         fill="none"
                                         stroke="url(#spiralWireGrad)"
                                         strokeWidth="2.4"
