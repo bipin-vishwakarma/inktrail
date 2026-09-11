@@ -5,58 +5,54 @@ const COMPARISON_PRESETS = [
     {
         id: 'physics',
         title: 'Physics Lab Experiment',
-        beforeText: `EXPERIMENT 4: VERIFICATION OF OHM'S LAW
-Aim: To determine the resistance per unit length of a given wire by plotting a graph between voltage (V) and current (I).
-
-Formula:
-V = I * R, where R is the resistance of the conductor in Ohms (Ω).
-
-Observation:
-Current reading scales linearly with applied voltage across all 5 test intervals (2V, 4V, 6V, 8V, 10V). Calculated error margin is < 1.2%.`,
-        afterText: `Aim: To determine the resistance per unit length of a given wire by plotting a graph between voltage (V) and current (I).
-
-Formula: V = I * R (where R is the resistance in Ohms Ω)
-
-Observation: Current scales linearly with applied voltage across all 5 intervals. Mean resistance calculated: 4.82 Ω.`,
+        beforeText: `EXPERIMENT 04: VERIFICATION OF OHM'S LAW
+Aim: To determine resistance per unit length of a given wire by plotting V vs I.
+Formula: V = I × R (where R is the slope of the characteristic curve in Ohms Ω).
+Observation: Current scales linearly with applied voltage across all 5 trial steps.
+Calculations: Mean measured resistance R = 4.82 Ω with < 0.8% standard deviation.
+Result: Authenticated by Lab Instructor. Grade: A+ (10/10).`,
+        afterText: `EXPERIMENT 04: VERIFICATION OF OHM'S LAW
+Aim: To determine resistance per unit length of a given wire by plotting V vs I.
+Formula: V = I × R (where R is the slope of the characteristic curve in Ohms Ω).
+Observation: Current scales linearly with applied voltage across all 5 trial steps.
+Calculations: Mean measured resistance R = 4.82 Ω with < 0.8% standard deviation.
+Result: Authenticated by Lab Instructor. Grade: A+ (10/10).`,
         handwritingFont: 'Caveat, cursive',
         inkColor: '#1e3a8a', // Royal Blue
     },
     {
         id: 'computer',
         title: 'Computer Science Theory',
-        beforeText: `QUESTION 1: EXPLAIN PIPELINING HAZARDS IN RISC ARCHITECTURES
-Answer:
-Pipelining increases CPU instruction throughput by overlapping execution stages (Fetch, Decode, Execute, Memory, Write-Back).
-
-Key Hazards:
-1. Structural Hazards: Resource contention for ALU or cache.
-2. Data Hazards: Read-After-Write (RAW) dependencies.
-3. Control Hazards: Branch prediction penalties and flush stalls.`,
-        afterText: `Q1: Explain pipelining hazards in RISC architectures.
-
-Ans: Pipelining increases CPU throughput by overlapping execution stages (IF, ID, EX, MEM, WB).
-
-Key Hazards:
-1. Structural Hazards: Memory contention
-2. Data Hazards: RAW dependencies resolved via forwarding
-3. Control Hazards: Branch delays & instruction flushing`,
+        beforeText: `QUESTION 01: EXPLAIN PIPELINING & HAZARDS IN RISC-V
+Overview: Pipelining increases CPU instruction throughput by overlapping 5 stages.
+Stage Breakdown: IF (Instruction Fetch), ID (Decode), EX (Execute), MEM, WB (Write-back).
+Structural Hazards: Hardware resource contention resolved via duplicate functional units.
+Data Hazards: Read-After-Write (RAW) dependencies resolved with data forwarding.
+Control Hazards: Branch prediction penalties mitigated using dynamic 2-bit branch predictors.`,
+        afterText: `QUESTION 01: EXPLAIN PIPELINING & HAZARDS IN RISC-V
+Overview: Pipelining increases CPU instruction throughput by overlapping 5 stages.
+Stage Breakdown: IF (Instruction Fetch), ID (Decode), EX (Execute), MEM, WB (Write-back).
+Structural Hazards: Hardware resource contention resolved via duplicate functional units.
+Data Hazards: Read-After-Write (RAW) dependencies resolved with data forwarding.
+Control Hazards: Branch prediction penalties mitigated using dynamic 2-bit branch predictors.`,
         handwritingFont: 'Indie Flower, cursive',
         inkColor: '#0f172a', // Fountain Black
     },
     {
         id: 'chemistry',
         title: 'Chemistry Titration',
-        beforeText: `PROCEDURE: TITRATION OF STANDARD OXALIC ACID
-1. Wash all glass apparatus thoroughly with distilled water.
-2. Pipette 20.0 mL of standard 0.05 M oxalic acid into the titration conical flask.
-3. Add one test tube of 2N dilute sulfuric acid to prevent precipitation of MnO2.
-4. Heat the contents up to 60°C - 70°C before titrating against potassium permanganate.`,
-        afterText: `Procedure: Titration of Oxalic Acid
-
-1. Wash all apparatus with distilled water.
-2. Pipette 20.0 mL of 0.05 M oxalic acid into flask.
-3. Add one test tube dilute H2SO4 to acidify.
-4. Heat to 60°C and titrate against KMnO4 until permanent light pink endpoint is observed.`,
+        beforeText: `EXPERIMENT 02: REDOX TITRATION OF STANDARD OXALIC ACID
+Procedure: Pipette out exactly 20.0 mL of 0.05 M oxalic acid into the conical flask.
+Acidification: Add one test tube of 2N dilute sulfuric acid to prevent MnO2 precipitation.
+Heating: Warm the contents gently to 60°C - 70°C before commencing burette titration.
+Titration: Run KMnO4 solution dropwise with constant swirling until pale permanent pink.
+Endpoint: Concordant burette reading noted at V = 19.8 mL with zero meniscus error.`,
+        afterText: `EXPERIMENT 02: REDOX TITRATION OF STANDARD OXALIC ACID
+Procedure: Pipette out exactly 20.0 mL of 0.05 M oxalic acid into the conical flask.
+Acidification: Add one test tube of 2N dilute sulfuric acid to prevent MnO2 precipitation.
+Heating: Warm the contents gently to 60°C - 70°C before commencing burette titration.
+Titration: Run KMnO4 solution dropwise with constant swirling until pale permanent pink.
+Endpoint: Concordant burette reading noted at V = 19.8 mL with zero meniscus error.`,
         handwritingFont: 'Cedarville Cursive, cursive',
         inkColor: '#0369a1', // Gel Blue
     },
@@ -142,7 +138,7 @@ export const BeforeAfterSlider: React.FC = () => {
             {/* Comparison Canvas Card */}
             <div
                 ref={containerRef}
-                className="relative h-[380px] sm:h-[420px] rounded-3xl overflow-hidden shadow-2xl border border-neutral-300 ring-1 ring-black/5 cursor-ew-resize select-none bg-stone-100"
+                className="relative h-[400px] sm:h-[440px] rounded-3xl overflow-hidden shadow-2xl border border-neutral-300 ring-1 ring-black/5 cursor-ew-resize select-none bg-stone-100"
                 onMouseDown={(e) => {
                     updatePosition(e.clientX);
                     setIsDragging(true);
@@ -153,7 +149,7 @@ export const BeforeAfterSlider: React.FC = () => {
                 }}
             >
                 {/* 1. RIGHT SIDE / BACKGROUND: REALISTIC HANDWRITTEN NOTEBOOK */}
-                <div className="absolute inset-0 bg-[#fffdfa] overflow-hidden flex flex-col justify-between p-6 sm:p-10">
+                <div className="absolute inset-0 bg-[#fffdfa] overflow-hidden flex flex-col justify-between p-6 sm:p-10 z-10">
                     {/* Ruled lines pattern */}
                     <div
                         className="absolute inset-0 pointer-events-none opacity-45"
@@ -175,13 +171,12 @@ export const BeforeAfterSlider: React.FC = () => {
                     </div>
 
                     {/* Handwritten Content */}
-                    <div className="relative z-10 pl-8 sm:pl-12 max-w-xl">
+                    <div className="relative z-10 pl-8 sm:pl-12 max-w-2xl">
                         <div
                             style={{
                                 fontFamily: preset.handwritingFont,
                                 color: preset.inkColor,
                                 lineHeight: '32px',
-                                transform: 'rotate(-0.25deg)',
                             }}
                             className="text-lg sm:text-2xl font-normal whitespace-pre-wrap select-none leading-[32px] tracking-wide"
                         >
@@ -197,24 +192,33 @@ export const BeforeAfterSlider: React.FC = () => {
 
                 {/* 2. LEFT SIDE / FOREGROUND CLIP: STERILE DIGITAL TYPED TEXT */}
                 <div
-                    className="absolute inset-y-0 left-0 bg-white border-r border-neutral-300 overflow-hidden flex flex-col justify-between p-6 sm:p-10 shadow-lg"
-                    style={{ width: `${sliderPos}%` }}
+                    className="absolute inset-0 bg-[#f8fafc] border-r-2 border-violet-600 overflow-hidden flex flex-col justify-between p-6 sm:p-10 z-20 pointer-events-none"
+                    style={{ clipPath: `inset(0 ${100 - sliderPos}% 0 0)` }}
                 >
+                    {/* Faint terminal / digital grid */}
+                    <div
+                        className="absolute inset-0 pointer-events-none opacity-20"
+                        style={{
+                            backgroundImage: 'linear-gradient(to right, #cbd5e1 1px, transparent 1px), linear-gradient(to bottom, #cbd5e1 1px, transparent 1px)',
+                            backgroundSize: '24px 24px',
+                        }}
+                    />
+
                     {/* Badge */}
                     <div className="relative z-10 self-start">
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neutral-100 border border-neutral-300 text-neutral-600 text-[11px] font-black shadow-xs">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-200/90 border border-slate-300 text-slate-700 text-[11px] font-black shadow-xs font-mono">
                             <FileText size={12} />
                             Sterile Computer Typed Text
                         </span>
                     </div>
 
-                    {/* Digital Rigid Content */}
-                    <div className="relative z-10 font-mono text-xs sm:text-sm text-neutral-800 max-w-xl whitespace-pre-wrap leading-relaxed select-none">
+                    {/* Digital Rigid Monospace Content */}
+                    <div className="relative z-10 font-mono text-xs sm:text-sm text-slate-800 max-w-2xl whitespace-pre-wrap leading-[32px] select-none">
                         {preset.beforeText}
                     </div>
 
-                    <div className="relative z-10 text-[10px] sm:text-xs text-neutral-400 font-mono">
-                        <span>Raw Digital Font (Times New Roman / Courier)</span>
+                    <div className="relative z-10 text-[10px] sm:text-xs text-slate-500 font-mono">
+                        <span>Raw Digital Monospace Font (Courier New / Consolas)</span>
                     </div>
                 </div>
 
@@ -224,7 +228,7 @@ export const BeforeAfterSlider: React.FC = () => {
                     style={{ left: `${sliderPos}%` }}
                 >
                     {/* Vertical Divider Line */}
-                    <div className="w-[3px] h-full bg-gradient-to-b from-violet-500 via-indigo-600 to-cyan-500 shadow-md" />
+                    <div className="w-[3px] h-full bg-gradient-to-b from-violet-500 via-indigo-600 to-cyan-500 shadow-lg" />
 
                     {/* Floating 3D Circular Handle */}
                     <div

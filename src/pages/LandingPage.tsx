@@ -4,7 +4,8 @@ import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSp
 import {
     Sparkles, ArrowRight, BookOpen, Zap, 
     ChevronDown, Camera, Flame, MousePointerClick,
-    FlaskConical, Eye, PenTool, ShieldCheck
+    FlaskConical, Eye, PenTool, ShieldCheck,
+    CheckCircle2, FileText, Layers
 } from 'lucide-react';
 import InkTrailLogo from '../components/common/InkTrailLogo';
 import NotebookHero3D from '../components/landing/NotebookHero3D';
@@ -363,7 +364,7 @@ export default function LandingPage() {
                     {/* Right Column: Uncaged Open Dual-Page Spiral Notebook with Parallax Floating Notes */}
                     <div className="lg:col-span-7 relative flex items-center justify-center">
                         
-                        {/* Parallax Floating Note 1: Yellow Post-it Scrap */}
+                        {/* Parallax Floating Note 1: Yellow Post-it Scrap resting near notebook foot */}
                         <motion.div
                             style={{ 
                                 y: yFloatingCard1, 
@@ -371,7 +372,7 @@ export default function LandingPage() {
                                 x: card1X,
                                 translateY: card1Y
                             }}
-                            className="hidden sm:flex absolute top-6 right-2 sm:right-6 lg:right-10 z-30 select-none pointer-events-none"
+                            className="hidden sm:flex absolute -bottom-2 right-4 sm:right-10 z-30 select-none pointer-events-none"
                         >
                             <motion.div
                                 animate={{ y: [0, -6, 0] }}
@@ -383,7 +384,7 @@ export default function LandingPage() {
                             </motion.div>
                         </motion.div>
 
-                        {/* Parallax Floating Note 2: Circuit Formula Badge */}
+                        {/* Parallax Floating Note 2: Circuit Formula Badge beside schematic */}
                         <motion.div
                             style={{ 
                                 y: yFloatingCard2, 
@@ -391,7 +392,7 @@ export default function LandingPage() {
                                 x: card2X,
                                 translateY: card2Y
                             }}
-                            className="hidden md:flex absolute top-12 left-2 sm:left-4 lg:left-6 z-30 select-none pointer-events-none"
+                            className="hidden lg:flex absolute top-1/2 -left-4 sm:-left-6 -translate-y-1/2 z-30 select-none pointer-events-none"
                         >
                             <motion.div
                                 animate={{ y: [0, 7, 0] }}
@@ -403,30 +404,12 @@ export default function LandingPage() {
                             </motion.div>
                         </motion.div>
 
-                        {/* Parallax Floating Note 3: Dual-page practical label */}
-                        <motion.div
-                            style={{
-                                x: card3X,
-                                translateY: card3Y
-                            }}
-                            className="hidden lg:flex absolute bottom-6 left-8 z-30 select-none pointer-events-none font-medium"
-                        >
-                            <motion.div
-                                animate={{ y: [0, -5, 0] }}
-                                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-                                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/95 backdrop-blur-md text-stone-700 text-xs shadow-md border border-stone-200/90"
-                            >
-                                <span className="text-violet-600 font-bold">●</span>
-                                <span>Facing Diagram & Write-up</span>
-                            </motion.div>
-                        </motion.div>
-
                         {/* Uncaged 3D Notebook Canvas (No Box Frame, Free Floating) */}
                         <motion.div 
                             style={{ y: yHeroNotebook }}
                             className="w-full relative cursor-grab active:cursor-grabbing"
                         >
-                            <NotebookHero3D />
+                            <NotebookHero3D activeInk={activeInk} />
                         </motion.div>
                     </div>
 
@@ -459,6 +442,142 @@ export default function LandingPage() {
                 >
                     <BeforeAfterSlider />
                 </motion.div>
+            </section>
+
+            {/* =========================================================
+                3.5 PARALLAX HOW IT WORKS (4-Step Guided Journey)
+            ========================================================= */}
+            <section id="how-it-works" className="py-16 sm:py-24 px-4 sm:px-6 max-w-7xl mx-auto relative scroll-mt-20">
+                <div className="text-center max-w-2xl mx-auto mb-16">
+                    <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-indigo-100/80 border border-indigo-200 text-indigo-800 text-xs font-mono font-bold uppercase tracking-wider mb-3">
+                        <CheckCircle2 size={13} className="text-indigo-600" />
+                        <span>Workflow · 4 Simple Steps</span>
+                    </span>
+                    <h2 className="text-3xl sm:text-5xl font-black text-stone-950 tracking-tight font-display">
+                        How InkTrail Works
+                    </h2>
+                    <p className="text-stone-600 text-sm sm:text-base mt-2.5 leading-relaxed">
+                        Four straightforward steps to turn digital text into authentic student lab records, registers, and handwritten assignments.
+                    </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
+                    {/* Step 1 */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 24 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: '-50px' }}
+                        transition={{ duration: 0.4, delay: 0.05 }}
+                        className="p-6 sm:p-7 rounded-3xl bg-white border border-stone-200/90 shadow-xs hover:shadow-xl hover:border-violet-300 transition-all flex flex-col justify-between group"
+                    >
+                        <div>
+                            <div className="flex items-center justify-between mb-6">
+                                <span className="w-12 h-12 rounded-2xl bg-neutral-900 text-white flex items-center justify-center font-black text-lg shadow-md group-hover:scale-108 transition-transform">
+                                    01
+                                </span>
+                                <span className="px-2.5 py-1 rounded-full bg-stone-100 text-stone-600 text-[10px] font-mono font-bold uppercase">
+                                    Input
+                                </span>
+                            </div>
+                            <h3 className="text-lg font-black text-stone-900 mb-2">
+                                Write, Paste, or Import
+                            </h3>
+                            <p className="text-xs text-stone-600 leading-relaxed">
+                                Paste raw text, markdown, or drop documents (.docx, .pdf, .txt). The Smart Preamble Stripper purges ChatGPT fluff, while Smart Margin Indexing pins question numbers (Q1., Sol:) cleanly into notebook margins.
+                            </p>
+                        </div>
+                        <div className="mt-6 pt-4 border-t border-stone-100 flex items-center gap-1.5 text-[11px] font-mono text-violet-700 font-bold">
+                            <span>Auto-detection active</span>
+                        </div>
+                    </motion.div>
+
+                    {/* Step 2 */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 24 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: '-50px' }}
+                        transition={{ duration: 0.4, delay: 0.15 }}
+                        className="p-6 sm:p-7 rounded-3xl bg-white border border-stone-200/90 shadow-xs hover:shadow-xl hover:border-indigo-300 transition-all flex flex-col justify-between group"
+                    >
+                        <div>
+                            <div className="flex items-center justify-between mb-6">
+                                <span className="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-black text-lg shadow-md group-hover:scale-108 transition-transform">
+                                    02
+                                </span>
+                                <span className="px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 text-[10px] font-mono font-bold uppercase">
+                                    Stationery
+                                </span>
+                            </div>
+                            <h3 className="text-lg font-black text-stone-900 mb-2">
+                                Pick Paper & Ink Tone
+                            </h3>
+                            <p className="text-xs text-stone-600 leading-relaxed">
+                                Select Classmate 30-Line Ruled registers, millimeter engineering graph paper, or parchment. Choose authentic student ink colors: Royal Blue, Ballpoint Black, Gel Cyan, or Emerald Green with true capillary absorption.
+                            </p>
+                        </div>
+                        <div className="mt-6 pt-4 border-t border-stone-100 flex items-center gap-1.5 text-[11px] font-mono text-indigo-700 font-bold">
+                            <span>15+ Indian paper styles</span>
+                        </div>
+                    </motion.div>
+
+                    {/* Step 3 */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 24 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: '-50px' }}
+                        transition={{ duration: 0.4, delay: 0.25 }}
+                        className="p-6 sm:p-7 rounded-3xl bg-white border border-stone-200/90 shadow-xs hover:shadow-xl hover:border-cyan-300 transition-all flex flex-col justify-between group"
+                    >
+                        <div>
+                            <div className="flex items-center justify-between mb-6">
+                                <span className="w-12 h-12 rounded-2xl bg-cyan-600 text-white flex items-center justify-center font-black text-lg shadow-md group-hover:scale-108 transition-transform">
+                                    03
+                                </span>
+                                <span className="px-2.5 py-1 rounded-full bg-cyan-50 text-cyan-700 text-[10px] font-mono font-bold uppercase">
+                                    Engine
+                                </span>
+                            </div>
+                            <h3 className="text-lg font-black text-stone-900 mb-2">
+                                Realism & Human Flaws
+                            </h3>
+                            <p className="text-xs text-stone-600 leading-relaxed">
+                                Eliminate mechanical perfection. InkTrail adds organic motor jitter, subtle line-drift waves, slight character width variations, realistic pen pressure, and deliberate human scratch-outs with wavy ink strokes.
+                            </p>
+                        </div>
+                        <div className="mt-6 pt-4 border-t border-stone-100 flex items-center gap-1.5 text-[11px] font-mono text-cyan-700 font-bold">
+                            <span>Zero uniform glyphs</span>
+                        </div>
+                    </motion.div>
+
+                    {/* Step 4 */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 24 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: '-50px' }}
+                        transition={{ duration: 0.4, delay: 0.35 }}
+                        className="p-6 sm:p-7 rounded-3xl bg-white border border-stone-200/90 shadow-xs hover:shadow-xl hover:border-emerald-300 transition-all flex flex-col justify-between group"
+                    >
+                        <div>
+                            <div className="flex items-center justify-between mb-6">
+                                <span className="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-black text-lg shadow-md group-hover:scale-108 transition-transform">
+                                    04
+                                </span>
+                                <span className="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-mono font-bold uppercase">
+                                    Export
+                                </span>
+                            </div>
+                            <h3 className="text-lg font-black text-stone-900 mb-2">
+                                4K Multi-Page PDF
+                            </h3>
+                            <p className="text-xs text-stone-600 leading-relaxed">
+                                Toggle smartphone camera shadows, desk lamp warm glow, and paper fold creases. Export print-ready 4K high-resolution PDFs or image bundles with facing diagram sheets included in flawless sequence.
+                            </p>
+                        </div>
+                        <div className="mt-6 pt-4 border-t border-stone-100 flex items-center gap-1.5 text-[11px] font-mono text-emerald-700 font-bold">
+                            <span>Vector crisp · 0 watermarks</span>
+                        </div>
+                    </motion.div>
+                </div>
             </section>
 
             {/* =========================================================
@@ -753,53 +872,101 @@ export default function LandingPage() {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     
                     {/* Card 1: Smartphone Camera Perspective */}
-                    <div className="p-8 rounded-3xl bg-white border border-stone-200/90 shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between">
+                    <div className="p-8 rounded-3xl bg-white border border-stone-200/90 shadow-xs hover:shadow-xl hover:border-indigo-300 transition-all flex flex-col justify-between group">
                         <div>
-                            <div className="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-600 mb-6">
+                            <div className="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-600 mb-6 group-hover:scale-108 transition-transform">
                                 <Camera size={24} />
                             </div>
-                            <h3 className="text-xl font-bold text-stone-900 mb-2">Smartphone Perspective & Cast Shadows</h3>
+                            <h3 className="text-xl font-black text-stone-900 mb-2">Smartphone Perspective & Cast Shadows</h3>
                             <p className="text-sm text-stone-600 leading-relaxed">
-                                Simulates taking a photo with a mobile camera. Adds subtle corner tilt, lens depth, and authentic phone silhouette cast shadows.
+                                Simulates taking a photo with a mobile phone. Adds subtle corner tilt, lens depth, and authentic phone silhouette cast shadows to look like real student submissions.
                             </p>
                         </div>
-                        <div className="mt-6 pt-4 border-t border-stone-100 text-xs font-mono text-indigo-600 font-semibold">
-                            Natural optical depth
+                        <div className="mt-6 pt-4 border-t border-stone-100 text-xs font-mono text-indigo-600 font-bold">
+                            Natural optical depth & illumination
                         </div>
                     </div>
 
                     {/* Card 2: Lab Notebook Diagram Canvas */}
-                    <div className="p-8 rounded-3xl bg-white border border-stone-200/90 shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between">
+                    <div className="p-8 rounded-3xl bg-white border border-stone-200/90 shadow-xs hover:shadow-xl hover:border-cyan-300 transition-all flex flex-col justify-between group">
                         <div>
-                            <div className="w-12 h-12 rounded-2xl bg-cyan-50 border border-cyan-200 flex items-center justify-center text-cyan-600 mb-6">
+                            <div className="w-12 h-12 rounded-2xl bg-cyan-50 border border-cyan-200 flex items-center justify-center text-cyan-600 mb-6 group-hover:scale-108 transition-transform">
                                 <FlaskConical size={24} />
                             </div>
-                            <h3 className="text-xl font-bold text-stone-900 mb-2">Lab Record & Diagram Workbench</h3>
+                            <h3 className="text-xl font-black text-stone-900 mb-2">Lab Record & Diagram Workbench</h3>
                             <p className="text-sm text-stone-600 leading-relaxed">
-                                Facing-sheet mode with integrated drawing canvas. Sketch circuit diagrams, chemical apparatus, and charts directly onto blank pages before PDF compilation.
+                                Facing-sheet practical mode with built-in sketch tools. Insert SVG circuit schematics, ray optics, or titration apparatus directly onto blank sheets before PDF compilation.
                             </p>
                         </div>
-                        <div className="mt-6 pt-4 border-t border-stone-100 text-xs font-mono text-cyan-600 font-semibold">
+                        <div className="mt-6 pt-4 border-t border-stone-100 text-xs font-mono text-cyan-600 font-bold">
                             Dual-page practical mode
                         </div>
                     </div>
 
                     {/* Card 3: Natural Human Inconsistency */}
-                    <div className="p-8 rounded-3xl bg-white border border-stone-200/90 shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between">
+                    <div className="p-8 rounded-3xl bg-white border border-stone-200/90 shadow-xs hover:shadow-xl hover:border-purple-300 transition-all flex flex-col justify-between group">
                         <div>
-                            <div className="w-12 h-12 rounded-2xl bg-purple-50 border border-purple-200 flex items-center justify-center text-purple-600 mb-6">
+                            <div className="w-12 h-12 rounded-2xl bg-purple-50 border border-purple-200 flex items-center justify-center text-purple-600 mb-6 group-hover:scale-108 transition-transform">
                                 <Flame size={24} />
                             </div>
-                            <h3 className="text-xl font-bold text-stone-900 mb-2">Natural Human Inconsistency</h3>
+                            <h3 className="text-xl font-black text-stone-900 mb-2">Human Imperfections & Scratch-Outs</h3>
                             <p className="text-sm text-stone-600 leading-relaxed">
-                                Real handwriting has personality. InkTrail adds realistic baseline drift, pen pressure variations, and natural ink absorption that looks completely organic.
+                                Real handwriting has character. InkTrail adds realistic baseline drift, pen pressure variations, and realistic human typos with authentic wavy strikethroughs.
                             </p>
                         </div>
-                        <div className="mt-6 pt-4 border-t border-stone-100 text-xs font-mono text-purple-600 font-semibold">
+                        <div className="mt-6 pt-4 border-t border-stone-100 text-xs font-mono text-purple-600 font-bold">
                             Organic pen flow & ink absorption
+                        </div>
+                    </div>
+
+                    {/* Card 4: Smart Margin Indexing */}
+                    <div className="p-8 rounded-3xl bg-white border border-stone-200/90 shadow-xs hover:shadow-xl hover:border-amber-300 transition-all flex flex-col justify-between group">
+                        <div>
+                            <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600 mb-6 group-hover:scale-108 transition-transform">
+                                <FileText size={24} />
+                            </div>
+                            <h3 className="text-xl font-black text-stone-900 mb-2">Smart Margin Indexing & AI Cleaner</h3>
+                            <p className="text-sm text-stone-600 leading-relaxed">
+                                Automatically isolates question labels (Q1., Sol:, Fig:) into the red margin rule, while automatically stripping away conversational AI preambles like "Sure, here is your assignment".
+                            </p>
+                        </div>
+                        <div className="mt-6 pt-4 border-t border-stone-100 text-xs font-mono text-amber-700 font-bold">
+                            Standard Indian answer sheet format
+                        </div>
+                    </div>
+
+                    {/* Card 5: Twin-Wire Spiral Binding */}
+                    <div className="p-8 rounded-3xl bg-white border border-stone-200/90 shadow-xs hover:shadow-xl hover:border-emerald-300 transition-all flex flex-col justify-between group">
+                        <div>
+                            <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 mb-6 group-hover:scale-108 transition-transform">
+                                <Layers size={24} />
+                            </div>
+                            <h3 className="text-xl font-black text-stone-900 mb-2">Twin-Wire Spiral Coils & Paper Ream</h3>
+                            <p className="text-sm text-stone-600 leading-relaxed">
+                                Render metallic chrome twin-wire spiral coils pinned exclusively along the left edge, complete with paper thickness edges, puncture punch holes, and subtle shadow grooves.
+                            </p>
+                        </div>
+                        <div className="mt-6 pt-4 border-t border-stone-100 text-xs font-mono text-emerald-600 font-bold">
+                            Authentic stationery physics
+                        </div>
+                    </div>
+
+                    {/* Card 6: Zero Paywalls & Privacy */}
+                    <div className="p-8 rounded-3xl bg-white border border-stone-200/90 shadow-xs hover:shadow-xl hover:border-rose-300 transition-all flex flex-col justify-between group">
+                        <div>
+                            <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-600 mb-6 group-hover:scale-108 transition-transform">
+                                <ShieldCheck size={24} />
+                            </div>
+                            <h3 className="text-xl font-black text-stone-900 mb-2">100% Client-Side Privacy & Free Beta</h3>
+                            <p className="text-sm text-stone-600 leading-relaxed">
+                                Everything runs locally inside your browser memory. Your assignments, notes, and records are never saved to external servers without consent. 100% free with unlimited 4K exports.
+                            </p>
+                        </div>
+                        <div className="mt-6 pt-4 border-t border-stone-100 text-xs font-mono text-rose-600 font-bold">
+                            No paywalls · No watermarks · Instant
                         </div>
                     </div>
 

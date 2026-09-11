@@ -1,14 +1,77 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
+import { Play, Pause, RotateCcw } from 'lucide-react';
 
 interface NotebookHero3DProps {
     className?: string;
     interactive?: boolean;
+    activeInk?: string;
 }
 
-export default function NotebookHero3D({ className = '', interactive = true }: NotebookHero3DProps) {
+const INK_OPTIONS = [
+    { name: 'Royal Blue', color: '#1e3a8a' },
+    { name: 'Ballpoint Black', color: '#0f172a' },
+    { name: 'Gel Cyan', color: '#0284c7' },
+    { name: 'Emerald Green', color: '#047857' },
+    { name: 'Royal Violet', color: '#581c87' },
+];
+
+const PAPER_PRESETS = [
+    { id: 'ruled', name: 'Ruled Register' },
+    { id: 'graph', name: 'Lab Graph' },
+    { id: 'parchment', name: 'Parchment' },
+];
+
+const INSCRIBE_NOTES = [
+    "Aim: Determine resistance per unit length of given specimen wire.",
+    "Apparatus: Constant DC supply, standard resistor, microammeter.",
+    "Formula: V = I × R (Ohm's Law holds at constant temperature).",
+    "Slope Calculation: Resistance R is given by ΔV / ΔI.",
+    "Observation 1: At V = 2.0 V, Current measured I = 0.41 A.",
+    "Observation 2: At V = 4.0 V, Current measured I = 0.83 A.",
+    "Observation 3: At V = 6.0 V, Current measured I = 1.25 A.",
+    "Observation 4: At V = 8.0 V, Current measured I = 1.66 A.",
+    "Observation 5: At V = 10.0 V, Current measured I = 2.08 A.",
+    "Calculations: Mean R = Σ(V/I) / 5 = 4.82 Ω ± 0.03 Ω.",
+    "Precautions: Connections must be clean, tight, and low-resistance.",
+    "Result: Verified by Instructor. Grade: A+ (10/10) [PASS]"
+];
+
+export default function NotebookHero3D({ 
+    className = '', 
+    interactive = true,
+    activeInk: propInk,
+}: NotebookHero3DProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
+
+    // Interactive Hero State
+    const [selectedInk, setSelectedInk] = useState<string | null>(null);
+    const activeInkColor = selectedInk || propInk || '#1e3a8a';
+    const [selectedPaper, setSelectedPaper] = useState('ruled');
+    const [isPlaying, setIsPlaying] = useState(true);
+
+    // Refs for live engine synchronization
+    const inkRef = useRef(activeInkColor);
+    const paperRef = useRef(selectedPaper);
+    const playRef = useRef(isPlaying);
+    const restartTriggerRef = useRef(0);
+
+    useEffect(() => {
+        inkRef.current = activeInkColor;
+    }, [activeInkColor]);
+
+    useEffect(() => {
+        paperRef.current = selectedPaper;
+    }, [selectedPaper]);
+
+    useEffect(() => {
+        playRef.current = isPlaying;
+    }, [isPlaying]);
+
+    const handleRestart = () => {
+        restartTriggerRef.current += 1;
+    };
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -19,7 +82,7 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
         let width = container.clientWidth;
         let height = container.clientHeight;
 
-        // 1. Scene
+        // 1. Three.js Scene
         const scene = new THREE.Scene();
 
         // 2. Camera: Studio perspective lens with realistic depth
@@ -39,11 +102,11 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
         // 4. Lighting Rig
-        const ambientLight = new THREE.AmbientLight(0xffffff, 1.45);
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
         scene.add(ambientLight);
 
         // Warm Key Light (Top-right studio lamp)
-        const keyLight = new THREE.DirectionalLight(0xfffdf0, 2.7);
+        const keyLight = new THREE.DirectionalLight(0xfffdf0, 2.8);
         keyLight.position.set(5.0, 7.5, 6.0);
         keyLight.castShadow = true;
         keyLight.shadow.mapSize.set(1024, 1024);
@@ -55,11 +118,6 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
         fillLight.position.set(-5, 4, 4);
         scene.add(fillLight);
 
-        // Soft Tabletop Bounce
-        const bounceLight = new THREE.DirectionalLight(0xfef3c7, 0.5);
-        bounceLight.position.set(0, -4, 2);
-        scene.add(bounceLight);
-
         // Specular glint for spiral rings
         const coilGlint = new THREE.PointLight(0x818cf8, 2.0, 10);
         coilGlint.position.set(0, 1.2, 2.2);
@@ -69,20 +127,21 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
         const notebookGroup = new THREE.Group();
         scene.add(notebookGroup);
 
-        // Ground Soft Contact Shadow
+        // Ground Soft Contact Shadow (Multi-stop smooth radial gradient, NO rigid rectangular cover)
         const shadowCanvas = document.createElement('canvas');
         shadowCanvas.width = 512;
         shadowCanvas.height = 512;
         const sCtx = shadowCanvas.getContext('2d')!;
-        const radGrad = sCtx.createRadialGradient(256, 256, 30, 256, 256, 240);
-        radGrad.addColorStop(0, 'rgba(15, 23, 42, 0.28)');
-        radGrad.addColorStop(0.45, 'rgba(30, 41, 59, 0.10)');
+        const radGrad = sCtx.createRadialGradient(256, 256, 20, 256, 256, 240);
+        radGrad.addColorStop(0, 'rgba(15, 23, 42, 0.24)');
+        radGrad.addColorStop(0.35, 'rgba(30, 41, 59, 0.12)');
+        radGrad.addColorStop(0.7, 'rgba(30, 41, 59, 0.04)');
         radGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
         sCtx.fillStyle = radGrad;
         sCtx.fillRect(0, 0, 512, 512);
 
         const shadowTexture = new THREE.CanvasTexture(shadowCanvas);
-        const shadowGeo = new THREE.PlaneGeometry(7.4, 5.2);
+        const shadowGeo = new THREE.PlaneGeometry(7.2, 5.0);
         const shadowMat = new THREE.MeshBasicMaterial({
             map: shadowTexture,
             transparent: true,
@@ -94,355 +153,259 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
         shadowMesh.rotation.x = -Math.PI * 0.18;
         scene.add(shadowMesh);
 
-        // Helper: Procedural paper grain for tactile realism
-        const applyPaperGrain = (ctx: CanvasRenderingContext2D, w: number, h: number) => {
-            const imgData = ctx.getImageData(0, 0, w, h);
-            const data = imgData.data;
-            for (let i = 0; i < data.length; i += 4) {
-                const grain = (Math.random() - 0.5) * 6;
-                data[i] = Math.min(255, Math.max(0, data[i] + grain));
-                data[i + 1] = Math.min(255, Math.max(0, data[i + 1] + grain));
-                data[i + 2] = Math.min(255, Math.max(0, data[i + 2] + grain));
-            }
-            ctx.putImageData(imgData, 0, 0);
-        };
-
         // --- LEFT PAGE: Circuit Diagram & Schematic Canvas ---
         const leftCanvas = document.createElement('canvas');
         leftCanvas.width = 1024;
         leftCanvas.height = 1360;
         const lCtx = leftCanvas.getContext('2d')!;
 
-        // Cream paper base
-        lCtx.fillStyle = '#fdfbf7';
-        lCtx.fillRect(0, 0, 1024, 1360);
+        const renderLeftPage = () => {
+            const paperType = paperRef.current;
+            lCtx.fillStyle = paperType === 'parchment' ? '#fbf4e6' : '#fdfbf7';
+            lCtx.fillRect(0, 0, 1024, 1360);
 
-        // Subtle millimeter grid
-        lCtx.strokeStyle = '#e0f2fe';
-        lCtx.lineWidth = 1;
-        for (let x = 60; x < 960; x += 32) {
+            // Grid lines
+            lCtx.strokeStyle = paperType === 'graph' ? '#bae6fd' : '#e0f2fe';
+            lCtx.lineWidth = 1;
+            for (let x = 60; x < 960; x += 32) {
+                lCtx.beginPath();
+                lCtx.moveTo(x, 80);
+                lCtx.lineTo(x, 1280);
+                lCtx.stroke();
+            }
+            for (let y = 80; y < 1280; y += 32) {
+                lCtx.beginPath();
+                lCtx.moveTo(60, y);
+                lCtx.lineTo(960, y);
+                lCtx.stroke();
+            }
+
+            // Header
+            lCtx.font = 'bold 30px Caveat, cursive, sans-serif';
+            lCtx.fillStyle = inkRef.current;
+            lCtx.fillText("Fig 4.1: Circuit Schematic · Ohm's Law", 100, 130);
+
+            // Hand-drawn circuit schematic
+            lCtx.strokeStyle = inkRef.current;
+            lCtx.lineWidth = 3.5;
+            lCtx.lineCap = 'round';
+            lCtx.lineJoin = 'round';
             lCtx.beginPath();
-            lCtx.moveTo(x, 80);
-            lCtx.lineTo(x, 1280);
+            lCtx.moveTo(180, 260);
+            lCtx.lineTo(760, 260);
+            lCtx.lineTo(760, 680);
+            lCtx.lineTo(180, 680);
+            lCtx.closePath();
             lCtx.stroke();
-        }
-        for (let y = 80; y < 1280; y += 32) {
-            lCtx.beginPath();
-            lCtx.moveTo(60, y);
-            lCtx.lineTo(960, y);
+
+            // Battery symbol
+            lCtx.fillStyle = paperType === 'parchment' ? '#fbf4e6' : '#fdfbf7';
+            lCtx.fillRect(420, 240, 100, 40);
             lCtx.stroke();
-        }
+            lCtx.font = 'bold 22px Caveat, cursive';
+            lCtx.fillText("+  E  -", 445, 230);
 
-        // Left Page Header
-        lCtx.font = 'bold 30px Caveat, cursive, sans-serif';
-        lCtx.fillStyle = '#1e40af';
-        lCtx.fillText("Fig 4.1: Circuit Schematic · Ohm's Law", 100, 130);
-
-        // Hand-drawn circuit schematic
-        lCtx.strokeStyle = '#1e3a8a';
-        lCtx.lineWidth = 3.5;
-        lCtx.lineCap = 'round';
-        lCtx.lineJoin = 'round';
-
-        lCtx.beginPath();
-        lCtx.moveTo(180, 260);
-        lCtx.lineTo(760, 260);
-        lCtx.lineTo(760, 680);
-        lCtx.lineTo(180, 680);
-        lCtx.closePath();
-        lCtx.stroke();
-
-        // Battery symbol
-        lCtx.fillStyle = '#fdfbf7';
-        lCtx.fillRect(420, 240, 100, 40);
-        lCtx.strokeStyle = '#1e3a8a';
-        lCtx.lineWidth = 4;
-        lCtx.beginPath();
-        lCtx.moveTo(440, 245);
-        lCtx.lineTo(440, 275);
-        lCtx.moveTo(460, 252);
-        lCtx.lineTo(460, 268);
-        lCtx.moveTo(480, 245);
-        lCtx.lineTo(480, 275);
-        lCtx.stroke();
-        lCtx.font = 'bold 22px Caveat, cursive';
-        lCtx.fillText("+  E  -", 445, 230);
-
-        // Ammeter Circle
-        lCtx.fillStyle = '#fdfbf7';
-        lCtx.fillRect(730, 430, 60, 80);
-        lCtx.beginPath();
-        lCtx.arc(760, 470, 30, 0, Math.PI * 2);
-        lCtx.stroke();
-        lCtx.font = 'bold 28px Caveat, cursive';
-        lCtx.fillText("A", 752, 478);
-
-        // Resistor
-        lCtx.fillStyle = '#fdfbf7';
-        lCtx.fillRect(400, 660, 140, 40);
-        lCtx.beginPath();
-        lCtx.moveTo(400, 680);
-        lCtx.lineTo(415, 665);
-        lCtx.lineTo(435, 695);
-        lCtx.lineTo(455, 665);
-        lCtx.lineTo(475, 695);
-        lCtx.lineTo(495, 665);
-        lCtx.lineTo(515, 695);
-        lCtx.lineTo(530, 680);
-        lCtx.lineTo(540, 680);
-        lCtx.stroke();
-        lCtx.fillText("Unknown Resistance (R)", 375, 735);
-
-        // V-I Graph Box
-        lCtx.strokeStyle = '#64748b';
-        lCtx.lineWidth = 2;
-        lCtx.beginPath();
-        lCtx.moveTo(200, 1140);
-        lCtx.lineTo(820, 1140);
-        lCtx.moveTo(200, 1140);
-        lCtx.lineTo(200, 840);
-        lCtx.stroke();
-
-        lCtx.font = '22px Caveat, cursive';
-        lCtx.fillText("Voltage V (Volts) →", 460, 1175);
-        lCtx.fillText("Current I (mA) ↑", 90, 840);
-
-        // Linear slope line
-        lCtx.strokeStyle = '#ef4444';
-        lCtx.lineWidth = 3;
-        lCtx.beginPath();
-        lCtx.moveTo(200, 1140);
-        lCtx.lineTo(760, 880);
-        lCtx.stroke();
-
-        // Data points
-        const points = [
-            { x: 300, y: 1095 },
-            { x: 420, y: 1040 },
-            { x: 530, y: 990 },
-            { x: 640, y: 935 },
-            { x: 740, y: 890 }
-        ];
-        lCtx.fillStyle = '#1e3a8a';
-        points.forEach(p => {
+            // Ammeter symbol
+            lCtx.fillRect(730, 430, 60, 80);
             lCtx.beginPath();
-            lCtx.arc(p.x, p.y, 6, 0, Math.PI * 2);
-            lCtx.fill();
+            lCtx.arc(760, 470, 30, 0, Math.PI * 2);
             lCtx.stroke();
-        });
+            lCtx.font = 'bold 28px Caveat, cursive';
+            lCtx.fillText("A", 752, 478);
 
-        lCtx.font = 'bold 24px Caveat, cursive';
-        lCtx.fillText("Slope = ΔV/ΔI = 4.82 Ω", 540, 970);
+            // Resistor zig-zag
+            lCtx.fillRect(400, 660, 140, 40);
+            lCtx.font = '22px Caveat, cursive';
+            lCtx.fillText("Resistance Specimen (R)", 375, 735);
 
-        // Spiral puncture holes along inner edge
-        for (let y = 140; y < 1260; y += 44) {
-            lCtx.fillStyle = '#cbd5e1';
+            // V-I Graph Box
+            lCtx.strokeStyle = '#64748b';
+            lCtx.lineWidth = 2;
             lCtx.beginPath();
-            lCtx.arc(980, y, 7, 0, Math.PI * 2);
-            lCtx.fill();
-        }
+            lCtx.moveTo(200, 1140);
+            lCtx.lineTo(820, 1140);
+            lCtx.moveTo(200, 1140);
+            lCtx.lineTo(200, 840);
+            lCtx.stroke();
 
-        applyPaperGrain(lCtx, 1024, 1360);
+            lCtx.font = '22px Caveat, cursive';
+            lCtx.fillText("Voltage V (Volts) →", 460, 1175);
+            lCtx.fillText("Current I (mA) ↑", 90, 840);
+
+            // Linear slope line
+            lCtx.strokeStyle = '#ef4444';
+            lCtx.lineWidth = 3;
+            lCtx.beginPath();
+            lCtx.moveTo(200, 1140);
+            lCtx.lineTo(760, 880);
+            lCtx.stroke();
+
+            // Data points
+            const points = [
+                { x: 300, y: 1095 },
+                { x: 420, y: 1040 },
+                { x: 530, y: 990 },
+                { x: 640, y: 935 },
+                { x: 740, y: 890 }
+            ];
+            lCtx.fillStyle = inkRef.current;
+            points.forEach(p => {
+                lCtx.beginPath();
+                lCtx.arc(p.x, p.y, 6, 0, Math.PI * 2);
+                lCtx.fill();
+                lCtx.stroke();
+            });
+
+            lCtx.font = 'bold 24px Caveat, cursive';
+            lCtx.fillStyle = inkRef.current;
+            lCtx.fillText("Slope = ΔV/ΔI = 4.82 Ω", 540, 970);
+
+            // Spiral puncture holes
+            for (let y = 140; y < 1260; y += 44) {
+                lCtx.fillStyle = '#cbd5e1';
+                lCtx.beginPath();
+                lCtx.arc(980, y, 7, 0, Math.PI * 2);
+                lCtx.fill();
+            }
+        };
+
+        renderLeftPage();
         const leftTexture = new THREE.CanvasTexture(leftCanvas);
         leftTexture.anisotropy = 8;
 
-        // --- RIGHT PAGE: Ruled Handwritten Write-Up ---
+        // --- RIGHT PAGE: DYNAMIC REAL-TIME INSCRIBING NOTEBOOK ---
         const rightCanvas = document.createElement('canvas');
         rightCanvas.width = 1024;
         rightCanvas.height = 1360;
         const rCtx = rightCanvas.getContext('2d')!;
 
-        rCtx.fillStyle = '#fdfbf7';
-        rCtx.fillRect(0, 0, 1024, 1360);
-
-        // Puncture holes
-        for (let y = 140; y < 1260; y += 44) {
-            rCtx.fillStyle = '#cbd5e1';
-            rCtx.beginPath();
-            rCtx.arc(44, y, 7, 0, Math.PI * 2);
-            rCtx.fill();
-        }
-
-        // Red margin double line
-        rCtx.strokeStyle = '#ef4444';
-        rCtx.lineWidth = 2.5;
-        rCtx.beginPath();
-        rCtx.moveTo(140, 0);
-        rCtx.lineTo(140, 1360);
-        rCtx.stroke();
-
-        rCtx.strokeStyle = '#fca5a5';
-        rCtx.lineWidth = 1.2;
-        rCtx.beginPath();
-        rCtx.moveTo(148, 0);
-        rCtx.lineTo(148, 1360);
-        rCtx.stroke();
-
-        // Blue horizontal ruled lines
-        rCtx.strokeStyle = '#93c5fd';
-        rCtx.lineWidth = 1.4;
-        const lineSpacing = 42;
-        for (let y = 140; y < 1320; y += lineSpacing) {
-            rCtx.beginPath();
-            rCtx.moveTo(60, y);
-            rCtx.lineTo(980, y);
-            rCtx.stroke();
-        }
-
-        // Header & Title
-        rCtx.font = 'bold 24px Caveat, cursive, sans-serif';
-        rCtx.fillStyle = '#64748b';
-        rCtx.fillText("PAGE: 04", 170, 105);
-        rCtx.fillText("DATE: 12 / 09 / 2026", 750, 105);
-
-        rCtx.font = 'bold 36px Caveat, cursive, sans-serif';
-        rCtx.fillStyle = '#1e3a8a';
-        rCtx.fillText("Verification of Ohm's Law & Wire Resistance", 170, 175);
-
-        // Handwritten Text Lines in authentic fountain pen ink
-        rCtx.font = '28px Caveat, cursive, sans-serif';
-        rCtx.fillStyle = '#1e293b';
-        const notes = [
-            "Aim: Determine resistance per unit length of given specimen wire.",
-            "Apparatus: Constant voltage supply, standard resistor, microammeter.",
-            "Formula: According to Ohm's Law, V = I × R at constant temperature.",
-            "Hence, the resistance R is given by the reciprocal of the slope.",
-            "Observation 1: At V = 2.0 V, Current measured I = 0.41 A.",
-            "Observation 2: At V = 4.0 V, Current measured I = 0.83 A.",
-            "Observation 3: At V = 6.0 V, Current measured I = 1.25 A.",
-            "Observation 4: At V = 8.0 V, Current measured I = 1.66 A.",
-            "Observation 5: At V = 10.0 V, Current measured I = 2.07 A.",
-            "Calculations: Mean R = Σ(V/I) / 5 = 4.82 Ω ± 0.04 Ω.",
-            "Precautions: Connections should be clean and firmly tightened.",
-            "Remove plug key between observations to avoid heating errors.",
-            "Result: Authenticated by Lab Instructor. Grade: A+ (10/10)"
-        ];
-        notes.forEach((text, idx) => {
-            const y = 258 + idx * lineSpacing;
-            rCtx.fillText(text, 170, y);
-        });
-
-        // Verified Stamp Badge
-        rCtx.strokeStyle = '#059669';
-        rCtx.lineWidth = 2;
-        rCtx.strokeRect(680, 1180, 240, 70);
-        rCtx.font = 'bold 22px Caveat, cursive';
-        rCtx.fillStyle = '#059669';
-        rCtx.fillText("VERIFIED · LAB DEPT", 700, 1215);
-        rCtx.font = '16px Caveat, cursive';
-        rCtx.fillText("Sign: Prof. Dr. Sharma", 700, 1240);
-
-        applyPaperGrain(rCtx, 1024, 1360);
         const rightTexture = new THREE.CanvasTexture(rightCanvas);
         rightTexture.anisotropy = 8;
 
-        // --- 3D CURVED PAGES (Natural Arched Geometry Resting on Desk) ---
+        // Offscreen static background cache for 60fps write rendering
+        const rightBgCanvas = document.createElement('canvas');
+        rightBgCanvas.width = 1024;
+        rightBgCanvas.height = 1360;
+        const rBgCtx = rightBgCanvas.getContext('2d')!;
+
+        const updateRightStaticBackground = () => {
+            const paperType = paperRef.current;
+            rBgCtx.fillStyle = paperType === 'parchment' ? '#fbf4e6' : '#fdfbf7';
+            rBgCtx.fillRect(0, 0, 1024, 1360);
+
+            // Puncture holes along spine
+            for (let y = 140; y < 1260; y += 44) {
+                rBgCtx.fillStyle = '#cbd5e1';
+                rBgCtx.beginPath();
+                rBgCtx.arc(44, y, 7, 0, Math.PI * 2);
+                rBgCtx.fill();
+            }
+
+            // Red margin double line
+            rBgCtx.strokeStyle = '#ef4444';
+            rBgCtx.lineWidth = 2.5;
+            rBgCtx.beginPath();
+            rBgCtx.moveTo(140, 0);
+            rBgCtx.lineTo(140, 1360);
+            rBgCtx.stroke();
+
+            rBgCtx.strokeStyle = '#fca5a5';
+            rBgCtx.lineWidth = 1.2;
+            rBgCtx.beginPath();
+            rBgCtx.moveTo(148, 0);
+            rBgCtx.lineTo(148, 1360);
+            rBgCtx.stroke();
+
+            // Blue horizontal ruled lines
+            rBgCtx.strokeStyle = paperType === 'graph' ? '#bae6fd' : '#93c5fd';
+            rBgCtx.lineWidth = 1.4;
+            const lineSpacing = 42;
+            for (let y = 140; y < 1320; y += lineSpacing) {
+                rBgCtx.beginPath();
+                rBgCtx.moveTo(60, y);
+                rBgCtx.lineTo(980, y);
+                rBgCtx.stroke();
+            }
+
+            // Header & Title
+            rBgCtx.font = 'bold 24px Caveat, cursive, sans-serif';
+            rBgCtx.fillStyle = '#64748b';
+            rBgCtx.fillText("PAGE: 04", 170, 105);
+            rBgCtx.fillText("DATE: 12 / 09 / 2026", 750, 105);
+
+            rBgCtx.font = 'bold 34px Caveat, cursive, sans-serif';
+            rBgCtx.fillStyle = inkRef.current;
+            rBgCtx.fillText("Verification of Ohm's Law & Wire Resistance", 170, 175);
+        };
+
+        updateRightStaticBackground();
+
+        // 3D Curved Pages Assembly (Organic page bend resting naturally on desk)
         const pageW = 2.65;
         const pageH = 3.8;
 
-        // Left Page: Natural organic arch (z remains strictly positive: +0.01 to +0.06)
         const leftGeo = new THREE.PlaneGeometry(pageW, pageH, 32, 32);
         const posL = leftGeo.attributes.position;
         for (let i = 0; i < posL.count; i++) {
             const x = posL.getX(i);
-            const normX = (x + 1.325) / 2.65; // 0 = outer left, 1 = spine
+            const normX = (x + 1.325) / 2.65;
             const arch = Math.sin(normX * Math.PI) * 0.05;
             const cornerCurl = normX < 0.12 ? Math.pow(0.12 - normX, 2) * 1.5 : 0;
             posL.setZ(i, arch + cornerCurl + 0.01);
         }
         leftGeo.computeVertexNormals();
 
-        const pageMatConfig = {
-            roughness: 0.85,
-            metalness: 0.0,
-            side: THREE.FrontSide,
-        };
-        const leftMat = new THREE.MeshStandardMaterial({
-            map: leftTexture,
-            ...pageMatConfig
-        });
+        const pageMatConfig = { roughness: 0.85, metalness: 0.0, side: THREE.FrontSide };
+        const leftMat = new THREE.MeshStandardMaterial({ map: leftTexture, ...pageMatConfig });
         const leftMesh = new THREE.Mesh(leftGeo, leftMat);
         leftMesh.position.set(-1.35, 0, 0);
         leftMesh.castShadow = true;
         leftMesh.receiveShadow = true;
         notebookGroup.add(leftMesh);
 
-        // Right Page: Symmetrical natural arch
         const rightGeo = new THREE.PlaneGeometry(pageW, pageH, 32, 32);
         const posR = rightGeo.attributes.position;
         for (let i = 0; i < posR.count; i++) {
             const x = posR.getX(i);
-            const normX = (1.325 - x) / 2.65; // 0 = outer right, 1 = spine
+            const normX = (1.325 - x) / 2.65;
             const arch = Math.sin(normX * Math.PI) * 0.05;
             const cornerCurl = normX < 0.12 ? Math.pow(0.12 - normX, 2) * 1.5 : 0;
             posR.setZ(i, arch + cornerCurl + 0.01);
         }
         rightGeo.computeVertexNormals();
 
-        const rightMat = new THREE.MeshStandardMaterial({
-            map: rightTexture,
-            ...pageMatConfig
-        });
+        const rightMat = new THREE.MeshStandardMaterial({ map: rightTexture, ...pageMatConfig });
         const rightMesh = new THREE.Mesh(rightGeo, rightMat);
         rightMesh.position.set(1.35, 0, 0);
         rightMesh.castShadow = true;
         rightMesh.receiveShadow = true;
         notebookGroup.add(rightMesh);
 
-        // --- SUBTLE PAPER STACK RIM (Physical 100-Sheet Edge Underneath) ---
-        // Sits strictly underneath at Z = -0.02, colored warm ivory paper
+        // Soft Organic Paper Stack Rim (Warm ivory ream strictly underneath, NO dark boundary box)
         const paperStackMat = new THREE.MeshStandardMaterial({
-            color: 0xf4f0ea, // Warm page edge rim
-            roughness: 0.9,
+            color: 0xf5efe6,
+            roughness: 0.95,
             metalness: 0.0,
         });
-        const stackGeo = new THREE.BoxGeometry(2.62, 3.76, 0.025);
-
+        const stackGeo = new THREE.BoxGeometry(2.62, 3.76, 0.02);
         const leftStackMesh = new THREE.Mesh(stackGeo, paperStackMat);
-        leftStackMesh.position.set(-1.35, 0, -0.018);
+        leftStackMesh.position.set(-1.35, 0, -0.016);
         notebookGroup.add(leftStackMesh);
 
         const rightStackMesh = new THREE.Mesh(stackGeo, paperStackMat);
-        rightStackMesh.position.set(1.35, 0, -0.018);
+        rightStackMesh.position.set(1.35, 0, -0.016);
         notebookGroup.add(rightStackMesh);
 
-        // --- ELEGANT BACK COVER (Hardboard Backing Strictly Underneath) ---
-        // Sits safely behind the stack at Z = -0.045, extending 2mm beyond paper
-        const coverMat = new THREE.MeshStandardMaterial({
-            color: 0x1e293b, // Deep matte slate-indigo backing
-            roughness: 0.5,
-            metalness: 0.1,
-        });
-        const coverGeo = new THREE.BoxGeometry(2.72, 3.86, 0.02);
-
-        const leftCoverMesh = new THREE.Mesh(coverGeo, coverMat);
-        leftCoverMesh.position.set(-1.38, 0, -0.045);
-        leftCoverMesh.castShadow = true;
-        notebookGroup.add(leftCoverMesh);
-
-        const rightCoverMesh = new THREE.Mesh(coverGeo, coverMat);
-        rightCoverMesh.position.set(1.38, 0, -0.045);
-        rightCoverMesh.castShadow = true;
-        notebookGroup.add(rightCoverMesh);
-
-        // --- 3D METALLIC CHROME TWIN-WIRE SPIRAL ---
+        // Twin-Wire Spiral Coils
         const coilsGroup = new THREE.Group();
         const coilCount = 28;
-        const coilRadius = 0.13;
-        const tubeRadius = 0.018;
         const coilSpacing = 3.6 / (coilCount - 1);
-        const startY = 1.8;
-
-        const coilGeo = new THREE.TorusGeometry(coilRadius, tubeRadius, 14, 28, Math.PI * 1.96);
-        const coilMat = new THREE.MeshStandardMaterial({
-            color: 0xf8fafc,
-            metalness: 0.95,
-            roughness: 0.12,
-        });
+        const coilGeo = new THREE.TorusGeometry(0.13, 0.018, 14, 28, Math.PI * 1.96);
+        const coilMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, metalness: 0.95, roughness: 0.12 });
 
         for (let i = 0; i < coilCount; i++) {
             const coil = new THREE.Mesh(coilGeo, coilMat);
-            coil.position.set(0, startY - i * coilSpacing, 0.02);
+            coil.position.set(0, 1.8 - i * coilSpacing, 0.02);
             coil.rotation.z = Math.PI / 2;
             coil.rotation.y = 0.15;
             coil.castShadow = true;
@@ -450,74 +413,64 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
         }
         notebookGroup.add(coilsGroup);
 
-        // --- LUXURY FOUNTAIN PEN ACCENT (Resting Beside Notebook) ---
+        // 3D Fountain Pen Assembly (Tip anchored at penGroup origin)
         const penGroup = new THREE.Group();
+        
         // Barrel
-        const barrelGeo = new THREE.CylinderGeometry(0.045, 0.04, 2.2, 16);
-        const barrelMat = new THREE.MeshStandardMaterial({
-            color: 0x0f172a, // Deep obsidian lacquer
-            roughness: 0.25,
-            metalness: 0.85,
-        });
+        const barrelGeo = new THREE.CylinderGeometry(0.042, 0.038, 1.8, 16);
+        const barrelMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.25, metalness: 0.85 });
         const barrel = new THREE.Mesh(barrelGeo, barrelMat);
+        barrel.position.y = 1.15;
         penGroup.add(barrel);
 
-        // Gold Trim Band
-        const ringGeo = new THREE.CylinderGeometry(0.047, 0.047, 0.06, 16);
-        const goldMat = new THREE.MeshStandardMaterial({
-            color: 0xf59e0b,
-            roughness: 0.2,
-            metalness: 0.95,
-        });
+        // 24K Gold Accent Ring
+        const goldMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.2, metalness: 0.95 });
+        const ringGeo = new THREE.CylinderGeometry(0.044, 0.044, 0.05, 16);
         const ring = new THREE.Mesh(ringGeo, goldMat);
-        ring.position.y = 0.3;
+        ring.position.y = 0.245;
         penGroup.add(ring);
 
-        // Gold Nib
-        const nibGeo = new THREE.ConeGeometry(0.04, 0.25, 12);
+        // Gold Nib (Apex pointed down at local y = 0)
+        const nibGeo = new THREE.ConeGeometry(0.038, 0.22, 14);
         const nib = new THREE.Mesh(nibGeo, goldMat);
-        nib.position.y = 1.22;
+        nib.position.y = 0.11;
+        nib.rotation.x = Math.PI; // point cone apex to y = 0
         penGroup.add(nib);
 
-        // Position pen angled on the desk beside the notebook
-        penGroup.position.set(2.80, -0.35, 0.04);
-        penGroup.rotation.z = -0.35;
-        penGroup.rotation.x = 0.2;
-        penGroup.castShadow = true;
+        // Pen writing angle in hand
+        penGroup.rotation.z = -0.42;
+        penGroup.rotation.x = 0.38;
+        penGroup.position.set(1.4, 0, 0.1);
         notebookGroup.add(penGroup);
 
-        // Dynamic Viewport & Orientation Targets
+        // Real-Time Inscription State
+        let currentLine = 0;
+        let currentChar = 0;
+        let charTimer = 0;
+        let pauseTimer = 0;
+        let lastRestartId = restartTriggerRef.current;
+        let lastInk = inkRef.current;
+        let lastPaper = paperRef.current;
+
+        // Viewport tracking
         const baseScale = 0.88;
         let targetRotX = 0.38;
         let targetRotY = -0.14;
         let targetZ = 0.02;
-        let targetScale = baseScale;
 
         notebookGroup.scale.set(baseScale, baseScale, baseScale);
         notebookGroup.rotation.x = targetRotX;
         notebookGroup.rotation.y = targetRotY;
-        notebookGroup.rotation.z = targetZ;
 
-        // Window-wide pointer tracking for hero
         const handlePointerMove = (e: MouseEvent) => {
             if (!interactive) return;
             const x = (e.clientX / window.innerWidth) * 2 - 1;
             const y = -(e.clientY / window.innerHeight) * 2 + 1;
-
             targetRotY = -0.14 + x * 0.22;
             targetRotX = 0.38 - y * 0.18;
             targetZ = 0.02 + x * 0.04;
         };
-
-        const handleScroll = () => {
-            const scrollY = window.scrollY || window.pageYOffset;
-            const progress = Math.min(scrollY / 800, 1);
-            targetRotX = 0.38 + progress * 0.22;
-            targetScale = baseScale - progress * 0.05;
-        };
-
         window.addEventListener('mousemove', handlePointerMove, { passive: true });
-        window.addEventListener('scroll', handleScroll, { passive: true });
 
         const handleResize = () => {
             if (!container || !renderer) return;
@@ -529,13 +482,118 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
         };
         window.addEventListener('resize', handleResize);
 
-        // Animation Loop
+        // Animation Loop with Real-Time Handwriting Inscription & Pen Gliding
         const clock = new THREE.Clock();
+        const lineSpacing = 42;
+        const lineBaseY = 258;
+
         const animate = () => {
             animationFrameId = requestAnimationFrame(animate);
+            const delta = clock.getDelta();
             const elapsedTime = clock.getElapsedTime();
 
-            // Organic breathing float
+            // Detect live control changes (Ink color or paper style)
+            if (lastInk !== inkRef.current || lastPaper !== paperRef.current) {
+                lastInk = inkRef.current;
+                lastPaper = paperRef.current;
+                renderLeftPage();
+                leftTexture.needsUpdate = true;
+                updateRightStaticBackground();
+            }
+
+            // Handle manual re-inscribe reset
+            if (lastRestartId !== restartTriggerRef.current) {
+                lastRestartId = restartTriggerRef.current;
+                currentLine = 0;
+                currentChar = 0;
+                pauseTimer = 0;
+                charTimer = 0;
+            }
+
+            // Real-Time Handwriting Inscription Loop
+            if (playRef.current) {
+                if (pauseTimer > 0) {
+                    pauseTimer -= delta;
+                    if (pauseTimer <= 0) {
+                        currentLine = 0;
+                        currentChar = 0;
+                    }
+                } else {
+                    charTimer += delta;
+                    // Write at ~35 chars/sec with natural rhythm
+                    if (charTimer > 0.028) {
+                        charTimer = 0;
+                        if (currentLine < INSCRIBE_NOTES.length) {
+                            const fullLine = INSCRIBE_NOTES[currentLine];
+                            if (currentChar < fullLine.length) {
+                                currentChar += 1;
+                            } else {
+                                currentLine += 1;
+                                currentChar = 0;
+                                if (currentLine >= INSCRIBE_NOTES.length) {
+                                    pauseTimer = 4.5; // Hold completed page for 4.5s
+                                }
+                            }
+
+                            // Re-draw right canvas
+                            rCtx.drawImage(rightBgCanvas, 0, 0);
+                            rCtx.font = '28px Caveat, cursive, sans-serif';
+                            rCtx.fillStyle = inkRef.current;
+
+                            // Draw completed lines
+                            for (let i = 0; i < currentLine; i++) {
+                                rCtx.fillText(INSCRIBE_NOTES[i], 170, lineBaseY + i * lineSpacing);
+                            }
+
+                            // Draw active partial line & calculate pen cursor coordinates
+                            let penCanvasX = 170;
+                            const penCanvasY = lineBaseY + currentLine * lineSpacing;
+
+                            if (currentLine < INSCRIBE_NOTES.length) {
+                                const lineStr = INSCRIBE_NOTES[currentLine].slice(0, currentChar);
+                                rCtx.fillText(lineStr, 170, penCanvasY);
+                                penCanvasX = 170 + rCtx.measureText(lineStr).width;
+                            }
+
+                            // If page finished, draw Verified Badge
+                            if (currentLine >= INSCRIBE_NOTES.length || (currentLine === INSCRIBE_NOTES.length - 1 && currentChar === INSCRIBE_NOTES[currentLine].length)) {
+                                rCtx.strokeStyle = '#059669';
+                                rCtx.lineWidth = 2.5;
+                                rCtx.strokeRect(680, 1180, 240, 70);
+                                rCtx.font = 'bold 22px Caveat, cursive';
+                                rCtx.fillStyle = '#059669';
+                                rCtx.fillText("VERIFIED · LAB DEPT", 700, 1215);
+                                rCtx.font = '16px Caveat, cursive';
+                                rCtx.fillText("Sign: Prof. Dr. Sharma", 700, 1240);
+                            }
+
+                            rightTexture.needsUpdate = true;
+
+                            // Compute 3D pen tip coordinates from 2D canvas pixel coordinates
+                            const u = penCanvasX / 1024;
+                            const v = penCanvasY / 1360;
+                            const target3DX = 0.025 + u * 2.65;
+                            const target3DY = (0.5 - v) * 3.8;
+                            const normX = 1 - u;
+                            const arch = Math.sin(normX * Math.PI) * 0.05;
+                            const cornerCurl = normX < 0.12 ? Math.pow(0.12 - normX, 2) * 1.5 : 0;
+                            
+                            // Lift pen slightly during line transition
+                            const isTransitioning = currentChar === 0;
+                            const target3DZ = arch + cornerCurl + (isTransitioning ? 0.08 : 0.025);
+
+                            // Pen micro-bob cadence while writing
+                            const penBob = Math.sin(elapsedTime * 28) * 0.004;
+
+                            penGroup.position.x = THREE.MathUtils.lerp(penGroup.position.x, target3DX, 0.35);
+                            penGroup.position.y = THREE.MathUtils.lerp(penGroup.position.y, target3DY, 0.35);
+                            penGroup.position.z = THREE.MathUtils.lerp(penGroup.position.z, target3DZ + penBob, 0.35);
+                        }
+                    }
+                }
+            }
+
+            // Ambient breathing float
             const idleFloat = Math.sin(elapsedTime * 1.2) * 0.05;
             const idleTilt = Math.cos(elapsedTime * 1.0) * 0.015;
 
@@ -544,25 +602,17 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
             notebookGroup.rotation.y = THREE.MathUtils.lerp(notebookGroup.rotation.y, targetRotY, 0.06);
             notebookGroup.rotation.z = THREE.MathUtils.lerp(notebookGroup.rotation.z, targetZ, 0.06);
 
-            const s = THREE.MathUtils.lerp(notebookGroup.scale.x, targetScale, 0.06);
-            notebookGroup.scale.set(s, s, s);
-
-            // Shadow follows tilt
             shadowMesh.scale.set(1 + idleFloat * 0.25, 1 + idleFloat * 0.25, 1);
             shadowMesh.position.x = notebookGroup.rotation.y * 0.4;
-
-            // Specular glint movement
             coilGlint.position.y = 1.2 + Math.sin(elapsedTime * 1.5) * 1.2;
 
             renderer.render(scene, camera);
         };
         animate();
 
-        // Cleanup
         return () => {
             cancelAnimationFrame(animationFrameId);
             window.removeEventListener('mousemove', handlePointerMove);
-            window.removeEventListener('scroll', handleScroll);
             window.removeEventListener('resize', handleResize);
 
             leftGeo.dispose();
@@ -571,8 +621,6 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
             rightMat.dispose();
             stackGeo.dispose();
             paperStackMat.dispose();
-            coverGeo.dispose();
-            coverMat.dispose();
             coilGeo.dispose();
             coilMat.dispose();
             barrelGeo.dispose();
@@ -592,8 +640,76 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
     return (
         <div
             ref={containerRef}
-            className={`relative w-full h-[460px] sm:h-[580px] lg:h-[660px] select-none ${className}`}
+            className={`relative w-full h-[480px] sm:h-[600px] lg:h-[680px] select-none ${className}`}
         >
+            {/* Interactive Live Controls HUD */}
+            <div className="absolute top-4 left-4 right-4 z-20 flex flex-wrap items-center justify-between gap-3 pointer-events-auto">
+                {/* Ink Color Swatches */}
+                <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-white/90 backdrop-blur-md border border-stone-200/90 shadow-md">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-stone-500 pl-2 pr-1">Ink:</span>
+                    {INK_OPTIONS.map((ink) => (
+                        <button
+                            key={ink.name}
+                            type="button"
+                            onClick={() => setSelectedInk(ink.color)}
+                            className={`w-6 h-6 rounded-full border border-stone-300 transition-all hover:scale-120 cursor-pointer ${
+                                activeInkColor === ink.color ? 'ring-2 ring-violet-500 ring-offset-2 scale-110' : ''
+                            }`}
+                            style={{ backgroundColor: ink.color }}
+                            title={ink.name}
+                        />
+                    ))}
+                </div>
+
+                {/* Paper Presets & Animation Controls */}
+                <div className="flex items-center gap-2">
+                    <div className="hidden sm:flex items-center gap-1 p-1 rounded-2xl bg-white/90 backdrop-blur-md border border-stone-200/90 shadow-md">
+                        {PAPER_PRESETS.map((p) => (
+                            <button
+                                key={p.id}
+                                type="button"
+                                onClick={() => setSelectedPaper(p.id)}
+                                className={`px-2.5 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                                    selectedPaper === p.id
+                                        ? 'bg-violet-600 text-white shadow-xs'
+                                        : 'text-stone-600 hover:text-stone-900'
+                                }`}
+                            >
+                                {p.name}
+                            </button>
+                        ))}
+                    </div>
+
+                    <div className="flex items-center gap-1 p-1 rounded-2xl bg-white/90 backdrop-blur-md border border-stone-200/90 shadow-md">
+                        <button
+                            type="button"
+                            onClick={() => setIsPlaying(!isPlaying)}
+                            className="p-1.5 rounded-xl text-stone-700 hover:bg-stone-100 cursor-pointer transition-colors"
+                            title={isPlaying ? 'Pause Inscription' : 'Resume Inscription'}
+                        >
+                            {isPlaying ? <Pause size={15} /> : <Play size={15} />}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={handleRestart}
+                            className="p-1.5 rounded-xl text-stone-700 hover:bg-stone-100 cursor-pointer transition-colors"
+                            title="Re-inscribe From Start"
+                        >
+                            <RotateCcw size={15} />
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Active Live Status Pill */}
+            <div className="absolute bottom-4 left-4 z-20 pointer-events-none">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/90 backdrop-blur-md border border-stone-200/90 shadow-sm text-xs font-mono text-stone-700">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span>Live 3D Inscription · 60 FPS</span>
+                </div>
+            </div>
+
+            {/* Three.js Canvas */}
             <canvas ref={canvasRef} className="w-full h-full block" />
         </div>
     );
