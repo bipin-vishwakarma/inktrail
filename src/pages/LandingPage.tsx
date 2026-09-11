@@ -1,6 +1,6 @@
 import { 
     PenTool, Download, Type, ArrowRight,
-    Github
+    Github, Sparkles
 } from 'lucide-react';
 import React, { useRef, useEffect } from 'react';
 import { motion, type Variants, useInView } from 'framer-motion';
@@ -395,6 +395,18 @@ const HeroSection = React.memo(() => {
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[120%] bg-indigo-500/5 blur-[100px] rounded-full pointer-events-none" />
 
                     <div className="flex flex-col items-center">
+                        {/* High-Converting Launch Banner */}
+                        <motion.div
+                            variants={itemVariants}
+                            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-linear-to-r from-violet-600 via-indigo-600 to-purple-600 text-white text-xs sm:text-sm font-black tracking-wide shadow-lg shadow-indigo-500/25 mb-6 hover:scale-105 transition-transform cursor-pointer"
+                        >
+                            <Sparkles size={14} className="text-yellow-300 animate-pulse" />
+                            <span>PUBLIC BETA: ALL PRO FEATURES 100% FREE</span>
+                            <span className="bg-white/20 px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-extrabold text-white">
+                                Paid Soon
+                            </span>
+                        </motion.div>
+
                         <motion.h1 
                             variants={itemVariants}
                             className="text-5xl sm:text-9xl lg:text-[11rem] font-display font-bold leading-none tracking-tighter text-black mb-4"
@@ -404,10 +416,16 @@ const HeroSection = React.memo(() => {
                         </motion.h1>
                         <motion.h2 
                             variants={itemVariants}
-                            className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-serif italic text-black leading-tight"
+                            className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-serif italic text-black leading-tight mb-4"
                         >
                             Text to Handwriting Converter
                         </motion.h2>
+                        <motion.p
+                            variants={itemVariants}
+                            className="text-neutral-500 text-sm sm:text-base max-w-xl text-center font-medium"
+                        >
+                            Used by university students for instant assignments & lab practical notebooks. Free during early access before InkTrail Pro launches.
+                        </motion.p>
                     </div>
                 </div>
             </motion.div>

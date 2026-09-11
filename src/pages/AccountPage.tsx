@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-    User, LogOut, FileText, Shield, CreditCard, Star, ChevronRight,
-    Edit2, Check, X, GraduationCap, Mail, Loader2, Zap
+    User, LogOut, FileText, Shield, Star, ChevronRight,
+    Edit2, Check, X, GraduationCap, Mail, Loader2, Sparkles
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -159,38 +159,73 @@ export default function AccountPage() {
                     ))}
                 </motion.div>
 
-                {/* Upgrade / Payment — coming soon */}
+                {/* Upgrade / Payment — High-Converting Beta Launch Copy */}
                 <motion.div
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.14 }}
-                    className="bg-gradient-to-br from-violet-600 to-indigo-700 rounded-3xl p-6 text-white relative overflow-hidden"
+                    className="bg-gradient-to-br from-violet-600 via-indigo-600 to-purple-800 rounded-3xl p-6 sm:p-7 text-white relative overflow-hidden shadow-xl"
                 >
-                    <div className="absolute top-[-40px] right-[-40px] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+                    <div className="absolute top-[-50px] right-[-50px] w-48 h-48 bg-yellow-400/20 rounded-full blur-3xl pointer-events-none" />
+                    <div className="absolute bottom-[-30px] left-[-30px] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+                    
                     <div className="relative z-10">
-                        <div className="flex items-center gap-2 mb-3">
-                            <Zap size={20} className="text-yellow-300" />
-                            <span className="font-black text-lg">InkTrail Pro</span>
-                            <span className="px-2 py-0.5 rounded-full bg-yellow-400 text-yellow-900 text-xs font-black ml-auto">Coming Soon</span>
+                        <div className="flex flex-wrap items-center gap-2 mb-3">
+                            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-yellow-400 text-yellow-950 text-xs font-black tracking-wide shadow-sm animate-pulse">
+                                <Sparkles size={13} className="text-yellow-900" />
+                                <span>100% FREE PUBLIC BETA</span>
+                            </div>
+                            <span className="px-2.5 py-0.5 rounded-full bg-white/20 text-white/90 text-xs font-semibold backdrop-blur-xs">
+                                Paid Tier Coming Soon (₹199 / $4.99/mo)
+                            </span>
                         </div>
-                        <p className="text-white/80 text-sm mb-4">
-                            Unlock unlimited exports, cloud sync, priority support, and premium paper styles.
+
+                        <h3 className="text-xl sm:text-2xl font-black mb-2 text-white">
+                            All Pro Features Unlocked For You 🔥
+                        </h3>
+                        <p className="text-white/85 text-sm sm:text-base leading-relaxed mb-5 max-w-xl">
+                            InkTrail is currently in <b>early access</b>. Every single pro feature — unlimited 4K PDF exports, 3D metallic spirals, lab diagram canvases, and all 15+ student paper types — is <b>completely free</b> for you right now.
                         </p>
-                        <div className="grid grid-cols-2 gap-2 mb-5">
-                            {['Unlimited PDF exports', 'Cloud backup & sync', 'Premium paper styles', 'Priority support'].map(f => (
-                                <div key={f} className="flex items-center gap-2 text-sm text-white/90">
-                                    <Check size={14} className="text-emerald-300 flex-shrink-0" />
-                                    {f}
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
+                            {[
+                                'Unlimited 4K PDF exports (Zero watermark)',
+                                'Interactive Lab Notebook & Diagram Canvas',
+                                'All 30+ Realistic Indian & International Fonts',
+                                '3D Metallic Twin-Wire Coil Bindings',
+                                'Smart Margin Indexing & Comparison Columns',
+                                'Early Adopter 50% Lifetime Discount Token'
+                            ].map(f => (
+                                <div key={f} className="flex items-center gap-2 text-xs sm:text-sm text-white/95">
+                                    <div className="w-4 h-4 rounded-full bg-emerald-400/20 flex items-center justify-center shrink-0">
+                                        <Check size={11} className="text-emerald-300 font-bold" />
+                                    </div>
+                                    <span>{f}</span>
                                 </div>
                             ))}
                         </div>
-                        <button
-                            disabled
-                            className="flex items-center gap-2 px-5 py-3 bg-white/20 hover:bg-white/30 rounded-xl font-bold text-white border border-white/30 disabled:cursor-not-allowed transition-colors"
-                        >
-                            <CreditCard size={18} />
-                            Upgrade to Pro — Notify Me
-                        </button>
+
+                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2 border-t border-white/15">
+                            <div className="flex-1">
+                                <p className="text-xs text-white/70">
+                                    Locked status: <span className="text-emerald-300 font-bold">Early Adopter VIP Pass Active</span>
+                                </p>
+                                <p className="text-[11px] text-white/50">
+                                    You will be grandfathered into preferential student pricing before public launch.
+                                </p>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    localStorage.setItem('inktrail_vip_claimed', 'true');
+                                    alert('🎉 Early Adopter VIP status saved! You have secured free beta access and a 50% lifetime launch discount.');
+                                }}
+                                className="px-5 py-3 bg-white text-violet-900 hover:bg-violet-50 rounded-xl font-bold text-sm shadow-md hover:scale-102 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                            >
+                                <Sparkles size={16} className="text-violet-700" />
+                                <span>Lock In VIP Perks</span>
+                            </button>
+                        </div>
                     </div>
                 </motion.div>
 
