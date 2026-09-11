@@ -2168,31 +2168,10 @@ export default function EditorPage() {
                                                     </div>
                                                 )}
 
-                                                {/* Physical Camera & Environment Overlay */}
-                                                <CameraOverlay
-                                                    phoneShadow={pageShadow.enabled}
-                                                    phoneShadowAngle={pageShadow.angle}
-                                                    phoneShadowIntensity={pageShadow.intensity}
-                                                    phoneShadowX={pageShadow.shadowX}
-                                                    phoneShadowY={pageShadow.shadowY}
-                                                    phoneShadowWidth={pageShadow.width}
-                                                    phoneShadowHeight={pageShadow.height}
-                                                    phoneShadowPenumbra={pageShadow.penumbra}
-                                                    lightingMode={effectiveLighting}
-                                                    lightingWarmth={effectiveWarmth}
-                                                    paperCrease={effectiveCrease}
-                                                    sensorNoise={effectiveNoise}
-                                                    coffeeStain={effectiveCoffeeStain}
-                                                    pageIndex={pIdx}
-                                                    spiralBinding={spiralBinding || paper.id === 'youva-spiral'}
-                                                    inkBleedThrough={inkBleedThrough}
-                                                    inkBleedIntensity={inkBleedIntensity}
-                                                />
-
-                                                {/* Sticky Note */}
+                                                 {/* Sticky Note */}
                                                 {showStickyNote && pIdx === 0 && (
                                                     <div 
-                                                        className="absolute top-6 right-6 w-36 h-36 bg-amber-200 text-amber-950 p-4 shadow-xl rotate-3 z-30 font-sans text-xs font-semibold leading-snug rounded-xs border border-amber-300 pointer-events-none"
+                                                        className="absolute top-6 right-6 w-36 h-36 bg-amber-200 text-amber-950 p-4 shadow-xl rotate-3 z-20 font-sans text-xs font-semibold leading-snug rounded-xs border border-amber-300 pointer-events-none"
                                                     >
                                                         <div className="w-12 h-3 bg-amber-300/60 -top-1.5 left-1/2 -translate-x-1/2 absolute rounded-xs" />
                                                         {stickyNoteText}
@@ -2202,15 +2181,15 @@ export default function EditorPage() {
                                                 {/* Standardized Student Notebook Date & Page No. Box (Matching Real Youva/Classmate) */}
                                                 {showNotebookHeaderBox && (
                                                     <div 
-                                                        className="absolute top-[12px] z-20 pointer-events-none select-none text-left"
+                                                        className="absolute top-[12px] z-10 pointer-events-none select-none text-left"
                                                         style={{
                                                             right: (isSpiralActive && isVerso) ? '64px' : '24px',
                                                             width: '168px',
                                                             height: '52px',
-                                                            border: '1.2px solid rgba(244, 63, 94, 0.55)',
+                                                            border: '1.2px solid rgba(225, 29, 72, 0.65)',
                                                             borderRadius: '4px',
-                                                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                                                            boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
+                                                            backgroundColor: 'transparent',
+                                                            boxShadow: 'none',
                                                             display: 'flex',
                                                             overflow: 'hidden',
                                                         }}
@@ -2288,7 +2267,7 @@ export default function EditorPage() {
 
                                                         {/* Right Section: Brand Badge Compartment */}
                                                         <div 
-                                                            className="w-[58px] border-l border-rose-400/45 flex flex-col items-center justify-center p-1 select-none bg-rose-50/25 overflow-hidden text-center"
+                                                            className="w-[58px] border-l border-rose-400/45 flex flex-col items-center justify-center p-1 select-none bg-rose-500/5 overflow-hidden text-center"
                                                         >
                                                             {(!notebookBrand || notebookBrand === 'YOUVA') && (
                                                                 <div className="flex flex-col items-center justify-center w-full select-none">
@@ -2624,6 +2603,27 @@ export default function EditorPage() {
                                                         — {pIdx + 1} —
                                                     </div>
                                                 )}
+
+                                                {/* Physical Camera & Environment Overlay (Topmost layer covering page, text, and header box) */}
+                                                <CameraOverlay
+                                                    phoneShadow={pageShadow.enabled}
+                                                    phoneShadowAngle={pageShadow.angle}
+                                                    phoneShadowIntensity={pageShadow.intensity}
+                                                    phoneShadowX={pageShadow.shadowX}
+                                                    phoneShadowY={pageShadow.shadowY}
+                                                    phoneShadowWidth={pageShadow.width}
+                                                    phoneShadowHeight={pageShadow.height}
+                                                    phoneShadowPenumbra={pageShadow.penumbra}
+                                                    lightingMode={effectiveLighting}
+                                                    lightingWarmth={effectiveWarmth}
+                                                    paperCrease={effectiveCrease}
+                                                    sensorNoise={effectiveNoise}
+                                                    coffeeStain={effectiveCoffeeStain}
+                                                    pageIndex={pIdx}
+                                                    spiralBinding={spiralBinding || paper.id === 'youva-spiral'}
+                                                    inkBleedThrough={inkBleedThrough}
+                                                    inkBleedIntensity={inkBleedIntensity}
+                                                />
                                             </div>
                                         </div>
                                     </div>

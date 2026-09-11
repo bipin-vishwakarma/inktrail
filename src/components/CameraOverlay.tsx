@@ -51,7 +51,7 @@ const CameraOverlayComponent: React.FC<CameraOverlayProps> = ({
     const penumbra = phoneShadowPenumbra !== undefined ? phoneShadowPenumbra : 75;
 
     return (
-        <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-[inherit] z-20">
+        <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-[inherit] z-30">
             {/* 1. ROOM LIGHTING MODE OVERLAY */}
             {lightingMode === 'warm-lamp' && (
                 <div
