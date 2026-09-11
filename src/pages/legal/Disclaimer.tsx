@@ -8,7 +8,7 @@ export default function Disclaimer() {
         >
             <h3>1. General Disclaimer</h3>
             <p>
-                The tools and services provided by <strong>InkTrail</strong> ("we," "us", or "our"), created by Bipin Vishwakarma at UPES Dehradun, are provided for educational, productivity, and document presentation purposes. All features on the application are offered in good faith; however, we make no representations or warranties of any kind, express or implied, regarding commercial suitability or specific legal enforceability in all administrative domains.
+                The tools and services provided by <strong>InkTrail</strong> ("we," "us", or "our"), created by Bipin Vishwakarma, are provided for educational, productivity, and document presentation purposes. All features on the application are offered in good faith; however, we make no representations or warranties of any kind, express or implied, regarding commercial suitability or specific legal enforceability in all administrative domains.
             </p>
 
             <h3>2. Educational Simulation & Student Lab Notebooks</h3>
@@ -32,7 +32,7 @@ export default function Disclaimer() {
             </p>
 
             <p className="text-sm text-neutral-400 mt-8">
-                Last updated: 2026 • InkTrail by Bipin Vishwakarma (UPES Dehradun)
+                Last updated: 2026 • InkTrail by Bipin Vishwakarma
             </p>
         </PageLayout>
     );

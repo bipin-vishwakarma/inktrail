@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Sparkles, FlaskConical, ExternalLink } from 'lucide-react';
-const logo = '/images/logo.png';
+import { Menu, X, Sparkles, ExternalLink } from 'lucide-react';
+import InkTrailLogo from '../common/InkTrailLogo';
 import { useStore } from '../../lib/store';
 import UserMenu from '../UserMenu';
 
@@ -12,10 +12,9 @@ export default function Navbar() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const location = useLocation();
 
-    const navLinks = [
+    const navLinks: { name: string; path: string; badge?: string }[] = [
         { name: 'Features', path: '/features' },
         { name: 'How It Works', path: '/how-it-works' },
-        { name: 'Lab Notebook', path: '/editor', badge: 'New' },
         { name: 'FAQ', path: '/faq' },
         { name: 'About', path: '/about' },
     ];
@@ -40,12 +39,8 @@ export default function Navbar() {
             >
                 <div className="w-full max-w-4xl glass rounded-full px-4 sm:px-6 py-2 sm:py-2.5 flex justify-between items-center pointer-events-auto ring-1 ring-black/5 shadow-lg shadow-black/5">
                     {/* Brand Logo */}
-                    <Link to="/" className="flex items-center gap-2 group relative shrink-0">
-                        <img 
-                            src={logo} 
-                            alt="InkTrail" 
-                            className="w-7 h-7 sm:w-8 sm:h-8 object-contain rounded-xl drop-shadow-sm group-hover:scale-105 transition-transform" 
-                        />
+                    <Link to="/" className="flex items-center gap-2.5 group relative shrink-0">
+                        <InkTrailLogo size={32} />
                         <span className="text-lg sm:text-xl font-display font-black text-neutral-900 tracking-tight">InkTrail.</span>
                     </Link>
 
@@ -61,15 +56,7 @@ export default function Navbar() {
                                         : 'text-neutral-600 hover:text-neutral-900 hover:bg-white/50'
                                 }`}
                             >
-                                {link.name === 'Lab Notebook' && (
-                                    <FlaskConical size={12} className="text-blue-600" />
-                                )}
                                 <span>{link.name}</span>
-                                {link.badge && (
-                                    <span className="px-1.5 py-0.2 bg-blue-600 text-white rounded-full text-[9px] font-black tracking-wider uppercase">
-                                        {link.badge}
-                                    </span>
-                                )}
                             </Link>
                         ))}
                     </div>

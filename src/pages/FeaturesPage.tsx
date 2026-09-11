@@ -12,7 +12,7 @@ export default function FeaturesPage() {
             <div className="space-y-16">
                 <section className="prose prose-neutral max-w-none">
                     <p className="lead text-lg text-neutral-600">
-                        <strong>InkTrail</strong> is the world's first comprehensive student handwriting simulator. Designed from real university workflows at UPES Dehradun, it blends analog physical imperfections with modern digital speed to eliminate manual assignment fatigue.
+                        <strong>InkTrail</strong> is the world's first comprehensive student handwriting simulator. Designed from real-world university assignments and lab practicals, it blends analog physical imperfections with modern digital speed to eliminate manual assignment fatigue.
                     </p>
                 </section>
 
@@ -71,7 +71,7 @@ export default function FeaturesPage() {
                         </div>
                         <h3 className="text-xl font-bold mb-2.5 text-neutral-900">Student ID & Multi-Auth</h3>
                         <p className="text-neutral-600 text-sm leading-relaxed">
-                            Log in with your University Roll No. (UPES / College ID), Google OAuth, GitHub, or Email Magic Link. Stores your assignment drafts and style preferences in local storage.
+                            Log in with your University Roll No. (College ID), Google OAuth, GitHub, or Email Magic Link. Stores your assignment drafts and style preferences in local storage.
                         </p>
                     </div>
 

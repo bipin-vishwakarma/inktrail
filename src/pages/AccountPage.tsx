@@ -45,8 +45,7 @@ export default function AccountPage() {
 
     const handleSaveName = async () => {
         setSaving(true);
-        await new Promise(r => setTimeout(r, 300));
-        updateUserProfile({ name: editName, given_name: editName.split(' ')[0] });
+        await updateUserProfile({ name: editName, given_name: editName.split(' ')[0] });
         setSaving(false);
         setEditingName(false);
     };
@@ -121,7 +120,7 @@ export default function AccountPage() {
                             <p className="text-neutral-500 text-sm truncate">{user.email}</p>
 
                             {/* Provider badge */}
-                            <div className="flex items-center gap-1.5 mt-2">
+                            <div className="flex flex-wrap items-center gap-1.5 mt-2">
                                 <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-neutral-100 text-xs font-semibold text-neutral-600">
                                     {PROVIDER_ICONS[user.authProvider]}
                                     {providerLabel[user.authProvider] || user.authProvider}
@@ -136,6 +135,10 @@ export default function AccountPage() {
                                         {user.collegeName}
                                     </div>
                                 )}
+                                <div className="px-2 py-0.5 rounded-full bg-emerald-50 text-[10px] font-bold text-emerald-700 flex items-center gap-1">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                    <span>Supabase Cloud Auth</span>
+                                </div>
                             </div>
                         </div>
                     </div>

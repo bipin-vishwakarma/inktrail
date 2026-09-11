@@ -30,6 +30,8 @@ dist-ssr
 *.local
 .env
 .env.*
+!.env.example
 .vercel
 scratch/
 Pdfs_references/
+supabase/.temp/

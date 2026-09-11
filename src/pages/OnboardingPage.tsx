@@ -7,8 +7,8 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useStore } from '../lib/store';
+import InkTrailLogo from '../components/common/InkTrailLogo';
 
-const logo = '/images/logo.png';
 const TOTAL_STEPS = 4;
 
 interface Slide {
@@ -96,7 +96,7 @@ export default function OnboardingPage() {
             content: (
                 <div className="flex flex-col items-center gap-6 py-4">
                     <div className="w-24 h-24 bg-violet-100 rounded-3xl flex items-center justify-center shadow-lg">
-                        <img src={logo} alt="InkTrail" className="h-14 w-14 object-contain" />
+                        <InkTrailLogo size={56} />
                     </div>
                     <div className="grid grid-cols-3 gap-4 w-full max-w-sm">
                         {[
@@ -222,7 +222,7 @@ export default function OnboardingPage() {
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4">
                 <div className="flex items-center gap-2">
-                    <img src={logo} alt="InkTrail" className="h-7 w-7 object-contain" />
+                    <InkTrailLogo size={28} />
                     <span className="font-black text-neutral-900">InkTrail</span>
                 </div>
                 <div className="flex items-center gap-3">

@@ -1,44 +1,108 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, CheckCircle2, GraduationCap, Github, Mail, Sparkles, Loader2, School, ShieldCheck } from 'lucide-react';
+import { 
+    X, CheckCircle2, GraduationCap, Github, Mail, Sparkles, 
+    Loader2, School, ShieldCheck, AlertCircle, Lock, User, KeyRound, Eye, EyeOff
+} from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useScrollLock } from '../../hooks/useScrollLock';
-const logo = '/images/logo.png';
+import InkTrailLogo from '../common/InkTrailLogo';
 
 export default function AuthModal() {
     const { 
         isAuthModalOpen, 
         setAuthModalOpen, 
+        isSupabaseConfigured,
         loginWithGoogle, 
         loginWithGithub, 
         loginWithStudentId, 
         loginWithEmail,
+        loginWithPassword,
+        signUpWithPassword,
         isLoading 
     } = useAuth();
 
     const [authTab, setAuthTab] = useState<'oauth' | 'student' | 'email'>('oauth');
+    const [emailSubTab, setEmailSubTab] = useState<'magic' | 'password'>('magic');
+    const [isSignUp, setIsSignUp] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
     
     // Student Form State
-    const [studentName, setStudentName] = useState('Aarav Vishwakarma');
-    const [studentId, setStudentId] = useState('UPES-50012489');
-    const [collegeName, setCollegeName] = useState('UPES Dehradun');
+    const [studentName, setStudentName] = useState('Aarav Sharma');
+    const [studentId, setStudentId] = useState('STU-50012489');
+    const [collegeName, setCollegeName] = useState('');
 
     // Email Form State
     const [emailInput, setEmailInput] = useState('');
+    const [passwordInput, setPasswordInput] = useState('');
     const [emailName, setEmailName] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
     useScrollLock(isAuthModalOpen);
 
+    const handleGoogleAuth = async () => {
+        setErrorMessage(null);
+        const res = await loginWithGoogle();
+        if (res.redirected) return;
+        if (!res.success) {
+            setErrorMessage(res.error || 'Google sign-in could not be completed.');
+        }
+    };
+
+    const handleGithubAuth = async () => {
+        setErrorMessage(null);
+        const res = await loginWithGithub();
+        if (res.redirected) return;
+        if (!res.success) {
+            setErrorMessage(res.error || 'GitHub sign-in could not be completed.');
+        }
+    };
+
     const handleStudentSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        setErrorMessage(null);
         if (!studentName.trim() || !studentId.trim()) return;
         loginWithStudentId(studentName, studentId, collegeName);
     };
 
-    const handleEmailSubmit = (e: React.FormEvent) => {
+    const handleEmailSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setErrorMessage(null);
+        setSuccessMessage(null);
         if (!emailInput.trim()) return;
-        loginWithEmail(emailInput, emailName);
+
+        if (emailSubTab === 'magic') {
+            const res = await loginWithEmail(emailInput);
+            if (res.success) {
+                setSuccessMessage(res.message || 'Magic link sent! Check your inbox.');
+            } else {
+                setErrorMessage(res.error || 'Failed to send magic link.');
+            }
+        } else {
+            // Password flow
+            if (!passwordInput || passwordInput.length < 6) {
+                setErrorMessage('Password must be at least 6 characters.');
+                return;
+            }
+            if (isSignUp) {
+                const res = await signUpWithPassword(emailInput, passwordInput, {
+                    name: emailName,
+                });
+                if (res.success) {
+                    if (res.needsEmailConfirmation) {
+                        setSuccessMessage('Account created! Please check your email to confirm.');
+                    }
+                } else {
+                    setErrorMessage(res.error || 'Could not create account.');
+                }
+            } else {
+                const res = await loginWithPassword(emailInput, passwordInput);
+                if (!res.success) {
+                    setErrorMessage(res.error || 'Invalid email or password.');
+                }
+            }
+        }
     };
 
     return (
@@ -53,7 +117,7 @@ export default function AuthModal() {
                         className="bg-white rounded-3xl overflow-hidden isolate shadow-2xl max-w-md w-full relative flex flex-col border border-neutral-200/80"
                     >
                         {/* HEADER with macOS dots */}
-                        <div className="px-6 py-5 border-b border-neutral-100 flex items-center justify-between bg-neutral-50/80 shrink-0">
+                        <div className="px-6 py-4.5 border-b border-neutral-100 flex items-center justify-between bg-neutral-50/80 shrink-0">
                             <div className="flex items-center gap-3">
                                 <div className="flex gap-1.5">
                                     <div className="w-3 h-3 rounded-full bg-[#FF5F57] shadow-inner" />
@@ -61,7 +125,7 @@ export default function AuthModal() {
                                     <div className="w-3 h-3 rounded-full bg-[#28C840] shadow-inner" />
                                 </div>
                                 <div>
-                                    <h2 className="text-base font-display font-extrabold text-neutral-900 leading-tight">
+                                    <h2 className="text-sm font-extrabold text-neutral-900 leading-tight">
                                         Student Account & Cloud Vault
                                     </h2>
                                     <p className="text-[11px] text-emerald-600 font-bold flex items-center gap-1">
@@ -83,7 +147,7 @@ export default function AuthModal() {
                         <div className="flex border-b border-neutral-100 bg-neutral-100/70 p-1.5 gap-1 text-xs font-bold">
                             <button
                                 type="button"
-                                onClick={() => setAuthTab('oauth')}
+                                onClick={() => { setAuthTab('oauth'); setErrorMessage(null); }}
                                 className={`flex-1 py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 ${
                                     authTab === 'oauth' ? 'bg-white text-neutral-900 shadow-xs' : 'text-neutral-500 hover:text-neutral-800'
                                 }`}
@@ -93,7 +157,7 @@ export default function AuthModal() {
                             </button>
                             <button
                                 type="button"
-                                onClick={() => setAuthTab('student')}
+                                onClick={() => { setAuthTab('student'); setErrorMessage(null); }}
                                 className={`flex-1 py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 ${
                                     authTab === 'student' ? 'bg-white text-neutral-900 shadow-xs' : 'text-neutral-500 hover:text-neutral-800'
                                 }`}
@@ -103,38 +167,53 @@ export default function AuthModal() {
                             </button>
                             <button
                                 type="button"
-                                onClick={() => setAuthTab('email')}
+                                onClick={() => { setAuthTab('email'); setErrorMessage(null); }}
                                 className={`flex-1 py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 ${
                                     authTab === 'email' ? 'bg-white text-neutral-900 shadow-xs' : 'text-neutral-500 hover:text-neutral-800'
                                 }`}
                             >
                                 <Mail size={13} className="text-amber-500" />
-                                <span>Email Link</span>
+                                <span>Email / Pass</span>
                             </button>
                         </div>
 
                         {/* CONTENT AREA */}
                         <div className="p-6 bg-white relative">
+                            {/* Error banner */}
+                            {errorMessage && (
+                                <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-2">
+                                    <AlertCircle size={15} className="shrink-0 mt-0.5 text-rose-600" />
+                                    <span>{errorMessage}</span>
+                                </div>
+                            )}
+
+                            {/* Success banner */}
+                            {successMessage && (
+                                <div className="mb-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-start gap-2">
+                                    <CheckCircle2 size={15} className="shrink-0 mt-0.5 text-emerald-600" />
+                                    <span>{successMessage}</span>
+                                </div>
+                            )}
+
                             {authTab === 'oauth' && (
-                                <div className="space-y-4">
+                                <div className="space-y-3.5">
                                     <div className="text-center mb-4">
-                                        <div className="w-14 h-14 mx-auto mb-3 bg-linear-to-br from-indigo-50 to-blue-50 rounded-2xl flex items-center justify-center shadow-xs border border-indigo-100/60">
-                                            <img src={logo} alt="InkTrail" className="w-9 h-9 object-contain drop-shadow-xs" />
+                                        <div className="w-12 h-12 mx-auto mb-2 bg-linear-to-br from-indigo-50 to-blue-50 rounded-2xl flex items-center justify-center shadow-xs border border-indigo-100/60">
+                                            <InkTrailLogo size={32} />
                                         </div>
-                                        <h3 className="text-sm font-extrabold text-neutral-900">Sign in with Student Account</h3>
+                                        <h3 className="text-sm font-extrabold text-neutral-900">Sign in to InkTrail</h3>
                                         <p className="text-xs text-neutral-500 mt-0.5">
-                                            Sync assignments, custom handwriting styles & diagrams across devices.
+                                            Sync notebooks, realistic styles & lab diagrams across devices.
                                         </p>
                                     </div>
 
                                     {/* Google OAuth Button */}
                                     <button
                                         type="button"
-                                        onClick={() => loginWithGoogle('student.upes@gmail.com', 'Aarav Sharma')}
+                                        onClick={handleGoogleAuth}
                                         disabled={isLoading}
                                         className="w-full py-3 px-4 bg-white hover:bg-neutral-50 text-neutral-800 border border-neutral-300 rounded-2xl font-bold text-xs flex items-center justify-center gap-3 transition-all shadow-2xs hover:shadow-xs active:scale-98 disabled:opacity-60 cursor-pointer"
                                     >
-                                        {/* Official Google 'G' Logo SVG */}
                                         <svg className="w-4 h-4" viewBox="0 0 24 24">
                                             <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z" />
                                             <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24Z" />
@@ -147,7 +226,7 @@ export default function AuthModal() {
                                     {/* GitHub OAuth Button */}
                                     <button
                                         type="button"
-                                        onClick={() => loginWithGithub('bipin-vishwakarma')}
+                                        onClick={handleGithubAuth}
                                         disabled={isLoading}
                                         className="w-full py-3 px-4 bg-neutral-900 hover:bg-black text-white rounded-2xl font-bold text-xs flex items-center justify-center gap-3 transition-all shadow-md shadow-neutral-900/10 active:scale-98 disabled:opacity-60 cursor-pointer"
                                     >
@@ -155,16 +234,16 @@ export default function AuthModal() {
                                         <span>Continue with GitHub</span>
                                     </button>
 
-                                    {/* 1-Click Student UPES Demo Button */}
+                                    {/* 1-Click Instant Demo Button */}
                                     <div className="pt-2">
                                         <button
                                             type="button"
-                                            onClick={() => loginWithStudentId('UPES Student Scholar', '500124890', 'UPES Dehradun')}
+                                            onClick={() => loginWithStudentId('Student Scholar', '500124890', 'University College')}
                                             disabled={isLoading}
-                                            className="w-full py-2.5 px-3 bg-blue-50 hover:bg-blue-100/80 text-blue-800 border border-blue-200/80 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
+                                            className="w-full py-2.5 px-3 bg-violet-50 hover:bg-violet-100/80 text-violet-800 border border-violet-200/80 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
                                         >
-                                            <School size={14} className="text-blue-600" />
-                                            <span>⚡ Quick Sign In as UPES Dehradun Student</span>
+                                            <School size={14} className="text-violet-600" />
+                                            <span>⚡ Quick Student Demo Sign In</span>
                                         </button>
                                     </div>
                                 </div>
@@ -195,7 +274,7 @@ export default function AuthModal() {
                                             required
                                             value={collegeName}
                                             onChange={(e) => setCollegeName(e.target.value)}
-                                            placeholder="e.g. UPES Dehradun"
+                                            placeholder="e.g. University / Institute of Technology"
                                             className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-semibold text-neutral-900 focus:bg-white focus:border-neutral-900 focus:outline-none"
                                         />
                                     </div>
@@ -209,7 +288,7 @@ export default function AuthModal() {
                                             required
                                             value={studentId}
                                             onChange={(e) => setStudentId(e.target.value)}
-                                            placeholder="e.g. 500124890 / SAP ID"
+                                            placeholder="e.g. 500124890 / Roll ID"
                                             className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-semibold text-neutral-900 focus:bg-white focus:border-neutral-900 focus:outline-none"
                                         />
                                     </div>
@@ -233,32 +312,87 @@ export default function AuthModal() {
 
                             {authTab === 'email' && (
                                 <form onSubmit={handleEmailSubmit} className="space-y-3.5">
-                                    <div>
-                                        <label className="block text-[11px] font-bold text-neutral-700 mb-1">
-                                            Your Name (Optional)
-                                        </label>
-                                        <input
-                                            type="text"
-                                            value={emailName}
-                                            onChange={(e) => setEmailName(e.target.value)}
-                                            placeholder="e.g. Alex"
-                                            className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-semibold text-neutral-900 focus:bg-white focus:border-neutral-900 focus:outline-none"
-                                        />
+                                    <div className="flex bg-neutral-100 p-1 rounded-xl gap-1 text-[11px] font-bold mb-3">
+                                        <button
+                                            type="button"
+                                            onClick={() => setEmailSubTab('magic')}
+                                            className={`flex-1 py-1.5 rounded-lg transition-all ${
+                                                emailSubTab === 'magic' ? 'bg-white text-neutral-900 shadow-xs' : 'text-neutral-500'
+                                            }`}
+                                        >
+                                            Passwordless Link
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setEmailSubTab('password')}
+                                            className={`flex-1 py-1.5 rounded-lg transition-all ${
+                                                emailSubTab === 'password' ? 'bg-white text-neutral-900 shadow-xs' : 'text-neutral-500'
+                                            }`}
+                                        >
+                                            Email & Password
+                                        </button>
                                     </div>
+
+                                    {emailSubTab === 'password' && isSignUp && (
+                                        <div>
+                                            <label className="block text-[11px] font-bold text-neutral-700 mb-1">
+                                                Full Name
+                                            </label>
+                                            <div className="relative">
+                                                <User size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
+                                                <input
+                                                    type="text"
+                                                    value={emailName}
+                                                    onChange={(e) => setEmailName(e.target.value)}
+                                                    placeholder="e.g. Aarav Sharma"
+                                                    className="w-full pl-8 pr-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-semibold text-neutral-900 focus:bg-white focus:border-neutral-900 focus:outline-none"
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
 
                                     <div>
                                         <label className="block text-[11px] font-bold text-neutral-700 mb-1">
-                                            Student / College Email Address
+                                            Email Address
                                         </label>
-                                        <input
-                                            type="email"
-                                            required
-                                            value={emailInput}
-                                            onChange={(e) => setEmailInput(e.target.value)}
-                                            placeholder="name@stu.upes.ac.in"
-                                            className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-semibold text-neutral-900 focus:bg-white focus:border-neutral-900 focus:outline-none"
-                                        />
+                                        <div className="relative">
+                                            <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
+                                            <input
+                                                type="email"
+                                                required
+                                                value={emailInput}
+                                                onChange={(e) => setEmailInput(e.target.value)}
+                                                placeholder="name@student.edu"
+                                                className="w-full pl-8 pr-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-semibold text-neutral-900 focus:bg-white focus:border-neutral-900 focus:outline-none"
+                                            />
+                                        </div>
                                     </div>
+
+                                    {emailSubTab === 'password' && (
+                                        <div>
+                                            <label className="block text-[11px] font-bold text-neutral-700 mb-1">
+                                                Password
+                                            </label>
+                                            <div className="relative">
+                                                <KeyRound size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
+                                                <input
+                                                    type={showPassword ? 'text' : 'password'}
+                                                    required
+                                                    value={passwordInput}
+                                                    onChange={(e) => setPasswordInput(e.target.value)}
+                                                    placeholder="••••••••"
+                                                    className="w-full pl-8 pr-9 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-semibold text-neutral-900 focus:bg-white focus:border-neutral-900 focus:outline-none"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setShowPassword(!showPassword)}
+                                                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600"
+                                                >
+                                                    {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
 
                                     <button
                                         type="submit"
@@ -267,13 +401,45 @@ export default function AuthModal() {
                                     >
                                         {isLoading ? (
                                             <Loader2 size={15} className="animate-spin" />
-                                        ) : (
+                                        ) : emailSubTab === 'magic' ? (
                                             <>
                                                 <Mail size={15} />
-                                                <span>Send Magic Link / Sign In</span>
+                                                <span>Send Magic Link</span>
+                                            </>
+                                        ) : isSignUp ? (
+                                            <>
+                                                <Lock size={15} />
+                                                <span>Create Student Account</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Lock size={15} />
+                                                <span>Sign In</span>
                                             </>
                                         )}
                                     </button>
+
+                                    {emailSubTab === 'password' && (
+                                        <div className="text-center pt-2 text-[11px] text-neutral-500">
+                                            {isSignUp ? (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setIsSignUp(false)}
+                                                    className="text-violet-600 font-bold hover:underline"
+                                                >
+                                                    Already have an account? Sign In
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setIsSignUp(true)}
+                                                    className="text-violet-600 font-bold hover:underline"
+                                                >
+                                                    Don't have an account? Create one
+                                                </button>
+                                            )}
+                                        </div>
+                                    )}
                                 </form>
                             )}
 
@@ -281,9 +447,9 @@ export default function AuthModal() {
                             <div className="mt-5 pt-4 border-t border-neutral-100 flex items-center justify-between text-[10px] text-neutral-400 font-bold uppercase tracking-wider">
                                 <div className="flex items-center gap-1.5 text-emerald-600">
                                     <ShieldCheck size={13} />
-                                    <span>Client-Encrypted</span>
+                                    <span>{isSupabaseConfigured ? 'Supabase Auth' : 'Client Encrypted'}</span>
                                 </div>
-                                <span>No Credit Card Ever</span>
+                                <span>100% Free Public Beta</span>
                             </div>
                         </div>
                     </motion.div>

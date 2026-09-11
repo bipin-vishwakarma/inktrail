@@ -8,7 +8,7 @@ export default function TermsOfService() {
         >
             <h3>1. Acceptance of Terms</h3>
             <p>
-                By accessing and using InkTrail (the "Service"), developed by Bipin Vishwakarma at UPES Dehradun, you accept and agree to be bound by the terms and provisions of this agreement.
+                By accessing and using InkTrail (the "Service"), developed by Bipin Vishwakarma, you accept and agree to be bound by the terms and provisions of this agreement.
             </p>
 
             <h3>2. Use License</h3>

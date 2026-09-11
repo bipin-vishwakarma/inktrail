@@ -8,7 +8,7 @@ export default function PrivacyPolicy() {
         >
             <h3>1. Introduction</h3>
             <p>
-                Welcome to InkTrail ("we", "our", or "us"), created by Bipin Vishwakarma at UPES Dehradun. We are committed to protecting your personal information and your right to privacy. This Privacy Policy explains how we collect, use, disclosure, and safeguard your information when you use our website.
+                Welcome to InkTrail ("we", "our", or "us"), created by Bipin Vishwakarma. We are committed to protecting your personal information and your right to privacy. This Privacy Policy explains how we collect, use, disclosure, and safeguard your information when you use our website.
             </p>
             <p>
                 By accessing or using our services, you signify that you have read, understood, and agree to our collection, storage, use, and disclosure of your personal information as described in this Privacy Policy.

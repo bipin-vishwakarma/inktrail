@@ -1,4 +1,18 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { 
+    supabase, 
+    isSupabaseConfigured, 
+    signInWithGoogleOAuth, 
+    signInWithGithubOAuth, 
+    signInWithMagicLink, 
+    signInWithEmailPassword,
+    signUpWithEmailPassword,
+    resetPasswordForEmail,
+    updateSupabaseUserData,
+    syncProfileToDatabase,
+    signOutSupabase 
+} from '../lib/supabase';
+import type { SupabaseUser } from '../lib/supabase';
 
 export interface UserProfile {
     id: string;
@@ -20,39 +34,76 @@ export type User = UserProfile;
 export interface AuthContextType {
     user: UserProfile | null;
     isAuthenticated: boolean;
+    isSupabaseConfigured: boolean;
+    isLoading: boolean;
     login: (customProfile?: Partial<UserProfile>) => void;
-    loginWithGoogle: (email?: string, name?: string) => Promise<void>;
-    loginWithGithub: (username?: string) => Promise<void>;
+    loginWithGoogle: (redirectTo?: string) => Promise<{ success: boolean; redirected?: boolean; error?: string }>;
+    loginWithGithub: (redirectTo?: string) => Promise<{ success: boolean; redirected?: boolean; error?: string }>;
     loginWithStudentId: (name: string, studentId: string, college: string) => Promise<void>;
-    loginWithEmail: (email: string, name?: string) => Promise<void>;
-    logout: () => void;
-    updateUserProfile: (updates: Partial<UserProfile>) => void;
+    loginWithEmail: (email: string, redirectTo?: string) => Promise<{ success: boolean; message?: string; error?: string }>;
+    loginWithPassword: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+    signUpWithPassword: (
+        email: string, 
+        password: string, 
+        metadata?: { name?: string; studentId?: string; collegeName?: string }
+    ) => Promise<{ success: boolean; needsEmailConfirmation?: boolean; error?: string }>;
+    resetPassword: (email: string) => Promise<{ success: boolean; message?: string; error?: string }>;
+    logout: () => Promise<void>;
+    updateUserProfile: (updates: Partial<UserProfile>) => Promise<void>;
     incrementSavedDocs: () => void;
     isAuthModalOpen: boolean;
     setAuthModalOpen: (open: boolean) => void;
-    isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+function mapSupabaseUserToProfile(su: SupabaseUser): UserProfile {
+    const meta = su.user_metadata || {};
+    const fullName = meta.full_name || meta.name || meta.user_name || su.email?.split('@')[0] || 'InkTrail Scholar';
+    const parts = fullName.trim().split(' ');
+    const given = parts[0] || 'Scholar';
+    const rest = parts.slice(1).join(' ');
+
+    const rawProvider = (su.app_metadata?.provider as string) || 'email';
+    const authProvider: 'google' | 'github' | 'student' | 'email' = 
+        rawProvider === 'google' ? 'google' :
+        rawProvider === 'github' ? 'github' : 'email';
+
+    const avatar = meta.avatar_url || meta.picture || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(fullName)}`;
+
+    return {
+        id: su.id,
+        name: fullName,
+        given_name: given,
+        family_name: rest,
+        email: su.email || '',
+        picture: avatar,
+        authProvider,
+        studentId: meta.studentId || `ID-${su.id.slice(0, 6).toUpperCase()}`,
+        collegeName: meta.collegeName || 'Student Scholar',
+        savedDocsCount: 3,
+        cloudBackupEnabled: true,
+        createdAt: su.created_at || new Date().toISOString(),
+    };
+}
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<UserProfile | null>(() => {
         if (typeof window === 'undefined') return null;
         try {
-            const stored = localStorage.getItem('inktrail_user') || localStorage.getItem('papertrail_user');
+            const stored = localStorage.getItem('inktrail_user');
             if (stored) {
                 const parsed = JSON.parse(stored);
-                // Ensure required modern fields exist
                 return {
                     id: parsed.id || `user-${Date.now()}`,
-                    name: parsed.name || 'InkTrail Scholar',
+                    name: parsed.name || 'Student Scholar',
                     given_name: parsed.given_name || parsed.name?.split(' ')[0] || 'Scholar',
                     family_name: parsed.family_name || parsed.name?.split(' ').slice(1).join(' ') || '',
                     email: parsed.email || 'scholar@university.edu',
                     picture: parsed.picture || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(parsed.name || 'Scholar')}`,
                     authProvider: parsed.authProvider || 'student',
-                    studentId: parsed.studentId || 'UPES-2026',
-                    collegeName: parsed.collegeName || 'UPES Dehradun',
+                    studentId: parsed.studentId || 'STU-2026',
+                    collegeName: parsed.collegeName || 'University Institute',
                     savedDocsCount: parsed.savedDocsCount ?? 4,
                     cloudBackupEnabled: parsed.cloudBackupEnabled ?? true,
                     createdAt: parsed.createdAt || new Date().toISOString(),
@@ -65,7 +116,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
 
     const [isAuthModalOpen, setAuthModalOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(() => Boolean(isSupabaseConfigured && supabase));
 
     const persistUser = useCallback((updated: UserProfile | null) => {
         setUser(updated);
@@ -81,17 +132,61 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     }, []);
 
+    // Sync with real Supabase Auth session on mount and listen to state changes
+    useEffect(() => {
+        if (!isSupabaseConfigured || !supabase) {
+            return;
+        }
+
+        let isMounted = true;
+
+        // 1. Check existing session on mount
+        supabase.auth.getSession().then(({ data: { session }, error }) => {
+            if (!isMounted) return;
+            if (error) {
+                console.warn('Supabase getSession error:', error.message);
+            }
+            if (session?.user) {
+                const profile = mapSupabaseUserToProfile(session.user);
+                persistUser(profile);
+                syncProfileToDatabase(session.user);
+            }
+            setIsLoading(false);
+        }).catch((err) => {
+            console.warn('Supabase auth initialization failed:', err);
+            if (isMounted) setIsLoading(false);
+        });
+
+        // 2. Listen for OAuth callbacks, Magic link tokens, sign ins, sign outs
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            if (!isMounted) return;
+            if (session?.user) {
+                const profile = mapSupabaseUserToProfile(session.user);
+                persistUser(profile);
+                syncProfileToDatabase(session.user);
+            } else if (event === 'SIGNED_OUT') {
+                persistUser(null);
+            }
+            setIsLoading(false);
+        });
+
+        return () => {
+            isMounted = false;
+            subscription.unsubscribe();
+        };
+    }, [persistUser]);
+
     const login = useCallback((customProfile?: Partial<UserProfile>) => {
         const defaultProfile: UserProfile = {
             id: `usr-${Date.now()}`,
             name: customProfile?.name || 'Student Scholar',
             given_name: customProfile?.given_name || customProfile?.name?.split(' ')[0] || 'Student',
             family_name: customProfile?.family_name || '',
-            email: customProfile?.email || 'scholar@upes.ac.in',
+            email: customProfile?.email || 'scholar@university.edu',
             picture: customProfile?.picture || 'https://api.dicebear.com/7.x/notionists/svg?seed=scholar',
             authProvider: customProfile?.authProvider || 'student',
             studentId: customProfile?.studentId || '500123456',
-            collegeName: customProfile?.collegeName || 'UPES Dehradun',
+            collegeName: customProfile?.collegeName || 'University Institute',
             savedDocsCount: customProfile?.savedDocsCount ?? 3,
             cloudBackupEnabled: true,
             createdAt: new Date().toISOString(),
@@ -101,15 +196,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setAuthModalOpen(false);
     }, [persistUser]);
 
-    const loginWithGoogle = useCallback(async (customEmail?: string, customName?: string) => {
+    const loginWithGoogle = useCallback(async (redirectTo?: string) => {
         setIsLoading(true);
-        // Simulate OAuth roundtrip latency for realistic feedback
-        await new Promise((r) => setTimeout(r, 450));
-        
-        const name = customName || 'Aarav Sharma';
-        const email = customEmail || 'aarav.sharma.upes@gmail.com';
+
+        if (isSupabaseConfigured && supabase) {
+            try {
+                const dest = redirectTo || `${window.location.origin}/account`;
+                await signInWithGoogleOAuth(dest);
+                return { success: true, redirected: true };
+            } catch (err: unknown) {
+                console.error('Real Google OAuth failed:', err);
+                const message = err instanceof Error ? err.message : 'Google OAuth failed';
+                setIsLoading(false);
+                return { success: false, error: message };
+            }
+        }
+
+        // Demo fallback if Supabase not configured
+        await new Promise((r) => setTimeout(r, 300));
+        const name = 'Aarav Sharma';
+        const email = 'student.scholar@gmail.com';
         const [given, ...rest] = name.split(' ');
-        
+
         const profile: UserProfile = {
             id: `goog-${Date.now()}`,
             name,
@@ -118,8 +226,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             email,
             picture: `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(name)}`,
             authProvider: 'google',
-            studentId: 'UPES-2026-CS',
-            collegeName: 'UPES Dehradun',
+            studentId: 'STU-2026-CS',
+            collegeName: 'Institute of Engineering',
             savedDocsCount: 5,
             cloudBackupEnabled: true,
             createdAt: new Date().toISOString(),
@@ -128,13 +236,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         persistUser(profile);
         setIsLoading(false);
         setAuthModalOpen(false);
+        return { success: true };
     }, [persistUser]);
 
-    const loginWithGithub = useCallback(async (username?: string) => {
+    const loginWithGithub = useCallback(async (redirectTo?: string) => {
         setIsLoading(true);
-        await new Promise((r) => setTimeout(r, 450));
-        
-        const ghUser = username?.trim() || 'student-developer';
+
+        if (isSupabaseConfigured && supabase) {
+            try {
+                const dest = redirectTo || `${window.location.origin}/account`;
+                await signInWithGithubOAuth(dest);
+                return { success: true, redirected: true };
+            } catch (err: unknown) {
+                console.error('Real GitHub OAuth failed:', err);
+                const message = err instanceof Error ? err.message : 'GitHub OAuth failed';
+                setIsLoading(false);
+                return { success: false, error: message };
+            }
+        }
+
+        // Demo fallback
+        await new Promise((r) => setTimeout(r, 300));
+        const ghUser = 'student-developer';
         const profile: UserProfile = {
             id: `gh-${Date.now()}`,
             name: ghUser,
@@ -144,7 +267,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             picture: `https://github.com/${ghUser}.png`,
             authProvider: 'github',
             studentId: 'DEV-STUDENT',
-            collegeName: 'UPES School of Computer Science',
+            collegeName: 'School of Computer Science',
             savedDocsCount: 7,
             cloudBackupEnabled: true,
             createdAt: new Date().toISOString(),
@@ -153,41 +276,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         persistUser(profile);
         setIsLoading(false);
         setAuthModalOpen(false);
+        return { success: true };
     }, [persistUser]);
 
-    const loginWithStudentId = useCallback(async (name: string, studentId: string, college: string) => {
+    const loginWithEmail = useCallback(async (email: string, redirectTo?: string) => {
         setIsLoading(true);
-        await new Promise((r) => setTimeout(r, 400));
-        
-        const trimmedName = name.trim() || 'UPES Scholar';
-        const [given, ...rest] = trimmedName.split(' ');
-        
-        const profile: UserProfile = {
-            id: `stu-${Date.now()}`,
-            name: trimmedName,
-            given_name: given,
-            family_name: rest.join(' '),
-            email: `${studentId.toLowerCase().replace(/[^a-z0-9]/g, '')}@${college.toLowerCase().includes('upes') ? 'stu.upes.ac.in' : 'university.edu'}`,
-            picture: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(studentId)}`,
-            authProvider: 'student',
-            studentId: studentId.trim() || 'UPES-700192',
-            collegeName: college.trim() || 'UPES Dehradun',
-            savedDocsCount: 2,
-            cloudBackupEnabled: true,
-            createdAt: new Date().toISOString(),
-        };
 
-        persistUser(profile);
-        setIsLoading(false);
-        setAuthModalOpen(false);
-    }, [persistUser]);
+        if (isSupabaseConfigured && supabase) {
+            try {
+                const dest = redirectTo || `${window.location.origin}/account`;
+                await signInWithMagicLink(email, dest);
+                setIsLoading(false);
+                return { 
+                    success: true, 
+                    message: `Magic link sent to ${email}! Check your inbox and click the link to log in.` 
+                };
+            } catch (err: unknown) {
+                console.warn('Supabase magic link error:', err);
+                const message = err instanceof Error ? err.message : 'Failed to send magic link';
+                setIsLoading(false);
+                return { success: false, error: message };
+            }
+        }
 
-    const loginWithEmail = useCallback(async (email: string, customName?: string) => {
-        setIsLoading(true);
+        // Instant Student Demo Mode fallback
         await new Promise((r) => setTimeout(r, 400));
-        
         const userEmail = email.trim() || 'student@university.edu';
-        const defaultName = customName || userEmail.split('@')[0].replace(/[._-]/g, ' ');
+        const defaultName = userEmail.split('@')[0].replace(/[._-]/g, ' ');
         const capitalized = defaultName.charAt(0).toUpperCase() + defaultName.slice(1);
         const [given, ...rest] = capitalized.split(' ');
 
@@ -209,13 +324,166 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         persistUser(profile);
         setIsLoading(false);
         setAuthModalOpen(false);
+        return { success: true };
     }, [persistUser]);
 
-    const logout = useCallback(() => {
+    const loginWithPassword = useCallback(async (email: string, password: string) => {
+        setIsLoading(true);
+
+        if (isSupabaseConfigured && supabase) {
+            try {
+                const data = await signInWithEmailPassword(email, password);
+                if (data?.user) {
+                    const profile = mapSupabaseUserToProfile(data.user);
+                    persistUser(profile);
+                    syncProfileToDatabase(data.user);
+                }
+                setIsLoading(false);
+                setAuthModalOpen(false);
+                return { success: true };
+            } catch (err: unknown) {
+                const message = err instanceof Error ? err.message : 'Invalid login credentials';
+                setIsLoading(false);
+                return { success: false, error: message };
+            }
+        }
+
+        // Instant Demo fallback
+        await new Promise((r) => setTimeout(r, 300));
+        const userEmail = email.trim();
+        const name = userEmail.split('@')[0];
+        const profile: UserProfile = {
+            id: `demo-${Date.now()}`,
+            name,
+            given_name: name,
+            family_name: '',
+            email: userEmail,
+            picture: `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(name)}`,
+            authProvider: 'email',
+            studentId: 'STU-' + Math.floor(100000 + Math.random() * 900000),
+            collegeName: 'University Scholar',
+            savedDocsCount: 1,
+            cloudBackupEnabled: true,
+            createdAt: new Date().toISOString(),
+        };
+        persistUser(profile);
+        setIsLoading(false);
+        setAuthModalOpen(false);
+        return { success: true };
+    }, [persistUser]);
+
+    const signUpWithPassword = useCallback(async (
+        email: string, 
+        password: string, 
+        metadata?: { name?: string; studentId?: string; collegeName?: string }
+    ) => {
+        setIsLoading(true);
+
+        if (isSupabaseConfigured && supabase) {
+            try {
+                const data = await signUpWithEmailPassword(email, password, metadata);
+                
+                if (data?.session?.user) {
+                    const profile = mapSupabaseUserToProfile(data.session.user);
+                    persistUser(profile);
+                    syncProfileToDatabase(data.session.user, { name: metadata?.name });
+                    setIsLoading(false);
+                    setAuthModalOpen(false);
+                    return { success: true, needsEmailConfirmation: false };
+                }
+
+                setIsLoading(false);
+                return { 
+                    success: true, 
+                    needsEmailConfirmation: true, 
+                };
+            } catch (err: unknown) {
+                const message = err instanceof Error ? err.message : 'Failed to create account';
+                setIsLoading(false);
+                return { success: false, error: message };
+            }
+        }
+
+        // Demo fallback
+        await new Promise((r) => setTimeout(r, 300));
+        const cleanName = metadata?.name || email.split('@')[0];
+        const profile: UserProfile = {
+            id: `demo-${Date.now()}`,
+            name: cleanName,
+            given_name: cleanName.split(' ')[0] || cleanName,
+            family_name: cleanName.split(' ').slice(1).join(' '),
+            email: email.trim(),
+            picture: `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(cleanName)}`,
+            authProvider: 'email',
+            studentId: metadata?.studentId || 'STU-' + Math.floor(100000 + Math.random() * 900000),
+            collegeName: metadata?.collegeName || 'University Scholar',
+            savedDocsCount: 0,
+            cloudBackupEnabled: true,
+            createdAt: new Date().toISOString(),
+        };
+        persistUser(profile);
+        setIsLoading(false);
+        setAuthModalOpen(false);
+        return { success: true, needsEmailConfirmation: false };
+    }, [persistUser]);
+
+    const resetPassword = useCallback(async (email: string) => {
+        if (isSupabaseConfigured && supabase) {
+            try {
+                await resetPasswordForEmail(email);
+                return { success: true, message: `Password reset email sent to ${email}!` };
+            } catch (err: unknown) {
+                const message = err instanceof Error ? err.message : 'Failed to send reset email';
+                return { success: false, error: message };
+            }
+        }
+        return { success: true, message: `Password reset email sent to ${email}!` };
+    }, []);
+
+    const loginWithStudentId = useCallback(async (name: string, studentId: string, college: string) => {
+        setIsLoading(true);
+        await new Promise((r) => setTimeout(r, 350));
+
+        const trimmedName = name.trim() || 'Student Scholar';
+        const [given, ...rest] = trimmedName.split(' ');
+
+        const cleanCollege = college.trim() || 'University Institute';
+        const cleanId = studentId.trim() || 'STU-700192';
+
+        const profile: UserProfile = {
+            id: `stu-${Date.now()}`,
+            name: trimmedName,
+            given_name: given,
+            family_name: rest.join(' '),
+            email: `${cleanId.toLowerCase().replace(/[^a-z0-9]/g, '')}@${cleanCollege.toLowerCase().replace(/[^a-z0-9]/g, '') || 'university'}.edu`,
+            picture: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(cleanId)}`,
+            authProvider: 'student',
+            studentId: cleanId,
+            collegeName: cleanCollege,
+            savedDocsCount: 2,
+            cloudBackupEnabled: true,
+            createdAt: new Date().toISOString(),
+        };
+
+        persistUser(profile);
+        setIsLoading(false);
+        setAuthModalOpen(false);
+    }, [persistUser]);
+
+    const logout = useCallback(async () => {
+        setIsLoading(true);
+        if (isSupabaseConfigured) {
+            try {
+                await signOutSupabase();
+            } catch (e) {
+                console.warn('Supabase signout failed:', e);
+            }
+        }
         persistUser(null);
+        setIsLoading(false);
     }, [persistUser]);
 
-    const updateUserProfile = useCallback((updates: Partial<UserProfile>) => {
+    const updateUserProfile = useCallback(async (updates: Partial<UserProfile>) => {
         setUser((prev) => {
             if (!prev) return null;
             const updated = { ...prev, ...updates };
@@ -226,6 +494,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             }
             return updated;
         });
+
+        // Sync with Supabase Auth metadata if logged in
+        if (isSupabaseConfigured && supabase) {
+            try {
+                await updateSupabaseUserData({
+                    name: updates.name,
+                    avatar_url: updates.picture,
+                    studentId: updates.studentId,
+                    collegeName: updates.collegeName,
+                });
+            } catch (e) {
+                console.warn('Could not sync profile to Supabase Auth:', e);
+            }
+        }
     }, []);
 
     const incrementSavedDocs = useCallback(() => {
@@ -245,17 +527,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         <AuthContext.Provider value={{ 
             user, 
             isAuthenticated: !!user, 
+            isSupabaseConfigured,
+            isLoading,
             login, 
             loginWithGoogle,
             loginWithGithub,
             loginWithStudentId,
             loginWithEmail,
+            loginWithPassword,
+            signUpWithPassword,
+            resetPassword,
             logout,
             updateUserProfile,
             incrementSavedDocs,
             isAuthModalOpen, 
             setAuthModalOpen, 
-            isLoading 
         }}>
             {children}
         </AuthContext.Provider>

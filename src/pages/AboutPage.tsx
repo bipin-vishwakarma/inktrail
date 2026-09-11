@@ -7,7 +7,7 @@ export default function AboutPage() {
         <PageLayout 
             title="About InkTrail" 
             subtitle="Bridging analog nostalgia and physics-accurate simulation for students and creators worldwide."
-            description="Discover the story behind InkTrail. Born from an authentic student need at UPES Dehradun, built with human error algorithms, authentic lab practical notebooks, and local-first privacy."
+            description="Discover the story behind InkTrail. Born from authentic student coursework challenges, built with human error algorithms, authentic lab practical notebooks, and local-first privacy."
         >
             <div className="space-y-12">
                 <section>
@@ -16,7 +16,7 @@ export default function AboutPage() {
                         Our Vision & Origins
                     </h3>
                     <p>
-                        In an era dominated by sterile digital fonts and repetitive typing, the irreplaceable warmth and character of handwritten work was getting lost. <strong>InkTrail</strong> was created by <strong>Bipin Vishwakarma</strong>, a passionate student engineer at <strong>UPES Dehradun</strong>, to bridge the divide between analog authenticity and digital speed.
+                        In an era dominated by sterile digital fonts and repetitive typing, the irreplaceable warmth and character of handwritten work was getting lost. <strong>InkTrail</strong> was created by <strong>Bipin Vishwakarma</strong>, a passionate student engineer and creator, to bridge the divide between analog authenticity and digital speed.
                     </p>
                     <p>
                         What started as a tool to solve the grueling physical fatigue of writing 40-page university assignments and practical lab manuals has evolved into the most comprehensive handwriting realism simulator on the internet.
@@ -55,7 +55,7 @@ export default function AboutPage() {
                     </div>
                 </div>
 
-                {/* UPES Dehradun Founder Story */}
+                {/* Student Founder Story */}
                 <section className="p-8 rounded-3xl bg-gradient-to-br from-indigo-50/80 via-white to-blue-50/60 border border-blue-100 shadow-sm flex flex-col md:flex-row gap-6 items-center">
                     <div className="w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden shrink-0 ring-2 ring-blue-500/20 shadow-md">
                         <img 
@@ -72,9 +72,9 @@ export default function AboutPage() {
                             <GraduationCap size={16} className="text-blue-600" />
                             <span className="text-xs font-mono font-bold uppercase tracking-wider text-blue-700">Built by Students, for Students</span>
                         </div>
-                        <h3 className="text-lg font-bold text-neutral-900 m-0">The UPES Dehradun Initiative</h3>
+                        <h3 className="text-lg font-bold text-neutral-900 m-0">The InkTrail Student Initiative</h3>
                         <p className="text-sm text-neutral-600 leading-relaxed m-0">
-                            Crafted by <strong>Bipin Vishwakarma</strong> at the University of Petroleum and Energy Studies (UPES), Dehradun. InkTrail is dedicated to helping engineering, science, and humanities students balance demanding academic coursework with modern assistive productivity tooling.
+                            Crafted with passion by <strong>Bipin Vishwakarma</strong>. InkTrail is dedicated to helping engineering, science, and humanities students balance demanding academic coursework with modern assistive productivity tooling.
                         </p>
                     </div>
                 </section>

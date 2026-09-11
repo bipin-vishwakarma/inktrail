@@ -1,0 +1,43 @@
+<svg width="128" height="128" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="nibGradLeft" x1="30" y1="20" x2="60" y2="70" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#f8fafc" />
+            <stop offset="35%" stop-color="#cbd5e1" />
+            <stop offset="70%" stop-color="#64748b" />
+            <stop offset="100%" stop-color="#1e293b" />
+        </linearGradient>
+        <linearGradient id="nibGradRight" x1="70" y1="20" x2="40" y2="70" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#e2e8f0" />
+            <stop offset="40%" stop-color="#94a3b8" />
+            <stop offset="80%" stop-color="#475569" />
+            <stop offset="100%" stop-color="#0f172a" />
+        </linearGradient>
+        <linearGradient id="goldGrad" x1="35" y1="30" x2="65" y2="60" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#fde047" />
+            <stop offset="50%" stop-color="#eab308" />
+            <stop offset="100%" stop-color="#ca8a04" />
+        </linearGradient>
+        <linearGradient id="trailGrad" x1="10" y1="85" x2="90" y2="30" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#06b6d4" />
+            <stop offset="30%" stop-color="#3b82f6" />
+            <stop offset="65%" stop-color="#8b5cf6" />
+            <stop offset="100%" stop-color="#ec4899" />
+        </linearGradient>
+        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+    </defs>
+    <path d="M 12 80 C 22 92, 45 94, 58 82 C 72 70, 78 50, 70 38 C 64 28, 48 30, 46 42 C 44 54, 54 64, 66 62 C 78 60, 88 48, 92 36" stroke="url(#trailGrad)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" opacity="0.4" filter="url(#glow)" />
+    <path d="M 14 78 C 24 88, 44 90, 56 80 C 68 70, 74 52, 68 40 C 62 32, 50 34, 48 44 C 46 54, 54 62, 64 60 C 74 58, 84 48, 88 38" stroke="url(#trailGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="22" cy="65" r="2.5" fill="#3b82f6" />
+    <circle cx="84" cy="28" r="3.2" fill="#ec4899" />
+    <g transform="translate(4, -2)">
+        <path d="M 50 14 L 33 46 C 35 56, 38 60, 44 64 L 50 65 Z" fill="url(#nibGradLeft)" />
+        <path d="M 50 14 L 67 46 C 65 56, 62 60, 56 64 L 50 65 Z" fill="url(#nibGradRight)" />
+        <path d="M 37 47 C 42 53, 46 54, 50 54 C 54 54, 58 53, 63 47" stroke="url(#goldGrad)" stroke-width="1.8" stroke-linecap="round" fill="none" />
+        <line x1="50" y1="14" x2="50" y2="42" stroke="#090d16" stroke-width="1.3" stroke-linecap="round" />
+        <circle cx="50" cy="43" r="2.6" fill="#0f172a" stroke="url(#goldGrad)" stroke-width="0.8" />
+        <polygon points="48.5,14 51.5,14 50,11" fill="#ffffff" />
+    </g>
+</svg>

@@ -1422,26 +1422,6 @@ export default function EditorPage() {
                         <span className="hidden sm:inline">Randomize</span>
                     </button>
 
-                    {/* Lab Notebook Mode Quick Toggle */}
-                    <button 
-                        type="button"
-                        onClick={() => {
-                            const next = !labNotebookMode;
-                            setLabNotebookMode(next);
-                            addToast(next ? '🧪 Lab Notebook Mode: Mixed Plain Diagrams & Ruled Text' : 'Standard Ruled Notebook Restored', 'info');
-                        }}
-                        title="Toggle Lab Practical Notebook Mode (Alternating blank diagram sheets and ruled theory pages)"
-                        className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition-all active:scale-95 border cursor-pointer ${
-                            labNotebookMode 
-                                ? 'bg-purple-600 text-white border-purple-700 shadow-xs' 
-                                : 'bg-purple-50/80 hover:bg-purple-100 text-purple-700 border-purple-200/80'
-                        }`}
-                    >
-                        <FlaskConical size={13} className={labNotebookMode ? 'text-white' : 'text-purple-600'} />
-                        <span className="hidden sm:inline">Lab Mode</span>
-                        {labNotebookMode && <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse" />}
-                    </button>
-
                     {/* Quick Tour Button */}
                     <button 
                         type="button"
@@ -1472,7 +1452,7 @@ export default function EditorPage() {
                                 <Link to="/features" onClick={() => setIsExploreMenuOpen(false)} className="block px-3 py-2 text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Features & Tools</Link>
                                 <Link to="/how-it-works" onClick={() => setIsExploreMenuOpen(false)} className="block px-3 py-2 text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">How It Works Guide</Link>
                                 <Link to="/faq" onClick={() => setIsExploreMenuOpen(false)} className="block px-3 py-2 text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Student FAQ</Link>
-                                <Link to="/about" onClick={() => setIsExploreMenuOpen(false)} className="block px-3 py-2 text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">About & UPES Story</Link>
+                                <Link to="/about" onClick={() => setIsExploreMenuOpen(false)} className="block px-3 py-2 text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">About & Origins</Link>
                                 <Link to="/changelog" onClick={() => setIsExploreMenuOpen(false)} className="block px-3 py-2 text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Changelog (v2.1)</Link>
                                 <div className="border-t border-neutral-100 my-1" />
                                 <Link to="/disclaimer" onClick={() => setIsExploreMenuOpen(false)} className="block px-3 py-1.5 text-neutral-500 hover:text-neutral-800 text-[11px]">Disclaimer</Link>

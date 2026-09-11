@@ -92,7 +92,7 @@ export default function UserMenu({ onOpenTour }: UserMenuProps) {
                             <div className="pt-2 border-t border-neutral-200/60 flex items-center justify-between text-[10px] font-bold">
                                 <span className="inline-flex items-center gap-1 text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md">
                                     <GraduationCap size={11} />
-                                    <span className="truncate max-w-[120px]">{user.collegeName || 'UPES Dehradun'}</span>
+                                    <span className="truncate max-w-[120px]">{user.collegeName || 'Student Scholar'}</span>
                                 </span>
                                 <span className="inline-flex items-center gap-1 text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">
                                     <Cloud size={10} />
