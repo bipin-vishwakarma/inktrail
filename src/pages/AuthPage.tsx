@@ -213,16 +213,19 @@ export default function AuthPage() {
             </motion.div>
 
             {/* Right panel — auth form */}
-            <div className="flex-1 flex items-center justify-center p-6 sm:p-10">
+            <div className="flex-1 flex items-center justify-center p-6 sm:p-10 relative overflow-hidden">
+                {/* Radiant Ambient Bloom */}
+                <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[480px] h-[480px] bg-gradient-to-tr from-violet-400/20 via-indigo-400/15 to-cyan-400/15 rounded-full blur-3xl pointer-events-none -z-10" />
+
                 <motion.div
                     initial={{ opacity: 0, y: 24 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.1 }}
-                    className="w-full max-w-md"
+                    className="w-full max-w-md relative z-10"
                 >
                     {/* Mobile logo */}
-                    <div className="flex lg:hidden items-center gap-2 mb-8 justify-center">
-                        <InkTrailLogo size={32} />
+                    <div className="flex lg:hidden items-center gap-2.5 mb-8 justify-center">
+                        <InkTrailLogo size={36} />
                         <span className="text-xl font-black text-neutral-900">InkTrail</span>
                     </div>
 

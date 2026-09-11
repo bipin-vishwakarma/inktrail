@@ -85,9 +85,9 @@ export default function NotebookHero3D({
         // 1. Three.js Scene
         const scene = new THREE.Scene();
 
-        // 2. Camera: Studio perspective lens with realistic depth
-        const camera = new THREE.PerspectiveCamera(34, width / height, 0.1, 100);
-        camera.position.set(0.05, 0.75, 7.8);
+        // 2. Camera: Studio perspective lens with realistic depth & uncaged headroom
+        const camera = new THREE.PerspectiveCamera(32, width / height, 0.1, 100);
+        camera.position.set(0, 0.05, 8.8);
 
         // 3. High-Fidelity Renderer
         const renderer = new THREE.WebGLRenderer({
@@ -102,7 +102,7 @@ export default function NotebookHero3D({
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
         // 4. Lighting Rig
-        const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1.6);
         scene.add(ambientLight);
 
         // Warm Key Light (Top-right studio lamp)
@@ -114,7 +114,7 @@ export default function NotebookHero3D({
         scene.add(keyLight);
 
         // Cool Sky Fill Light
-        const fillLight = new THREE.DirectionalLight(0xdbeafe, 1.2);
+        const fillLight = new THREE.DirectionalLight(0xdbeafe, 1.3);
         fillLight.position.set(-5, 4, 4);
         scene.add(fillLight);
 
@@ -127,31 +127,40 @@ export default function NotebookHero3D({
         const notebookGroup = new THREE.Group();
         scene.add(notebookGroup);
 
-        // Ground Soft Contact Shadow (Multi-stop smooth radial gradient, NO rigid rectangular cover)
+        // Soft Radial Gradient Shadow Canvas (Contact & Desk Shadow)
         const shadowCanvas = document.createElement('canvas');
         shadowCanvas.width = 512;
         shadowCanvas.height = 512;
         const sCtx = shadowCanvas.getContext('2d')!;
-        const radGrad = sCtx.createRadialGradient(256, 256, 20, 256, 256, 240);
-        radGrad.addColorStop(0, 'rgba(15, 23, 42, 0.24)');
-        radGrad.addColorStop(0.35, 'rgba(30, 41, 59, 0.12)');
-        radGrad.addColorStop(0.7, 'rgba(30, 41, 59, 0.04)');
+        const radGrad = sCtx.createRadialGradient(256, 256, 30, 256, 256, 245);
+        radGrad.addColorStop(0, 'rgba(15, 23, 42, 0.32)');
+        radGrad.addColorStop(0.35, 'rgba(30, 41, 59, 0.16)');
+        radGrad.addColorStop(0.7, 'rgba(30, 41, 59, 0.05)');
         radGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
         sCtx.fillStyle = radGrad;
         sCtx.fillRect(0, 0, 512, 512);
 
         const shadowTexture = new THREE.CanvasTexture(shadowCanvas);
-        const shadowGeo = new THREE.PlaneGeometry(7.2, 5.0);
+        
+        // Soft contact shadow placed directly behind the notebook pages (NEVER intersects paper)
+        const shadowGeo = new THREE.PlaneGeometry(6.6, 4.8);
         const shadowMat = new THREE.MeshBasicMaterial({
             map: shadowTexture,
             transparent: true,
             opacity: 0.85,
             depthWrite: false,
         });
-        const shadowMesh = new THREE.Mesh(shadowGeo, shadowMat);
-        shadowMesh.position.set(0, -0.7, -0.35);
-        shadowMesh.rotation.x = -Math.PI * 0.18;
-        scene.add(shadowMesh);
+        const contactShadowMesh = new THREE.Mesh(shadowGeo, shadowMat);
+        contactShadowMesh.position.set(0, 0, -0.05);
+        contactShadowMesh.renderOrder = -1;
+        notebookGroup.add(contactShadowMesh);
+
+        // Ground ambient desk shadow lying horizontally well below the book
+        const floorGeo = new THREE.PlaneGeometry(10.0, 7.0);
+        const floorShadowMesh = new THREE.Mesh(floorGeo, shadowMat);
+        floorShadowMesh.position.set(0, -2.6, -0.5);
+        floorShadowMesh.rotation.x = -Math.PI / 2;
+        scene.add(floorShadowMesh);
 
         // --- LEFT PAGE: Circuit Diagram & Schematic Canvas ---
         const leftCanvas = document.createElement('canvas');
@@ -452,11 +461,11 @@ export default function NotebookHero3D({
         let lastInk = inkRef.current;
         let lastPaper = paperRef.current;
 
-        // Viewport tracking
-        const baseScale = 0.88;
-        let targetRotX = 0.38;
-        let targetRotY = -0.14;
-        let targetZ = 0.02;
+        // Viewport tracking & Frameless Floating Scale
+        const baseScale = 0.72; // Wide breathing room, uncaged, no boundary box clipping
+        let targetRotX = 0.10;  // Upright legible angle (eliminates downward tilt)
+        let targetRotY = -0.04; // Subtle angle showing both schematic and writing pages
+        let targetZ = 0.0;
 
         notebookGroup.scale.set(baseScale, baseScale, baseScale);
         notebookGroup.rotation.x = targetRotX;
@@ -466,9 +475,10 @@ export default function NotebookHero3D({
             if (!interactive) return;
             const x = (e.clientX / window.innerWidth) * 2 - 1;
             const y = -(e.clientY / window.innerHeight) * 2 + 1;
-            targetRotY = -0.14 + x * 0.22;
-            targetRotX = 0.38 - y * 0.18;
-            targetZ = 0.02 + x * 0.04;
+            // Heavily dampened luxury float (stable, non-dizzying)
+            targetRotY = -0.04 + x * 0.05;
+            targetRotX = 0.10 - y * 0.04;
+            targetZ = x * 0.02;
         };
         window.addEventListener('mousemove', handlePointerMove, { passive: true });
 
@@ -593,17 +603,17 @@ export default function NotebookHero3D({
                 }
             }
 
-            // Ambient breathing float
-            const idleFloat = Math.sin(elapsedTime * 1.2) * 0.05;
-            const idleTilt = Math.cos(elapsedTime * 1.0) * 0.015;
+            // Ambient breathing float (calm, subtle micro-movement)
+            const idleFloat = Math.sin(elapsedTime * 1.2) * 0.03;
+            const idleTilt = Math.cos(elapsedTime * 1.0) * 0.008;
 
             notebookGroup.position.y = THREE.MathUtils.lerp(notebookGroup.position.y, idleFloat, 0.06);
             notebookGroup.rotation.x = THREE.MathUtils.lerp(notebookGroup.rotation.x, targetRotX + idleTilt, 0.06);
             notebookGroup.rotation.y = THREE.MathUtils.lerp(notebookGroup.rotation.y, targetRotY, 0.06);
             notebookGroup.rotation.z = THREE.MathUtils.lerp(notebookGroup.rotation.z, targetZ, 0.06);
 
-            shadowMesh.scale.set(1 + idleFloat * 0.25, 1 + idleFloat * 0.25, 1);
-            shadowMesh.position.x = notebookGroup.rotation.y * 0.4;
+            floorShadowMesh.scale.set(1 + idleFloat * 0.2, 1 + idleFloat * 0.2, 1);
+            floorShadowMesh.position.x = notebookGroup.rotation.y * 0.4;
             coilGlint.position.y = 1.2 + Math.sin(elapsedTime * 1.5) * 1.2;
 
             renderer.render(scene, camera);
@@ -629,6 +639,7 @@ export default function NotebookHero3D({
             goldMat.dispose();
             nibGeo.dispose();
             shadowGeo.dispose();
+            floorGeo.dispose();
             shadowMat.dispose();
             shadowTexture.dispose();
             leftTexture.dispose();

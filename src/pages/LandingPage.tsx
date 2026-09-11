@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import {
@@ -147,8 +147,6 @@ export default function LandingPage() {
     const card1Y = useTransform(springY, v => v * -0.5);
     const card2X = useTransform(springX, v => v * 0.4);
     const card2Y = useTransform(springY, v => v * 0.4);
-    const card3X = useTransform(springX, v => v * -0.3);
-    const card3Y = useTransform(springY, v => v * -0.3);
 
     const handleHeroMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         const rect = e.currentTarget.getBoundingClientRect();
@@ -190,6 +188,26 @@ export default function LandingPage() {
         setPaperMaterial(paperId);
         navigate('/editor');
     };
+
+    // Smooth scroll to hash anchor on mount or hash change
+    useEffect(() => {
+        const scrollToHash = () => {
+            const hash = window.location.hash;
+            if (hash) {
+                const targetId = hash.replace('#', '');
+                const targetElem = document.getElementById(targetId);
+                if (targetElem) {
+                    setTimeout(() => {
+                        targetElem.scrollIntoView({ behavior: 'smooth' });
+                    }, 80);
+                }
+            }
+        };
+
+        scrollToHash();
+        window.addEventListener('hashchange', scrollToHash);
+        return () => window.removeEventListener('hashchange', scrollToHash);
+    }, []);
 
     return (
         <div className="min-h-screen bg-[#FAF8F5] text-stone-900 selection:bg-violet-200 selection:text-violet-900 overflow-x-hidden font-sans relative">
@@ -741,7 +759,7 @@ export default function LandingPage() {
             {/* =========================================================
                 5. CURATED STUDENT PAPER TEXTURES (Bento Matrix)
             ========================================================= */}
-            <section className="py-16 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto">
+            <section id="paper-vault" className="py-16 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-20">
                 <div className="text-center max-w-2xl mx-auto mb-14">
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-100/80 border border-violet-200 text-violet-800 text-xs font-mono font-bold uppercase tracking-wider mb-3">
                         <BookOpen size={12} className="text-violet-600" />
@@ -858,7 +876,7 @@ export default function LandingPage() {
             {/* =========================================================
                 6. AUTHENTICITY FEATURES BENTO GRID
             ========================================================= */}
-            <section className="py-16 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto">
+            <section id="features" className="py-16 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-20">
                 <div className="text-center max-w-2xl mx-auto mb-14">
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100/80 border border-amber-200 text-amber-800 text-xs font-mono font-bold uppercase tracking-wider mb-3">
                         <Zap size={12} className="text-amber-600" />
@@ -976,7 +994,7 @@ export default function LandingPage() {
             {/* =========================================================
                 7. FREQUENTLY ASKED QUESTIONS (Accordion)
             ========================================================= */}
-            <section className="py-16 sm:py-20 px-4 sm:px-6 max-w-4xl mx-auto">
+            <section id="faq" className="py-16 sm:py-20 px-4 sm:px-6 max-w-4xl mx-auto scroll-mt-20">
                 <div className="text-center mb-12">
                     <h2 className="text-3xl sm:text-4xl font-black text-stone-950 tracking-tight font-display">
                         Frequently Asked Questions

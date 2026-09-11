@@ -108,39 +108,46 @@ export default function AuthModal() {
     return (
         <AnimatePresence>
             {isAuthModalOpen && (
-                <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-neutral-900/60 backdrop-blur-md">
+                <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-neutral-950/65 backdrop-blur-md">
+                    {/* Ambient Luminous Bloom */}
+                    <div className="absolute w-96 h-96 bg-gradient-to-tr from-violet-600/30 via-indigo-500/20 to-cyan-400/20 rounded-full blur-3xl pointer-events-none" />
+
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95, y: 15 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 15 }}
                         transition={{ type: "spring", damping: 26, stiffness: 320 }}
-                        className="bg-white rounded-3xl overflow-hidden isolate shadow-2xl max-w-md w-full relative flex flex-col border border-neutral-200/80"
+                        className="bg-white/95 backdrop-blur-xl rounded-3xl overflow-hidden isolate shadow-2xl max-w-md w-full relative flex flex-col border border-white/60 ring-1 ring-neutral-900/10"
                     >
-                        {/* HEADER with macOS dots */}
-                        <div className="px-6 py-4.5 border-b border-neutral-100 flex items-center justify-between bg-neutral-50/80 shrink-0">
+                        {/* HEADER with InkTrail Logo & Status */}
+                        <div className="px-6 py-4.5 border-b border-neutral-100 flex items-center justify-between bg-gradient-to-r from-neutral-50/90 via-white to-neutral-50/90 shrink-0">
                             <div className="flex items-center gap-3">
-                                <div className="flex gap-1.5">
-                                    <div className="w-3 h-3 rounded-full bg-[#FF5F57] shadow-inner" />
-                                    <div className="w-3 h-3 rounded-full bg-[#FFBD2E] shadow-inner" />
-                                    <div className="w-3 h-3 rounded-full bg-[#28C840] shadow-inner" />
-                                </div>
+                                <InkTrailLogo size={32} />
                                 <div>
-                                    <h2 className="text-sm font-extrabold text-neutral-900 leading-tight">
-                                        Student Account & Cloud Vault
+                                    <h2 className="text-sm font-extrabold text-neutral-900 leading-tight flex items-center gap-1.5">
+                                        <span>Student Cloud Vault</span>
+                                        <span className="px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-mono font-bold">Beta</span>
                                     </h2>
                                     <p className="text-[11px] text-emerald-600 font-bold flex items-center gap-1">
                                         <CheckCircle2 size={11} /> 100% Free Forever for Students
                                     </p>
                                 </div>
                             </div>
-                            <button 
-                                type="button"
-                                onClick={() => setAuthModalOpen(false)}
-                                className="p-2 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-200/60 rounded-full transition-all cursor-pointer"
-                                aria-label="Close dialog"
-                            >
-                                <X size={18} />
-                            </button>
+                            <div className="flex items-center gap-2">
+                                <div className="hidden sm:flex gap-1.5 mr-1">
+                                    <div className="w-2.5 h-2.5 rounded-full bg-[#FF5F57]/80" />
+                                    <div className="w-2.5 h-2.5 rounded-full bg-[#FFBD2E]/80" />
+                                    <div className="w-2.5 h-2.5 rounded-full bg-[#28C840]/80" />
+                                </div>
+                                <button 
+                                    type="button"
+                                    onClick={() => setAuthModalOpen(false)}
+                                    className="p-1.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-200/60 rounded-full transition-all cursor-pointer"
+                                    aria-label="Close dialog"
+                                >
+                                    <X size={18} />
+                                </button>
+                            </div>
                         </div>
 
                         {/* TAB SELECTOR */}
@@ -148,32 +155,32 @@ export default function AuthModal() {
                             <button
                                 type="button"
                                 onClick={() => { setAuthTab('oauth'); setErrorMessage(null); }}
-                                className={`flex-1 py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 ${
-                                    authTab === 'oauth' ? 'bg-white text-neutral-900 shadow-xs' : 'text-neutral-500 hover:text-neutral-800'
+                                className={`flex-1 py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                                    authTab === 'oauth' ? 'bg-white text-neutral-900 shadow-xs ring-1 ring-black/5' : 'text-neutral-500 hover:text-neutral-800 hover:bg-white/40'
                                 }`}
                             >
                                 <Sparkles size={13} className="text-indigo-500" />
-                                <span>OAuth</span>
+                                <span>Fast OAuth</span>
                             </button>
                             <button
                                 type="button"
                                 onClick={() => { setAuthTab('student'); setErrorMessage(null); }}
-                                className={`flex-1 py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 ${
-                                    authTab === 'student' ? 'bg-white text-neutral-900 shadow-xs' : 'text-neutral-500 hover:text-neutral-800'
+                                className={`flex-1 py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                                    authTab === 'student' ? 'bg-white text-neutral-900 shadow-xs ring-1 ring-black/5' : 'text-neutral-500 hover:text-neutral-800 hover:bg-white/40'
                                 }`}
                             >
                                 <GraduationCap size={14} className="text-blue-600" />
-                                <span>College ID</span>
+                                <span>Student ID</span>
                             </button>
                             <button
                                 type="button"
                                 onClick={() => { setAuthTab('email'); setErrorMessage(null); }}
-                                className={`flex-1 py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 ${
-                                    authTab === 'email' ? 'bg-white text-neutral-900 shadow-xs' : 'text-neutral-500 hover:text-neutral-800'
+                                className={`flex-1 py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                                    authTab === 'email' ? 'bg-white text-neutral-900 shadow-xs ring-1 ring-black/5' : 'text-neutral-500 hover:text-neutral-800 hover:bg-white/40'
                                 }`}
                             >
                                 <Mail size={13} className="text-amber-500" />
-                                <span>Email / Pass</span>
+                                <span>Email Pass</span>
                             </button>
                         </div>
 

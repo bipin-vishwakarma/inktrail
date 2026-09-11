@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Sparkles, ExternalLink } from 'lucide-react';
@@ -10,16 +10,64 @@ export default function Navbar() {
     const isNavbarVisible = useStore(state => state.isNavbarVisible);
     const openOnboarding = useStore(state => state.openOnboarding);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [activeSection, setActiveSection] = useState<string>('');
     const location = useLocation();
 
-    const navLinks: { name: string; path: string; badge?: string }[] = [
-        { name: 'Features', path: '/features' },
-        { name: 'How It Works', path: '/how-it-works' },
-        { name: 'FAQ', path: '/faq' },
+    const navLinks: { name: string; sectionId?: string; path: string; badge?: string }[] = [
+        { name: 'Features', sectionId: 'features', path: '/features' },
+        { name: 'How It Works', sectionId: 'how-it-works', path: '/how-it-works' },
+        { name: 'Paper Vault', sectionId: 'paper-vault', path: '/#paper-vault' },
+        { name: 'FAQ', sectionId: 'faq', path: '/faq' },
         { name: 'About', path: '/about' },
     ];
 
-    const isActive = (path: string) => location.pathname === path;
+    // Scroll spy when on landing page
+    useEffect(() => {
+        if (location.pathname !== '/') return;
+
+        const handleScroll = () => {
+            const sectionIds = ['how-it-works', 'live-sandbox', 'paper-vault', 'features', 'faq'];
+            const scrollPos = window.scrollY + 220;
+            for (const id of sectionIds) {
+                const el = document.getElementById(id);
+                if (el) {
+                    const top = el.offsetTop;
+                    const height = el.offsetHeight;
+                    if (scrollPos >= top && scrollPos < top + height) {
+                        setActiveSection(id);
+                        return;
+                    }
+                }
+            }
+            if (window.scrollY < 350) {
+                setActiveSection('');
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [location.pathname]);
+
+    const handleNavClick = (e: React.MouseEvent, link: typeof navLinks[number]) => {
+        if (link.sectionId) {
+            if (location.pathname === '/') {
+                e.preventDefault();
+                const elem = document.getElementById(link.sectionId);
+                if (elem) {
+                    elem.scrollIntoView({ behavior: 'smooth' });
+                    window.history.pushState(null, '', `#${link.sectionId}`);
+                    setActiveSection(link.sectionId);
+                }
+            }
+        }
+    };
+
+    const isLinkActive = (link: typeof navLinks[number]) => {
+        if (location.pathname === '/') {
+            return link.sectionId ? activeSection === link.sectionId : false;
+        }
+        return location.pathname === link.path;
+    };
 
     return (
         <>
@@ -49,9 +97,10 @@ export default function Navbar() {
                         {navLinks.map((link) => (
                             <Link
                                 key={link.name}
-                                to={link.path}
-                                className={`px-3 py-1 text-xs font-bold rounded-full transition-all flex items-center gap-1.5 ${
-                                    isActive(link.path)
+                                to={link.sectionId && location.pathname === '/' ? `#${link.sectionId}` : link.path}
+                                onClick={(e) => handleNavClick(e, link)}
+                                className={`px-3 py-1 text-xs font-bold rounded-full transition-all flex items-center gap-1.5 cursor-pointer ${
+                                    isLinkActive(link)
                                         ? 'bg-white text-neutral-950 shadow-xs'
                                         : 'text-neutral-600 hover:text-neutral-900 hover:bg-white/50'
                                 }`}
@@ -128,10 +177,13 @@ export default function Navbar() {
                             {navLinks.map((link) => (
                                 <Link
                                     key={link.name}
-                                    to={link.path}
-                                    onClick={() => setMobileMenuOpen(false)}
-                                    className={`p-3 rounded-2xl text-xs font-bold transition-all flex items-center justify-between border ${
-                                        isActive(link.path)
+                                    to={link.sectionId && location.pathname === '/' ? `#${link.sectionId}` : link.path}
+                                    onClick={(e) => {
+                                        setMobileMenuOpen(false);
+                                        handleNavClick(e, link);
+                                    }}
+                                    className={`p-3 rounded-2xl text-xs font-bold transition-all flex items-center justify-between border cursor-pointer ${
+                                        isLinkActive(link)
                                             ? 'bg-neutral-900 text-white border-neutral-900 shadow-xs'
                                             : 'bg-neutral-50 border-neutral-200/70 text-neutral-700 hover:bg-neutral-100'
                                     }`}
