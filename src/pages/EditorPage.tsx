@@ -2397,11 +2397,10 @@ export default function EditorPage() {
                             );
 
                             const isSpiralActive = Boolean(spiralBinding);
-                            const isVerso = (pIdx + 1) % 2 === 0;
-                            const isLeftSpiral = isSpiralActive && !isVerso;
+                            const isLeftSpiral = isSpiralActive; // always left
                             const redMarginLeft = isLeftSpiral ? 104 : 65;
                             const effectivePageMarginLeft = isLeftSpiral ? Math.max(marginLeft, 118) : marginLeft;
-                            const effectivePageMarginRight = (isSpiralActive && isVerso) ? Math.max(marginRight, 65) : marginRight;
+                            const effectivePageMarginRight = marginRight;
 
                             const effectivePaperId = pageMaterialOverrides[pIdx] 
                                 || (page.isDiagramPage ? (labDiagramPaper === 'grid' ? 'grid' : 'blank') : paperMaterial);
@@ -2568,7 +2567,7 @@ export default function EditorPage() {
                                                     <div 
                                                         className="absolute top-[12px] z-10 pointer-events-none select-none text-left"
                                                         style={{
-                                                            right: (isSpiralActive && isVerso) ? '64px' : '24px',
+                                                            right: '24px',
                                                             width: '168px',
                                                             height: '52px',
                                                             border: '1.2px solid rgba(225, 29, 72, 0.65)',

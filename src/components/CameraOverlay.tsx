@@ -35,12 +35,10 @@ const CameraOverlayComponent: React.FC<CameraOverlayProps> = ({
     paperCrease,
     sensorNoise,
     coffeeStain = false,
-    pageIndex = 0,
     spiralBinding = false,
     inkBleedThrough = false,
     inkBleedIntensity = 0.12,
 }) => {
-    const isEvenPage = (pageIndex ?? 0) % 2 === 1;
     const showSpiral = Boolean(spiralBinding);
     // Calculate Phone Shadow coordinates based on angle or custom per-page values
     const rad = (phoneShadowAngle * Math.PI) / 180;
@@ -223,13 +221,10 @@ const CameraOverlayComponent: React.FC<CameraOverlayProps> = ({
                 </div>
             )}
 
-            {/* 3D TWIN-WIRE SPIRAL BINDING WITH ALTERNATING PAGE PARITY (Recto: Left / Verso: Right) */}
+            {/* 3D TWIN-WIRE SPIRAL BINDING — always on LEFT side */}
             {showSpiral && (
                 <div 
-                    className={`absolute inset-y-0 ${isEvenPage ? 'right-0' : 'left-0'} w-[52px] pointer-events-none z-30 select-none overflow-visible`}
-                    style={{
-                        transform: isEvenPage ? 'scaleX(-1)' : 'none',
-                    }}
+                    className={`absolute inset-y-0 left-0 w-[52px] pointer-events-none z-30 select-none overflow-visible`}
                 >
                     {/* Perforated tear line / inner margin paper indentation */}
                     <div className="absolute top-0 bottom-0 left-[38px] w-[1px] border-r border-dashed border-neutral-300/80" />
