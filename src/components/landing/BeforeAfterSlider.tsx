@@ -110,7 +110,7 @@ export const BeforeAfterSlider: React.FC = () => {
                 <div>
                     <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-100 text-violet-800 text-xs font-black tracking-wide uppercase mb-1.5">
                         <Sparkles size={12} className="text-violet-600" />
-                        <span>Interactive 3D Comparison</span>
+                        <span>Side-by-Side Comparison</span>
                     </div>
                     <h3 className="text-xl sm:text-2xl font-black font-display text-neutral-900 tracking-tight">
                         Mechanical Type vs. InkTrail Handwriting
