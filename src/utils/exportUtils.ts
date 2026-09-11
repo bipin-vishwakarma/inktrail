@@ -41,6 +41,18 @@ async function capturePage(element: HTMLElement, format: 'jpeg' | 'png'): Promis
             display: 'block',
             position: 'relative'
         },
+        filter: (node: Node) => {
+            if (node instanceof HTMLElement) {
+                if (
+                    node.classList?.contains('export-ignore') ||
+                    node.hasAttribute('data-export-ignore') ||
+                    node.classList?.contains('hover-control-bar')
+                ) {
+                    return false;
+                }
+            }
+            return true;
+        },
         features: {
             // Ensure modern CSS features are handled
             removeControlCharacter: false

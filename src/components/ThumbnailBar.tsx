@@ -6,6 +6,8 @@ interface ThumbnailBarProps {
     activePageIndex: number;
     onSelectPage: (index: number) => void;
     paperId?: string;
+    diagramPages?: Record<number, boolean>;
+    pageMaterials?: Record<number, string>;
 }
 
 export const ThumbnailBar: React.FC<ThumbnailBarProps> = ({
@@ -13,6 +15,8 @@ export const ThumbnailBar: React.FC<ThumbnailBarProps> = ({
     activePageIndex,
     onSelectPage,
     paperId = 'college',
+    diagramPages = {},
+    pageMaterials = {},
 }) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -103,19 +107,34 @@ export const ThumbnailBar: React.FC<ThumbnailBarProps> = ({
                                                     : 'border-neutral-200 group-hover:border-neutral-400'
                                             }`}
                                         >
-                                            {/* Red margin line simulation if ruled */}
-                                            {paperId === 'college' && (
-                                                <div className="absolute top-0 bottom-0 left-2 w-[0.5px] bg-rose-300 pointer-events-none" />
-                                            )}
+                                            {/* Mini Content: Diagram vs Ruled */}
+                                            {diagramPages[idx] || pageMaterials[idx] === 'blank' ? (
+                                                <div className="flex-1 flex flex-col items-center justify-center text-purple-600 bg-purple-50/40 rounded-xs my-0.5">
+                                                    <span className="text-[10px]">🔬</span>
+                                                    <span className="text-[6px] font-bold text-purple-700 uppercase tracking-tighter">Diagram</span>
+                                                </div>
+                                            ) : pageMaterials[idx] === 'grid' ? (
+                                                <div className="flex-1 flex flex-col items-center justify-center text-emerald-600 bg-emerald-50/40 rounded-xs my-0.5 border border-emerald-200/50">
+                                                    <span className="text-[9px]">📐</span>
+                                                    <span className="text-[6px] font-bold text-emerald-700 uppercase tracking-tighter">Graph</span>
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    {/* Red margin line simulation if ruled */}
+                                                    {(paperId === 'college' || paperId === 'youva-spiral') && (
+                                                        <div className="absolute top-0 bottom-0 left-2 w-[0.5px] bg-rose-300 pointer-events-none" />
+                                                    )}
 
-                                            {/* Mini Horizontal Ruling Lines */}
-                                            <div className="space-y-1 mt-0.5 opacity-60">
-                                                <div className="h-[0.5px] bg-neutral-300 w-full" />
-                                                <div className="h-[0.5px] bg-neutral-300 w-full" />
-                                                <div className="h-[0.5px] bg-neutral-300 w-full" />
-                                                <div className="h-[0.5px] bg-neutral-300 w-full" />
-                                                <div className="h-[0.5px] bg-neutral-300 w-4/5" />
-                                            </div>
+                                                    {/* Mini Horizontal Ruling Lines */}
+                                                    <div className="space-y-1 mt-0.5 opacity-60">
+                                                        <div className="h-[0.5px] bg-neutral-300 w-full" />
+                                                        <div className="h-[0.5px] bg-neutral-300 w-full" />
+                                                        <div className="h-[0.5px] bg-neutral-300 w-full" />
+                                                        <div className="h-[0.5px] bg-neutral-300 w-full" />
+                                                        <div className="h-[0.5px] bg-neutral-300 w-4/5" />
+                                                    </div>
+                                                </>
+                                            )}
 
                                             {/* Mini Page Number Label */}
                                             <div

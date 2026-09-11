@@ -8,7 +8,7 @@ export default function PrivacyPolicy() {
         >
             <h3>1. Introduction</h3>
             <p>
-                Welcome to Handwritten ("we", "our", or "us"). We are committed to protecting your personal information and your right to privacy. This Privacy Policy explains how we collect, use, disclosure, and safeguard your information when you use our website.
+                Welcome to InkTrail ("we", "our", or "us"), created by Bipin Vishwakarma at UPES Dehradun. We are committed to protecting your personal information and your right to privacy. This Privacy Policy explains how we collect, use, disclosure, and safeguard your information when you use our website.
             </p>
             <p>
                 By accessing or using our services, you signify that you have read, understood, and agree to our collection, storage, use, and disclosure of your personal information as described in this Privacy Policy.
@@ -16,7 +16,7 @@ export default function PrivacyPolicy() {
 
             <h3>2. Data Collection (Local Storage)</h3>
             <p>
-                <strong>Important:</strong> Handwritten is designed with a "Local-First" architecture. 
+                <strong>Important:</strong> InkTrail is designed with a "Local-First" architecture. 
             </p>
             <ul>
                 <li><strong>No Cloud Storage:</strong> We do not store your documents, text, or exported files on our servers. All processing happens locally in your browser.</li>

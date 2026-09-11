@@ -1,70 +1,97 @@
 import PageLayout from '../components/layout/PageLayout';
-import { MousePointer2, Settings2, Share2, ArrowRight } from 'lucide-react';
+import { MousePointer2, Settings2, Share2, FlaskConical } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function HowItWorksPage() {
     return (
         <PageLayout 
             title="How It Works" 
-            subtitle="Three simple steps to transform your digital text into analog beauty."
-            description="Learn how to use Handwritten's text-to-handwriting tool. Paste your text, customize your style with AI humanization, and export high-quality documents instantly."
+            subtitle="Four straightforward steps to generate realistic student notes, lab manuals, and assignments."
+            description="Learn how to use InkTrail's text-to-handwriting engine: Import documents, customize realistic penmanship & lab diagrams, and export multi-page PDFs instantly."
         >
-
-            <div className="space-y-20">
+            <div className="space-y-16">
                 <section className="prose prose-neutral max-w-none">
-                    <p className="lead">
-                        Our platform is designed for simplicity without compromising on power. Whether you're a student, a creative professional, or someone who just appreciates a personal touch, here is how you can get started.
+                    <p className="lead text-lg text-neutral-600">
+                        <strong>InkTrail</strong> simplifies the entire workflow of turning digital lecture notes, lab records, and typed essays into authentic handwritten paper sheets ready for printing or submission.
                     </p>
                 </section>
-                <div className="grid grid-cols-1 gap-12">
-                    <div className="flex flex-col md:flex-row items-center gap-12 group">
-                        <div className="w-20 h-20 bg-neutral-900 text-white rounded-4xl flex items-center justify-center shrink-0 text-3xl font-black shadow-xl shadow-neutral-900/10">1</div>
-                        <div className="space-y-4">
-                            <div className="flex items-center gap-3 text-indigo-600 font-black tracking-widest uppercase text-xs">
-                                <MousePointer2 size={16} />
+
+                <div className="grid grid-cols-1 gap-10">
+                    {/* Step 1 */}
+                    <div className="flex flex-col md:flex-row items-center gap-8 p-6 sm:p-8 bg-white/70 rounded-3xl border border-black/5 hover:border-black/10 transition-all shadow-xs">
+                        <div className="w-16 h-16 bg-neutral-900 text-white rounded-3xl flex items-center justify-center shrink-0 text-2xl font-black shadow-lg shadow-neutral-900/10">1</div>
+                        <div className="space-y-2">
+                            <div className="flex items-center gap-2 text-indigo-600 font-black tracking-widest uppercase text-xs">
+                                <MousePointer2 size={14} />
                                 Step One
                             </div>
-                            <h3 className="text-3xl font-bold text-neutral-900">Write or Paste Your Text</h3>
-                            <p className="text-lg text-neutral-600 max-w-2xl leading-relaxed">
-                                Simply start typing in our focused editor or paste your existing notes. We support markdown, bullet points, and complex formatting.
+                            <h3 className="text-xl font-bold text-neutral-900 m-0">Write, Paste, or Import Documents</h3>
+                            <p className="text-sm text-neutral-600 max-w-2xl leading-relaxed m-0">
+                                Type directly with live pagination, paste text with auto-AI preamble cleaner, or drag & drop files (.docx, .pdf, .md, .txt, .rtf). Automatic Smart Margin Indexing formats your question numbers (Q1., Sol:) automatically.
                             </p>
                         </div>
                     </div>
 
-                    <div className="flex flex-col md:flex-row-reverse items-center gap-12 group text-right md:text-left">
-                        <div className="w-20 h-20 bg-indigo-600 text-white rounded-4xl flex items-center justify-center shrink-0 text-3xl font-black shadow-xl shadow-indigo-600/10">2</div>
-                        <div className="space-y-4 flex flex-col items-center md:items-start">
-                            <div className="flex items-center gap-3 text-indigo-600 font-black tracking-widest uppercase text-xs">
-                                <Settings2 size={16} />
+                    {/* Step 2 */}
+                    <div className="flex flex-col md:flex-row items-center gap-8 p-6 sm:p-8 bg-white/70 rounded-3xl border border-black/5 hover:border-black/10 transition-all shadow-xs">
+                        <div className="w-16 h-16 bg-indigo-600 text-white rounded-3xl flex items-center justify-center shrink-0 text-2xl font-black shadow-lg shadow-indigo-600/10">2</div>
+                        <div className="space-y-2">
+                            <div className="flex items-center gap-2 text-indigo-600 font-black tracking-widest uppercase text-xs">
+                                <Settings2 size={14} />
                                 Step Two
                             </div>
-                            <h3 className="text-3xl font-bold text-neutral-900">Personalize Your Style</h3>
-                            <p className="text-lg text-neutral-600 max-w-2xl leading-relaxed">
-                                Adjust the font, size, ink color, and paper type. Use the AI Humanizer to add subtle, realistic variations to the output.
+                            <h3 className="text-xl font-bold text-neutral-900 m-0">Customize Penmanship & Human Imperfections</h3>
+                            <p className="text-sm text-neutral-600 max-w-2xl leading-relaxed m-0">
+                                Choose from authentic student handwriting styles, gel pens, ballpoints, or fountain inks. Dial in natural micro-jitter, baseline drifts, realistic auto-typos with wavy scratch-out lines, and low-ink fading.
                             </p>
                         </div>
                     </div>
 
-                    <div className="flex flex-col md:flex-row items-center gap-12 group">
-                        <div className="w-20 h-20 bg-emerald-500 text-white rounded-4xl flex items-center justify-center shrink-0 text-3xl font-black shadow-xl shadow-emerald-500/10">3</div>
-                        <div className="space-y-4 text-center md:text-left">
-                            <div className="flex items-center gap-3 text-indigo-600 font-black tracking-widest uppercase text-xs justify-center md:justify-start">
-                                <Share2 size={16} />
+                    {/* Step 3 */}
+                    <div className="flex flex-col md:flex-row items-center gap-8 p-6 sm:p-8 bg-white/70 rounded-3xl border border-blue-200/80 shadow-xs">
+                        <div className="w-16 h-16 bg-blue-600 text-white rounded-3xl flex items-center justify-center shrink-0 text-2xl font-black shadow-lg shadow-blue-600/10">3</div>
+                        <div className="space-y-2">
+                            <div className="flex items-center gap-2 text-blue-600 font-black tracking-widest uppercase text-xs">
+                                <FlaskConical size={14} />
                                 Step Three
                             </div>
-                            <h3 className="text-3xl font-bold text-neutral-900">Export and Share</h3>
-                            <p className="text-lg text-neutral-600 max-w-2xl leading-relaxed">
-                                Review your pages in the live preview and export them as a multi-page PDF or a ZIP of images. Ready for any platform.
+                            <h3 className="text-xl font-bold text-neutral-900 m-0">Enable Lab Practical Mode & Schematics</h3>
+                            <p className="text-sm text-neutral-600 max-w-2xl leading-relaxed m-0">
+                                Interleave plain white diagram pages or millimeter graph sheets with ruled theory pages. Drop in circuit diagrams, prism ray optics, or titration apparatus from built-in student SVG templates, or paste your own images with handwritten captions.
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Step 4 */}
+                    <div className="flex flex-col md:flex-row items-center gap-8 p-6 sm:p-8 bg-white/70 rounded-3xl border border-black/5 hover:border-black/10 transition-all shadow-xs">
+                        <div className="w-16 h-16 bg-emerald-600 text-white rounded-3xl flex items-center justify-center shrink-0 text-2xl font-black shadow-lg shadow-emerald-600/10">4</div>
+                        <div className="space-y-2">
+                            <div className="flex items-center gap-2 text-emerald-600 font-black tracking-widest uppercase text-xs">
+                                <Share2 size={14} />
+                                Step Four
+                            </div>
+                            <h3 className="text-xl font-bold text-neutral-900 m-0">Apply Camera Physics & Export High-Res PDF</h3>
+                            <p className="text-sm text-neutral-600 max-w-2xl leading-relaxed m-0">
+                                Toggle smartphone overhead shadows, warm desk lamp lighting, and paper fold creases. When satisfied, export a razor-sharp 2x resolution multi-page PDF or individual high-DPI images with one click.
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div className="flex justify-center pt-8">
-                    <a href="/" className="group flex items-center gap-3 px-10 py-5 bg-neutral-900 text-white rounded-4xl font-black text-lg hover:shadow-2xl hover:bg-black transition-all hover:scale-105 active:scale-95">
-                        Start Creating Now
-                        <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-                    </a>
-                </div>
+                <section className="bg-neutral-900 text-white p-10 sm:p-12 rounded-[2.5rem] relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div className="space-y-3">
+                        <h3 className="text-2xl sm:text-3xl font-bold text-white m-0">Ready to build your first notebook?</h3>
+                        <p className="text-neutral-400 max-w-md text-sm m-0">
+                            Jump straight into the studio and experience the full simulation in real-time.
+                        </p>
+                    </div>
+                    <Link 
+                        to="/editor" 
+                        className="px-8 py-4 bg-white text-neutral-900 rounded-2xl font-bold hover:scale-105 active:scale-95 transition-all shrink-0 shadow-lg"
+                    >
+                        Launch InkTrail Studio ➔
+                    </Link>
+                </section>
             </div>
         </PageLayout>
     );

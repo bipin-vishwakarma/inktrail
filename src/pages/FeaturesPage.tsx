@@ -1,86 +1,105 @@
 import PageLayout from '../components/layout/PageLayout';
-import { Sparkles, Download, PenTool } from 'lucide-react';
+import { Download, FlaskConical, GraduationCap, BookOpen } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function FeaturesPage() {
     return (
         <PageLayout 
-            title="Features" 
-            subtitle="Everything you need to create perfect digital handwriting."
-            description="Explore the advanced features of Handwritten: AI humanizer, infinite font variety, high-resolution PDF export, and smart layout engine."
+            title="Features & Capabilities" 
+            subtitle="Everything students and creators need to produce authentic, physics-accurate handwritten documents."
+            description="Explore the advanced capabilities of InkTrail: Lab practical interleaved pages, diagram workspaces, AI humanizer, authentic human errors, smartphone lighting physics, and multi-auth student vaults."
         >
-
             <div className="space-y-16">
                 <section className="prose prose-neutral max-w-none">
-                    <p className="lead">
-                        Handwritten is more than just a font generator. It's a comprehensive tool designed to mimic the complexity and charm of human penmanship using state-of-the-art simulation technology.
+                    <p className="lead text-lg text-neutral-600">
+                        <strong>InkTrail</strong> is the world's first comprehensive student handwriting simulator. Designed from real university workflows at UPES Dehradun, it blends analog physical imperfections with modern digital speed to eliminate manual assignment fatigue.
                     </p>
                 </section>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div className="p-8 bg-white/50 rounded-3xl border border-black/5 hover:shadow-premium transition-all group">
-                        <div className="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                            <Sparkles className="text-indigo-600" size={28} />
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {/* Feature 1: Lab Practical Mode */}
+                    <div className="p-7 bg-white/70 rounded-3xl border border-blue-200/80 shadow-xs hover:shadow-md transition-all group">
+                        <div className="w-13 h-13 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+                            <FlaskConical size={26} />
                         </div>
-                        <h3 className="text-2xl font-bold mb-4">AI Humanizer</h3>
-                        <p className="text-neutral-600 leading-relaxed">
-                            Our advanced AI analyzes your text and applies natural variations in letter spacing, slant, and baseline drift to simulate the organic feel of real handwriting.
+                        <div className="inline-block px-2 py-0.5 bg-blue-100 text-blue-800 text-[10px] font-black rounded-md uppercase tracking-wider mb-2">
+                            Student Essential
+                        </div>
+                        <h3 className="text-xl font-bold mb-2.5 text-neutral-900">Lab Notebook Mode</h3>
+                        <p className="text-neutral-600 text-sm leading-relaxed">
+                            Interleaves plain diagram sheets and millimeter graph paper with ruled observation pages. Built-in pre-drawn SVG circuits, prism ray refractions, and chemistry titrations.
                         </p>
                     </div>
 
-                    <div className="p-8 bg-white/50 rounded-3xl border border-black/5 hover:shadow-premium transition-all group">
-                        <div className="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                            <PenTool className="text-amber-600" size={28} />
-                        </div>
-                        <h3 className="text-2xl font-bold mb-4">Infinite Variety</h3>
-                        <p className="text-neutral-600 leading-relaxed">
-                            Choose from a wide range of hand-crafted fonts, or upload your own to create a truly unique signature style for every document.
-                        </p>
-                    </div>
-
-                    <div className="p-8 bg-white/50 rounded-3xl border border-black/5 hover:shadow-premium transition-all group">
-                        <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                            <Download className="text-emerald-600" size={28} />
-                        </div>
-                        <h3 className="text-2xl font-bold mb-4">High-Resolution Export</h3>
-                        <p className="text-neutral-600 leading-relaxed">
-                            Export your creations in high-quality PDF or image formats, ready for printing or digital sharing with zero loss in quality.
-                        </p>
-                    </div>
-
-                    <div className="p-8 bg-white/50 rounded-3xl border border-black/5 hover:shadow-premium transition-all group">
-                        <div className="w-14 h-14 bg-rose-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    {/* Feature 2: Human Errors & Fatigue */}
+                    <div className="p-7 bg-white/70 rounded-3xl border border-black/5 hover:shadow-md transition-all group">
+                        <div className="w-13 h-13 bg-rose-50 text-rose-600 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
                             <span className="text-2xl">✂️</span>
                         </div>
-                        <h3 className="text-2xl font-bold mb-4">Human Errors & Strikes</h3>
-                        <p className="text-neutral-600 leading-relaxed">
-                            Simulate authentic human mistakes with auto-typos, realistic wavy or dense pen scribbles, and handwritten caret (<code className="font-mono text-xs bg-black/5 px-1 py-0.5 rounded">^</code>) corrections.
+                        <h3 className="text-xl font-bold mb-2.5 text-neutral-900">Human Errors & Strikes</h3>
+                        <p className="text-neutral-600 text-sm leading-relaxed">
+                            Simulate authentic human mistakes with auto-typos, realistic wavy or dense pen scratch-outs, handwritten caret (<code className="font-mono text-xs bg-black/5 px-1 py-0.5 rounded">^</code>) insertions, and biological writing fatigue.
                         </p>
                     </div>
 
-                    <div className="p-8 bg-white/50 rounded-3xl border border-black/5 hover:shadow-premium transition-all group">
-                        <div className="w-14 h-14 bg-violet-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    {/* Feature 3: Smartphone Camera Physics */}
+                    <div className="p-7 bg-white/70 rounded-3xl border border-black/5 hover:shadow-md transition-all group">
+                        <div className="w-13 h-13 bg-violet-50 text-violet-600 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
                             <span className="text-2xl">📸</span>
                         </div>
-                        <h3 className="text-2xl font-bold mb-4">Camera & Photo Physics</h3>
-                        <p className="text-neutral-600 leading-relaxed">
-                            Looks 100% like a real smartphone photo of homework on a desk with phone cast shadows, warm lamp lighting, 3D perspective camera tilt, sensor ISO noise, and paper fold creases.
+                        <h3 className="text-xl font-bold mb-2.5 text-neutral-900">Camera & Lighting Physics</h3>
+                        <p className="text-neutral-600 text-sm leading-relaxed">
+                            Render realistic overhead smartphone shadows with customizable angle and intensity, warm desk lamp lighting, 3D perspective tilts, sensor ISO noise, and authentic paper creases.
+                        </p>
+                    </div>
+
+                    {/* Feature 4: Smart Margin Indexing */}
+                    <div className="p-7 bg-white/70 rounded-3xl border border-black/5 hover:shadow-md transition-all group">
+                        <div className="w-13 h-13 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+                            <BookOpen size={26} />
+                        </div>
+                        <h3 className="text-xl font-bold mb-2.5 text-neutral-900">Smart Margin Indexing</h3>
+                        <p className="text-neutral-600 text-sm leading-relaxed">
+                            Automatically detects question tags (Q1., Q.2), answer labels (Ans:, Sol:), and Roman numerals, positioning them gracefully inside the margin line just like an authentic student notebook.
+                        </p>
+                    </div>
+
+                    {/* Feature 5: Student Multi-Auth */}
+                    <div className="p-7 bg-white/70 rounded-3xl border border-black/5 hover:shadow-md transition-all group">
+                        <div className="w-13 h-13 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+                            <GraduationCap size={26} />
+                        </div>
+                        <h3 className="text-xl font-bold mb-2.5 text-neutral-900">Student ID & Multi-Auth</h3>
+                        <p className="text-neutral-600 text-sm leading-relaxed">
+                            Log in with your University Roll No. (UPES / College ID), Google OAuth, GitHub, or Email Magic Link. Stores your assignment drafts and style preferences in local storage.
+                        </p>
+                    </div>
+
+                    {/* Feature 6: High-Res PDF Export */}
+                    <div className="p-7 bg-white/70 rounded-3xl border border-black/5 hover:shadow-md transition-all group">
+                        <div className="w-13 h-13 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+                            <Download size={26} />
+                        </div>
+                        <h3 className="text-xl font-bold mb-2.5 text-neutral-900">High-Res Multi-Page PDF</h3>
+                        <p className="text-neutral-600 text-sm leading-relaxed">
+                            Export ultra-sharp 2x resolution multi-page PDFs or ZIP archives of individual sheets with preserved 3D camera shadows and crisp vector typography.
                         </p>
                     </div>
                 </div>
 
-                <section className="bg-neutral-900 text-white p-12 rounded-[2.5rem] relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 blur-[100px] pointer-events-none" />
-                    <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-                        <div>
-                            <h3 className="text-3xl font-bold text-white mb-4">Ready to experience it?</h3>
-                            <p className="text-neutral-400 max-w-md">
-                                Start creating your first handwritten masterpiece today with our intuitive editor.
-                            </p>
-                        </div>
-                        <a href="/" className="px-8 py-4 bg-white text-neutral-900 rounded-2xl font-bold hover:scale-105 transition-transform">
-                            Get Started Free
-                        </a>
+                <section className="bg-neutral-900 text-white p-10 sm:p-12 rounded-[2.5rem] relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div className="space-y-3">
+                        <h3 className="text-2xl sm:text-3xl font-bold text-white m-0">Ready to transform your assignments?</h3>
+                        <p className="text-neutral-400 max-w-md text-sm m-0">
+                            Launch InkTrail Studio now. No credit card required. Free and open source for all students.
+                        </p>
                     </div>
+                    <Link 
+                        to="/editor" 
+                        className="px-8 py-4 bg-white text-neutral-900 rounded-2xl font-bold hover:scale-105 active:scale-95 transition-all shrink-0 shadow-lg"
+                    >
+                        Launch InkTrail Studio ➔
+                    </Link>
                 </section>
             </div>
         </PageLayout>

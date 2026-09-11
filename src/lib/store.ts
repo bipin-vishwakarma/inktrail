@@ -68,7 +68,15 @@ const initialState: StateValues = {
     effectScope: 'all',
     pageEffectOverrides: {},
 
+    // Lab Notebook & Mixed Page Simulation
+    labNotebookMode: false,
+    labNotebookStartWith: 'blank',
+    labDiagramPaper: 'blank',
+    pageMaterialOverrides: {},
+    pageDiagrams: {},
+
     // UI State
+    isOnboardingOpen: false,
     hasSeenOnboarding: false,
     hasSeenTour: false,
     isSidebarCollapsed: false,
@@ -218,6 +226,30 @@ export const useStore = create<AppState>()(
                 };
             }),
 
+            // Lab Notebook Actions
+            setLabNotebookMode: (labNotebookMode) => set({ labNotebookMode }),
+            setLabNotebookStartWith: (labNotebookStartWith) => set({ labNotebookStartWith }),
+            setLabDiagramPaper: (labDiagramPaper) => set({ labDiagramPaper }),
+            setPageMaterialOverride: (pageIndex, material) => set((state) => {
+                const next = { ...state.pageMaterialOverrides };
+                if (material === null) {
+                    delete next[pageIndex];
+                } else {
+                    next[pageIndex] = material;
+                }
+                return { pageMaterialOverrides: next };
+            }),
+            setPageDiagram: (pageIndex, diagram) => set((state) => {
+                const next = { ...state.pageDiagrams };
+                if (diagram === null) {
+                    delete next[pageIndex];
+                } else {
+                    next[pageIndex] = diagram;
+                }
+                return { pageDiagrams: next };
+            }),
+            clearAllDiagrams: () => set({ pageDiagrams: {} }),
+
             // Granular Reset Actions
             resetFormatting: () => set({
                 fontSize: DEFAULT_TYPOGRAPHY.fontSize,
@@ -266,6 +298,11 @@ export const useStore = create<AppState>()(
                 marginBottom: 60,
                 marginLeft: 70,
                 marginRight: 25,
+                labNotebookMode: false,
+                labNotebookStartWith: 'blank',
+                labDiagramPaper: 'blank',
+                pageMaterialOverrides: {},
+                pageDiagrams: {},
             }),
             randomizeRealism: () => set((state) => {
                 const perturb = (base: number, delta: number, min: number, max: number, decimals = 2) => {
@@ -321,6 +358,9 @@ export const useStore = create<AppState>()(
             setLowInkStart: (lowInkStart) => set({ lowInkStart }),
             setLowInkIntensity: (lowInkIntensity) => set({ lowInkIntensity }),
 
+            openOnboarding: () => set({ isOnboardingOpen: true }),
+            closeOnboarding: () => set({ isOnboardingOpen: false }),
+            setIsOnboardingOpen: (isOnboardingOpen) => set({ isOnboardingOpen }),
             completeOnboarding: () => set({ hasSeenOnboarding: true }),
             completeTour: () => set({ hasSeenTour: true }),
             setSidebarCollapsed: (isSidebarCollapsed) => set({ isSidebarCollapsed }),

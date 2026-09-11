@@ -1,26 +1,9 @@
 import { Github, PenTool, Heart } from 'lucide-react';
 const logo = '/images/logo.png';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { motion, type Variants } from 'framer-motion';
 
 export default function Footer() {
-    const navigate = useNavigate();
-    const location = useLocation();
-
-    // Helper for smooth scrolling
-    const scrollToSection = (id: string) => {
-        if (location.pathname !== '/') {
-            navigate('/#' + id);
-            // After navigation, the browser's default hash handling might take over,
-            // or we might need a small delay/effect on the LandingPage.
-            return;
-        }
-
-        const el = document.getElementById(id);
-        if (el) {
-            el.scrollIntoView({ behavior: 'smooth' });
-        }
-    };
     const containerVariants: Variants = {
         hidden: { opacity: 0 },
         visible: {
@@ -71,7 +54,7 @@ export default function Footer() {
                         <ul className="space-y-4">
                             <li><Link to="/features" className="text-neutral-500 hover:text-neutral-900 transition-colors text-sm font-bold">Features</Link></li>
                             <li><Link to="/how-it-works" className="text-neutral-500 hover:text-neutral-900 transition-colors text-sm font-bold">How It Works</Link></li>
-                            <li><button onClick={() => scrollToSection('editor')} className="text-neutral-500 hover:text-neutral-900 transition-colors text-sm font-bold text-left group flex items-center gap-2">Editor <span className="w-1 h-1 rounded-full bg-neutral-200 group-hover:bg-indigo-500 transition-colors" /></button></li>
+                            <li><Link to="/editor" className="text-neutral-500 hover:text-neutral-900 transition-colors text-sm font-bold text-left group flex items-center gap-2">Editor Studio <span className="w-1 h-1 rounded-full bg-neutral-200 group-hover:bg-indigo-500 transition-colors" /></Link></li>
                         </ul>
                     </motion.div>
 
@@ -117,7 +100,7 @@ export default function Footer() {
                         </a>
                     </div>
                     <p className="text-xs text-neutral-400 font-bold flex items-center gap-2">
-                        Crafted with <Heart size={12} className="text-rose-500 fill-current" /> by <a href="https://github.com/bipin-vishwakarma" target="_blank" rel="noopener noreferrer" className="text-neutral-900 hover:underline underline-offset-4 font-black">Bipin Vishwakarma</a>
+                        Crafted with <Heart size={12} className="text-rose-500 fill-current" /> by <a href="https://github.com/bipin-vishwakarma" target="_blank" rel="noopener noreferrer" className="text-neutral-900 hover:underline underline-offset-4 font-black">Bipin Vishwakarma (UPES Dehradun)</a>
                     </p>
                 </div>
             </div>

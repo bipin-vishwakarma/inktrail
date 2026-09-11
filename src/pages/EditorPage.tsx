@@ -7,14 +7,18 @@ import {
     ZoomIn, ZoomOut, Palette,
     RotateCcw, Camera, Scissors, X, Dices,
     Maximize2, Minimize2, Clipboard, Sparkles, Trash2,
-    FileUp, Upload, Loader2
+    FileUp, Upload, Loader2, FlaskConical, Compass
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 import { useStore } from '../lib/store';
 import { useToast } from '../hooks/useToast';
 import HistoryModal from '../components/modals/HistoryModal';
 import ExportModal from '../components/modals/ExportModal';
 import { CreatorModal } from '../components/modals/CreatorModal';
+import OnboardingModal from '../components/modals/OnboardingModal';
+import { LabDiagramCanvas } from '../components/LabDiagramCanvas';
+import UserMenu from '../components/UserMenu';
 import { HandwrittenWord } from '../components/HandwrittenWord';
 import { ThumbnailBar } from '../components/ThumbnailBar';
 import { CameraOverlay } from '../components/CameraOverlay';
@@ -45,6 +49,7 @@ interface LineData {
 interface PageData {
     lines: LineData[];
     index: number;
+    isDiagramPage?: boolean;
 }
 
 // --- PIPELINE STAGE 1 & 2: TOKENIZE & BUILD LINES WITH FONT METRICS ---
@@ -529,11 +534,20 @@ export default function EditorPage() {
         setActivePageIndex,
         pageEffectOverrides,
         smartMarginIndexing, setSmartMarginIndexing,
+        labNotebookMode, setLabNotebookMode,
+        labNotebookStartWith, setLabNotebookStartWith,
+        labDiagramPaper, setLabDiagramPaper,
+        pageMaterialOverrides, setPageMaterialOverride,
+        pageDiagrams, setPageDiagram, clearAllDiagrams,
+        hasSeenOnboarding,
         history: storeHistory, addToHistory,
         resetStyles, reset,
         resetFormatting, resetPaperSettings,
         randomizeRealism
     } = useStore();
+
+    // Defer costly layout & font metrics calculation during rapid keystrokes
+    const deferredText = useDeferredValue(text);
 
     // 0ms Input Latency: Local Draft State with Debounced Sync to Store
     const [draftText, setDraftText] = useState(text);
@@ -1111,8 +1125,20 @@ export default function EditorPage() {
         setEditingMargin(null);
     };
 
-    // Deferred text for smooth background document compilation
-    const deferredText = useDeferredValue(text);
+    // Onboarding Tour & Explore Menu States
+    const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
+    const [isExploreMenuOpen, setIsExploreMenuOpen] = useState(false);
+
+    useEffect(() => {
+        try {
+            const hasSeen = localStorage.getItem('inktrail_onboarding_dismissed');
+            if (!hasSeen && !hasSeenOnboarding) {
+                setIsOnboardingOpen(true);
+            }
+        } catch {
+            // ignore
+        }
+    }, [hasSeenOnboarding]);
 
     // --- PIPELINE EXECUTION: PRE-TOKENIZATION & PAGE PAGINATION ---
     const pages = useMemo(() => {
@@ -1145,8 +1171,39 @@ export default function EditorPage() {
             autoCaret,
             smartMarginIndexing
         );
-        return paginateLines(rawLines, linesPerPage, page1Lines);
-    }, [deferredText, effectiveFontSize, font, fontLoadedVersion, paper.lineHeight, paper.hasRedMargin, paper.id, spiralBinding, showNotebookHeaderBox, marginTop, marginBottom, marginLeft, marginRight, showHeader, headerText, randomSeed, autoTypoRate, strikeStyle, autoCaret, smartMarginIndexing]);
+        const baseTextPages = paginateLines(rawLines, linesPerPage, page1Lines);
+
+        if (!labNotebookMode) {
+            return baseTextPages;
+        }
+
+        // Mixed Page / Lab Notebook Mode: Interleave Blank Diagram Sheets and Ruled Text Sheets
+        const labPages: PageData[] = [];
+        const count = baseTextPages.length;
+
+        for (let i = 0; i < count; i++) {
+            const diagramPage: PageData = {
+                lines: [],
+                index: 0,
+                isDiagramPage: true
+            };
+            const textPage: PageData = {
+                ...baseTextPages[i],
+                index: 0,
+                isDiagramPage: false
+            };
+
+            if (labNotebookStartWith === 'blank') {
+                labPages.push(diagramPage);
+                labPages.push(textPage);
+            } else {
+                labPages.push(textPage);
+                labPages.push(diagramPage);
+            }
+        }
+
+        return labPages.map((p, idx) => ({ ...p, index: idx }));
+    }, [deferredText, effectiveFontSize, font, fontLoadedVersion, paper.lineHeight, paper.hasRedMargin, paper.id, spiralBinding, showNotebookHeaderBox, marginTop, marginBottom, marginLeft, marginRight, showHeader, headerText, randomSeed, autoTypoRate, strikeStyle, autoCaret, smartMarginIndexing, labNotebookMode, labNotebookStartWith]);
 
     // Synchronize active page index with scroll position
     useEffect(() => {
@@ -1178,6 +1235,30 @@ export default function EditorPage() {
     const wordCount = useMemo(() => {
         return text.trim() ? text.trim().split(/\s+/).length : 0;
     }, [text]);
+
+    const diagramPagesMap = useMemo(() => {
+        const map: Record<number, boolean> = {};
+        pages.forEach((p, idx) => {
+            if (p.isDiagramPage || Boolean(pageDiagrams[idx])) {
+                map[idx] = true;
+            }
+        });
+        return map;
+    }, [pages, pageDiagrams]);
+
+    const pageMaterialsMap = useMemo(() => {
+        const map: Record<number, string> = {};
+        pages.forEach((p, idx) => {
+            if (pageMaterialOverrides[idx]) {
+                map[idx] = pageMaterialOverrides[idx];
+            } else if (p.isDiagramPage || Boolean(pageDiagrams[idx])) {
+                map[idx] = labDiagramPaper;
+            } else {
+                map[idx] = paperMaterial;
+            }
+        });
+        return map;
+    }, [pages, pageDiagrams, pageMaterialOverrides, labDiagramPaper, paperMaterial]);
 
     // Click on handwritten word focuses source text
     const handleWordClick = (charIndex: number) => {
@@ -1341,6 +1422,65 @@ export default function EditorPage() {
                         <span className="hidden sm:inline">Randomize</span>
                     </button>
 
+                    {/* Lab Notebook Mode Quick Toggle */}
+                    <button 
+                        type="button"
+                        onClick={() => {
+                            const next = !labNotebookMode;
+                            setLabNotebookMode(next);
+                            addToast(next ? '🧪 Lab Notebook Mode: Mixed Plain Diagrams & Ruled Text' : 'Standard Ruled Notebook Restored', 'info');
+                        }}
+                        title="Toggle Lab Practical Notebook Mode (Alternating blank diagram sheets and ruled theory pages)"
+                        className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition-all active:scale-95 border cursor-pointer ${
+                            labNotebookMode 
+                                ? 'bg-purple-600 text-white border-purple-700 shadow-xs' 
+                                : 'bg-purple-50/80 hover:bg-purple-100 text-purple-700 border-purple-200/80'
+                        }`}
+                    >
+                        <FlaskConical size={13} className={labNotebookMode ? 'text-white' : 'text-purple-600'} />
+                        <span className="hidden sm:inline">Lab Mode</span>
+                        {labNotebookMode && <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse" />}
+                    </button>
+
+                    {/* Quick Tour Button */}
+                    <button 
+                        type="button"
+                        onClick={() => setIsOnboardingOpen(true)}
+                        title="Open Interactive Student Tour & Features Guide"
+                        className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-neutral-100 hover:bg-amber-50 hover:text-amber-700 text-neutral-700 rounded-xl text-xs font-bold transition-all active:scale-95 border border-neutral-200/60 cursor-pointer"
+                    >
+                        <Sparkles size={13} className="text-amber-500" />
+                        <span className="hidden md:inline">Tour</span>
+                    </button>
+
+                    {/* Explore Site Pages Dropdown */}
+                    <div className="relative">
+                        <button 
+                            type="button"
+                            onClick={() => setIsExploreMenuOpen(!isExploreMenuOpen)}
+                            title="Explore InkTrail Site Pages"
+                            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-neutral-100 hover:bg-neutral-200/70 text-neutral-700 rounded-xl text-xs font-bold transition-all active:scale-95 border border-neutral-200/60 cursor-pointer"
+                        >
+                            <Compass size={13} className="text-indigo-600" />
+                            <span className="hidden lg:inline text-[11px]">Explore</span>
+                        </button>
+                        {isExploreMenuOpen && (
+                            <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-xl border border-neutral-200 py-1.5 z-50 text-left text-xs font-bold">
+                                <div className="px-3 py-1.5 text-[10px] text-neutral-400 font-mono uppercase tracking-wider border-b border-neutral-100">
+                                    InkTrail Site Pages
+                                </div>
+                                <Link to="/features" onClick={() => setIsExploreMenuOpen(false)} className="block px-3 py-2 text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Features & Tools</Link>
+                                <Link to="/how-it-works" onClick={() => setIsExploreMenuOpen(false)} className="block px-3 py-2 text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">How It Works Guide</Link>
+                                <Link to="/faq" onClick={() => setIsExploreMenuOpen(false)} className="block px-3 py-2 text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Student FAQ</Link>
+                                <Link to="/about" onClick={() => setIsExploreMenuOpen(false)} className="block px-3 py-2 text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">About & UPES Story</Link>
+                                <Link to="/changelog" onClick={() => setIsExploreMenuOpen(false)} className="block px-3 py-2 text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Changelog (v2.1)</Link>
+                                <div className="border-t border-neutral-100 my-1" />
+                                <Link to="/disclaimer" onClick={() => setIsExploreMenuOpen(false)} className="block px-3 py-1.5 text-neutral-500 hover:text-neutral-800 text-[11px]">Disclaimer</Link>
+                                <Link to="/privacy" onClick={() => setIsExploreMenuOpen(false)} className="block px-3 py-1.5 text-neutral-500 hover:text-neutral-800 text-[11px]">Privacy & Terms</Link>
+                            </div>
+                        )}
+                    </div>
+
                     {/* Reset Button */}
                     <button 
                         onClick={() => setShowResetModal(true)}
@@ -1378,6 +1518,9 @@ export default function EditorPage() {
                     >
                         <Clock size={16} />
                     </button>
+
+                    {/* User Account Menu */}
+                    <UserMenu onOpenTour={() => setIsOnboardingOpen(true)} />
 
                     {/* Primary Export Preview Button */}
                     <button 
@@ -1839,6 +1982,138 @@ export default function EditorPage() {
                                     </div>
                                 </div>
 
+                                {/* Lab Practical & Mixed Pages Mode Card */}
+                                <div className="p-4 rounded-2xl bg-gradient-to-br from-indigo-50/90 via-white to-blue-50/70 border border-blue-200/90 shadow-xs space-y-3">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-7 h-7 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-xs">
+                                                <FlaskConical size={14} />
+                                            </div>
+                                            <div>
+                                                <span className="text-xs font-bold text-neutral-900 block leading-tight">
+                                                    Lab Practical Notebook
+                                                </span>
+                                                <span className="text-[10px] text-blue-700 font-semibold">
+                                                    Mixed Diagram & Ruled Pages
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <label className="relative inline-flex items-center cursor-pointer">
+                                            <input 
+                                                type="checkbox" 
+                                                checked={labNotebookMode} 
+                                                onChange={e => {
+                                                    const active = e.target.checked;
+                                                    setLabNotebookMode(active);
+                                                    if (active) {
+                                                        addToast('Lab Practical Mode enabled! Pages alternating plain & ruled.', 'success');
+                                                    } else {
+                                                        addToast('Lab Practical Mode turned off.', 'info');
+                                                    }
+                                                }} 
+                                                className="w-4 h-4 rounded border-neutral-300 accent-blue-600 cursor-pointer"
+                                            />
+                                        </label>
+                                    </div>
+
+                                    <p className="text-[10px] text-neutral-600 leading-relaxed">
+                                        Designed for college lab manuals (Physics, Chemistry, Engineering) — interleaving facing diagram sheets with ruled experiment writeups.
+                                    </p>
+
+                                    {labNotebookMode && (
+                                        <div className="pt-2.5 border-t border-blue-200/70 space-y-3">
+                                            {/* Page Sequence Order */}
+                                            <div>
+                                                <label className="text-[10px] font-black uppercase tracking-wider text-neutral-500 block mb-1.5">
+                                                    Page Sequence
+                                                </label>
+                                                <div className="grid grid-cols-2 gap-2">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setLabNotebookStartWith('blank')}
+                                                        className={`p-2 rounded-xl text-left border transition-all cursor-pointer ${
+                                                            labNotebookStartWith === 'blank'
+                                                                ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                                                                : 'bg-white border-neutral-200 text-neutral-700 hover:bg-neutral-50'
+                                                        }`}
+                                                    >
+                                                        <div className="font-bold text-[11px] leading-snug">Diagram First</div>
+                                                        <div className={`text-[9px] ${labNotebookStartWith === 'blank' ? 'text-blue-100' : 'text-neutral-500'}`}>
+                                                            Plain Left ➔ Ruled Right
+                                                        </div>
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setLabNotebookStartWith('ruled')}
+                                                        className={`p-2 rounded-xl text-left border transition-all cursor-pointer ${
+                                                            labNotebookStartWith === 'ruled'
+                                                                ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                                                                : 'bg-white border-neutral-200 text-neutral-700 hover:bg-neutral-50'
+                                                        }`}
+                                                    >
+                                                        <div className="font-bold text-[11px] leading-snug">Ruled First</div>
+                                                        <div className={`text-[9px] ${labNotebookStartWith === 'ruled' ? 'text-blue-100' : 'text-neutral-500'}`}>
+                                                            Ruled Theory ➔ Diagram
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            {/* Facing Diagram Sheet Surface */}
+                                            <div>
+                                                <label className="text-[10px] font-black uppercase tracking-wider text-neutral-500 block mb-1.5">
+                                                    Diagram Sheet Surface
+                                                </label>
+                                                <div className="grid grid-cols-2 gap-2">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setLabDiagramPaper('blank')}
+                                                        className={`p-2 rounded-xl text-center border font-bold text-[11px] transition-all cursor-pointer ${
+                                                            labDiagramPaper === 'blank'
+                                                                ? 'bg-neutral-900 text-white border-neutral-900 shadow-xs'
+                                                                : 'bg-white border-neutral-200 text-neutral-700 hover:bg-neutral-50'
+                                                        }`}
+                                                    >
+                                                        Plain White Sheet
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setLabDiagramPaper('grid')}
+                                                        className={`p-2 rounded-xl text-center border font-bold text-[11px] transition-all cursor-pointer ${
+                                                            labDiagramPaper === 'grid'
+                                                                ? 'bg-neutral-900 text-white border-neutral-900 shadow-xs'
+                                                                : 'bg-white border-neutral-200 text-neutral-700 hover:bg-neutral-50'
+                                                        }`}
+                                                    >
+                                                        Millimeter Graph
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            {/* Diagram Status & Reset */}
+                                            <div className="flex items-center justify-between pt-1">
+                                                <span className="text-[10px] text-neutral-500 font-medium">
+                                                    {Object.keys(pageDiagrams).length} diagram(s) attached
+                                                </span>
+                                                {Object.keys(pageDiagrams).length > 0 && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            if (window.confirm('Remove all uploaded lab diagrams?')) {
+                                                                clearAllDiagrams();
+                                                                addToast('Cleared all lab diagrams', 'info');
+                                                            }
+                                                        }}
+                                                        className="text-[10px] font-bold text-rose-600 hover:text-rose-700 hover:underline cursor-pointer"
+                                                    >
+                                                        Clear All Diagrams
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
                                 {/* 3D Twin-Wire Spiral Binding Toggle */}
                                 <div className="p-3.5 rounded-2xl bg-neutral-50 border border-neutral-200/70 space-y-2">
                                     <label className="flex items-center justify-between cursor-pointer">
@@ -2127,7 +2402,21 @@ export default function EditorPage() {
                             const redMarginLeft = isLeftSpiral ? 104 : 65;
                             const effectivePageMarginLeft = isLeftSpiral ? Math.max(marginLeft, 118) : marginLeft;
                             const effectivePageMarginRight = (isSpiralActive && isVerso) ? Math.max(marginRight, 65) : marginRight;
-                            const effectivePageMarginTop = (paper.hasRedMargin || paper.id === 'youva-spiral' || showNotebookHeaderBox)
+
+                            const effectivePaperId = pageMaterialOverrides[pIdx] 
+                                || (page.isDiagramPage ? (labDiagramPaper === 'grid' ? 'grid' : 'blank') : paperMaterial);
+
+                            const effectivePaper = PAPERS.find(p => p.id === effectivePaperId) 
+                                || (effectivePaperId === 'grid' ? PAPERS.find(p => p.id === 'grid') : null)
+                                || (effectivePaperId === 'blank' ? PAPERS.find(p => p.id === 'blank') : null)
+                                || paper;
+
+                            const isDiagram = Boolean(page.isDiagramPage || pageDiagrams[pIdx]);
+                            const isFirstTextPage = labNotebookMode 
+                                ? (labNotebookStartWith === 'blank' ? pIdx === 1 : pIdx === 0) 
+                                : pIdx === 0;
+
+                            const effectivePageMarginTop = (effectivePaper.hasRedMargin || effectivePaper.id === 'youva-spiral' || (showNotebookHeaderBox && !isDiagram))
                                 ? Math.max(marginTop, 80)
                                 : marginTop;
 
@@ -2138,9 +2427,75 @@ export default function EditorPage() {
                                         width: 800 * scale, 
                                         height: 1131 * scale,
                                     }}
-                                    className="relative shrink-0 transition-all duration-150 ease-out cursor-pointer"
+                                    className="relative shrink-0 transition-all duration-150 ease-out cursor-pointer group/page"
                                     onClick={() => setActivePageIndex(pIdx)}
                                 >
+                                    {/* Per-Page Floating Controls Pill Bar (Hover/Active) */}
+                                    <div className="absolute -top-9 left-1 right-1 flex items-center justify-between opacity-80 group-hover/page:opacity-100 transition-opacity z-20 pointer-events-auto px-1">
+                                        <div className="flex items-center gap-1.5 bg-neutral-900/90 text-white text-[11px] font-semibold px-2.5 py-0.5 rounded-full shadow-md backdrop-blur-xs">
+                                            <span className="font-mono">Page {pIdx + 1}</span>
+                                            <span className="text-neutral-500">•</span>
+                                            <span className={isDiagram ? 'text-cyan-300 font-bold' : 'text-neutral-300'}>
+                                                {isDiagram ? '🔬 Lab Diagram' : `${effectivePaper.name.split(' ')[0]} Ruled`}
+                                            </span>
+                                        </div>
+
+                                        <div className="flex items-center gap-1.5 bg-white/95 border border-neutral-200/90 shadow-md rounded-full px-2 py-0.5 backdrop-blur-xs text-[11px]">
+                                            <select
+                                                value={pageMaterialOverrides[pIdx] || (page.isDiagramPage ? labDiagramPaper : '')}
+                                                onChange={(e) => {
+                                                    const val = e.target.value;
+                                                    if (!val) {
+                                                        setPageMaterialOverride(pIdx, null);
+                                                    } else {
+                                                        setPageMaterialOverride(pIdx, val as PaperMaterial);
+                                                    }
+                                                }}
+                                                onClick={(e) => e.stopPropagation()}
+                                                className="text-[10px] font-bold bg-transparent text-neutral-700 outline-none cursor-pointer"
+                                                title="Override paper surface for this page"
+                                            >
+                                                <option value="">Paper: Default ({paper.name.split(' ')[0]})</option>
+                                                <option value="blank">Plain White (Diagram)</option>
+                                                <option value="grid">Engineering Graph</option>
+                                                <option value="youva-spiral">Youva Spiral Ruled</option>
+                                                <option value="college">College Ruled</option>
+                                                <option value="lined">Standard Blue</option>
+                                                <option value="vintage">Vintage Sheet</option>
+                                            </select>
+
+                                            <span className="text-neutral-300 text-xs">|</span>
+
+                                            <button
+                                                type="button"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    if (pageDiagrams[pIdx]) {
+                                                        setPageDiagram(pIdx, null);
+                                                        addToast(`Cleared diagram from page ${pIdx + 1}`, 'info');
+                                                    } else {
+                                                        setPageDiagram(pIdx, {
+                                                            image: '',
+                                                            caption: `Figure ${pIdx + 1}: Schematic and observation diagram`,
+                                                            fit: 'contain',
+                                                            scale: 1
+                                                        });
+                                                        addToast(`Added lab diagram canvas to page ${pIdx + 1}`, 'success');
+                                                    }
+                                                }}
+                                                className={`text-[10px] font-bold px-2 py-0.5 rounded-full transition-colors flex items-center gap-1 cursor-pointer ${
+                                                    isDiagram
+                                                        ? 'bg-blue-100 text-blue-800 hover:bg-blue-200'
+                                                        : 'text-neutral-600 hover:bg-neutral-100'
+                                                }`}
+                                                title="Toggle diagram canvas on this page"
+                                            >
+                                                <FlaskConical size={11} />
+                                                <span>{isDiagram ? 'Diagram Active' : '+ Diagram'}</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
                                     <div 
                                         className={`handwritten-page-render absolute top-0 left-0 w-[800px] h-[1131px] bg-white ${
                                             pIdx === activePageIndex 
@@ -2160,9 +2515,9 @@ export default function EditorPage() {
                                             data-page-index={pIdx}
                                         >
                                             <div 
-                                                className={`w-full h-full relative ${paper.css} transition-transform duration-200`} 
+                                                className={`w-full h-full relative ${effectivePaper.css} transition-transform duration-200`} 
                                                 style={{
-                                                    ...paper.style,
+                                                    ...effectivePaper.style,
                                                     ...(effectivePerspective ? {
                                                         transform: `perspective(1000px) rotateX(${pageTiltX}deg) rotateY(${pageTiltY}deg) scale(0.92)`,
                                                         transformOrigin: 'center center',
@@ -2173,17 +2528,17 @@ export default function EditorPage() {
                                             >
                                                 
                                                 {/* Clean Top Margin Header Zone Mask (Clears any background ruled lines above double red rule) */}
-                                                {(paper.hasRedMargin || paper.id === 'youva-spiral' || showNotebookHeaderBox) && (
+                                                {(effectivePaper.hasRedMargin || effectivePaper.id === 'youva-spiral' || (showNotebookHeaderBox && !isDiagram)) && (
                                                     <div 
                                                         className="absolute top-0 left-0 right-0 h-[72px] pointer-events-none z-[5]"
                                                         style={{
-                                                            backgroundColor: paper.style.backgroundColor || (paper.id === 'vintage' ? '#fef3c7' : '#ffffff'),
+                                                            backgroundColor: effectivePaper.style.backgroundColor || (effectivePaper.id === 'vintage' ? '#fef3c7' : '#ffffff'),
                                                         }}
                                                     />
                                                 )}
 
                                                 {/* Red Margin Line (Full height top-to-bottom) */}
-                                                {paper.hasRedMargin && (
+                                                {effectivePaper.hasRedMargin && !isDiagram && (
                                                     <div 
                                                         className="absolute top-0 bottom-0 w-[2px] bg-rose-400 opacity-60 pointer-events-none z-10 transition-all" 
                                                         style={{ left: `${redMarginLeft}px` }}
@@ -2191,7 +2546,7 @@ export default function EditorPage() {
                                                 )}
 
                                                 {/* Double Red Top Header Rule (Classic Indian Student Notebook Style) */}
-                                                {(paper.hasRedMargin || paper.id === 'youva-spiral' || showNotebookHeaderBox) && (
+                                                {(effectivePaper.hasRedMargin || effectivePaper.id === 'youva-spiral' || (showNotebookHeaderBox && !isDiagram)) && (
                                                     <div className="absolute left-0 right-0 top-[72px] pointer-events-none z-10">
                                                         <div className="w-full h-[1.5px] bg-rose-400 opacity-65" />
                                                         <div className="w-full h-[1.5px] bg-rose-400 opacity-65 mt-[3px]" />
@@ -2199,7 +2554,7 @@ export default function EditorPage() {
                                                 )}
 
                                                  {/* Sticky Note */}
-                                                {showStickyNote && pIdx === 0 && (
+                                                {showStickyNote && isFirstTextPage && !isDiagram && (
                                                     <div 
                                                         className="absolute top-6 right-6 w-36 h-36 bg-amber-200 text-amber-950 p-4 shadow-xl rotate-3 z-20 font-sans text-xs font-semibold leading-snug rounded-xs border border-amber-300 pointer-events-none"
                                                     >
@@ -2209,7 +2564,7 @@ export default function EditorPage() {
                                                 )}
 
                                                 {/* Standardized Student Notebook Date & Page No. Box (Matching Real Youva/Classmate) */}
-                                                {showNotebookHeaderBox && (
+                                                {showNotebookHeaderBox && !isDiagram && (
                                                     <div 
                                                         className="absolute top-[12px] z-10 pointer-events-none select-none text-left"
                                                         style={{
@@ -2350,8 +2705,8 @@ export default function EditorPage() {
                                                     </div>
                                                 )}
 
-                                                {/* Document Header (Page 1 Only) */}
-                                                {showHeader && pIdx === 0 && headerText.trim() && (
+                                                {/* Document Header (First Text Page Only) */}
+                                                {showHeader && isFirstTextPage && headerText.trim() && !isDiagram && (
                                                     <div 
                                                         className="absolute z-10 leading-tight whitespace-pre-wrap"
                                                         style={{
@@ -2368,43 +2723,63 @@ export default function EditorPage() {
                                                     </div>
                                                 )}
 
-                                                {/* Document Body Lines */}
-                                                <div 
-                                                    className="w-full h-full relative select-text"
-                                                    style={{
-                                                        paddingTop: (pIdx === 0 && showHeader && headerText.trim())
-                                                            ? effectivePageMarginTop + (headerText.split('\n').length + 1) * paper.lineHeight
-                                                            : effectivePageMarginTop,
-                                                        paddingBottom: marginBottom,
-                                                        paddingLeft: effectivePageMarginLeft,
-                                                        paddingRight: effectivePageMarginRight
-                                                    }}
-                                                >
-                                                    {page.lines.map((line, lIdx) => (
-                                                        <div 
-                                                            key={lIdx} 
-                                                            dir={line.dir}
-                                                            onDoubleClick={() => startInlineEdit(pIdx, lIdx, line)}
-                                                            style={{
-                                                                fontFamily: getFontFamilyCss(font), 
-                                                                fontSize: effectiveFontSize, 
-                                                                color, 
-                                                                height: paper.lineHeight, 
-                                                                lineHeight: `${paper.lineHeight}px`, 
-                                                                transform: `translateY(${baseline}px)`, 
-                                                                textAlign: line.dir === 'rtl' ? (textAlign === 'left' ? 'right' : textAlign === 'right' ? 'left' : textAlign) : textAlign, 
-                                                                paddingLeft: line.indent ? line.indent * (effectiveFontSize * 0.4) : 0,
-                                                            }} 
-                                                            className="w-full whitespace-nowrap relative group cursor-text"
-                                                        >
-                                                            {/* Interactive Left Margin Slot (Empty or Indexed) - Positioned safely past spiral */}
-                                                            {effectivePageMarginLeft >= 30 && (
-                                                                <div 
-                                                                    className="absolute top-0 flex items-center justify-center group/margin cursor-pointer transition-colors z-20"
-                                                                    style={{
-                                                                        left: `-${effectivePageMarginLeft - (isLeftSpiral ? 48 : 0)}px`,
-                                                                        width: `${isLeftSpiral ? (redMarginLeft - 48) : (redMarginLeft - 4)}px`,
-                                                                        height: `${paper.lineHeight}px`,
+                                                {/* Document Body Lines OR Lab Diagram Canvas */}
+                                                {isDiagram ? (
+                                                    <div 
+                                                        className="w-full h-full relative z-10 flex flex-col justify-center items-center"
+                                                        style={{
+                                                            paddingTop: effectivePageMarginTop,
+                                                            paddingBottom: marginBottom,
+                                                            paddingLeft: effectivePageMarginLeft,
+                                                            paddingRight: effectivePageMarginRight
+                                                        }}
+                                                    >
+                                                        <LabDiagramCanvas
+                                                            pageIndex={pIdx}
+                                                            diagram={pageDiagrams[pIdx]}
+                                                            onUpdateDiagram={(diag) => setPageDiagram(pIdx, diag)}
+                                                            paperMaterial={effectivePaper.id as PaperMaterial}
+                                                            font={font}
+                                                            inkColor={color}
+                                                        />
+                                                    </div>
+                                                ) : (
+                                                    <div 
+                                                        className="w-full h-full relative select-text"
+                                                        style={{
+                                                            paddingTop: (isFirstTextPage && showHeader && headerText.trim())
+                                                                ? effectivePageMarginTop + (headerText.split('\n').length + 1) * effectivePaper.lineHeight
+                                                                : effectivePageMarginTop,
+                                                            paddingBottom: marginBottom,
+                                                            paddingLeft: effectivePageMarginLeft,
+                                                            paddingRight: effectivePageMarginRight
+                                                        }}
+                                                    >
+                                                        {page.lines.map((line, lIdx) => (
+                                                            <div 
+                                                                key={lIdx} 
+                                                                dir={line.dir}
+                                                                onDoubleClick={() => startInlineEdit(pIdx, lIdx, line)}
+                                                                style={{
+                                                                    fontFamily: getFontFamilyCss(font), 
+                                                                    fontSize: effectiveFontSize, 
+                                                                    color, 
+                                                                    height: effectivePaper.lineHeight, 
+                                                                    lineHeight: `${effectivePaper.lineHeight}px`, 
+                                                                    transform: `translateY(${baseline}px)`, 
+                                                                    textAlign: line.dir === 'rtl' ? (textAlign === 'left' ? 'right' : textAlign === 'right' ? 'left' : textAlign) : textAlign, 
+                                                                    paddingLeft: line.indent ? line.indent * (effectiveFontSize * 0.4) : 0,
+                                                                }} 
+                                                                className="w-full whitespace-nowrap relative group cursor-text"
+                                                            >
+                                                                {/* Interactive Left Margin Slot (Empty or Indexed) - Positioned safely past spiral */}
+                                                                {effectivePageMarginLeft >= 30 && (
+                                                                    <div 
+                                                                        className="absolute top-0 flex items-center justify-center group/margin cursor-pointer transition-colors z-20"
+                                                                        style={{
+                                                                            left: `-${effectivePageMarginLeft - (isLeftSpiral ? 48 : 0)}px`,
+                                                                            width: `${isLeftSpiral ? (redMarginLeft - 48) : (redMarginLeft - 4)}px`,
+                                                                            height: `${effectivePaper.lineHeight}px`,
                                                                         overflow: 'hidden',
                                                                     }}
                                                                     onClick={(e) => {
@@ -2623,6 +2998,7 @@ export default function EditorPage() {
                                                         </div>
                                                     ))}
                                                 </div>
+                                                )}
 
                                                 {/* Page Number */}
                                                 {showPageNumbers && (
@@ -2668,6 +3044,8 @@ export default function EditorPage() {
                         activePageIndex={activePageIndex}
                         onSelectPage={handleJumpToPage}
                         paperId={paperMaterial}
+                        diagramPages={diagramPagesMap}
+                        pageMaterials={pageMaterialsMap}
                     />
                 </main>
             </div>
@@ -3225,6 +3603,12 @@ export default function EditorPage() {
                 accept=".docx,.pdf,.md,.markdown,.txt,.rtf,.png,.jpg,.jpeg,.webp"
                 onChange={handleFileInputChange}
                 className="hidden"
+            />
+
+            {/* Interactive Student Onboarding Tour Modal */}
+            <OnboardingModal
+                isOpen={isOnboardingOpen}
+                onClose={() => setIsOnboardingOpen(false)}
             />
         </div>
     );

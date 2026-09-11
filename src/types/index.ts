@@ -8,7 +8,7 @@ export interface FontPreference {
     url?: string;
 }
 
-export type PaperMaterial = 'white' | 'ruled' | 'graph' | 'dotted' | 'vintage' | 'aged' | 'cream' | 'college' | 'wide' | 'love-letter' | 'birthday' | 'christmas' | 'professional' | 'youva-spiral' | 'custom';
+export type PaperMaterial = 'white' | 'ruled' | 'graph' | 'dotted' | 'vintage' | 'aged' | 'cream' | 'college' | 'wide' | 'love-letter' | 'birthday' | 'christmas' | 'professional' | 'youva-spiral' | 'custom' | 'blank' | 'grid' | 'lined';
 export type PaperSize = 'a4' | 'letter' | 'a5' | 'a6' | 'legal' | 'tabloid';
 export type PaperOrientation = 'portrait' | 'landscape';
 
@@ -49,6 +49,13 @@ export interface PageEffectOverrides {
     spiralBinding?: boolean;
     inkBleedThrough?: boolean;
     inkBleedIntensity?: number;
+}
+
+export interface PageDiagram {
+    image: string;
+    caption?: string;
+    fit?: 'contain' | 'cover';
+    scale?: number;
 }
 
 export interface AppState {
@@ -103,7 +110,15 @@ export interface AppState {
     effectScope: 'current' | 'all';
     pageEffectOverrides: Record<number, PageEffectOverrides>;
 
+    // Lab Notebook & Mixed Page Simulation
+    labNotebookMode: boolean;
+    labNotebookStartWith: 'blank' | 'ruled';
+    labDiagramPaper: 'blank' | 'grid';
+    pageMaterialOverrides: Record<number, PaperMaterial>;
+    pageDiagrams: Record<number, PageDiagram>;
+
     // UI State
+    isOnboardingOpen: boolean;
     isSidebarCollapsed: boolean;
     isSettingsOpen: boolean;
     isRendering: boolean;
@@ -189,6 +204,14 @@ export interface AppState {
     clearPageEffectOverrides: (pageIndex?: number) => void;
     applyPageEffectsToAll: (pageIndex: number) => void;
 
+    // Lab Notebook Actions
+    setLabNotebookMode: (enabled: boolean) => void;
+    setLabNotebookStartWith: (val: 'blank' | 'ruled') => void;
+    setLabDiagramPaper: (paper: 'blank' | 'grid') => void;
+    setPageMaterialOverride: (pageIndex: number, material: PaperMaterial | null) => void;
+    setPageDiagram: (pageIndex: number, diagram: PageDiagram | null) => void;
+    clearAllDiagrams: () => void;
+
     // Granular Reset & Randomizer Actions
     resetFormatting: () => void;
     resetEffects: () => void;
@@ -207,6 +230,9 @@ export interface AppState {
     setLowInkIntensity: (val: number) => void;
 
     // Onboarding Actions
+    openOnboarding: () => void;
+    closeOnboarding: () => void;
+    setIsOnboardingOpen: (open: boolean) => void;
     completeOnboarding: () => void;
     completeTour: () => void;
 
