@@ -206,7 +206,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 return { success: true, redirected: true };
             } catch (err: unknown) {
                 console.error('Real Google OAuth failed:', err);
-                const message = err instanceof Error ? err.message : 'Google OAuth failed';
+                const rawMsg = err instanceof Error ? err.message : 'Google OAuth failed';
+                let message = rawMsg;
+                if (rawMsg.toLowerCase().includes('provider is not enabled') || rawMsg.toLowerCase().includes('unsupported provider') || rawMsg.toLowerCase().includes('validation_failed')) {
+                    message = 'Google OAuth provider is not enabled in your Supabase project (rebwoyqwxnoqmxvumzjf). Please enable Google in Supabase Dashboard → Authentication → Providers, or sign in instantly with Student ID / Email.';
+                }
                 setIsLoading(false);
                 return { success: false, error: message };
             }
@@ -249,7 +253,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 return { success: true, redirected: true };
             } catch (err: unknown) {
                 console.error('Real GitHub OAuth failed:', err);
-                const message = err instanceof Error ? err.message : 'GitHub OAuth failed';
+                const rawMsg = err instanceof Error ? err.message : 'GitHub OAuth failed';
+                let message = rawMsg;
+                if (rawMsg.toLowerCase().includes('provider is not enabled') || rawMsg.toLowerCase().includes('unsupported provider') || rawMsg.toLowerCase().includes('validation_failed')) {
+                    message = 'GitHub OAuth provider is not enabled in your Supabase project (rebwoyqwxnoqmxvumzjf). Please enable GitHub in Supabase Dashboard → Authentication → Providers, or sign in instantly with Student ID / Email.';
+                }
                 setIsLoading(false);
                 return { success: false, error: message };
             }

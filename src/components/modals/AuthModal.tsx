@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
     X, CheckCircle2, GraduationCap, Github, Mail, Sparkles, 
-    Loader2, School, ShieldCheck, AlertCircle, Lock, User, KeyRound, Eye, EyeOff
+    Loader2, School, ShieldCheck, AlertCircle, Lock, User, KeyRound, Eye, EyeOff, ExternalLink
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useScrollLock } from '../../hooks/useScrollLock';
@@ -188,9 +188,61 @@ export default function AuthModal() {
                         <div className="p-6 bg-white relative">
                             {/* Error banner */}
                             {errorMessage && (
-                                <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-2">
-                                    <AlertCircle size={15} className="shrink-0 mt-0.5 text-rose-600" />
-                                    <span>{errorMessage}</span>
+                                <div
+                                    className={`mb-4 p-3.5 rounded-2xl text-xs flex items-start gap-2.5 border shadow-xs ${
+                                        errorMessage.toLowerCase().includes('provider is not enabled') ||
+                                        errorMessage.toLowerCase().includes('unsupported provider') ||
+                                        errorMessage.toLowerCase().includes('rebwoyqwxnoqmxvumzjf')
+                                            ? 'bg-amber-50/90 border-amber-200/90 text-amber-950'
+                                            : 'bg-rose-50 border-rose-200 text-rose-800'
+                                    }`}
+                                >
+                                    <AlertCircle
+                                        size={16}
+                                        className={`shrink-0 mt-0.5 ${
+                                            errorMessage.toLowerCase().includes('provider is not enabled') ||
+                                            errorMessage.toLowerCase().includes('unsupported provider') ||
+                                            errorMessage.toLowerCase().includes('rebwoyqwxnoqmxvumzjf')
+                                                ? 'text-amber-600'
+                                                : 'text-rose-600'
+                                        }`}
+                                    />
+                                    <div className="flex-1 space-y-1.5">
+                                        <p className="font-extrabold text-xs">
+                                            {errorMessage.toLowerCase().includes('provider is not enabled') ||
+                                            errorMessage.toLowerCase().includes('unsupported provider') ||
+                                            errorMessage.toLowerCase().includes('rebwoyqwxnoqmxvumzjf')
+                                                ? 'OAuth Provider Setup Required'
+                                                : 'Authentication Notice'}
+                                        </p>
+                                        <p className="leading-relaxed text-[11px]">{errorMessage}</p>
+                                        {(errorMessage.toLowerCase().includes('provider is not enabled') ||
+                                            errorMessage.toLowerCase().includes('unsupported provider') ||
+                                            errorMessage.toLowerCase().includes('rebwoyqwxnoqmxvumzjf')) && (
+                                            <div className="pt-1 flex flex-wrap items-center gap-1.5">
+                                                <a
+                                                    href="https://supabase.com/dashboard/project/rebwoyqwxnoqmxvumzjf/auth/providers"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-700 hover:bg-amber-800 text-white rounded-lg font-bold text-[11px] shadow-xs"
+                                                >
+                                                    <span>Open Supabase Providers</span>
+                                                    <ExternalLink size={11} />
+                                                </a>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setErrorMessage(null);
+                                                        setAuthTab('student');
+                                                    }}
+                                                    className="inline-flex items-center gap-1 px-2.5 py-1 bg-white border border-amber-300 hover:bg-amber-100/60 text-amber-950 rounded-lg font-bold text-[11px] cursor-pointer"
+                                                >
+                                                    <GraduationCap size={12} className="text-amber-700" />
+                                                    <span>Use Student ID</span>
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             )}
 

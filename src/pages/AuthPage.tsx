@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
     Mail, GraduationCap, ArrowRight, Eye, EyeOff, Loader2, 
-    BookOpen, PenTool, Sparkles, CheckCircle2, AlertCircle, KeyRound, Lock, User
+    BookOpen, PenTool, Sparkles, CheckCircle2, AlertCircle, KeyRound, Lock, User, ExternalLink
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import InkTrailLogo from '../components/common/InkTrailLogo';
@@ -234,12 +234,66 @@ export default function AuthPage() {
                         <motion.div
                             initial={{ opacity: 0, y: -8 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="mb-4 p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-2.5 shadow-xs"
+                            className={`mb-4 p-4 rounded-2xl border text-xs flex items-start gap-3 shadow-xs ${
+                                errorMessage.toLowerCase().includes('provider is not enabled') ||
+                                errorMessage.toLowerCase().includes('unsupported provider') ||
+                                errorMessage.toLowerCase().includes('rebwoyqwxnoqmxvumzjf')
+                                    ? 'bg-amber-50/90 border-amber-200/90 text-amber-950'
+                                    : 'bg-rose-50 border-rose-200 text-rose-800'
+                            }`}
                         >
-                            <AlertCircle size={16} className="shrink-0 text-rose-600 mt-0.5" />
-                            <div className="flex-1">
-                                <p className="font-bold">Authentication Notice</p>
-                                <p className="mt-0.5 text-rose-700 leading-normal">{errorMessage}</p>
+                            <AlertCircle
+                                size={18}
+                                className={`shrink-0 mt-0.5 ${
+                                    errorMessage.toLowerCase().includes('provider is not enabled') ||
+                                    errorMessage.toLowerCase().includes('unsupported provider') ||
+                                    errorMessage.toLowerCase().includes('rebwoyqwxnoqmxvumzjf')
+                                        ? 'text-amber-600'
+                                        : 'text-rose-600'
+                                }`}
+                            />
+                            <div className="flex-1 space-y-2">
+                                <div className="flex items-center justify-between">
+                                    <p className="font-extrabold text-sm">
+                                        {errorMessage.toLowerCase().includes('provider is not enabled') ||
+                                        errorMessage.toLowerCase().includes('unsupported provider') ||
+                                        errorMessage.toLowerCase().includes('rebwoyqwxnoqmxvumzjf')
+                                            ? 'OAuth Provider Setup Required'
+                                            : 'Authentication Notice'}
+                                    </p>
+                                    <span className="text-[10px] font-mono bg-amber-200/60 px-2 py-0.5 rounded-md font-bold text-amber-900">
+                                        rebwoyqwxnoqmxvumzjf
+                                    </span>
+                                </div>
+                                <p className="leading-relaxed text-xs">
+                                    {errorMessage}
+                                </p>
+                                {(errorMessage.toLowerCase().includes('provider is not enabled') ||
+                                    errorMessage.toLowerCase().includes('unsupported provider') ||
+                                    errorMessage.toLowerCase().includes('rebwoyqwxnoqmxvumzjf')) && (
+                                    <div className="pt-1 flex flex-wrap items-center gap-2">
+                                        <a
+                                            href="https://supabase.com/dashboard/project/rebwoyqwxnoqmxvumzjf/auth/providers"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-700 hover:bg-amber-800 text-white rounded-xl font-bold text-[11px] shadow-xs transition-colors"
+                                        >
+                                            <span>Enable in Supabase Dashboard</span>
+                                            <ExternalLink size={12} />
+                                        </a>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setErrorMessage(null);
+                                                setStep('student-form');
+                                            }}
+                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-amber-300 hover:bg-amber-100/60 text-amber-950 rounded-xl font-bold text-[11px] transition-colors cursor-pointer"
+                                        >
+                                            <GraduationCap size={13} className="text-amber-700" />
+                                            <span>Instant Student ID Access</span>
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         </motion.div>
                     )}
@@ -292,10 +346,21 @@ export default function AuthPage() {
                                     {showSupabaseInfo && (
                                         <div className="mt-2.5 pt-2.5 border-t border-neutral-100 text-[11px] text-neutral-600 space-y-1.5 leading-relaxed">
                                             <p className="font-semibold text-neutral-800">Supabase Backend Status:</p>
-                                            <p>Project: <span className="font-mono text-violet-700 font-bold">SOLINK (zfkxtakrcsqncdxslsvx)</span></p>
+                                            <p>Project: <span className="font-mono text-violet-700 font-bold">inktrail (rebwoyqwxnoqmxvumzjf)</span></p>
                                             <p className="text-emerald-700 font-semibold">
-                                                ✓ Google OAuth, GitHub OAuth, Email OTP, and Password authentication are live.
+                                                ✓ Supabase database & profiles are connected. Email Magic Link, Password auth, and Student ID are live.
                                             </p>
+                                            <div className="pt-1">
+                                                <a
+                                                    href="https://supabase.com/dashboard/project/rebwoyqwxnoqmxvumzjf/auth/providers"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="inline-flex items-center gap-1 text-violet-700 hover:text-violet-900 font-bold underline"
+                                                >
+                                                    <span>Enable Google & GitHub in Supabase Providers</span>
+                                                    <ExternalLink size={11} />
+                                                </a>
+                                            </div>
                                         </div>
                                     )}
                                 </div>
