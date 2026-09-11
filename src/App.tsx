@@ -1,6 +1,7 @@
 import { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import RootLayout from './components/layout/RootLayout';
+import ProtectedRoute from './components/layout/ProtectedRoute';
 import { ToastProvider } from './components/ui/Toast';
 import { AuthProvider } from './context/AuthContext';
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -9,6 +10,9 @@ import ScrollToTop from './components/layout/ScrollToTop';
 // Lazy Load Pages
 const LandingPage = lazy(() => import('./pages/LandingPage'));
 const EditorPage = lazy(() => import('./pages/EditorPage'));
+const AuthPage = lazy(() => import('./pages/AuthPage'));
+const OnboardingPage = lazy(() => import('./pages/OnboardingPage'));
+const AccountPage = lazy(() => import('./pages/AccountPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 // Legal & Support Pages
@@ -36,24 +40,31 @@ function InnerApp() {
   return (
     <Suspense fallback={<PageLoader />}>
       <Routes>
+        {/* Auth & onboarding — standalone, no RootLayout navbar */}
+        <Route path="/auth" element={<AuthPage />} />
+        <Route path="/onboarding" element={<OnboardingPage />} />
+        <Route path="/account" element={<AccountPage />} />
+
         <Route path="/" element={<RootLayout />}>
           <Route index element={<EditorPage />} />
-          <Route path="editor" element={<EditorPage />} />
+          <Route path="editor" element={
+            <ProtectedRoute><EditorPage /></ProtectedRoute>
+          } />
           <Route path="landing" element={<LandingPage />} />
-          
+
           {/* Legal Pages */}
           <Route path="privacy" element={<PrivacyPolicy />} />
           <Route path="terms" element={<TermsOfService />} />
           <Route path="disclaimer" element={<Disclaimer />} />
           <Route path="cookies" element={<CookiePolicy />} />
-          
+
           {/* Support Pages */}
           <Route path="contact" element={<ContactPage />} />
           <Route path="faq" element={<FAQPage />} />
           <Route path="about" element={<AboutPage />} />
           <Route path="support" element={<SupportPage />} />
           <Route path="changelog" element={<ChangelogPage />} />
-          
+
           {/* Product Pages */}
           <Route path="features" element={<FeaturesPage />} />
           <Route path="how-it-works" element={<HowItWorksPage />} />
