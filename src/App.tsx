@@ -46,7 +46,7 @@ function InnerApp() {
         <Route path="/account" element={<AccountPage />} />
 
         <Route path="/" element={<RootLayout />}>
-          <Route index element={<EditorPage />} />
+          <Route index element={<LandingPage />} />
           <Route path="editor" element={
             <ProtectedRoute><EditorPage /></ProtectedRoute>
           } />
