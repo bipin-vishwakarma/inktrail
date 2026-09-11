@@ -23,10 +23,10 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
         const scene = new THREE.Scene();
 
         // 2. Camera setup
-        const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 100);
-        camera.position.set(0, 0.2, 7.2);
+        const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
+        camera.position.set(0, 0.15, 7.0);
 
-        // 3. Renderer
+        // 3. Renderer with high performance & antialiasing
         const renderer = new THREE.WebGLRenderer({
             canvas,
             alpha: true,
@@ -38,25 +38,31 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-        // 4. Lights
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
+        // 4. Studio Lighting (Daylight / Warm Paper Gallery)
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1.25);
         scene.add(ambientLight);
 
-        // Key light (soft warm overhead)
-        const keyLight = new THREE.DirectionalLight(0xfff8ee, 2.2);
-        keyLight.position.set(4, 6, 6);
+        // Key light (warm morning studio spotlight)
+        const keyLight = new THREE.DirectionalLight(0xfffdf5, 2.6);
+        keyLight.position.set(4.5, 7.5, 6.0);
         keyLight.castShadow = true;
         keyLight.shadow.mapSize.width = 1024;
         keyLight.shadow.mapSize.height = 1024;
+        keyLight.shadow.bias = -0.0002;
         scene.add(keyLight);
 
-        // Rim/Fill light (cool indigo for high-tech studio sheen)
-        const rimLight = new THREE.DirectionalLight(0x818cf8, 1.8);
-        rimLight.position.set(-6, -2, 4);
-        scene.add(rimLight);
+        // Sky Fill light (subtle cool blue-indigo fill for high-end depth)
+        const fillLight = new THREE.DirectionalLight(0xdbeafe, 1.1);
+        fillLight.position.set(-6, 2, 4.5);
+        scene.add(fillLight);
+
+        // Desk Bounce light (warm amber bounce from below)
+        const bounceLight = new THREE.DirectionalLight(0xfef3c7, 0.5);
+        bounceLight.position.set(0, -5, 3);
+        scene.add(bounceLight);
 
         // Specular point light moving along coils
-        const coilGlint = new THREE.PointLight(0xa5b4fc, 3.0, 10);
+        const coilGlint = new THREE.PointLight(0x6366f1, 2.2, 12);
         coilGlint.position.set(-2, 2, 3);
         scene.add(coilGlint);
 
@@ -75,8 +81,8 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
         ctx.fillRect(0, 0, 1024, 1360);
 
         // Margin red double line
-        ctx.strokeStyle = '#f87171';
-        ctx.lineWidth = 3;
+        ctx.strokeStyle = '#ef4444';
+        ctx.lineWidth = 2.5;
         ctx.beginPath();
         ctx.moveTo(160, 0);
         ctx.lineTo(160, 1360);
@@ -101,12 +107,13 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
         }
 
         // Header Title
-        ctx.font = 'bold 34px Caveat, cursive, sans-serif';
+        ctx.font = 'bold 36px Caveat, cursive, sans-serif';
         ctx.fillStyle = '#1e3a8a';
         ctx.fillText("Physics Lab · Experiment #04", 190, 115);
 
         // Handwritten realistic text sample
         ctx.font = '28px Caveat, cursive, sans-serif';
+        ctx.fillStyle = '#1e293b';
         const sampleLines = [
             "Aim: Determine the Planck's Constant using Photoelectric Effect.",
             "Apparatus: Photo emissive cell, variable DC source, microammeter.",
@@ -130,7 +137,7 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
         const pageMat = new THREE.MeshStandardMaterial({
             map: pageTexture,
             roughness: 0.85,
-            metalness: 0.05,
+            metalness: 0.02,
         });
         const pageMesh = new THREE.Mesh(pageGeo, pageMat);
         pageMesh.position.set(0.15, 0, 0.05);
@@ -141,9 +148,9 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
         // Back Cover (Premium Dark Leatherboard/Hardboard)
         const backCoverGeo = new THREE.BoxGeometry(3.5, 4.7, 0.08);
         const backCoverMat = new THREE.MeshStandardMaterial({
-            color: 0x18181b,
-            roughness: 0.4,
-            metalness: 0.2,
+            color: 0x1e293b,
+            roughness: 0.5,
+            metalness: 0.15,
         });
         const backCoverMesh = new THREE.Mesh(backCoverGeo, backCoverMat);
         backCoverMesh.position.set(0.15, 0, -0.06);
@@ -153,7 +160,7 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
         // Inner Page Block (Stack thickness)
         const stackGeo = new THREE.BoxGeometry(3.38, 4.58, 0.09);
         const stackMat = new THREE.MeshStandardMaterial({
-            color: 0xf3efe6,
+            color: 0xf6f3ea,
             roughness: 0.9,
             metalness: 0.02,
         });
@@ -171,9 +178,9 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
 
         const coilGeo = new THREE.TorusGeometry(coilRadius, tubeRadius, 14, 28, Math.PI * 1.85);
         const coilMat = new THREE.MeshStandardMaterial({
-            color: 0xe2e8f0,
+            color: 0xf1f5f9,
             metalness: 0.95,
-            roughness: 0.18,
+            roughness: 0.14,
         });
 
         for (let i = 0; i < coilCount; i++) {
@@ -186,8 +193,8 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
         }
         notebookGroup.add(coilsGroup);
 
-        // --- Floating Sparkle / Ink Dust Particles ---
-        const particleCount = 70;
+        // --- Floating Ink Spark / Airborne Dust Motes ---
+        const particleCount = 65;
         const particleGeo = new THREE.BufferGeometry();
         const positions = new Float32Array(particleCount * 3);
         const scales = new Float32Array(particleCount);
@@ -201,18 +208,17 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
         particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
         const particleMat = new THREE.PointsMaterial({
-            color: 0x818cf8,
-            size: 0.06,
+            color: 0x4338ca,
+            size: 0.055,
             transparent: true,
-            opacity: 0.65,
-            blending: THREE.AdditiveBlending,
+            opacity: 0.35,
         });
         const particles = new THREE.Points(particleGeo, particleMat);
         scene.add(particles);
 
         // Target rotations for smooth lerping
-        let targetRotX = 0.15;
-        let targetRotY = -0.35;
+        let targetRotX = 0.14;
+        let targetRotY = -0.32;
         let targetZ = 0;
         let targetScale = 1;
 
@@ -227,17 +233,17 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
             const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
             const y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
 
-            targetRotY = -0.35 + x * 0.45;
-            targetRotX = 0.15 - y * 0.35;
+            targetRotY = -0.32 + x * 0.45;
+            targetRotX = 0.14 - y * 0.35;
             targetZ = x * 0.1;
         };
 
         const handleScroll = () => {
             const scrollY = window.scrollY || window.pageYOffset;
             const progress = Math.min(scrollY / 800, 1);
-            // Slight tilt and lift on scroll
-            targetRotX = 0.15 + progress * 0.25;
-            targetScale = 1 - progress * 0.08;
+            // Gentle tilt on scroll
+            targetRotX = 0.14 + progress * 0.22;
+            targetScale = 1 - progress * 0.06;
         };
 
         window.addEventListener('scroll', handleScroll, { passive: true });
@@ -313,13 +319,13 @@ export default function NotebookHero3D({ className = '', interactive = true }: N
         >
             <canvas ref={canvasRef} className="w-full h-full block" />
 
-            {/* Subtle 3D Depth Specular Overlay Vignette */}
-            <div className="pointer-events-none absolute inset-0 bg-radial-[circle_at_50%_50%_rgba(99,102,241,0.08)_0%,transparent_70%]" />
+            {/* Ambient Soft Studio Focus Vignette */}
+            <div className="pointer-events-none absolute inset-0 bg-radial-[circle_at_50%_50%_rgba(99,102,241,0.05)_0%,transparent_70%]" />
 
             {/* Interactive Control Pill Overlay */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-3.5 py-1.5 rounded-full bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md border border-neutral-200/80 dark:border-white/10 text-[11px] font-bold text-neutral-600 dark:text-neutral-300 shadow-lg flex items-center gap-2 pointer-events-none">
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-white/90 backdrop-blur-md border border-stone-200/90 text-[11px] font-bold text-stone-700 shadow-md shadow-stone-300/40 flex items-center gap-2 pointer-events-none whitespace-nowrap">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span>Drag or move cursor to inspect in real 3D</span>
+                <span>Move cursor or touch to inspect 3D notebook</span>
             </div>
         </div>
     );
