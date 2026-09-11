@@ -41,7 +41,7 @@ const CameraOverlayComponent: React.FC<CameraOverlayProps> = ({
     inkBleedIntensity = 0.12,
 }) => {
     const isEvenPage = (pageIndex ?? 0) % 2 === 1;
-    const showSpiral = spiralBinding || paperCrease === 'spiral-holes';
+    const showSpiral = Boolean(spiralBinding);
     // Calculate Phone Shadow coordinates based on angle or custom per-page values
     const rad = (phoneShadowAngle * Math.PI) / 180;
     const shadowX = phoneShadowX !== undefined ? phoneShadowX : Math.round(50 + Math.cos(rad) * 45);

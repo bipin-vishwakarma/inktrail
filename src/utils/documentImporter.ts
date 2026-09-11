@@ -62,7 +62,7 @@ async function importDocx(file: File, onProgress?: (msg: string) => void): Promi
     try {
         onProgress?.('Converting Word formatting...');
         // First attempt markdown conversion to preserve headings and bullet lists
-        const mdResult = await (mammoth as any).convertToMarkdown({ arrayBuffer });
+        const mdResult = await (mammoth as unknown as { convertToMarkdown: (opts: { arrayBuffer: ArrayBuffer }) => Promise<{ value: string }> }).convertToMarkdown({ arrayBuffer });
         if (mdResult?.value && mdResult.value.trim().length > 0) {
             // Mammoth backslash-escapes markdown punctuation like \#, \., \-, \*, \_
             // Unescape them so cleanAIText and handwriting styling engines format headings, numbers, and bullets properly
@@ -113,7 +113,19 @@ async function importPdf(file: File, onProgress?: (msg: string) => void): Promis
         const textContent = await page.getTextContent();
 
         // Sort items vertically (top-to-bottom), then horizontally (left-to-right)
-        const items = textContent.items.filter((item: any) => typeof item.str === 'string' && item.str.trim().length > 0) as any[];
+        interface ExtractedWord {
+            str: string;
+            transform: number[];
+        }
+        const items: ExtractedWord[] = [];
+        for (const item of textContent.items) {
+            if ('str' in item && typeof item.str === 'string' && item.str.trim().length > 0 && 'transform' in item && Array.isArray(item.transform)) {
+                items.push({
+                    str: item.str,
+                    transform: item.transform,
+                });
+            }
+        }
 
         if (items.length === 0) continue;
 
@@ -128,51 +140,44 @@ async function importPdf(file: File, onProgress?: (msg: string) => void): Promis
 
             if (Math.abs(itemY - currentLineY) > 5) {
                 // Flush line
-                currentLineWords.sort((a, b) => a.x - b.x);
-                lines.push({
-                    y: currentLineY,
-                    text: currentLineWords.map(w => w.str).join(' ')
-                });
+                if (currentLineWords.length > 0) {
+                    currentLineWords.sort((a, b) => a.x - b.x);
+                    lines.push({ y: currentLineY, text: currentLineWords.map(w => w.str).join(' ') });
+                    currentLineWords = [];
+                }
                 currentLineY = itemY;
-                currentLineWords = [{ x: itemX, str: item.str }];
-            } else {
-                currentLineWords.push({ x: itemX, str: item.str });
             }
+            currentLineWords.push({ x: itemX, str: item.str });
         }
-
         if (currentLineWords.length > 0) {
             currentLineWords.sort((a, b) => a.x - b.x);
-            lines.push({
-                y: currentLineY,
-                text: currentLineWords.map(w => w.str).join(' ')
-            });
+            lines.push({ y: currentLineY, text: currentLineWords.map(w => w.str).join(' ') });
         }
 
         const pageText = lines.map(l => l.text).join('\n');
-        if (pageText.trim().length > 0) {
+        if (pageText.trim()) {
             extractedPages.push(pageText);
         }
     }
 
-    // If PDF has no digital text (e.g. scanned handwritten or photo PDF), perform OCR fallback
-    const combinedDigitalText = extractedPages.join('\n\n').trim();
-    if (combinedDigitalText.length === 0 && numPages > 0) {
-        onProgress?.('Scanned PDF detected. Scanning pages with OCR...');
+    // If PDF text layer was completely empty (e.g. scanned PDF document), perform OCR via Tesseract.js
+    if (extractedPages.length === 0 || extractedPages.join('').trim().length < 20) {
+        onProgress?.('Scanned PDF detected. Initializing OCR engine...');
         try {
             const { createWorker } = await import('tesseract.js');
             const worker = await createWorker('eng');
-            const pagesToOcr = Math.min(numPages, 3); // OCR up to first 3 pages to maintain responsiveness
-
-            for (let p = 1; p <= pagesToOcr; p++) {
-                onProgress?.(`OCR scanning page ${p} of ${pagesToOcr}...`);
-                const page = await pdfDoc.getPage(p);
+            
+            for (let pageNum = 1; pageNum <= Math.min(numPages, 5); pageNum++) {
+                onProgress?.(`Running OCR on scanned page ${pageNum}...`);
+                const page = await pdfDoc.getPage(pageNum);
                 const viewport = page.getViewport({ scale: 1.5 });
                 const canvas = document.createElement('canvas');
                 canvas.width = viewport.width;
                 canvas.height = viewport.height;
                 const ctx = canvas.getContext('2d');
                 if (ctx) {
-                    await (page.render({ canvasContext: ctx, viewport } as any) as any).promise;
+                    const pageRenderer = page as unknown as { render: (opts: unknown) => { promise: Promise<void> } };
+                    await pageRenderer.render({ canvasContext: ctx, viewport }).promise;
                     const ocrRes = await worker.recognize(canvas);
                     if (ocrRes.data?.text?.trim()) {
                         extractedPages.push(ocrRes.data.text.trim());

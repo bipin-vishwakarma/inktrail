@@ -25,7 +25,7 @@ import { parseWordToken, measureWordWidth, getFontFamilyCss, getEffectiveFontSiz
 import { computePagePhoneShadow } from '../utils/cameraShadowEngine';
 import { cleanAIText, isLikelyAIText } from '../utils/aiTextCleaner';
 import { importDocumentFile } from '../utils/documentImporter';
-import type { StrikeStyle } from '../types';
+import type { StrikeStyle, PaperMaterial } from '../types';
 
 // --- PIPELINE TYPES ---
 interface LineData {
@@ -144,7 +144,7 @@ function buildDocumentLines(
         } else if (/^#{3,6}\s*/.test(normalizedPara)) {
             normalizedPara = normalizedPara.replace(/^#{3,6}\s*/, '').replace(/\*\*/g, '').trim();
         }
-        normalizedPara = normalizedPara.replace(/^(\s*)\*\*(Ans(?:wer)?[\.:\-]?)\*\*/i, '$1$2');
+        normalizedPara = normalizedPara.replace(/^(\s*)\*\*(Ans(?:wer)?[:.-]?)\*\*/i, '$1$2');
 
         // Smart Margin Indexing Engine:
         // Detects Question numbers (Q1., Q.1, Question 1:), Answer tags (Ans:, Answer:),
@@ -156,7 +156,7 @@ function buildDocumentLines(
 
         if (smartMarginIndexing) {
             const marginMatch = normalizedPara.match(
-                /^(\s*)(Q(?:uestion|ues|ue)[\.:\-]?\s*(?:\d+[\.:\)]?)?|Q\.?\s*\d+[\.:\)]?|Ans(?:wer)?[\.:\-]?|Sol(?:ution)?[\.:\-]?|A\d+[\.:\)]?|\(\s*[a-zA-Z0-9ivxlcdm]+\s*\)|\d+[\.)]\s?|[ivxlcdm]+[\.)]\s?|[a-zA-Z][\.)])\s*(.*)$/i
+                /^(\s*)(Q(?:uestion|ues|ue)[:.-]?\s*(?:\d+[:.)]?)?|Q\.?\s*\d+[:.)]?|Ans(?:wer)?[:.-]?|Sol(?:ution)?[:.-]?|A\d+[:.)]?|\(\s*[a-zA-Z0-9ivxlcdm]+\s*\)|\d+[.)]\s?|[ivxlcdm]+[.)]\s?|[a-zA-Z][.)])\s*(.*)$/i
             );
             if (marginMatch) {
                 marginMarker = marginMatch[2].trim();
@@ -167,7 +167,7 @@ function buildDocumentLines(
 
         if (!marginMarker) {
             const bulletMatch = normalizedPara.match(/^(\s*)([-*•])\s+(.*)$/);
-            const numberMatch = normalizedPara.match(/^(\s*)(\d+[\.\)])\s+(.*)$/);
+            const numberMatch = normalizedPara.match(/^(\s*)(\d+[.)])\s+(.*)$/);
 
             if (bulletMatch) {
                 indentLevel = Math.min(3, Math.floor(bulletMatch[1].length / 2) + 1);
@@ -197,10 +197,13 @@ function buildDocumentLines(
             let isBoxed = false;
 
             // 1. Highlighter check (==yellow:word== or ==word== or multi-word span)
-            const hlStart = word.match(/^==(yellow|green|pink|blue):/i) || (word.startsWith('==') ? ['=='] : null);
-            if (hlStart) {
-                activeHighlight = (hlStart as any)[1] ? ((hlStart as any)[1].toLowerCase() as any) : 'yellow';
-                word = word.slice(hlStart[0].length);
+            const hlMatch = word.match(/^==(yellow|green|pink|blue):/i);
+            if (hlMatch) {
+                activeHighlight = hlMatch[1].toLowerCase() as 'yellow' | 'green' | 'pink' | 'blue';
+                word = word.slice(hlMatch[0].length);
+            } else if (word.startsWith('==')) {
+                activeHighlight = 'yellow';
+                word = word.slice(2);
             }
             if (activeHighlight) {
                 isHighlighted = true;
@@ -517,7 +520,7 @@ export default function EditorPage() {
         sensorNoise,
         randomTilt,
         coffeeStain,
-        spiralBinding,
+        spiralBinding, setSpiralBinding,
         inkBleedThrough,
         inkBleedIntensity,
         notebookBrand, setNotebookBrand,
@@ -536,9 +539,7 @@ export default function EditorPage() {
     const [draftText, setDraftText] = useState(text);
 
     useEffect(() => {
-        if (text !== draftText) {
-            setDraftText(text);
-        }
+        setDraftText(text);
     }, [text]);
 
     useEffect(() => {
@@ -585,7 +586,7 @@ export default function EditorPage() {
             
             // Smart auto-bullet and list continuation
             const bulletMatch = currentLine.match(/^(\s*)(•|-|\*)\s+/);
-            const numMatch = currentLine.match(/^(\s*)(\d+)[\.\)]\s+/);
+            const numMatch = currentLine.match(/^(\s*)(\d+)[.)]\s+/);
             
             if (bulletMatch) {
                 if (currentLine.trim() === '•' || currentLine.trim() === '-' || currentLine.trim() === '*') {
@@ -1115,7 +1116,10 @@ export default function EditorPage() {
 
     // --- PIPELINE EXECUTION: PRE-TOKENIZATION & PAGE PAGINATION ---
     const pages = useMemo(() => {
-        const isSpiralActive = spiralBinding || paper.id === 'youva-spiral';
+        // Trigger re-measure when custom or web fonts finish rendering
+        if (fontLoadedVersion < 0) return [];
+
+        const isSpiralActive = Boolean(spiralBinding);
         const effectiveLeftForPagination = isSpiralActive ? Math.max(marginLeft, 118) : marginLeft;
         const effectiveRightForPagination = isSpiralActive ? Math.max(marginRight, 65) : marginRight;
         const effectiveTopForPagination = (paper.hasRedMargin || paper.id === 'youva-spiral' || showNotebookHeaderBox) 
@@ -1814,7 +1818,14 @@ export default function EditorPage() {
                                         {PAPERS.map(p => (
                                             <button
                                                 key={p.id}
-                                                onClick={() => setPaperMaterial(p.id as any)}
+                                                onClick={() => {
+                                                    setPaperMaterial(p.id as PaperMaterial);
+                                                    if (p.id === 'youva-spiral') {
+                                                        setSpiralBinding(true);
+                                                    } else {
+                                                        setSpiralBinding(false);
+                                                    }
+                                                }}
                                                 className={`p-3.5 rounded-2xl text-xs font-bold flex items-center justify-between border transition-all ${
                                                     paper.id === p.id 
                                                         ? 'bg-neutral-900 text-white border-neutral-900 shadow-xs' 
@@ -1826,6 +1837,25 @@ export default function EditorPage() {
                                             </button>
                                         ))}
                                     </div>
+                                </div>
+
+                                {/* 3D Twin-Wire Spiral Binding Toggle */}
+                                <div className="p-3.5 rounded-2xl bg-neutral-50 border border-neutral-200/70 space-y-2">
+                                    <label className="flex items-center justify-between cursor-pointer">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-xs font-bold text-neutral-900">3D Spiral Binding (Twin-Wire)</span>
+                                            <span className="text-[9px] font-bold px-1.5 py-0.5 bg-blue-100 text-blue-800 rounded-md">3D</span>
+                                        </div>
+                                        <input 
+                                            type="checkbox" 
+                                            checked={spiralBinding} 
+                                            onChange={e => setSpiralBinding(e.target.checked)} 
+                                            className="w-4 h-4 rounded border-neutral-300 accent-neutral-900 cursor-pointer"
+                                        />
+                                    </label>
+                                    <p className="text-[10px] text-neutral-500 leading-relaxed">
+                                        Renders authentic 30-coil metallic silver rings with realistic drop shadows and alternating left/right page parity.
+                                    </p>
                                 </div>
 
                                 {/* Page Number Option */}
@@ -2091,7 +2121,7 @@ export default function EditorPage() {
                                 pageOverrides
                             );
 
-                            const isSpiralActive = spiralBinding || paper.id === 'youva-spiral';
+                            const isSpiralActive = Boolean(spiralBinding);
                             const isVerso = (pIdx + 1) % 2 === 0;
                             const isLeftSpiral = isSpiralActive && !isVerso;
                             const redMarginLeft = isLeftSpiral ? 104 : 65;
@@ -2620,7 +2650,7 @@ export default function EditorPage() {
                                                     sensorNoise={effectiveNoise}
                                                     coffeeStain={effectiveCoffeeStain}
                                                     pageIndex={pIdx}
-                                                    spiralBinding={spiralBinding || paper.id === 'youva-spiral'}
+                                                    spiralBinding={spiralBinding}
                                                     inkBleedThrough={inkBleedThrough}
                                                     inkBleedIntensity={inkBleedIntensity}
                                                 />
@@ -2746,7 +2776,7 @@ export default function EditorPage() {
                 lowInkIntensity={lowInkIntensity}
                 showNotebookHeaderBox={showNotebookHeaderBox}
                 notebookDate={notebookDate}
-                spiralBinding={spiralBinding || paper.id === 'youva-spiral'}
+                spiralBinding={spiralBinding}
                 inkBleedThrough={inkBleedThrough}
                 inkBleedIntensity={inkBleedIntensity}
                 notebookBrand={notebookBrand}

@@ -102,8 +102,49 @@ const HandwrittenWordComponent: React.FC<HandwrittenWordProps> = ({
 
     const fontCss = getFontFamilyCss(fontFamily);
 
+    const isStandaloneCaret = token.text === '' && Boolean(token.caretCorrection);
+
+    // Track real DOM rendered width for pixel-perfect strike bounding boxes
+    const textRef = useRef<HTMLSpanElement>(null);
+    const [domWidth, setDomWidth] = useState<number>(0);
+
+    useLayoutEffect(() => {
+        if (!isStandaloneCaret && textRef.current) {
+            const w = textRef.current.offsetWidth;
+            if (w > 0 && Math.abs(w - domWidth) > 0.5) {
+                setDomWidth(w);
+            }
+        }
+    }, [isStandaloneCaret, domWidth, token.text, fontFamily, fontSize, charJitter]);
+
+    const canvasWidth = useMemo(() => {
+        if (isStandaloneCaret) return Math.max(14, Math.round(fontSize * 0.45));
+        return Math.max(measureWordWidth(token.text, fontFamily, fontSize), 6);
+    }, [isStandaloneCaret, token.text, fontFamily, fontSize]);
+
+    const effectiveWidth = domWidth > 0 ? domWidth : canvasWidth;
+    const effectiveHeight = fontSize;
+
+    // Generate SVG path for scribble if word is struck
+    const scribblePath = useMemo(() => {
+        if (isStandaloneCaret || !token.isStruck) return '';
+        return generateScribblePath(effectiveWidth, effectiveHeight, token.strikeStyle, seedString + '_sc');
+    }, [isStandaloneCaret, token.isStruck, token.strikeStyle, effectiveWidth, effectiveHeight, seedString]);
+
+    // Generate SVG path for double underline if present
+    const doubleUnderlinePath = useMemo(() => {
+        if (isStandaloneCaret || !token.isDoubleUnderline) return '';
+        return generateDoubleUnderlinePath(effectiveWidth, effectiveHeight, seedString + '_du');
+    }, [isStandaloneCaret, token.isDoubleUnderline, effectiveWidth, effectiveHeight, seedString]);
+
+    // Generate SVG path for wobbly box if present
+    const wobblyBoxPath = useMemo(() => {
+        if (isStandaloneCaret || !token.isBoxed) return '';
+        return generateWobblyBoxPath(effectiveWidth, effectiveHeight, seedString + '_box');
+    }, [isStandaloneCaret, token.isBoxed, effectiveWidth, effectiveHeight, seedString]);
+
     // Standalone missing-word caret (e.g. ^to, ^from, ^because, ^at)
-    if (token.text === '' && token.caretCorrection) {
+    if (isStandaloneCaret) {
         const caretSlotWidth = Math.max(14, Math.round(fontSize * 0.45));
         return (
             <span
@@ -155,44 +196,6 @@ const HandwrittenWordComponent: React.FC<HandwrittenWordProps> = ({
             </span>
         );
     }
-
-    // Track real DOM rendered width for pixel-perfect strike bounding boxes
-    const textRef = useRef<HTMLSpanElement>(null);
-    const [domWidth, setDomWidth] = useState<number>(0);
-
-    useLayoutEffect(() => {
-        if (textRef.current) {
-            const w = textRef.current.offsetWidth;
-            if (w > 0 && Math.abs(w - domWidth) > 0.5) {
-                setDomWidth(w);
-            }
-        }
-    }, [token.text, fontFamily, fontSize, charJitter]);
-
-    const canvasWidth = useMemo(() => {
-        return Math.max(measureWordWidth(token.text, fontFamily, fontSize), 6);
-    }, [token.text, fontFamily, fontSize]);
-
-    const effectiveWidth = domWidth > 0 ? domWidth : canvasWidth;
-    const effectiveHeight = fontSize;
-
-    // Generate SVG path for scribble if word is struck
-    const scribblePath = useMemo(() => {
-        if (!token.isStruck) return '';
-        return generateScribblePath(effectiveWidth, effectiveHeight, token.strikeStyle, seedString + '_sc');
-    }, [token.isStruck, token.strikeStyle, effectiveWidth, effectiveHeight, seedString]);
-
-    // Generate SVG path for double underline if present
-    const doubleUnderlinePath = useMemo(() => {
-        if (!token.isDoubleUnderline) return '';
-        return generateDoubleUnderlinePath(effectiveWidth, effectiveHeight, seedString + '_du');
-    }, [token.isDoubleUnderline, effectiveWidth, effectiveHeight, seedString]);
-
-    // Generate SVG path for wobbly box if present
-    const wobblyBoxPath = useMemo(() => {
-        if (!token.isBoxed) return '';
-        return generateWobblyBoxPath(effectiveWidth, effectiveHeight, seedString + '_box');
-    }, [token.isBoxed, effectiveWidth, effectiveHeight, seedString]);
 
     return (
         <span

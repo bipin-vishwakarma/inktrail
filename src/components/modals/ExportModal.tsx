@@ -4,20 +4,20 @@ import { useState, useRef } from 'react';
 import { useScrollLock } from '../../hooks/useScrollLock';
 import { HandwrittenWord } from '../HandwrittenWord';
 import { CameraOverlay } from '../CameraOverlay';
-import { getFontFamilyCss, getEffectiveFontSize } from '../../utils/humanErrorEngine';
+import { getFontFamilyCss, getEffectiveFontSize, type WordToken } from '../../utils/humanErrorEngine';
 import { computePagePhoneShadow } from '../../utils/cameraShadowEngine';
 import type { LightingMode, PaperCrease, PageEffectOverrides, CorrectionColor } from '../../types';
 
 interface DocumentLine {
-    tokens: any[];
+    tokens: WordToken[];
     text: string;
     type: 'text' | 'bullet' | 'number' | 'empty' | 'comparison' | string;
     indent: number;
     charIndex: number;
     dir?: 'ltr' | 'rtl';
     marginIndex?: string;
-    leftTokens?: any[];
-    rightTokens?: any[];
+    leftTokens?: WordToken[];
+    rightTokens?: WordToken[];
 }
 
 interface DocumentPage {
@@ -299,7 +299,7 @@ export default function ExportModal({
                                         pageOverrides
                                     );
 
-                                    const isSpiralActive = spiralBinding || paper.id === 'youva-spiral';
+                                    const isSpiralActive = Boolean(spiralBinding);
                                     const isVerso = (pIdx + 1) % 2 === 0;
                                     const isLeftSpiral = isSpiralActive && !isVerso;
                                     const redMarginLeft = isLeftSpiral ? 104 : 65;
@@ -714,7 +714,7 @@ export default function ExportModal({
                                                     sensorNoise={effectiveNoise}
                                                     coffeeStain={effectiveCoffeeStain}
                                                     pageIndex={pIdx}
-                                                    spiralBinding={spiralBinding || paper.id === 'youva-spiral'}
+                                                    spiralBinding={spiralBinding}
                                                     inkBleedThrough={inkBleedThrough}
                                                     inkBleedIntensity={inkBleedIntensity}
                                                 />

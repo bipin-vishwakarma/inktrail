@@ -17,7 +17,7 @@ export interface HistoryItem {
 }
 
 type StateValues = {
-    [K in keyof AppState as AppState[K] extends (...args: any[]) => any ? never : K]: AppState[K];
+    [K in keyof AppState as AppState[K] extends (...args: never[]) => unknown ? never : K]: AppState[K];
 };
 
 const initialState: StateValues = {
@@ -32,7 +32,7 @@ const initialState: StateValues = {
     lineHeight: DEFAULT_TYPOGRAPHY.lineHeight,
     wordSpacing: DEFAULT_TYPOGRAPHY.wordSpacing,
     inkColor: '#1e40af',
-    paperMaterial: 'ruled',
+    paperMaterial: 'youva-spiral',
     paperSize: 'a4',
     paperOrientation: 'portrait',
     customFonts: [],
@@ -59,7 +59,7 @@ const initialState: StateValues = {
     randomTilt: false,
     smartMarginIndexing: true,
     coffeeStain: false,
-    spiralBinding: false,
+    spiralBinding: true,
     inkBleedThrough: true,
     inkBleedIntensity: 0.12,
 

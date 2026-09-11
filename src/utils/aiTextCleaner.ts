@@ -16,9 +16,9 @@
  * Common patterns of AI introductory greetings, preambles, and filler chatter
  */
 const AI_PREAMBLE_PATTERNS: RegExp[] = [
-    /^(?:yes|yeah|sure|okay|certainly|hello|hi|hey)\b[^\n]*\b(?:bro|friend|user|mate|sir|ma'?am)?[\s\S]*?(?=\n\s*(?:#|Q\d|Question|\d+[\.\)]|[A-Z\s]{4,}))/i,
-    /^(?:here is|here are|below is|below are|i have (?:prepared|checked|created|written)|i've (?:prepared|checked|created|written))[^\n]*?(?=\n\s*(?:#|Q\d|Question|\d+[\.\)]|[A-Z\s]{4,}))/i,
-    /^(?:certainly|of course|sure thing|no problem)[!,.]?\s*(?:here|below|i'll)[^\n]*?(?=\n\s*(?:#|Q\d|Question|\d+[\.\)]|[A-Z\s]{4,}))/i,
+    /^(?:yes|yeah|sure|okay|certainly|hello|hi|hey)\b[^\n]*\b(?:bro|friend|user|mate|sir|ma'?am)?[\s\S]*?(?=\n\s*(?:#|Q\d|Question|\d+[.)]|[A-Z\s]{4,}))/i,
+    /^(?:here is|here are|below is|below are|i have (?:prepared|checked|created|written)|i've (?:prepared|checked|created|written))[^\n]*?(?=\n\s*(?:#|Q\d|Question|\d+[.)]|[A-Z\s]{4,}))/i,
+    /^(?:certainly|of course|sure thing|no problem)[!,.]?\s*(?:here|below|i'll)[^\n]*?(?=\n\s*(?:#|Q\d|Question|\d+[.)]|[A-Z\s]{4,}))/i,
 ];
 
 /**
@@ -42,7 +42,7 @@ export function isLikelyAIText(text: string): boolean {
     // Check for markdown bolding or divider lines
     const hasMarkdownBolding = /\*\*[^*]+\*\*/.test(text);
     const hasDividers = /^(?:---|___|\*\*\*)\s*$/m.test(text);
-    const hasAIBullets = /^\s*[\*\-]\s+[A-Za-z]/m.test(text);
+    const hasAIBullets = /^\s*[-*]\s+[A-Za-z]/m.test(text);
 
     return hasGreeting || (hasHeaders && (hasMarkdownBolding || hasDividers || hasAIBullets));
 }
@@ -68,7 +68,7 @@ export function cleanAIText(raw: string): string {
         const firstPara = paragraphs[0].trim();
         if (
             /^(?:yes|sure|certainly|here is|here are|below is|i checked|i have|of course|in this assignment|as requested)\b/i.test(firstPara) &&
-            !/^#|^(?:Q|Question|\d+[\.\)])/i.test(firstPara) &&
+            !/^#|^(?:Q|Question|\d+[.)])/i.test(firstPara) &&
             firstPara.length < 350
         ) {
             // Remove conversational introductory paragraph
@@ -123,7 +123,7 @@ export function cleanAIText(raw: string): string {
         }
 
         // Question Heading (### Q1. or ### Question 1: or #### Q1.)
-        const questionMatch = line.match(/^#{3,6}\s*(Q(?:uestion)?[\s\.:\d]+.*)$/i);
+        const questionMatch = line.match(/^#{3,6}\s*(Q(?:uestion)?[\s.:\d]+.*)$/i);
         if (questionMatch) {
             const qText = questionMatch[1].replace(/\*\*/g, '').trim();
             if (processedLines.length > 0 && processedLines[processedLines.length - 1] !== '') {
@@ -145,7 +145,7 @@ export function cleanAIText(raw: string): string {
         }
 
         // Answer Indicator (**Ans**, **Ans:**, **Answer:**, Ans:, Answer:)
-        const ansMatch = line.match(/^(\s*)(?:\*\*|\*|__)?(Ans(?:wer)?[\.:\-]?)?(?:\*\*|\*|__)?(?:\s*(.*))$/i);
+        const ansMatch = line.match(/^(\s*)(?:\*\*|\*|__)?(Ans(?:wer)?[:.-]?)?(?:\*\*|\*|__)?(?:\s*(.*))$/i);
         if (ansMatch && ansMatch[2]) {
             const trailing = ansMatch[3] ? ansMatch[3].trim() : '';
             if (trailing) {
@@ -157,7 +157,7 @@ export function cleanAIText(raw: string): string {
         }
 
         // Standardize bullet points (* or - -> •)
-        const bulletMatch = line.match(/^(\s*)(?:[\*\-])\s+(.*)$/);
+        const bulletMatch = line.match(/^(\s*)(?:[-*])\s+(.*)$/);
         if (bulletMatch) {
             const indent = bulletMatch[1];
             const content = bulletMatch[2].replace(/\*\*/g, '');
