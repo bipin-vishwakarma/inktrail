@@ -4,7 +4,7 @@
 
 <img src="public/images/logo.png" alt="InkTrail Logo" width="140" />
 
-### Next-Gen Hyper-Realistic Text-to-Handwriting Studio with 3D Camera Physics, Smart Margin Indexing, Chisel Highlighters, and Organic Human Flaws
+### Next-Gen Hyper-Realistic Text-to-Handwriting Studio with 3D Camera Physics, Smart Margin Indexing, Multi-Format Document Import, and Organic Human Flaws
 
 [![Live Demo](https://img.shields.io/badge/Live-Demo%20on%20Vercel-black?style=for-the-badge&logo=vercel)](https://inktrail-omega.vercel.app)
 [![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/bipin-vishwakarma/inktrail)
@@ -15,7 +15,7 @@
 [![TypeScript 5.9](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-v4.1-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
 
-**[Key Features](#-key-features)** • **[Markup Cheat Sheet](#-markup--syntax-cheat-sheet)** • **[Camera & Physics](#-3d-camera-physics--photo-effects)** • **[Quick Start](#-quick-start)** • **[Deployment](#-deployment-to-vercel)**
+**[Key Features](#-key-features)** • **[Document Importer](#-1-multi-format-document-importer--drag-and-drop)** • **[Markup Cheat Sheet](#-markup--syntax-cheat-sheet)** • **[Camera & Physics](#-6-3d-camera-physics--photo-effects)** • **[Quick Start](#-quick-start)** • **[Deployment](#-deployment-to-vercel)**
 
 </div>
 
@@ -28,8 +28,8 @@
 Unlike traditional handwriting generators that simply render flat digital fonts in a rigid grid, InkTrail reproduces the subtle physical flaws, optical dynamics, and analog paper textures of real-world notes:
 - **Hand Dynamics**: Letter micro-jitter, pen pressure variance, baseline wobble, and progressive wrist fatigue.
 - **Academic Notebook Elements**: Iconic pre-printed **Date & Page No.** header box, heading double-underlines, and wobbly hand-drawn formula boxes.
-- **Chisel-Tip Highlighting**: Multi-color translucent highlighters that blend into porous paper fibers using `mix-blend-mode: multiply`.
 - **Smart Academic Layout**: Automated detection of question numbers, answers, roman numerals, and bullets positioned outside the red margin line.
+- **Multi-Format Document Ingestion**: Instant client-side import for Microsoft Word (`.docx`), PDF (`.pdf`), Markdown (`.md`), Plain Text (`.txt`), RTF, and Image OCR.
 - **Organic Corrections**: Procedural scratch-outs (wavy scribbles, blackouts, slashes) and handwritten caret (`^`) insertions.
 - **Physical Environment**: 3D perspective camera angles, smartphone cast shadows, warm desk lamp lighting, and realistic paper creases.
 - **Zero Friction**: 100% client-side rendering with zero mandatory logins or paywalls for PDF/ZIP exports.
@@ -38,29 +38,30 @@ Unlike traditional handwriting generators that simply render flat digital fonts 
 
 ## ⚡ Key Features
 
-### 🖍️ 1. Multi-Color Chisel-Tip Highlighters
-Authentic felt marker simulation designed to highlight keywords, dates, and definitions:
-- **4 Translucent Ink Shades**:
-  - `==text==` $\rightarrow$ Classic Neon Yellow
-  - `==green:text==` $\rightarrow$ Mint Emerald Green
-  - `==pink:text==` $\rightarrow$ Pastel Rose Pink
-  - `==blue:text==` $\rightarrow$ Cyan Sky Blue
-- **Paper-Sink Optical Blending**: Uses `mix-blend-mode: multiply` on paper texture, angled chisel skew (`skewX(-2.5deg)`), and natural stroke jitter so highlighter ink sits underneath the pen strokes.
-- **Multi-Word Span Support**: Smoothly wraps across long phrases and multiple lines without breaking.
+### 📁 1. Multi-Format Document Importer & Drag-and-Drop
+Seamlessly turn your digital assignments, lecture notes, or research papers directly into authentic handwritten notebook sheets:
+- **Microsoft Word (`.docx`)**: Clean Markdown conversion preserving headers, questions, and bullet structures.
+- **PDF Documents (`.pdf`)**: Coordinate-accurate multi-page text reconstruction with automatic OCR fallback for scanned sheets.
+- **Markdown (`.md`, `.markdown`) & Plain Text (`.txt`)**: Instant parsing with intelligent header and bullet recognition.
+- **Rich Text (`.rtf`)**: Native control-word stripping and clean formatting recovery.
+- **Image OCR (`.png`, `.jpg`, `.jpeg`, `.webp`)**: Client-side optical character recognition via Tesseract.js.
+- **Interactive Drag-and-Drop**: Drag any document directly onto the editor or into fullscreen Focus Mode to import instantly.
 
 ---
 
 ### 📅 2. Authentic Student Notebook Header Box & Double Top Rule
 - **Iconic Indian Notebook Header**: Multi-compartment coral/rose printed box in the top-right corner, matching authentic **Youva (Navneet), Classmate, Spellar & Sundaram** student notebooks.
+- **Natural Paper Blending**: Renders directly into the paper fibers with transparent background so room lighting, phone shadows, camera grain, and warmth realistically composite over the header box.
 - **Day of Week Tracker**: Includes `M T W T F S S` day initials with an organic hand-drawn blue ballpoint circle around the active day.
 - **Dynamic Page Numbers & Date**: Automatically numbers each page (`PAGE NO: 01`, `02`, `03`...) using the chosen handwriting style and pen ink, with customizable date.
 - **Double Red Top Header Rule**: Authentic dual red lines across the top header margin.
-- **Full Fidelity Export**: Rendered on the live drafting desk and preserved pixel-for-pixel inside exported PDFs and Ultra-HD ZIP images.
+- **Full Fidelity Export**: Preserved pixel-for-pixel inside exported PDFs and Ultra-HD ZIP images.
 
 ---
 
-### 🌀 3. 3D Twin-Wire Spiral Binding & Reverse-Page Ink Ghosting
-- **3D Twin-Wire Metallic Coils**: Procedural silver dual coils with realistic depth, specular highlights, dark shadow casting, and punched holes.
+### 🌀 3. 30-Coil Twin-Wire Spiral Binding & Reverse-Page Ink Ghosting
+- **Full-Page 30-Loop Metallic Coils**: Procedural silver dual coils spanning the entire 1131px page height from top header rule to bottom margin.
+- **Smooth Spine Curvature**: Naturally curved wire loops with realistic depth, specular highlights, dark shadow casting, and punched holes.
 - **Recto / Verso Parity**: Automatically mirrors spiral binding orientation across pages (odd pages bound on left margin, flipped even pages bound on right margin).
 - **Reverse-Page Ink Ghosting**: Simulates genuine 65 GSM Indian notebook paper where faint, blurred handwriting from the reverse side shines through with `mix-blend-mode: multiply` and customizable opacity (4%–28%).
 
@@ -70,19 +71,6 @@ Authentic felt marker simulation designed to highlight keywords, dates, and defi
 - **Comparison Syntax**: Format side-by-side differentiations using `|| Advantage | Disadvantage ||` or `[compare]` blocks.
 - **Hand-Drawn Divider**: Automatically draws an organic, pen-colored vertical divider line down the center of the ruled lines with natural micro-wobble.
 - **Academic Formatting Toolbar**: 1-click heading chips for `[Q1.]`, `[Ans:]`, `[Advantages:]`, `[Limitations:]`, `[Applications:]`, and `[Conclusion:]`, plus automatic typing conversion of `->` to `→`.
-
----
-
-### ✍️ 5. Heading Double-Underlines & Formula Result Boxes
-- **Heading Double Underline (`__Title__`)**: Draws two organic, dual-stroke pen underlines under headings with natural wrist curve and micro-tilt.
-- **Hand-Drawn Formula Box (`[[Result]]`)**: Wraps final answers, math formulas, or key definitions inside a wobbly, hand-drawn rectangular sketch box.
-
----
-
-### ⚡ 4. Quick Markup Toolbar
-- Convenient 1-click buttons placed right above the text editor:
-  - `🖍️ Yellow` • `🟢 Green` • `🌸 Pink` • `🔷 Blue` • `__Double__` • `[[Box]]` • `~~Strike~~` • `^Caret^`
-- **Smart Text Selection**: Highlight any text in your document and click any button to wrap it instantly, or click to insert a formatted placeholder at your cursor position.
 
 ---
 
@@ -98,7 +86,20 @@ Simulates the authentic way students and researchers write notes and exams on ru
 
 ---
 
-### ✂️ 6. Procedural Pen Scratch & Correction Engine
+### 📸 6. 3D Camera Physics & Photo Effects
+- **True 3D Spatial Angles**: Rotates notebook pages in 3D space (`perspective(1000px)`, `rotateX`, `rotateY`, and `scale`) mimicking high-angle smartphone camera snapshots.
+- **Random Angle Generator**: One-click procedural angle generator that rolls authentic hand-held phone camera rotations ($0.5^\circ - 3.5^\circ$) with tilt jitter per page.
+- **Export-Preserved Non-Planar Geometry**: Renders the exact 3D tilt, aspect ratio, and perspective into exported PDFs and Ultra-HD PNG/JPEGs.
+- **Smartphone Silhouette Shadow**: Realistic soft-edged silhouette of a phone hovering over the notebook, with customizable angle ($0^\circ - 360^\circ$) and shadow density.
+- **Lighting Environments**:
+  - 🛋️ **Warm Desk Lamp**: Tungsten warm gradient with adjustable warmth slider.
+  - ☀️ **Cool Daylight**: Natural window exposure lighting.
+  - ⚡ **Camera Flash**: High-intensity central flash hotspot.
+  - 📄 **Flat / Scanner**: Crisp document scan.
+
+---
+
+### ✂️ 7. Procedural Pen Scratch & Correction Engine
 - **Multiple Strike Styles**:
   - 〰️ **Wavy Scribble**: Natural, looping cursive blackout loops.
   - ✍️ **Underline**: Organic pen line underneath the mistake.
@@ -108,19 +109,6 @@ Simulates the authentic way students and researchers write notes and exams on ru
 - **Handwritten Caret Insertion (`^`)**: Renders realistic caret marks with the corrected word handwritten directly above the line.
 - **Customizable Correction Ink**: Choose **Match** (same pen color) or contrasting inks (**Red**, **Green**, **Purple**).
 - **Progressive Writer Fatigue**: Subtly increases baseline drift, slant, and letter spacing towards the bottom of long pages.
-
----
-
-### 📸 7. 3D Camera Physics & Photo Effects
-- **True 3D Spatial Angles**: Rotates notebook pages in 3D space (`perspective(1000px)`, `rotateX`, `rotateY`, and `scale`) mimicking high-angle smartphone camera snapshots.
-- **Random Angle Generator**: One-click procedural angle generator that rolls authentic hand-held phone camera rotations ($0.5^\circ - 3.5^\circ$) with tilt jitter per page.
-- **Export-Preserved Non-Planar Geometry**: Renders the exact 3D tilt, aspect ratio, and perspective into exported PDFs and Ultra-HD PNG/JPEGs.
-- **Smartphone Silhouette Shadow**: Realistic soft-edged silhouette of a phone hovering over the notebook, with customizable angle ($0^\circ - 360^\circ$) and shadow density.
-- **Lighting Modes**:
-  - 🛋️ **Warm Desk Lamp**: Tungsten warm gradient with adjustable warmth slider.
-  - ☀️ **Cool Daylight**: Natural window exposure lighting.
-  - ⚡ **Camera Flash**: High-intensity central flash hotspot.
-  - 📄 **Flat / Scanner**: Crisp document scan.
 
 ---
 
@@ -146,6 +134,7 @@ Real paper rarely stays completely flat. Choose from 9 authentic physical paper 
   - ✏️ **HB #2 Pencil** (`#4b5563`) — Graphite texture
   - 🔴 **Red Pen** (`#dc2626`) — Vibrant red ink
 - **Paper Materials**:
+  - 📓 **Indian Student Spiral (Youva / Classmate)** — Twin-wire coils with authentic red double header rule
   - 📝 **College Ruled (Red Margin)** — Classic 65px vertical red margin line
   - 📜 **Standard Blue Ruled** — Clean lined notebook paper
   - 📐 **Engineering Graph Paper** — Precision 24px grid paper
@@ -165,7 +154,7 @@ Loaded locally & via Google Fonts for instant, zero-latency rendering:
 ---
 
 ### 🖨️ 11. Multi-Page Live Export Preview
-- **Pre-Export Inspection**: Scroll through all generated pages with all active 3D tilts, shadows, highlighters, and creases rendered before downloading.
+- **Pre-Export Inspection**: Scroll through all generated pages with all active 3D tilts, shadows, and creases rendered before downloading.
 - **Ultra-HD Resolution**: Renders pages at crisp print resolutions (up to $2480 \times 3508$ pixels for A4).
 - **Multi-Format Export**:
   - Single/Multi-page PDF document.
@@ -178,10 +167,6 @@ Loaded locally & via Google Fonts for instant, zero-latency rendering:
 
 | Effect | Syntax | Example | Description |
 | :--- | :--- | :--- | :--- |
-| **Yellow Highlighter** | `==text==` | `==important concept==` | Classic neon yellow chisel marker |
-| **Green Highlighter** | `==green:text==` | `==green:Lenz's Law==` | Pastel emerald green chisel marker |
-| **Pink Highlighter** | `==pink:text==` | `==pink:Michael Faraday==` | Soft rose pink chisel marker |
-| **Blue Highlighter** | `==blue:text==` | `==blue:1831==` | Cyan blue chisel marker |
 | **Double Underline** | `__text__` | `__Electromagnetic Induction__` | Organic dual-line heading underline |
 | **Formula / Answer Box** | `[[text]]` | `[[e = -dΦ/dt]]` | Hand-drawn wobbly answer box |
 | **2-Column Comparison** | `\|\| Left \| Right \|\|` | `\|\| RAM \| ROM \|\|` | Side-by-side columns with hand-drawn pen divider |
@@ -247,6 +232,9 @@ npx vercel --prod
 | **Vite 7** | Next-generation frontend tooling & lightning-fast HMR |
 | **TypeScript 5.9** | Strict type safety with modern module resolution |
 | **Tailwind CSS v4** | Modern CSS-first styling engine with high performance |
+| **Mammoth.js** | Client-side Microsoft Word (`.docx`) extraction |
+| **PDF.js (`pdfjs-dist`)** | Client-side PDF page extraction & layout reconstruction |
+| **Tesseract.js** | Client-side Optical Character Recognition (OCR) |
 | **Zustand** | Centralized reactive state management |
 | **Framer Motion** | Fluid animations, drawers, and modal transitions |
 | **modern-screenshot & jsPDF** | High-fidelity canvas capture and PDF generation |
@@ -266,8 +254,8 @@ inktrail/
 │   └── favicon.png      # InkTrail high-res brand icon
 ├── src/
 │   ├── components/
-│   │   ├── HandwrittenWord.tsx     # Highlighters, strikes, carets, double underlines, boxes
-│   │   ├── CameraOverlay.tsx       # 3D lighting, creases, phone shadows, sensor noise
+│   │   ├── HandwrittenWord.tsx     # Strikes, carets, double underlines, formula boxes
+│   │   ├── CameraOverlay.tsx       # 3D lighting, creases, phone shadows, 30-coil spiral
 │   │   ├── HumanErrorsControls.tsx # Sliders & toggles for human imperfections
 │   │   ├── PenPresetSelector.tsx   # Pen ink presets palette
 │   │   ├── ThumbnailBar.tsx        # Multi-page floating thumbnail navigation
@@ -275,7 +263,7 @@ inktrail/
 │   │   └── modals/                 # Export modal, creator modal, history dialog
 │   ├── lib/                        # Zustand store & global state
 │   ├── pages/                      # EditorPage studio, landing, and legal pages
-│   └── utils/                      # Word tokenization, font metrics, camera shadows
+│   └── utils/                      # Document import, tokenization, font metrics, shadows
 ├── vercel.json          # SPA rewrite rules for zero-404 Vercel deployments
 └── package.json
 ```
