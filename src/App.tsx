@@ -24,6 +24,7 @@ const FAQPage = lazy(() => import('./pages/FAQPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const SupportPage = lazy(() => import('./pages/SupportPage'));
 const ChangelogPage = lazy(() => import('./pages/ChangelogPage'));
+const PricingPage = lazy(() => import('./pages/PricingPage'));
 
 // Loading Fallback
 const PageLoader = () => (
@@ -59,6 +60,7 @@ function InnerApp() {
           <Route path="about" element={<AboutPage />} />
           <Route path="support" element={<SupportPage />} />
           <Route path="changelog" element={<ChangelogPage />} />
+          <Route path="pricing" element={<PricingPage />} />
 
           {/* Redirects for deleted pages */}
           <Route path="features" element={<Navigate to="/#features" replace />} />

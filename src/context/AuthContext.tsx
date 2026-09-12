@@ -27,6 +27,7 @@ export interface UserProfile {
     collegeName?: string;
     savedDocsCount: number;
     cloudBackupEnabled: boolean;
+    isPro?: boolean;
     createdAt: string;
 }
 
@@ -84,6 +85,7 @@ function mapSupabaseUserToProfile(su: SupabaseUser): UserProfile {
         collegeName: meta.collegeName || 'Student Scholar',
         savedDocsCount: 3,
         cloudBackupEnabled: true,
+            isPro: false,
         createdAt: su.created_at || new Date().toISOString(),
     };
 }
@@ -186,7 +188,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 } else if (data?.session?.user) {
                     const profile = mapSupabaseUserToProfile(data.session.user);
                     persistUser(profile);
-                    syncProfileToDatabase(data.session.user);
+                    (async () => {
+    const dbProfile = await syncProfileToDatabase(data.session!.user);
+    if (dbProfile?.is_pro) {
+        profile.isPro = true;
+        persistUser(profile);
+    }
+})();
 
                     // If landing on root or auth page after OAuth, redirect into the app
                     if (window.location.pathname === '/' || window.location.pathname === '/auth') {
@@ -222,7 +230,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 if (session?.user) {
                     const profile = mapSupabaseUserToProfile(session.user);
                     persistUser(profile);
-                    syncProfileToDatabase(session.user);
+                    (async () => {
+    const dbProfile = await syncProfileToDatabase(session.user);
+    if (dbProfile?.is_pro) {
+        profile.isPro = true;
+        persistUser(profile);
+    }
+})();
                 }
                 setIsLoading(false);
             }).catch((err) => {
@@ -237,7 +251,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             if (session?.user) {
                 const profile = mapSupabaseUserToProfile(session.user);
                 persistUser(profile);
-                syncProfileToDatabase(session.user);
+                (async () => {
+    const dbProfile = await syncProfileToDatabase(session.user);
+    if (dbProfile?.is_pro) {
+        profile.isPro = true;
+        persistUser(profile);
+    }
+})();
             } else if (event === 'SIGNED_OUT') {
                 persistUser(null);
             }
@@ -264,6 +284,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             collegeName: customProfile?.collegeName || 'University Institute',
             savedDocsCount: customProfile?.savedDocsCount ?? 3,
             cloudBackupEnabled: true,
+            isPro: false,
             createdAt: new Date().toISOString(),
         };
 
@@ -309,6 +330,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             collegeName: 'Institute of Engineering',
             savedDocsCount: 5,
             cloudBackupEnabled: true,
+            isPro: false,
             createdAt: new Date().toISOString(),
         };
 
@@ -353,6 +375,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             collegeName: 'School of Computer Science',
             savedDocsCount: 7,
             cloudBackupEnabled: true,
+            isPro: false,
             createdAt: new Date().toISOString(),
         };
 
@@ -401,6 +424,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             collegeName: 'University Scholar',
             savedDocsCount: 1,
             cloudBackupEnabled: true,
+            isPro: false,
             createdAt: new Date().toISOString(),
         };
 
@@ -419,7 +443,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 if (data?.user) {
                     const profile = mapSupabaseUserToProfile(data.user);
                     persistUser(profile);
-                    syncProfileToDatabase(data.user);
+                    (async () => {
+    const dbProfile = await syncProfileToDatabase(data.user);
+    if (dbProfile?.is_pro) {
+        profile.isPro = true;
+        persistUser(profile);
+    }
+})();
                 }
                 setIsLoading(false);
                 setAuthModalOpen(false);
@@ -447,6 +477,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             collegeName: 'University Scholar',
             savedDocsCount: 1,
             cloudBackupEnabled: true,
+            isPro: false,
             createdAt: new Date().toISOString(),
         };
         persistUser(profile);
@@ -469,7 +500,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 if (data?.session?.user) {
                     const profile = mapSupabaseUserToProfile(data.session.user);
                     persistUser(profile);
-                    syncProfileToDatabase(data.session.user, { name: metadata?.name });
+                    (async () => {
+    const dbProfile = await syncProfileToDatabase(data.session!.user, { name: metadata?.name });
+    if (dbProfile?.is_pro) {
+        profile.isPro = true;
+        persistUser(profile);
+    }
+})();
                     setIsLoading(false);
                     setAuthModalOpen(false);
                     return { success: true, needsEmailConfirmation: false };
@@ -502,6 +539,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             collegeName: metadata?.collegeName || 'University Scholar',
             savedDocsCount: 0,
             cloudBackupEnabled: true,
+            isPro: false,
             createdAt: new Date().toISOString(),
         };
         persistUser(profile);
@@ -545,6 +583,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             collegeName: cleanCollege,
             savedDocsCount: 2,
             cloudBackupEnabled: true,
+            isPro: false,
             createdAt: new Date().toISOString(),
         };
 

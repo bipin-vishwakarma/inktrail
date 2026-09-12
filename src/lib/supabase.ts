@@ -157,20 +157,23 @@ export async function updateSupabaseUserData(updates: { name?: string; avatar_ur
  * Safely syncs profile into Supabase database 'profiles' table if available.
  */
 export async function syncProfileToDatabase(user: SupabaseUser, customData?: { name?: string; avatar_url?: string }) {
-    if (!supabase) return;
+    if (!supabase) return null;
     try {
         const username = customData?.name || user.user_metadata?.full_name || user.email?.split('@')[0] || 'student';
         const avatar = customData?.avatar_url || user.user_metadata?.avatar_url || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(username)}`;
         
-        await supabase.from('profiles').upsert({
+        const { data } = await supabase.from('profiles').upsert({
             id: user.id,
             username: username.slice(0, 50),
             avatar_url: avatar,
             created_at: user.created_at || new Date().toISOString(),
-        }, { onConflict: 'id' });
+        }, { onConflict: 'id' }).select().single();
+        
+        return data;
     } catch (e) {
         // Silently tolerate if table RLS restricts writes
         console.debug('Profiles table sync skipped or completed:', e);
+        return null;
     }
 }
 

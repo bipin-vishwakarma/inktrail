@@ -22,6 +22,7 @@ export default function Navbar() {
 
     // Always-route links (page navigation)
     const pageLinks: { name: string; path: string }[] = [
+        { name: 'Pricing', path: '/pricing' },
         { name: 'About', path: '/about' },
     ];
 
