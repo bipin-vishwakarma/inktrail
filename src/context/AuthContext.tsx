@@ -151,13 +151,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // Detect if the URL contains OAuth/PKCE authorization callback parameters
         const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
         const code = searchParams?.get('code');
-        const authError = searchParams?.get('error') || searchParams?.get('error_description');
+        const authError = searchParams?.get('error');
+        const authErrorDesc = searchParams?.get('error_description');
         const hasHashToken = typeof window !== 'undefined' && window.location.hash.includes('access_token');
         const hasIncomingAuth = Boolean(code || hasHashToken);
 
-        if (authError) {
-            console.warn('OAuth redirect error from provider:', authError);
-            addToast(authError.replace(/\+/g, ' '), 'error');
+        if (authError || authErrorDesc) {
+            // Toast the full error so we can debug it
+            const fullError = `${authError || 'Error'}: ${authErrorDesc || 'Unknown'}`.replace(/\+/g, ' ');
+            console.warn('OAuth redirect error from provider:', fullError);
+            addToast(fullError, 'error');
             try {
                 const cleanUrl = new URL(window.location.href);
                 cleanUrl.searchParams.delete('error');
