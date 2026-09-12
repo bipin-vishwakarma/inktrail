@@ -40,32 +40,9 @@ export async function signInWithGoogleOAuth(redirectTo?: string) {
         provider: 'google',
         options: {
             redirectTo: redirect,
-            skipBrowserRedirect: true,
-            queryParams: {
-                access_type: 'offline',
-                prompt: 'consent',
-            },
         },
     });
     if (error) throw error;
-    if (data?.url) {
-        // Probe endpoint to intercept 400 "unsupported provider: provider is not enabled" before redirecting
-        try {
-            const probe = await fetch(data.url, { method: 'GET' });
-            if (probe.status === 400) {
-                const errJson = await probe.json().catch(() => ({}));
-                if (errJson.msg?.includes('provider is not enabled') || errJson.error_code === 'validation_failed') {
-                    throw new Error('Google OAuth provider is not enabled in your Supabase project (rebwoyqwxnoqmxvumzjf). Please enable Google under Authentication → Providers in your dashboard, or sign in with Student ID / Email.');
-                }
-            }
-        } catch (probeErr: unknown) {
-            if (probeErr instanceof Error && probeErr.message.includes('not enabled')) {
-                throw probeErr;
-            }
-            // If probe had network error or cross-origin redirect, continue with assignment
-        }
-        window.location.assign(data.url);
-    }
     return data;
 }
 
@@ -81,27 +58,9 @@ export async function signInWithGithubOAuth(redirectTo?: string) {
         provider: 'github',
         options: {
             redirectTo: redirect,
-            skipBrowserRedirect: true,
         },
     });
     if (error) throw error;
-    if (data?.url) {
-        // Probe endpoint to intercept 400 "unsupported provider: provider is not enabled" before redirecting
-        try {
-            const probe = await fetch(data.url, { method: 'GET' });
-            if (probe.status === 400) {
-                const errJson = await probe.json().catch(() => ({}));
-                if (errJson.msg?.includes('provider is not enabled') || errJson.error_code === 'validation_failed') {
-                    throw new Error('Unsupported provider: GitHub OAuth is not enabled in your Supabase project (rebwoyqwxnoqmxvumzjf). Please enable GitHub under Authentication → Providers in your Supabase dashboard.');
-                }
-            }
-        } catch (probeErr: unknown) {
-            if (probeErr instanceof Error && probeErr.message.includes('not enabled')) {
-                throw probeErr;
-            }
-        }
-        window.location.assign(data.url);
-    }
     return data;
 }
 

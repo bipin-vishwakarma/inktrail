@@ -10,7 +10,7 @@ interface PageLayoutProps {
 
 export default function PageLayout({ title, subtitle, description, children }: PageLayoutProps) {
     useEffect(() => {
-        document.title = `${title} | Handwritten - Premium Text to Handwriting`;
+        document.title = `${title} | InkTrail - Text to Handwriting`;
         
         const metaDesc = document.querySelector('meta[name="description"]');
         if (metaDesc) {
@@ -25,7 +25,7 @@ export default function PageLayout({ title, subtitle, description, children }: P
             document.head.appendChild(canonical);
         }
         const path = window.location.pathname === '/' ? '' : window.location.pathname;
-        canonical.setAttribute('href', `https://handwritten-git.vercel.app${path}`);
+        canonical.setAttribute('href', `${window.location.origin}${path}`);
     }, [title, subtitle, description]);
 
     return (

@@ -1500,7 +1500,7 @@ export default function EditorPage() {
                     </button>
 
                     {/* User Account Menu */}
-                    <UserMenu onOpenTour={() => setIsOnboardingOpen(true)} />
+                    <UserMenu />
 
                     {/* Primary Export Preview Button */}
                     <button 

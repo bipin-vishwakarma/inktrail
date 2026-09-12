@@ -598,6 +598,7 @@ html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
 }
 
 :root {
@@ -683,6 +684,7 @@ html {
 body {
   @apply bg-paper text-ink antialiased;
   font-feature-settings: "rlig" 1, "calt" 1;
+  overflow-x: clip;
 }
 
 h1, h2, h3, h4, h5, h6 {

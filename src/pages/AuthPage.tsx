@@ -166,6 +166,23 @@ export default function AuthPage() {
         }
     };
 
+    const hasIncomingCode = typeof window !== 'undefined' && (
+        new URLSearchParams(window.location.search).has('code') ||
+        window.location.hash.includes('access_token')
+    );
+
+    if (isLoading && hasIncomingCode) {
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-violet-50 via-white to-indigo-50 gap-4">
+                <InkTrailLogo size={44} className="animate-pulse" />
+                <div className="flex items-center gap-2 text-xs font-bold text-neutral-500">
+                    <div className="w-2 h-2 rounded-full bg-violet-600 animate-ping" />
+                    <span>Finalizing student sign-in with Google...</span>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-indigo-50 flex">
             {/* Left panel — branding */}

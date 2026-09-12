@@ -175,18 +175,16 @@ export default function OnboardingModal({ isOpen: propIsOpen, onClose: propOnClo
         }
     };
 
-    const handleFinish = useCallback((isCompletedTour: boolean = false) => {
-        if (isCompletedTour || dontShowAgain) {
-            try {
-                localStorage.setItem('inktrail_onboarding_dismissed', 'true');
-            } catch {
-                // ignore
-            }
-            completeOnboarding();
+    const handleFinish = useCallback((_isCompletedTour: boolean = false) => {
+        try {
+            localStorage.setItem('inktrail_onboarding_dismissed', 'true');
+        } catch {
+            // ignore
         }
+        completeOnboarding();
         onClose();
         setCurrentIndex(0);
-    }, [dontShowAgain, completeOnboarding, onClose]);
+    }, [completeOnboarding, onClose]);
 
     // Keyboard navigation: Left/Right arrows, Escape
     useEffect(() => {
@@ -218,8 +216,16 @@ export default function OnboardingModal({ isOpen: propIsOpen, onClose: propOnClo
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-neutral-950/60 backdrop-blur-md">
+                <div 
+                    className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-neutral-950/60 backdrop-blur-md"
+                    onClick={(e) => {
+                        if (e.target === e.currentTarget) {
+                            handleFinish(false);
+                        }
+                    }}
+                >
                     <motion.div
+                        onClick={(e) => e.stopPropagation()}
                         initial={{ opacity: 0, scale: 0.94, y: 15 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.94, y: 15 }}

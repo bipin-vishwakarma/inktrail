@@ -4,7 +4,7 @@ Disallow: /api/
 Disallow: /private/
 
 # Sitemaps
-Sitemap: https://handwritten-git.vercel.app/sitemap.xml
+Sitemap: https://inktrail-omega.vercel.app/sitemap.xml
 
 # Host
-Host: https://handwritten-git.vercel.app
+Host: https://inktrail-omega.vercel.app

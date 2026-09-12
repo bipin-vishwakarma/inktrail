@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -6,6 +6,7 @@ import {
     Edit2, Check, X, GraduationCap, Mail, Loader2, Sparkles
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import InkTrailLogo from '../components/common/InkTrailLogo';
 
 const PROVIDER_ICONS: Record<string, React.ReactNode> = {
     google: (
@@ -33,8 +34,25 @@ export default function AccountPage() {
     const [editName, setEditName] = useState(user?.name || '');
     const [saving, setSaving] = useState(false);
 
+    useEffect(() => {
+        if (!isLoading && (!isAuthenticated || !user)) {
+            navigate('/auth?redirect=/account', { replace: true });
+        }
+    }, [isLoading, isAuthenticated, user, navigate]);
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-violet-50 via-white to-indigo-50 gap-4">
+                <InkTrailLogo size={44} className="animate-pulse" />
+                <div className="flex items-center gap-2 text-xs font-bold text-neutral-500">
+                    <div className="w-2 h-2 rounded-full bg-violet-600 animate-ping" />
+                    <span>Loading student account...</span>
+                </div>
+            </div>
+        );
+    }
+
     if (!isAuthenticated || !user) {
-        navigate('/auth?redirect=/account');
         return null;
     }
 

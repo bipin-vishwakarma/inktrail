@@ -8,25 +8,31 @@ import UserMenu from '../UserMenu';
 
 export default function Navbar() {
     const isNavbarVisible = useStore(state => state.isNavbarVisible);
-    const openOnboarding = useStore(state => state.openOnboarding);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [activeSection, setActiveSection] = useState<string>('');
     const location = useLocation();
 
-    const navLinks: { name: string; sectionId?: string; path: string; badge?: string }[] = [
-        { name: 'Features', sectionId: 'features', path: '/features' },
-        { name: 'How It Works', sectionId: 'how-it-works', path: '/how-it-works' },
-        { name: 'Paper Vault', sectionId: 'paper-vault', path: '/#paper-vault' },
-        { name: 'FAQ', sectionId: 'faq', path: '/faq' },
+    // Scroll-spy targets on landing page — ordered to match DOM
+    const scrollLinks: { name: string; sectionId: string }[] = [
+        { name: 'How It Works', sectionId: 'how-it-works' },
+        { name: 'Paper Vault', sectionId: 'paper-vault' },
+        { name: 'Features', sectionId: 'features' },
+        { name: 'FAQ', sectionId: 'faq' },
+    ];
+
+    // Always-route links (page navigation)
+    const pageLinks: { name: string; path: string }[] = [
         { name: 'About', path: '/about' },
     ];
 
+    const isOnLanding = location.pathname === '/';
+
     // Scroll spy when on landing page
     useEffect(() => {
-        if (location.pathname !== '/') return;
+        if (!isOnLanding) return;
 
         const handleScroll = () => {
-            const sectionIds = ['how-it-works', 'live-sandbox', 'paper-vault', 'features', 'faq'];
+            const sectionIds = ['how-it-works', 'paper-vault', 'features', 'faq'];
             const scrollPos = window.scrollY + 220;
             for (const id of sectionIds) {
                 const el = document.getElementById(id);
@@ -46,28 +52,26 @@ export default function Navbar() {
 
         window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
-    }, [location.pathname]);
+    }, [isOnLanding]);
 
-    const handleNavClick = (e: React.MouseEvent, link: typeof navLinks[number]) => {
-        if (link.sectionId) {
-            if (location.pathname === '/') {
-                e.preventDefault();
-                const elem = document.getElementById(link.sectionId);
-                if (elem) {
-                    elem.scrollIntoView({ behavior: 'smooth' });
-                    window.history.pushState(null, '', `#${link.sectionId}`);
-                    setActiveSection(link.sectionId);
-                }
+    const handleScrollLinkClick = (e: React.MouseEvent, sectionId: string) => {
+        if (isOnLanding) {
+            e.preventDefault();
+            const elem = document.getElementById(sectionId);
+            if (elem) {
+                elem.scrollIntoView({ behavior: 'smooth' });
+                window.history.pushState(null, '', `#${sectionId}`);
+                setActiveSection(sectionId);
             }
         }
+        // If not on landing, let React Router navigate to `/#sectionId` naturally
     };
 
-    const isLinkActive = (link: typeof navLinks[number]) => {
-        if (location.pathname === '/') {
-            return link.sectionId ? activeSection === link.sectionId : false;
-        }
-        return location.pathname === link.path;
-    };
+    const isScrollLinkActive = (sectionId: string) =>
+        isOnLanding && activeSection === sectionId;
+
+    const isPageLinkActive = (path: string) =>
+        location.pathname === path;
 
     return (
         <>
@@ -85,7 +89,7 @@ export default function Navbar() {
                 }}
                 className="fixed top-3 sm:top-6 left-0 right-0 z-50 px-3 sm:px-6 flex justify-center pointer-events-none"
             >
-                <div className="w-full max-w-4xl glass rounded-full px-4 sm:px-6 py-2 sm:py-2.5 flex justify-between items-center pointer-events-auto ring-1 ring-black/5 shadow-lg shadow-black/5">
+                <div className="w-full max-w-5xl glass rounded-full px-4 sm:px-6 py-2 sm:py-2.5 flex justify-between items-center pointer-events-auto ring-1 ring-black/5 shadow-lg shadow-black/5">
                     {/* Brand Logo */}
                     <Link to="/" className="flex items-center gap-2.5 group relative shrink-0">
                         <InkTrailLogo size={32} />
@@ -94,13 +98,32 @@ export default function Navbar() {
 
                     {/* Desktop Navigation Links */}
                     <div className="hidden md:flex items-center gap-1 bg-neutral-100/70 p-1 rounded-full border border-neutral-200/50">
-                        {navLinks.map((link) => (
+                        {/* Scroll links — scroll on landing, route to `/#section` elsewhere */}
+                        {scrollLinks.map((link) => (
                             <Link
                                 key={link.name}
-                                to={link.sectionId && location.pathname === '/' ? `#${link.sectionId}` : link.path}
-                                onClick={(e) => handleNavClick(e, link)}
+                                to={isOnLanding ? `#${link.sectionId}` : `/#${link.sectionId}`}
+                                onClick={(e) => handleScrollLinkClick(e, link.sectionId)}
                                 className={`px-3 py-1 text-xs font-bold rounded-full transition-all flex items-center gap-1.5 cursor-pointer ${
-                                    isLinkActive(link)
+                                    isScrollLinkActive(link.sectionId)
+                                        ? 'bg-white text-neutral-950 shadow-xs'
+                                        : 'text-neutral-600 hover:text-neutral-900 hover:bg-white/50'
+                                }`}
+                            >
+                                <span>{link.name}</span>
+                            </Link>
+                        ))}
+
+                        {/* Separator */}
+                        <span className="w-px h-4 bg-neutral-200/80 mx-0.5" />
+
+                        {/* Page route links */}
+                        {pageLinks.map((link) => (
+                            <Link
+                                key={link.name}
+                                to={link.path}
+                                className={`px-3 py-1 text-xs font-bold rounded-full transition-all flex items-center gap-1.5 cursor-pointer ${
+                                    isPageLinkActive(link.path)
                                         ? 'bg-white text-neutral-950 shadow-xs'
                                         : 'text-neutral-600 hover:text-neutral-900 hover:bg-white/50'
                                 }`}
@@ -112,24 +135,8 @@ export default function Navbar() {
 
                     {/* Right Actions & Account */}
                     <div className="flex items-center gap-2 sm:gap-3">
-                        <button
-                            type="button"
-                            onClick={openOnboarding}
-                            className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100 transition-all cursor-pointer"
-                            title="Interactive Student Onboarding Tour"
-                        >
-                            <Sparkles size={12} className="text-amber-500" />
-                            <span>Tour</span>
-                        </button>
 
-                        <Link
-                            to="/account"
-                            className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gradient-to-r from-amber-500/10 to-orange-500/15 border border-amber-500/30 text-[11px] font-black text-amber-800 hover:scale-105 transition-all shadow-2xs"
-                            title="InkTrail is 100% Free during Beta!"
-                        >
-                            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-                            <span>100% Free Beta 🔥</span>
-                        </Link>
+
 
                         <div className="hidden sm:block">
                             <UserMenu />
@@ -137,9 +144,9 @@ export default function Navbar() {
 
                         <Link
                             to="/editor"
-                            className="px-3.5 sm:px-5 py-1.5 sm:py-2 bg-neutral-900 text-white rounded-full text-xs sm:text-sm font-bold shadow-md shadow-neutral-900/15 hover:bg-black hover:scale-103 active:scale-97 transition-all flex items-center gap-1.5"
+                            className="px-3.5 sm:px-5 py-1.5 sm:py-2 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-full text-xs sm:text-sm font-bold shadow-md shadow-violet-600/20 hover:from-violet-500 hover:to-indigo-500 hover:scale-103 active:scale-97 transition-all flex items-center gap-1.5 whitespace-nowrap"
                         >
-                            <Sparkles size={13} className="text-amber-400" />
+                            <Sparkles size={13} className="text-yellow-300" />
                             <span>Open Studio</span>
                         </Link>
 
@@ -174,41 +181,43 @@ export default function Navbar() {
                         </div>
 
                         <div className="grid grid-cols-2 gap-2">
-                            {navLinks.map((link) => (
+                            {/* Scroll links */}
+                            {scrollLinks.map((link) => (
                                 <Link
                                     key={link.name}
-                                    to={link.sectionId && location.pathname === '/' ? `#${link.sectionId}` : link.path}
+                                    to={isOnLanding ? `#${link.sectionId}` : `/#${link.sectionId}`}
                                     onClick={(e) => {
                                         setMobileMenuOpen(false);
-                                        handleNavClick(e, link);
+                                        handleScrollLinkClick(e, link.sectionId);
                                     }}
                                     className={`p-3 rounded-2xl text-xs font-bold transition-all flex items-center justify-between border cursor-pointer ${
-                                        isLinkActive(link)
+                                        isScrollLinkActive(link.sectionId)
                                             ? 'bg-neutral-900 text-white border-neutral-900 shadow-xs'
                                             : 'bg-neutral-50 border-neutral-200/70 text-neutral-700 hover:bg-neutral-100'
                                     }`}
                                 >
                                     <span>{link.name}</span>
-                                    {link.badge && (
-                                        <span className="px-1.5 py-0.5 bg-blue-500 text-white rounded-md text-[9px]">
-                                            {link.badge}
-                                        </span>
-                                    )}
+                                </Link>
+                            ))}
+
+                            {/* Page links */}
+                            {pageLinks.map((link) => (
+                                <Link
+                                    key={link.name}
+                                    to={link.path}
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    className={`p-3 rounded-2xl text-xs font-bold transition-all flex items-center justify-between border cursor-pointer ${
+                                        isPageLinkActive(link.path)
+                                            ? 'bg-neutral-900 text-white border-neutral-900 shadow-xs'
+                                            : 'bg-neutral-50 border-neutral-200/70 text-neutral-700 hover:bg-neutral-100'
+                                    }`}
+                                >
+                                    <span>{link.name}</span>
                                 </Link>
                             ))}
                         </div>
 
-                        <button
-                            type="button"
-                            onClick={() => {
-                                setMobileMenuOpen(false);
-                                openOnboarding();
-                            }}
-                            className="w-full py-2.5 px-3 bg-amber-50 hover:bg-amber-100/80 border border-amber-200/80 text-amber-900 rounded-2xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs"
-                        >
-                            <Sparkles size={13} className="text-amber-600" />
-                            <span>Quick Student Tour & Slides</span>
-                        </button>
+
 
                         <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] font-medium text-neutral-500">
                             <Link to="/disclaimer" onClick={() => setMobileMenuOpen(false)} className="hover:text-neutral-900">

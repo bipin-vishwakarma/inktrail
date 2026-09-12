@@ -1,16 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, Clock, ChevronDown, Sparkles, Cloud, GraduationCap, User } from 'lucide-react';
+import { LogOut, Clock, ChevronDown, Cloud, GraduationCap, User } from 'lucide-react';
 import HistoryModal from './modals/HistoryModal';
 import { useAuth } from '../context/AuthContext';
 import { useStore } from '../lib/store';
 import { motion, AnimatePresence } from 'framer-motion';
 
-interface UserMenuProps {
-    onOpenTour?: () => void;
-}
-
-export default function UserMenu({ onOpenTour }: UserMenuProps) {
+export default function UserMenu() {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
@@ -35,7 +31,7 @@ export default function UserMenu({ onOpenTour }: UserMenuProps) {
             <button
                 type="button"
                 onClick={() => navigate('/auth?redirect=/editor')}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-violet-600 hover:bg-violet-700 text-white rounded-xl text-xs font-bold shadow-sm transition-all cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-violet-600 hover:bg-violet-700 text-white rounded-xl text-xs font-bold shadow-sm transition-all cursor-pointer whitespace-nowrap"
                 title="Sign in with Student ID or Google account"
             >
                 <GraduationCap size={13} />
@@ -133,20 +129,7 @@ export default function UserMenu({ onOpenTour }: UserMenuProps) {
                                 </span>
                             </button>
 
-                            {/* Tour */}
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    if (onOpenTour) onOpenTour();
-                                    setIsOpen(false);
-                                }}
-                                className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-neutral-700 hover:text-neutral-900 hover:bg-neutral-100/80 rounded-xl transition-all text-left cursor-pointer"
-                            >
-                                <div className="w-7 h-7 bg-amber-50 rounded-lg flex items-center justify-center text-amber-600">
-                                    <Sparkles size={13} />
-                                </div>
-                                <span>Quick Tour</span>
-                            </button>
+
                         </div>
 
                         {/* Sign Out */}

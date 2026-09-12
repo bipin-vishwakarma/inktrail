@@ -73,11 +73,9 @@ export default function SupportPage() {
             <section className="mt-16 p-8 border border-neutral-200 border-dashed rounded-3xl text-center">
                 <h3 className="mt-0">Need a feature?</h3>
                 <p className="text-neutral-500 max-w-lg mx-auto mb-6">
-                    We're always looking to improve. If you have an idea for a feature that would make Handwritten better for you, let us know!
+                    We're always looking to improve. If you have an idea for a feature that would make InkTrail better for you, let us know!
                 </p>
-                <button className="text-neutral-900 font-bold underline underline-offset-4 hover:text-neutral-600">
-                    Request a Feature
-                </button>
+                <a href="https://github.com/bipin-vishwakarma/inktrail/issues/new?labels=enhancement&template=feature_request.md" target="_blank" rel="noopener noreferrer" className="text-neutral-900 font-bold underline underline-offset-4 hover:text-neutral-600">Request a Feature →</a>
             </section>
         </PageLayout>
     );

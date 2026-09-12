@@ -52,8 +52,8 @@ export default function Footer() {
                     <motion.div variants={itemVariants} className="col-span-1 lg:col-span-2">
                         <h4 className="font-black text-xs uppercase tracking-[0.2em] text-neutral-400 mb-6 focus:outline-none">Product</h4>
                         <ul className="space-y-4">
-                            <li><Link to="/features" className="text-neutral-500 hover:text-neutral-900 transition-colors text-sm font-bold">Features</Link></li>
-                            <li><Link to="/how-it-works" className="text-neutral-500 hover:text-neutral-900 transition-colors text-sm font-bold">How It Works</Link></li>
+                            <li><Link to="/#features" className="text-neutral-500 hover:text-neutral-900 transition-colors text-sm font-bold">Features</Link></li>
+                            <li><Link to="/#how-it-works" className="text-neutral-500 hover:text-neutral-900 transition-colors text-sm font-bold">How It Works</Link></li>
                             <li><Link to="/editor" className="text-neutral-500 hover:text-neutral-900 transition-colors text-sm font-bold text-left group flex items-center gap-2">Editor Studio <span className="w-1 h-1 rounded-full bg-neutral-200 group-hover:bg-indigo-500 transition-colors" /></Link></li>
                         </ul>
                     </motion.div>
@@ -62,8 +62,7 @@ export default function Footer() {
                         <h4 className="font-black text-xs uppercase tracking-[0.2em] text-neutral-400 mb-6">Support</h4>
                         <ul className="space-y-3">
                             <li><Link to="/about" className="text-neutral-500 hover:text-neutral-900 transition-colors text-sm font-bold">About Us</Link></li>
-                            <li><Link to="/contact" className="text-neutral-500 hover:text-neutral-900 transition-colors text-sm font-bold">Contact</Link></li>
-                            <li><Link to="/support" className="text-neutral-500 hover:text-neutral-900 transition-colors text-sm font-bold">Support</Link></li>
+                            <li><Link to="/support" className="text-neutral-500 hover:text-neutral-900 transition-colors text-sm font-bold">Support & Contact</Link></li>
                             <li><Link to="/faq" className="text-neutral-500 hover:text-neutral-900 transition-colors text-sm font-bold">FAQ</Link></li>
                             <li><Link to="/changelog" className="text-neutral-500 hover:text-neutral-900 transition-colors text-sm font-bold">Changelog</Link></li>
                         </ul>
@@ -76,7 +75,6 @@ export default function Footer() {
                             <li><Link to="/terms" className="text-neutral-500 hover:text-neutral-900 transition-colors text-sm font-bold">Terms of Service</Link></li>
                             <li><Link to="/disclaimer" className="text-neutral-500 hover:text-neutral-900 transition-colors text-sm font-bold">Disclaimer</Link></li>
                             <li><Link to="/cookies" className="text-neutral-500 hover:text-neutral-900 transition-colors text-sm font-bold">Cookie Policy</Link></li>
-                            <li><Link to="/sitemap" className="text-neutral-500 hover:text-neutral-900 transition-colors text-sm font-bold">Sitemap</Link></li>
                         </ul>
                     </motion.div>
 

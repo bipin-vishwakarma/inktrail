@@ -13,6 +13,7 @@ import {
     signOutSupabase 
 } from '../lib/supabase';
 import type { SupabaseUser } from '../lib/supabase';
+import { useToast } from '../hooks/useToast';
 
 export interface UserProfile {
     id: string;
@@ -88,6 +89,7 @@ function mapSupabaseUserToProfile(su: SupabaseUser): UserProfile {
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+    const { addToast } = useToast();
     const [user, setUser] = useState<UserProfile | null>(() => {
         if (typeof window === 'undefined') return null;
         try {
@@ -116,7 +118,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
 
     const [isAuthModalOpen, setAuthModalOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(() => Boolean(isSupabaseConfigured && supabase));
+    const [isLoading, setIsLoading] = useState(() => {
+        const hasCode = typeof window !== 'undefined' && (
+            new URLSearchParams(window.location.search).has('code') ||
+            window.location.hash.includes('access_token')
+        );
+        return Boolean((isSupabaseConfigured && supabase) || hasCode);
+    });
 
     const persistUser = useCallback((updated: UserProfile | null) => {
         setUser(updated);
@@ -140,24 +148,87 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         let isMounted = true;
 
-        // 1. Check existing session on mount
-        supabase.auth.getSession().then(({ data: { session }, error }) => {
-            if (!isMounted) return;
-            if (error) {
-                console.warn('Supabase getSession error:', error.message);
-            }
-            if (session?.user) {
-                const profile = mapSupabaseUserToProfile(session.user);
-                persistUser(profile);
-                syncProfileToDatabase(session.user);
-            }
-            setIsLoading(false);
-        }).catch((err) => {
-            console.warn('Supabase auth initialization failed:', err);
-            if (isMounted) setIsLoading(false);
-        });
+        // Detect if the URL contains OAuth/PKCE authorization callback parameters
+        const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+        const code = searchParams?.get('code');
+        const authError = searchParams?.get('error') || searchParams?.get('error_description');
+        const hasHashToken = typeof window !== 'undefined' && window.location.hash.includes('access_token');
+        const hasIncomingAuth = Boolean(code || hasHashToken);
 
-        // 2. Listen for OAuth callbacks, Magic link tokens, sign ins, sign outs
+        if (authError) {
+            console.warn('OAuth redirect error from provider:', authError);
+            addToast(authError.replace(/\+/g, ' '), 'error');
+            try {
+                const cleanUrl = new URL(window.location.href);
+                cleanUrl.searchParams.delete('error');
+                cleanUrl.searchParams.delete('error_description');
+                cleanUrl.searchParams.delete('error_code');
+                window.history.replaceState({}, document.title, cleanUrl.pathname + (cleanUrl.search ? cleanUrl.search : ''));
+            } catch {
+                // ignore
+            }
+        }
+
+        // Safety fallback timer: ensure UI unblocks even on network timeouts
+        const safetyTimer = setTimeout(() => {
+            if (isMounted) setIsLoading(false);
+        }, 6000);
+
+        // 1. If we have a PKCE code in the URL, explicitly exchange it before unblocking route guards
+        if (code) {
+            supabase.auth.exchangeCodeForSession(code).then(({ data, error }) => {
+                if (!isMounted) return;
+                if (error) {
+                    console.error('Supabase code exchange error:', error.message);
+                } else if (data?.session?.user) {
+                    const profile = mapSupabaseUserToProfile(data.session.user);
+                    persistUser(profile);
+                    syncProfileToDatabase(data.session.user);
+
+                    // If landing on root or auth page after OAuth, redirect into the app
+                    if (window.location.pathname === '/' || window.location.pathname === '/auth') {
+                        const isNew = !localStorage.getItem('inktrail_onboarding_done');
+                        const target = isNew ? '/onboarding' : '/editor';
+                        window.location.replace(target);
+                        return;
+                    }
+                }
+
+                // Clean the code and state from the URL without triggering a React Router route change
+                try {
+                    const cleanUrl = new URL(window.location.href);
+                    cleanUrl.searchParams.delete('code');
+                    cleanUrl.searchParams.delete('state');
+                    window.history.replaceState({}, document.title, cleanUrl.pathname + (cleanUrl.search ? cleanUrl.search : ''));
+                } catch {
+                    // ignore
+                }
+
+                setIsLoading(false);
+            }).catch((err) => {
+                console.error('Supabase exchangeCodeForSession failed:', err);
+                if (isMounted) setIsLoading(false);
+            });
+        } else if (!hasIncomingAuth) {
+            // 2. Normal session check on mount when not an incoming OAuth callback
+            supabase.auth.getSession().then(({ data: { session }, error }) => {
+                if (!isMounted) return;
+                if (error) {
+                    console.warn('Supabase getSession error:', error.message);
+                }
+                if (session?.user) {
+                    const profile = mapSupabaseUserToProfile(session.user);
+                    persistUser(profile);
+                    syncProfileToDatabase(session.user);
+                }
+                setIsLoading(false);
+            }).catch((err) => {
+                console.warn('Supabase auth initialization failed:', err);
+                if (isMounted) setIsLoading(false);
+            });
+        }
+
+        // 3. Listen for OAuth callbacks, Magic link tokens, sign ins, sign outs
         const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
             if (!isMounted) return;
             if (session?.user) {
@@ -172,6 +243,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         return () => {
             isMounted = false;
+            clearTimeout(safetyTimer);
             subscription.unsubscribe();
         };
     }, [persistUser]);

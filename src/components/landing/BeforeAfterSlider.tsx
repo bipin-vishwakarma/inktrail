@@ -58,7 +58,15 @@ Endpoint: Concordant burette reading noted at V = 19.8 mL with zero meniscus err
     },
 ];
 
-export const BeforeAfterSlider: React.FC = () => {
+interface BeforeAfterSliderProps {
+    hideHeader?: boolean;
+    className?: string;
+}
+
+export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
+    hideHeader = false,
+    className = ''
+}) => {
     const [sliderPos, setSliderPos] = useState(50);
     const [selectedPreset, setSelectedPreset] = useState(0);
     const [isDragging, setIsDragging] = useState(false);
@@ -100,40 +108,64 @@ export const BeforeAfterSlider: React.FC = () => {
     }, [isDragging, updatePosition]);
 
     return (
-        <div className="w-full max-w-5xl mx-auto my-12 select-none">
+        <div className={`w-full max-w-5xl mx-auto select-none ${className}`}>
             {/* Header & Preset Switcher */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-                <div>
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-100 text-violet-800 text-xs font-black tracking-wide uppercase mb-1.5">
-                        <Sparkles size={12} className="text-violet-600" />
-                        <span>Side-by-Side Comparison</span>
+            {!hideHeader ? (
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-100 text-violet-800 text-xs font-black tracking-wide uppercase mb-1.5">
+                            <Sparkles size={12} className="text-violet-600" />
+                            <span>Side-by-Side Comparison</span>
+                        </div>
+                        <h3 className="text-xl sm:text-2xl font-black font-display text-neutral-900 tracking-tight">
+                            Mechanical Type vs. InkTrail Handwriting
+                        </h3>
+                        <p className="text-xs sm:text-sm text-neutral-500 mt-0.5">
+                            Drag the center slider to inspect authentic baseline jitter, pen ink bleeding, and margin lines.
+                        </p>
                     </div>
-                    <h3 className="text-xl sm:text-2xl font-black font-display text-neutral-900 tracking-tight">
-                        Mechanical Type vs. InkTrail Handwriting
-                    </h3>
-                    <p className="text-xs sm:text-sm text-neutral-500 mt-0.5">
-                        Drag the center slider to inspect authentic baseline jitter, pen ink bleeding, and margin lines.
-                    </p>
-                </div>
 
-                {/* Preset Pills */}
-                <div className="flex items-center gap-1.5 bg-neutral-100/80 p-1 rounded-2xl border border-neutral-200/80 self-stretch sm:self-auto overflow-x-auto">
-                    {COMPARISON_PRESETS.map((p, idx) => (
-                        <button
-                            key={p.id}
-                            type="button"
-                            onClick={() => setSelectedPreset(idx)}
-                            className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
-                                selectedPreset === idx
-                                    ? 'bg-white text-neutral-950 shadow-xs border border-black/5'
-                                    : 'text-neutral-600 hover:text-neutral-900'
-                            }`}
-                        >
-                            {p.title.split(' ')[0]}
-                        </button>
-                    ))}
+                    {/* Preset Pills */}
+                    <div className="flex items-center gap-1.5 bg-neutral-100/80 p-1 rounded-2xl border border-neutral-200/80 self-stretch sm:self-auto overflow-x-auto">
+                        {COMPARISON_PRESETS.map((p, idx) => (
+                            <button
+                                key={p.id}
+                                type="button"
+                                onClick={() => setSelectedPreset(idx)}
+                                className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+                                    selectedPreset === idx
+                                        ? 'bg-white text-neutral-950 shadow-xs border border-black/5'
+                                        : 'text-neutral-600 hover:text-neutral-900'
+                                }`}
+                            >
+                                {p.title.split(' ')[0]}
+                            </button>
+                        ))}
+                    </div>
                 </div>
-            </div>
+            ) : (
+                <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
+                    <span className="text-xs font-mono font-bold text-stone-500 uppercase tracking-wider">
+                        Select Subject Sample:
+                    </span>
+                    <div className="flex items-center gap-1.5 bg-stone-100 p-1 rounded-xl border border-stone-200">
+                        {COMPARISON_PRESETS.map((p, idx) => (
+                            <button
+                                key={p.id}
+                                type="button"
+                                onClick={() => setSelectedPreset(idx)}
+                                className={`px-3 py-1 rounded-lg text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+                                    selectedPreset === idx
+                                        ? 'bg-white text-stone-950 shadow-xs font-extrabold'
+                                        : 'text-stone-600 hover:text-stone-900'
+                                }`}
+                            >
+                                {p.title}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             {/* Comparison Canvas Card */}
             <div

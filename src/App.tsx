@@ -1,5 +1,5 @@
 import { Suspense, lazy } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import RootLayout from './components/layout/RootLayout';
 import ProtectedRoute from './components/layout/ProtectedRoute';
 import { ToastProvider } from './components/ui/Toast';
@@ -20,14 +20,10 @@ const PrivacyPolicy = lazy(() => import('./pages/legal/PrivacyPolicy'));
 const TermsOfService = lazy(() => import('./pages/legal/TermsOfService'));
 const Disclaimer = lazy(() => import('./pages/legal/Disclaimer'));
 const CookiePolicy = lazy(() => import('./pages/legal/CookiePolicy'));
-const ContactPage = lazy(() => import('./pages/ContactPage'));
 const FAQPage = lazy(() => import('./pages/FAQPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const SupportPage = lazy(() => import('./pages/SupportPage'));
 const ChangelogPage = lazy(() => import('./pages/ChangelogPage'));
-const FeaturesPage = lazy(() => import('./pages/FeaturesPage'));
-const HowItWorksPage = lazy(() => import('./pages/HowItWorksPage'));
-const SitemapPage = lazy(() => import('./pages/SitemapPage'));
 
 // Loading Fallback
 const PageLoader = () => (
@@ -43,14 +39,13 @@ function InnerApp() {
         {/* Auth & onboarding — standalone, no RootLayout navbar */}
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/onboarding" element={<OnboardingPage />} />
-        <Route path="/account" element={<AccountPage />} />
+        <Route path="/account" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />
 
         <Route path="/" element={<RootLayout />}>
           <Route index element={<LandingPage />} />
           <Route path="editor" element={
             <ProtectedRoute><EditorPage /></ProtectedRoute>
           } />
-          <Route path="landing" element={<LandingPage />} />
 
           {/* Legal Pages */}
           <Route path="privacy" element={<PrivacyPolicy />} />
@@ -59,16 +54,16 @@ function InnerApp() {
           <Route path="cookies" element={<CookiePolicy />} />
 
           {/* Support Pages */}
-          <Route path="contact" element={<ContactPage />} />
+          <Route path="contact" element={<Navigate to="/support" replace />} />
           <Route path="faq" element={<FAQPage />} />
           <Route path="about" element={<AboutPage />} />
           <Route path="support" element={<SupportPage />} />
           <Route path="changelog" element={<ChangelogPage />} />
 
-          {/* Product Pages */}
-          <Route path="features" element={<FeaturesPage />} />
-          <Route path="how-it-works" element={<HowItWorksPage />} />
-          <Route path="sitemap" element={<SitemapPage />} />
+          {/* Redirects for deleted pages */}
+          <Route path="features" element={<Navigate to="/#features" replace />} />
+          <Route path="how-it-works" element={<Navigate to="/#how-it-works" replace />} />
+          <Route path="sitemap" element={<Navigate to="/" replace />} />
 
           {/* 404 Route */}
           <Route path="*" element={<NotFoundPage />} />

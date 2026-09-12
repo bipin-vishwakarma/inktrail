@@ -8,20 +8,6 @@ interface NotebookHero3DProps {
     activeInk?: string;
 }
 
-const INK_OPTIONS = [
-    { name: 'Royal Blue', color: '#1e3a8a' },
-    { name: 'Ballpoint Black', color: '#0f172a' },
-    { name: 'Gel Cyan', color: '#0284c7' },
-    { name: 'Emerald Green', color: '#047857' },
-    { name: 'Royal Violet', color: '#581c87' },
-];
-
-const PAPER_PRESETS = [
-    { id: 'ruled', name: 'Ruled Register' },
-    { id: 'graph', name: 'Lab Graph' },
-    { id: 'parchment', name: 'Parchment' },
-];
-
 const INSCRIBE_NOTES = [
     "Aim: Determine resistance per unit length of given specimen wire.",
     "Apparatus: Constant DC supply, standard resistor, microammeter.",
@@ -45,25 +31,19 @@ export default function NotebookHero3D({
     const containerRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
-    // Interactive Hero State
-    const [selectedInk, setSelectedInk] = useState<string | null>(null);
-    const activeInkColor = selectedInk || propInk || '#1e3a8a';
-    const [selectedPaper, setSelectedPaper] = useState('ruled');
+    // Synchronize with activeInk prop
+    const activeInkColor = propInk || '#1e3a8a';
     const [isPlaying, setIsPlaying] = useState(true);
 
     // Refs for live engine synchronization
     const inkRef = useRef(activeInkColor);
-    const paperRef = useRef(selectedPaper);
+    const paperRef = useRef('ruled');
     const playRef = useRef(isPlaying);
     const restartTriggerRef = useRef(0);
 
     useEffect(() => {
         inkRef.current = activeInkColor;
     }, [activeInkColor]);
-
-    useEffect(() => {
-        paperRef.current = selectedPaper;
-    }, [selectedPaper]);
 
     useEffect(() => {
         playRef.current = isPlaying;
@@ -100,13 +80,14 @@ export default function NotebookHero3D({
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.setClearColor(0x000000, 0);
 
-        // 4. Lighting Rig
-        const ambientLight = new THREE.AmbientLight(0xffffff, 1.6);
+        // 4. Balanced Studio Lighting Rig (Clean contrast, no overexposure)
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.95);
         scene.add(ambientLight);
 
         // Warm Key Light (Top-right studio lamp)
-        const keyLight = new THREE.DirectionalLight(0xfffdf0, 2.8);
+        const keyLight = new THREE.DirectionalLight(0xfffdf0, 1.4);
         keyLight.position.set(5.0, 7.5, 6.0);
         keyLight.castShadow = true;
         keyLight.shadow.mapSize.set(1024, 1024);
@@ -114,12 +95,12 @@ export default function NotebookHero3D({
         scene.add(keyLight);
 
         // Cool Sky Fill Light
-        const fillLight = new THREE.DirectionalLight(0xdbeafe, 1.3);
+        const fillLight = new THREE.DirectionalLight(0xdbeafe, 0.55);
         fillLight.position.set(-5, 4, 4);
         scene.add(fillLight);
 
         // Specular glint for spiral rings
-        const coilGlint = new THREE.PointLight(0x818cf8, 2.0, 10);
+        const coilGlint = new THREE.PointLight(0x818cf8, 1.0, 10);
         coilGlint.position.set(0, 1.2, 2.2);
         scene.add(coilGlint);
 
@@ -190,13 +171,13 @@ export default function NotebookHero3D({
             }
 
             // Header
-            lCtx.font = 'bold 30px Caveat, cursive, sans-serif';
+            lCtx.font = '700 32px Caveat, cursive, sans-serif';
             lCtx.fillStyle = inkRef.current;
             lCtx.fillText("Fig 4.1: Circuit Schematic · Ohm's Law", 100, 130);
 
             // Hand-drawn circuit schematic
             lCtx.strokeStyle = inkRef.current;
-            lCtx.lineWidth = 3.5;
+            lCtx.lineWidth = 4.0;
             lCtx.lineCap = 'round';
             lCtx.lineJoin = 'round';
             lCtx.beginPath();
@@ -209,27 +190,28 @@ export default function NotebookHero3D({
 
             // Battery symbol
             lCtx.fillStyle = paperType === 'parchment' ? '#fbf4e6' : '#fdfbf7';
-            lCtx.fillRect(420, 240, 100, 40);
+            lCtx.fillRect(420, 235, 100, 50);
+            lCtx.lineWidth = 4.0;
             lCtx.stroke();
-            lCtx.font = 'bold 22px Caveat, cursive';
-            lCtx.fillText("+  E  -", 445, 230);
+            lCtx.font = 'bold 24px Caveat, cursive';
+            lCtx.fillText("+  E  -", 445, 225);
 
             // Ammeter symbol
-            lCtx.fillRect(730, 430, 60, 80);
+            lCtx.fillRect(725, 425, 70, 90);
             lCtx.beginPath();
-            lCtx.arc(760, 470, 30, 0, Math.PI * 2);
+            lCtx.arc(760, 470, 32, 0, Math.PI * 2);
             lCtx.stroke();
-            lCtx.font = 'bold 28px Caveat, cursive';
-            lCtx.fillText("A", 752, 478);
+            lCtx.font = 'bold 30px Caveat, cursive';
+            lCtx.fillText("A", 751, 480);
 
             // Resistor zig-zag
-            lCtx.fillRect(400, 660, 140, 40);
-            lCtx.font = '22px Caveat, cursive';
-            lCtx.fillText("Resistance Specimen (R)", 375, 735);
+            lCtx.fillRect(390, 650, 160, 50);
+            lCtx.font = 'bold 24px Caveat, cursive';
+            lCtx.fillText("Resistance Specimen (R)", 365, 735);
 
             // V-I Graph Box
-            lCtx.strokeStyle = '#64748b';
-            lCtx.lineWidth = 2;
+            lCtx.strokeStyle = '#475569';
+            lCtx.lineWidth = 2.5;
             lCtx.beginPath();
             lCtx.moveTo(200, 1140);
             lCtx.lineTo(820, 1140);
@@ -237,13 +219,13 @@ export default function NotebookHero3D({
             lCtx.lineTo(200, 840);
             lCtx.stroke();
 
-            lCtx.font = '22px Caveat, cursive';
+            lCtx.font = 'bold 24px Caveat, cursive';
             lCtx.fillText("Voltage V (Volts) →", 460, 1175);
             lCtx.fillText("Current I (mA) ↑", 90, 840);
 
             // Linear slope line
-            lCtx.strokeStyle = '#ef4444';
-            lCtx.lineWidth = 3;
+            lCtx.strokeStyle = '#dc2626';
+            lCtx.lineWidth = 3.5;
             lCtx.beginPath();
             lCtx.moveTo(200, 1140);
             lCtx.lineTo(760, 880);
@@ -260,14 +242,14 @@ export default function NotebookHero3D({
             lCtx.fillStyle = inkRef.current;
             points.forEach(p => {
                 lCtx.beginPath();
-                lCtx.arc(p.x, p.y, 6, 0, Math.PI * 2);
+                lCtx.arc(p.x, p.y, 7, 0, Math.PI * 2);
                 lCtx.fill();
                 lCtx.stroke();
             });
 
-            lCtx.font = 'bold 24px Caveat, cursive';
+            lCtx.font = 'bold 26px Caveat, cursive';
             lCtx.fillStyle = inkRef.current;
-            lCtx.fillText("Slope = ΔV/ΔI = 4.82 Ω", 540, 970);
+            lCtx.fillText("Slope = ΔV/ΔI = 4.82 Ω", 530, 965);
 
             // Spiral puncture holes
             for (let y = 140; y < 1260; y += 44) {
@@ -340,7 +322,7 @@ export default function NotebookHero3D({
             rBgCtx.font = 'bold 24px Caveat, cursive, sans-serif';
             rBgCtx.fillStyle = '#64748b';
             rBgCtx.fillText("PAGE: 04", 170, 105);
-            rBgCtx.fillText("DATE: 12 / 09 / 2026", 750, 105);
+            rBgCtx.fillText(`DATE: ${new Date().toLocaleDateString('en-GB')}`, 750, 105);
 
             rBgCtx.font = 'bold 34px Caveat, cursive, sans-serif';
             rBgCtx.fillStyle = inkRef.current;
@@ -471,8 +453,9 @@ export default function NotebookHero3D({
         notebookGroup.rotation.x = targetRotX;
         notebookGroup.rotation.y = targetRotY;
 
+        let isVisible = true;
         const handlePointerMove = (e: MouseEvent) => {
-            if (!interactive) return;
+            if (!interactive || !isVisible) return;
             const x = (e.clientX / window.innerWidth) * 2 - 1;
             const y = -(e.clientY / window.innerHeight) * 2 + 1;
             // Heavily dampened luxury float (stable, non-dizzying)
@@ -492,12 +475,24 @@ export default function NotebookHero3D({
         };
         window.addEventListener('resize', handleResize);
 
+        // IntersectionObserver to pause rendering when hero notebook is offscreen
+        const observer = new IntersectionObserver(([entry]) => {
+            const wasVisible = isVisible;
+            isVisible = entry.isIntersecting;
+            if (isVisible && !wasVisible) {
+                cancelAnimationFrame(animationFrameId);
+                animate();
+            }
+        }, { threshold: 0.05 });
+        observer.observe(container);
+
         // Animation Loop with Real-Time Handwriting Inscription & Pen Gliding
         const clock = new THREE.Clock();
         const lineSpacing = 42;
         const lineBaseY = 258;
 
         const animate = () => {
+            if (!isVisible) return;
             animationFrameId = requestAnimationFrame(animate);
             const delta = clock.getDelta();
             const elapsedTime = clock.getElapsedTime();
@@ -547,7 +542,7 @@ export default function NotebookHero3D({
 
                             // Re-draw right canvas
                             rCtx.drawImage(rightBgCanvas, 0, 0);
-                            rCtx.font = '28px Caveat, cursive, sans-serif';
+                            rCtx.font = '600 31px Caveat, cursive, sans-serif';
                             rCtx.fillStyle = inkRef.current;
 
                             // Draw completed lines
@@ -621,6 +616,7 @@ export default function NotebookHero3D({
         animate();
 
         return () => {
+            observer.disconnect();
             cancelAnimationFrame(animationFrameId);
             window.removeEventListener('mousemove', handlePointerMove);
             window.removeEventListener('resize', handleResize);
@@ -651,73 +647,28 @@ export default function NotebookHero3D({
     return (
         <div
             ref={containerRef}
-            className={`relative w-full h-[480px] sm:h-[600px] lg:h-[680px] select-none ${className}`}
+            className={`relative w-full h-[460px] sm:h-[540px] lg:h-[620px] select-none ${className}`}
         >
-            {/* Interactive Live Controls HUD */}
-            <div className="absolute top-4 left-4 right-4 z-20 flex flex-wrap items-center justify-between gap-3 pointer-events-auto">
-                {/* Ink Color Swatches */}
-                <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-white/90 backdrop-blur-md border border-stone-200/90 shadow-md">
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-stone-500 pl-2 pr-1">Ink:</span>
-                    {INK_OPTIONS.map((ink) => (
-                        <button
-                            key={ink.name}
-                            type="button"
-                            onClick={() => setSelectedInk(ink.color)}
-                            className={`w-6 h-6 rounded-full border border-stone-300 transition-all hover:scale-120 cursor-pointer ${
-                                activeInkColor === ink.color ? 'ring-2 ring-violet-500 ring-offset-2 scale-110' : ''
-                            }`}
-                            style={{ backgroundColor: ink.color }}
-                            title={ink.name}
-                        />
-                    ))}
-                </div>
-
-                {/* Paper Presets & Animation Controls */}
-                <div className="flex items-center gap-2">
-                    <div className="hidden sm:flex items-center gap-1 p-1 rounded-2xl bg-white/90 backdrop-blur-md border border-stone-200/90 shadow-md">
-                        {PAPER_PRESETS.map((p) => (
-                            <button
-                                key={p.id}
-                                type="button"
-                                onClick={() => setSelectedPaper(p.id)}
-                                className={`px-2.5 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                                    selectedPaper === p.id
-                                        ? 'bg-violet-600 text-white shadow-xs'
-                                        : 'text-stone-600 hover:text-stone-900'
-                                }`}
-                            >
-                                {p.name}
-                            </button>
-                        ))}
-                    </div>
-
-                    <div className="flex items-center gap-1 p-1 rounded-2xl bg-white/90 backdrop-blur-md border border-stone-200/90 shadow-md">
-                        <button
-                            type="button"
-                            onClick={() => setIsPlaying(!isPlaying)}
-                            className="p-1.5 rounded-xl text-stone-700 hover:bg-stone-100 cursor-pointer transition-colors"
-                            title={isPlaying ? 'Pause Inscription' : 'Resume Inscription'}
-                        >
-                            {isPlaying ? <Pause size={15} /> : <Play size={15} />}
-                        </button>
-                        <button
-                            type="button"
-                            onClick={handleRestart}
-                            className="p-1.5 rounded-xl text-stone-700 hover:bg-stone-100 cursor-pointer transition-colors"
-                            title="Re-inscribe From Start"
-                        >
-                            <RotateCcw size={15} />
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            {/* Active Live Status Pill */}
-            <div className="absolute bottom-4 left-4 z-20 pointer-events-none">
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/90 backdrop-blur-md border border-stone-200/90 shadow-sm text-xs font-mono text-stone-700">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span>Live 3D Inscription · 60 FPS</span>
-                </div>
+            {/* Subtle Minimal Controls */}
+            <div className="absolute top-3 right-3 z-20 flex items-center gap-1.5 p-1 rounded-full bg-white/85 backdrop-blur-md border border-stone-200/80 shadow-xs pointer-events-auto">
+                <button
+                    type="button"
+                    onClick={() => setIsPlaying(!isPlaying)}
+                    className="p-1.5 rounded-full text-stone-600 hover:text-stone-950 hover:bg-stone-100 cursor-pointer transition-colors"
+                    title={isPlaying ? 'Pause Inscription' : 'Resume Inscription'}
+                    aria-label={isPlaying ? 'Pause Inscription' : 'Resume Inscription'}
+                >
+                    {isPlaying ? <Pause size={13} /> : <Play size={13} />}
+                </button>
+                <button
+                    type="button"
+                    onClick={handleRestart}
+                    className="p-1.5 rounded-full text-stone-600 hover:text-stone-950 hover:bg-stone-100 cursor-pointer transition-colors"
+                    title="Replay Inscription"
+                    aria-label="Replay Inscription"
+                >
+                    <RotateCcw size={13} />
+                </button>
             </div>
 
             {/* Three.js Canvas */}

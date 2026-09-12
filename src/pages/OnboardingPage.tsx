@@ -33,7 +33,7 @@ const PAPER_OPTIONS = [
 ];
 
 export default function OnboardingPage() {
-    const { user, isAuthenticated } = useAuth();
+    const { user, isAuthenticated, isLoading } = useAuth();
     const navigate = useNavigate();
     const setPaperMaterial = useStore(s => s.setPaperMaterial);
 
@@ -53,8 +53,10 @@ export default function OnboardingPage() {
     }, []);
 
     useEffect(() => {
-        if (!isAuthenticated) navigate('/auth?redirect=/onboarding', { replace: true });
-    }, [isAuthenticated, navigate]);
+        if (!isLoading && !isAuthenticated) {
+            navigate('/auth?redirect=/onboarding', { replace: true });
+        }
+    }, [isLoading, isAuthenticated, navigate]);
 
     useEffect(() => {
         // Keyboard navigation — declared after goNext/goBack to avoid TDZ
@@ -206,7 +208,21 @@ export default function OnboardingPage() {
         },
     ];
 
-    const currentSlide = slides[step];
+    if (isLoading) {
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-violet-50 via-white to-indigo-50 gap-4">
+                <InkTrailLogo size={44} className="animate-pulse" />
+                <div className="flex items-center gap-2 text-xs font-bold text-neutral-500">
+                    <div className="w-2 h-2 rounded-full bg-violet-600 animate-ping" />
+                    <span>Preparing your student workspace...</span>
+                </div>
+            </div>
+        );
+    }
+
+    if (!isAuthenticated) return null;
+
+    const currentSlide = slides[step] || slides[0];
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-indigo-50 flex flex-col">

@@ -53,7 +53,7 @@ export default function ChangelogPage() {
     return (
         <PageLayout 
             title="What's New" 
-            subtitle="Updates, improvements, and everything new in Handwritten."
+            subtitle="Updates, improvements, and everything new in InkTrail."
         >
             <div className="relative border-l-2 border-neutral-100 ml-4 pl-8 space-y-12 py-4">
                 {updates.map((update, index) => (

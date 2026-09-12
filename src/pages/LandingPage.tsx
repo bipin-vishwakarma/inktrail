@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import {
     Sparkles, ArrowRight, BookOpen, Zap, 
-    ChevronDown, Camera, Flame, MousePointerClick,
+    ChevronDown, Camera, Flame,
     FlaskConical, Eye, PenTool, ShieldCheck,
     CheckCircle2, FileText, Layers
 } from 'lucide-react';
-import InkTrailLogo from '../components/common/InkTrailLogo';
 import NotebookHero3D from '../components/landing/NotebookHero3D';
 import BeforeAfterSlider from '../components/landing/BeforeAfterSlider';
 import TiltCard from '../components/landing/TiltCard';
@@ -101,12 +100,12 @@ const PAPER_SHOWCASE: {
 // Frequently Asked Questions
 const FAQ_ITEMS = [
     {
-        q: "Will my professor or instructor know this is computer-generated?",
-        a: "InkTrail is engineered specifically to eliminate mechanical font uniformity. Every single letter has natural stroke-width variations, micro-slant baseline jitter, realistic pen ink bleeding, and deliberate handwritten scratch-outs. When printed on physical A4 paper, it looks indistinguishable from real handwriting."
+        q: "How realistic does the handwriting look when printed or exported?",
+        a: "InkTrail is engineered specifically to eliminate mechanical font uniformity. Every letter features natural stroke-width variations, micro-slant baseline jitter, realistic pen ink bleeding, and optional human scratch-outs. When printed on physical A4 paper or exported as a PDF, it produces authentic, natural handwriting."
     },
     {
         q: "Is InkTrail really 100% free during the public beta?",
-        a: "Yes! Every single feature — unlimited 4K PDF exports, metallic spiral coils, all 15+ student paper types, and the interactive lab diagram canvas — is completely free. There are zero paywalls and zero credit card requirements."
+        a: "Yes! Every single feature — unlimited 4K PDF exports, metallic spiral coils, authentic student paper formats, and the interactive lab diagram canvas — is completely free. There are zero paywalls and zero credit card requirements."
     },
     {
         q: "How does the Lab Notebook / Mixed Page mode work?",
@@ -127,39 +126,10 @@ export default function LandingPage() {
     const setText = useStore(state => state.setText);
     const setPaperMaterial = useStore(state => state.setPaperMaterial);
 
-    // Parallax Scroll Tracking
+    // Subtle Scroll Tracking
     const { scrollYProgress } = useScroll();
-    const yHeroNotebook = useTransform(scrollYProgress, [0, 0.4], [0, 50]);
-    const yHeroContent = useTransform(scrollYProgress, [0, 0.4], [0, -20]);
-    const yFloatingCard1 = useTransform(scrollYProgress, [0, 0.3], [0, -35]);
-    const yFloatingCard2 = useTransform(scrollYProgress, [0, 0.3], [0, -45]);
-    const rotateCard1 = useTransform(scrollYProgress, [0, 0.4], [-2, 5]);
-    const rotateCard2 = useTransform(scrollYProgress, [0, 0.4], [3, -6]);
-    const yBgBlooms = useTransform(scrollYProgress, [0, 1], [0, 200]);
-
-    // High-performance Spring-damped Mouse Parallax (Zero component re-renders)
-    const mouseX = useMotionValue(0);
-    const mouseY = useMotionValue(0);
-    const springX = useSpring(mouseX, { stiffness: 65, damping: 22 });
-    const springY = useSpring(mouseY, { stiffness: 65, damping: 22 });
-
-    const card1X = useTransform(springX, v => v * -0.5);
-    const card1Y = useTransform(springY, v => v * -0.5);
-    const card2X = useTransform(springX, v => v * 0.4);
-    const card2Y = useTransform(springY, v => v * 0.4);
-
-    const handleHeroMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width - 0.5) * 32;
-        const y = ((e.clientY - rect.top) / rect.height - 0.5) * 32;
-        mouseX.set(x);
-        mouseY.set(y);
-    };
-
-    const handleHeroMouseLeave = () => {
-        mouseX.set(0);
-        mouseY.set(0);
-    };
+    const yHeroNotebook = useTransform(scrollYProgress, [0, 0.4], [0, 40]);
+    const yHeroContent = useTransform(scrollYProgress, [0, 0.4], [0, -15]);
 
     // Interactive Sandbox State
     const [selectedPreset, setSelectedPreset] = useState(0);
@@ -210,75 +180,48 @@ export default function LandingPage() {
     }, []);
 
     return (
-        <div className="min-h-screen bg-[#FAF8F5] text-stone-900 selection:bg-violet-200 selection:text-violet-900 overflow-x-hidden font-sans relative">
+        <div className="min-h-screen bg-[#FAF8F5] text-stone-900 selection:bg-violet-200 selection:text-violet-900 font-sans relative">
 
             {/* Architectural Warm Paper Dot Grid */}
             <div 
-                className="absolute inset-0 pointer-events-none opacity-40 -z-10"
+                className="absolute inset-0 pointer-events-none opacity-30 -z-10"
                 style={{
-                    backgroundImage: 'radial-gradient(#cbd5e1 0.8px, transparent 0.8px)',
+                    backgroundImage: 'radial-gradient(#94a3b8 0.75px, transparent 0.75px)',
                     backgroundSize: '24px 24px'
                 }}
             />
 
-            {/* Parallax Ambient Light Blooms */}
-            <motion.div 
-                style={{ y: yBgBlooms }} 
+            {/* Subtle Architectural Ambient Lighting (Clean, no muddy color smudges) */}
+            <div 
                 className="pointer-events-none -z-10 absolute inset-0 overflow-hidden"
             >
-                <div className="absolute top-1/6 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] sm:w-[1100px] h-[550px] bg-gradient-to-tr from-violet-200/25 via-indigo-100/30 to-amber-100/35 rounded-full blur-[140px]" />
-                <div className="absolute top-1/3 right-10 w-96 h-96 bg-amber-100/30 rounded-full blur-[120px]" />
-                <div className="absolute bottom-20 left-10 w-96 h-96 bg-violet-100/30 rounded-full blur-[120px]" />
-            </motion.div>
-
-            {/* =========================================================
-                1. TOP ANNOUNCEMENT PILL (Gracefully below floating Navbar)
-            ========================================================= */}
-            <div className="pt-24 sm:pt-28 px-4 flex justify-center relative z-20">
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 border border-violet-200/80 backdrop-blur-md text-stone-800 text-xs font-semibold shadow-xs">
-                    <span className="flex h-2 w-2 relative">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
-                    </span>
-                    <span className="tracking-wide">
-                        <b className="text-violet-950 font-extrabold uppercase">InkTrail 2.4:</b> Turn typed assignments into authentic handwritten pages · <b className="text-emerald-700">100% Free for Students</b>
-                    </span>
-                    <Link to="/editor" className="hidden sm:inline-flex items-center gap-1 ml-1.5 text-violet-700 hover:text-violet-950 font-bold transition-colors">
-                        <span>Open Studio</span>
-                        <ArrowRight size={12} />
-                    </Link>
-                </div>
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(124,58,237,0.06),rgba(255,255,255,0))]" />
             </div>
 
             {/* =========================================================
-                2. IMMERSIVE HERO STAGE (Open Dual-Page Spiral & Parallax)
+                1. IMMERSIVE HERO STAGE (Open Dual-Page Spiral & Editorial)
             ========================================================= */}
-            <section 
-                onMouseMove={handleHeroMouseMove}
-                onMouseLeave={handleHeroMouseLeave}
-                className="relative pt-6 pb-16 sm:pt-10 sm:pb-24 px-4 sm:px-6 max-w-7xl mx-auto"
-            >
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-6 items-center">
+            <section className="relative pt-32 sm:pt-36 lg:pt-40 pb-16 sm:pb-24 px-4 sm:px-6 max-w-7xl mx-auto">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
                     
-                    {/* Left Column: Dramatic Editorial Copy with Parallax */}
+                    {/* Left Column: Dramatic Editorial Copy */}
                     <motion.div 
                         style={{ y: yHeroContent }}
                         className="lg:col-span-5 text-left space-y-6 z-10"
                     >
-                        {/* Status Badge */}
+                        {/* Status Kicker */}
                         <motion.div
-                            initial={{ opacity: 0, y: -12 }}
+                            initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.4 }}
-                            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 border border-stone-200/90 backdrop-blur-xl text-xs font-mono text-violet-700 shadow-xs"
+                            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-stone-900/[0.04] border border-stone-900/10 text-xs font-semibold text-stone-700 shadow-2xs"
                         >
-                            <InkTrailLogo size={18} />
-                            <span className="font-bold tracking-wider uppercase">Assignment Studio</span>
-                            <span className="text-stone-300">|</span>
-                            <span className="text-stone-800 font-sans font-bold flex items-center gap-1">
-                                <ShieldCheck size={13} className="text-emerald-600" />
-                                Zero Watermarks
-                            </span>
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                            <span>Free Public Beta</span>
+                            <span className="text-stone-300">·</span>
+                            <span>Zero Watermarks</span>
+                            <span className="text-stone-300">·</span>
+                            <span>Local & Private</span>
                         </motion.div>
 
                         {/* Grand Display Headline */}
@@ -286,11 +229,11 @@ export default function LandingPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5, delay: 0.1 }}
-                            className="text-4xl sm:text-6xl lg:text-6.5xl font-black tracking-tight leading-[1.05] text-stone-950 font-display"
+                            className="text-4xl sm:text-5.5xl lg:text-6xl font-black tracking-tight leading-[1.08] text-stone-950 font-display"
                         >
-                            Turn Typed Text Into{' '}
+                            Turn typed assignments into{' '}
                             <span className="bg-gradient-to-r from-violet-700 via-indigo-600 to-cyan-600 bg-clip-text text-transparent italic font-serif">
-                                Real Handwriting.
+                                real handwriting.
                             </span>
                         </motion.h1>
 
@@ -301,7 +244,7 @@ export default function LandingPage() {
                             transition={{ duration: 0.5, delay: 0.2 }}
                             className="text-base sm:text-lg text-stone-600 leading-relaxed max-w-xl font-normal"
                         >
-                            Stop wasting hours copying lab records and assignments by hand. Paste your text, choose authentic Indian student ruled registers, and download print-ready 4K PDFs in seconds.
+                            Stop wasting hours copying lab records, assignments, and practical notes by hand. Paste your text, choose authentic Indian student ruled registers, and download print-ready 4K PDFs in seconds.
                         </motion.p>
 
                         {/* Action Buttons */}
@@ -313,19 +256,19 @@ export default function LandingPage() {
                         >
                             <Link
                                 to="/editor"
-                                className="px-7 py-4 bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white rounded-2xl font-bold text-sm sm:text-base shadow-xl shadow-violet-600/25 hover:scale-102 active:scale-98 transition-all flex items-center justify-center gap-2.5 cursor-pointer group"
+                                className="px-7 py-4 bg-stone-950 hover:bg-stone-800 text-white rounded-2xl font-bold text-sm sm:text-base shadow-xl shadow-stone-950/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2.5 cursor-pointer group"
                             >
-                                <Sparkles size={18} className="text-yellow-300 group-hover:rotate-12 transition-transform" />
-                                <span>Launch Studio (100% Free)</span>
+                                <Sparkles size={18} className="text-amber-400 group-hover:rotate-12 transition-transform" />
+                                <span>Launch Studio — It's Free</span>
                                 <ArrowRight size={18} className="text-white/80 group-hover:translate-x-1 transition-transform" />
                             </Link>
 
                             <a
-                                href="#live-sandbox"
-                                className="px-6 py-4 bg-white hover:bg-stone-50 border border-stone-300/90 text-stone-800 rounded-2xl font-bold text-sm sm:text-base shadow-xs hover:border-stone-400 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                                href="#comparison"
+                                className="px-6 py-4 bg-white hover:bg-stone-50 border border-stone-300/90 text-stone-800 rounded-2xl font-bold text-sm sm:text-base shadow-2xs hover:border-stone-400 transition-all flex items-center justify-center gap-2 cursor-pointer"
                             >
-                                <MousePointerClick size={18} className="text-violet-600" />
-                                <span>Try Interactive Sandbox</span>
+                                <Eye size={18} className="text-violet-600" />
+                                <span>Compare Realism</span>
                             </a>
                         </motion.div>
 
@@ -336,7 +279,7 @@ export default function LandingPage() {
                             transition={{ delay: 0.4 }}
                             className="pt-4 flex items-center gap-3 border-t border-stone-200/80 text-xs text-stone-500"
                         >
-                            <span className="font-mono text-[11px] uppercase tracking-wider text-stone-600 font-bold">Authentic Ink:</span>
+                            <span className="font-mono text-[11px] uppercase tracking-wider text-stone-700 font-bold">Ink Tone:</span>
                             <div className="flex items-center gap-2">
                                 {[
                                     { name: 'Royal Blue', color: '#1e3a8a' },
@@ -358,71 +301,30 @@ export default function LandingPage() {
                             </div>
                             <span className="text-[11px] text-emerald-700 font-mono ml-auto font-bold flex items-center gap-1">
                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                                4K Vector Ready
+                                Interactive Canvas Live
                             </span>
                         </motion.div>
 
                         {/* Verified Credibility Badges */}
                         <div className="grid grid-cols-3 gap-3 pt-2 text-center">
-                            <div className="p-3.5 rounded-2xl bg-white/90 border border-stone-200/90 shadow-xs">
-                                <p className="text-lg font-black text-stone-900">200+</p>
-                                <p className="text-[11px] text-stone-500 font-semibold">Universities</p>
+                            <div className="p-3.5 rounded-2xl bg-white/80 border border-stone-200/80 shadow-2xs">
+                                <p className="text-lg font-black text-stone-900">0%</p>
+                                <p className="text-[11px] text-stone-500 font-medium">AI Watermarks</p>
                             </div>
-                            <div className="p-3.5 rounded-2xl bg-white/90 border border-stone-200/90 shadow-xs">
-                                <p className="text-lg font-black text-emerald-600">0%</p>
-                                <p className="text-[11px] text-stone-500 font-semibold">AI Watermark</p>
+                            <div className="p-3.5 rounded-2xl bg-white/80 border border-stone-200/80 shadow-2xs">
+                                <p className="text-lg font-black text-violet-700">30+</p>
+                                <p className="text-[11px] text-stone-500 font-medium">Handwriting Fonts</p>
                             </div>
-                            <div className="p-3.5 rounded-2xl bg-white/90 border border-stone-200/90 shadow-xs">
-                                <p className="text-lg font-black text-violet-700">15+</p>
-                                <p className="text-[11px] text-stone-500 font-semibold">Paper Formats</p>
+                            <div className="p-3.5 rounded-2xl bg-white/80 border border-stone-200/80 shadow-2xs">
+                                <p className="text-lg font-black text-emerald-600">100%</p>
+                                <p className="text-[11px] text-stone-500 font-medium">Local & Private</p>
                             </div>
                         </div>
                     </motion.div>
 
-                    {/* Right Column: Uncaged Open Dual-Page Spiral Notebook with Parallax Floating Notes */}
+                    {/* Right Column: Uncaged Open Dual-Page Spiral Notebook */}
                     <div className="lg:col-span-7 relative flex items-center justify-center">
-                        
-                        {/* Parallax Floating Note 1: Yellow Post-it Scrap resting near notebook foot */}
-                        <motion.div
-                            style={{ 
-                                y: yFloatingCard1, 
-                                rotate: rotateCard1,
-                                x: card1X,
-                                translateY: card1Y
-                            }}
-                            className="hidden sm:flex absolute -bottom-2 right-4 sm:right-10 z-30 select-none pointer-events-none"
-                        >
-                            <motion.div
-                                animate={{ y: [0, -6, 0] }}
-                                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                                className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#FEF08A] text-amber-950 font-display font-bold text-xs shadow-xl shadow-amber-900/10 border border-yellow-300"
-                            >
-                                <span className="text-emerald-700 font-black">✓</span>
-                                <span>Lab Record #04 · Verified (10/10)</span>
-                            </motion.div>
-                        </motion.div>
-
-                        {/* Parallax Floating Note 2: Circuit Formula Badge beside schematic */}
-                        <motion.div
-                            style={{ 
-                                y: yFloatingCard2, 
-                                rotate: rotateCard2,
-                                x: card2X,
-                                translateY: card2Y
-                            }}
-                            className="hidden lg:flex absolute top-1/2 -left-4 sm:-left-6 -translate-y-1/2 z-30 select-none pointer-events-none"
-                        >
-                            <motion.div
-                                animate={{ y: [0, 7, 0] }}
-                                transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-                                className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/95 backdrop-blur-md text-stone-800 font-mono text-xs shadow-lg border border-stone-200/90"
-                            >
-                                <span className="w-2 h-2 rounded-full bg-blue-600" />
-                                <span>V = I · R &nbsp;(Slope = 4.82 Ω)</span>
-                            </motion.div>
-                        </motion.div>
-
-                        {/* Uncaged 3D Notebook Canvas (No Box Frame, Free Floating) */}
+                        {/* Uncaged 3D Notebook Canvas (Free Floating, Interactive) */}
                         <motion.div 
                             style={{ y: yHeroNotebook }}
                             className="w-full relative cursor-grab active:cursor-grabbing"
@@ -435,19 +337,19 @@ export default function LandingPage() {
             </section>
 
             {/* =========================================================
-                3. BEFORE/AFTER COMPARISON SECTION
+                2. BEFORE/AFTER COMPARISON SECTION
             ========================================================= */}
-            <section className="py-16 sm:py-20 px-4 sm:px-6 max-w-6xl mx-auto relative">
+            <section id="comparison" className="py-16 sm:py-24 px-4 sm:px-6 max-w-6xl mx-auto relative scroll-mt-24">
                 <div className="text-center max-w-2xl mx-auto mb-10">
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-100/80 border border-violet-200 text-violet-800 text-xs font-mono font-bold uppercase tracking-wider mb-3">
                         <Eye size={12} className="text-violet-600" />
                         <span>The Realism Difference</span>
                     </span>
-                    <h2 className="text-3xl sm:text-4xl font-black text-stone-950 tracking-tight font-display">
-                        Compare Handwriting in Real-Time
+                    <h2 className="text-3xl sm:text-5xl font-black text-stone-950 tracking-tight font-display">
+                        Mechanical Type vs. Organic Ink
                     </h2>
-                    <p className="text-stone-600 text-sm mt-2">
-                        Slide horizontally to inspect how organic ink flow, line pressure, and natural slant variations compare to rigid computer fonts.
+                    <p className="text-stone-600 text-sm sm:text-base mt-2">
+                        Drag the center slider horizontally to compare rigid computer fonts against InkTrail's authentic ink absorption, motor jitter, and margin layout.
                     </p>
                 </div>
 
@@ -456,9 +358,8 @@ export default function LandingPage() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: '-60px' }}
                     transition={{ duration: 0.5 }}
-                    className="rounded-3xl border border-stone-200/90 p-3 sm:p-6 bg-white shadow-xl shadow-stone-200/50"
                 >
-                    <BeforeAfterSlider />
+                    <BeforeAfterSlider hideHeader />
                 </motion.div>
             </section>
 
@@ -534,7 +435,7 @@ export default function LandingPage() {
                             </p>
                         </div>
                         <div className="mt-6 pt-4 border-t border-stone-100 flex items-center gap-1.5 text-[11px] font-mono text-indigo-700 font-bold">
-                            <span>15+ Indian paper styles</span>
+                            <span>Curated paper & lab styles</span>
                         </div>
                     </motion.div>
 
@@ -728,7 +629,7 @@ export default function LandingPage() {
                                 {/* Top Date & Page header */}
                                 <div className="relative z-10 flex items-center justify-between pl-8 pb-3 border-b border-rose-200/60 text-[11px] font-mono text-neutral-400 mb-4">
                                     <span>PAGE: 01</span>
-                                    <span>DATE: 12 / 09 / 2026</span>
+                                    <span>DATE: {new Date().toLocaleDateString('en-GB')}</span>
                                 </div>
 
                                 {/* Handwritten text render */}
@@ -766,7 +667,7 @@ export default function LandingPage() {
                         <span>The Paper Vault</span>
                     </span>
                     <h2 className="text-3xl sm:text-5xl font-black text-stone-950 tracking-tight font-display">
-                        15+ Authentic Student Registers
+                        Authentic Student Registers & Formats
                     </h2>
                     <p className="text-stone-600 text-sm sm:text-base mt-2">
                         From standard Indian university ruled sheets to dual-page lab records and millimeter engineering graph papers.
@@ -1045,8 +946,8 @@ export default function LandingPage() {
                 8. CALL-TO-ACTION PORTAL
             ========================================================= */}
             <section className="py-20 sm:py-24 px-4 sm:px-6 max-w-6xl mx-auto">
-                <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-stone-950 via-slate-900 to-indigo-950 border border-stone-800 p-10 sm:p-16 text-center shadow-2xl text-white">
-                    <div className="absolute inset-0 bg-radial-[circle_at_50%_0%_rgba(139,92,246,0.25)_0%,transparent_70%] pointer-events-none" />
+                <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-stone-900 via-indigo-950 to-violet-950 border border-indigo-500/30 p-10 sm:p-16 text-center shadow-[0_0_40px_rgba(139,92,246,0.15)] text-white">
+                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-600/20 via-transparent to-transparent pointer-events-none" />
                     
                     <div className="relative z-10 max-w-2xl mx-auto space-y-6">
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/15 border border-amber-400/30 text-amber-300 text-xs font-bold font-mono">
@@ -1054,20 +955,20 @@ export default function LandingPage() {
                             <span>ZERO COST · PUBLIC BETA</span>
                         </div>
 
-                        <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight font-display drop-shadow-md">
+                        <h2 className="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white via-white to-violet-400 tracking-tight font-display pb-1">
                             Start Creating Handwritten Assignments in Seconds.
                         </h2>
 
                         <p className="text-stone-200 text-sm sm:text-base leading-relaxed max-w-xl mx-auto">
-                            No download, no credit card. Join students at over 200+ universities saving hours every week.
+                            No download, no credit card. Join students and creators turning typed text into realistic handwritten notes in seconds.
                         </p>
 
                         <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
                             <Link
                                 to="/editor"
-                                className="w-full sm:w-auto px-8 py-4 bg-white text-stone-950 hover:bg-stone-100 rounded-2xl font-bold text-base shadow-xl hover:scale-103 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                                className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white hover:from-violet-400 hover:to-fuchsia-400 rounded-2xl font-bold text-base shadow-[0_0_20px_rgba(139,92,246,0.4)] hover:shadow-[0_0_30px_rgba(139,92,246,0.6)] hover:-translate-y-0.5 active:translate-y-0 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
                             >
-                                <Sparkles size={18} className="text-violet-600" />
+                                <Sparkles size={18} className="text-yellow-300" />
                                 <span>Open Studio Now — It's Free</span>
                                 <ArrowRight size={18} />
                             </Link>

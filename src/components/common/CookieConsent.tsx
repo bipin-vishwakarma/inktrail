@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Shield } from 'lucide-react';
 
@@ -41,7 +42,7 @@ export default function CookieConsent() {
                                 </div>
                             </div>
                             <button 
-                                onClick={() => setIsVisible(false)}
+                                onClick={() => { localStorage.setItem('cookie-consent', 'dismissed'); setIsVisible(false); }}
                                 className="p-1 hover:bg-black/5 rounded-lg transition-colors"
                             >
                                 <X size={16} className="text-neutral-400" />
@@ -54,12 +55,12 @@ export default function CookieConsent() {
                             >
                                 Accept All
                             </button>
-                            <a 
-                                href="/privacy" 
+                            <Link 
+                                to="/privacy" 
                                 className="px-4 py-2.5 bg-neutral-100 text-neutral-600 text-xs font-bold rounded-xl hover:bg-neutral-200 transition-all text-center"
                             >
-                                Settings
-                            </a>
+                                Privacy Policy
+                            </Link>
                         </div>
                     </div>
                 </motion.div>
