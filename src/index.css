@@ -681,14 +681,16 @@ html {
   }
 }
 
-body {
-  @apply bg-paper text-ink antialiased;
-  font-feature-settings: "rlig" 1, "calt" 1;
-  overflow-x: clip;
-}
+@layer base {
+  body {
+    @apply bg-paper text-ink antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    overflow-x: clip;
+  }
 
-h1, h2, h3, h4, h5, h6 {
-  @apply font-display tracking-tight text-ink;
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tight text-ink;
+  }
 }
 
 @keyframes fadeInUp {
