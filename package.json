@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/schema/package.json",
-  "name": "text2handwriting",
+  "name": "text2handwriting-web",
   "private": true,
-  "version": "2.0.1",
+  "version": "2.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",

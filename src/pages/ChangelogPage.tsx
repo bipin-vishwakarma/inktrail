@@ -3,6 +3,15 @@ import { Rocket, Bug, Star, Clock } from 'lucide-react';
 
 const updates = [
     {
+        version: "v2.1.0",
+        date: "September 12, 2026",
+        type: "Feature Update",
+        title: "Premium Auth & Marketing Audit",
+        description: "Complete overhaul of the authentication flow featuring an ultra-sleek glassmorphism aesthetic. Audited and verified all fonts, updating our official offering to 54 authentic handwriting styles.",
+        icon: Star,
+        color: "bg-indigo-100 text-indigo-600"
+    },
+    {
         version: "v2.0.0",
         date: "January 29, 2026",
         type: "Major Release",
