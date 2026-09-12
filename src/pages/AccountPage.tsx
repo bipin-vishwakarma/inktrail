@@ -212,7 +212,7 @@ export default function AccountPage() {
                             {[
                                 'Unlimited 4K PDF exports (Zero watermark)',
                                 'Interactive Lab Notebook & Diagram Canvas',
-                                'All 30+ Realistic Indian & International Fonts',
+                                'All 50+ Realistic Indian & International Fonts',
                                 '3D Metallic Twin-Wire Coil Bindings',
                                 'Smart Margin Indexing & Comparison Columns',
                                 'Full Pro Access Included Free During Beta'

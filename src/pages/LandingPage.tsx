@@ -298,7 +298,7 @@ export default function LandingPage() {
                                 <p className="text-[11px] text-stone-500 font-medium">AI Watermarks</p>
                             </div>
                             <div className="p-3.5 rounded-2xl bg-white/80 border border-stone-200/80 shadow-2xs">
-                                <p className="text-lg font-black text-violet-700">30+</p>
+                                <p className="text-lg font-black text-violet-700">50+</p>
                                 <p className="text-[11px] text-stone-500 font-medium">Handwriting Fonts</p>
                             </div>
                             <div className="p-3.5 rounded-2xl bg-white/80 border border-stone-200/80 shadow-2xs">
