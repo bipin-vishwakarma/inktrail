@@ -149,12 +149,12 @@ export const Text2HandwritingLogo: React.FC<Text2HandwritingLogoProps> = ({
             <div className="flex flex-col">
                 <div className="flex items-center gap-1.5">
                     <span className="text-xl sm:text-2xl font-black font-display tracking-tight text-neutral-900 leading-none">
-                        Text<span className="bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-600 bg-clip-text text-transparent">2Handwriting</span>
-                        <span className="text-violet-600 font-serif">.</span>
+                        Text<span className="bg-gradient-to-r from-black via-black to-cyan-600 bg-clip-text text-transparent">2Handwriting</span>
+                        <span className="text-black font-serif">.</span>
                     </span>
 
                     {showBetaBadge && (
-                        <span className="px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-md shadow-xs">
+                        <span className="px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider bg-black text-white text-white rounded-md shadow-xs">
                             Beta
                         </span>
                     )}

@@ -426,16 +426,16 @@ export const LabDiagramCanvas: React.FC<LabDiagramCanvasProps> = ({
                 <div className="w-full h-full flex flex-col items-center justify-between relative py-2">
                     {/* Sketch Toolbar */}
                     <div 
-                        className="w-full flex flex-wrap items-center justify-between gap-2 p-2 bg-neutral-900 text-white rounded-2xl shadow-xl z-20 export-ignore"
+                        className="w-full flex flex-wrap items-center justify-between gap-2 p-2 bg-neutral-900 text-white rounded-md shadow-sm z-20 export-ignore"
                         data-export-ignore
                     >
                         {/* Tool Selector */}
-                        <div className="flex items-center gap-1 bg-neutral-800 p-1 rounded-xl">
+                        <div className="flex items-center gap-1 bg-neutral-800 p-1 rounded-md">
                             <button
                                 type="button"
                                 onClick={() => setSketchTool('pen')}
-                                className={`p-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer ${
-                                    sketchTool === 'pen' ? 'bg-blue-600 text-white shadow-xs' : 'text-neutral-400 hover:text-white'
+                                className={`p-1.5 rounded-md text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer ${
+                                    sketchTool === 'pen' ? 'bg-white text-black shadow-xs' : 'text-neutral-400 hover:text-white'
                                 }`}
                                 title="Fountain / Ballpoint Pen"
                             >
@@ -446,8 +446,8 @@ export const LabDiagramCanvas: React.FC<LabDiagramCanvasProps> = ({
                             <button
                                 type="button"
                                 onClick={() => setSketchTool('pencil')}
-                                className={`p-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer ${
-                                    sketchTool === 'pencil' ? 'bg-neutral-700 text-white shadow-xs' : 'text-neutral-400 hover:text-white'
+                                className={`p-1.5 rounded-md text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer ${
+                                    sketchTool === 'pencil' ? 'bg-white text-black shadow-xs' : 'text-neutral-400 hover:text-white'
                                 }`}
                                 title="Graphite Pencil"
                             >
@@ -458,8 +458,8 @@ export const LabDiagramCanvas: React.FC<LabDiagramCanvasProps> = ({
                             <button
                                 type="button"
                                 onClick={() => setSketchTool('eraser')}
-                                className={`p-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer ${
-                                    sketchTool === 'eraser' ? 'bg-rose-600 text-white shadow-xs' : 'text-neutral-400 hover:text-white'
+                                className={`p-1.5 rounded-md text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer ${
+                                    sketchTool === 'eraser' ? 'bg-white text-black shadow-xs' : 'text-neutral-400 hover:text-white'
                                 }`}
                                 title="Eraser"
                             >
@@ -470,7 +470,7 @@ export const LabDiagramCanvas: React.FC<LabDiagramCanvasProps> = ({
 
                         {/* Color Palette (Disabled during eraser) */}
                         {sketchTool !== 'eraser' && (
-                            <div className="flex items-center gap-1.5 bg-neutral-800 px-2 py-1 rounded-xl">
+                            <div className="flex items-center gap-1.5 bg-neutral-800 px-2 py-1 rounded-md">
                                 {[
                                     { hex: '#0f172a', title: 'Black Gel' },
                                     { hex: '#2563eb', title: 'Blue Ink' },
@@ -493,7 +493,7 @@ export const LabDiagramCanvas: React.FC<LabDiagramCanvasProps> = ({
                         )}
 
                         {/* Line Width */}
-                        <div className="flex items-center gap-1 bg-neutral-800 p-1 rounded-xl">
+                        <div className="flex items-center gap-1 bg-neutral-800 p-1 rounded-md">
                             {[
                                 { w: 1.8, label: 'Fine' },
                                 { w: 3.2, label: 'Med' },
@@ -503,7 +503,7 @@ export const LabDiagramCanvas: React.FC<LabDiagramCanvasProps> = ({
                                     key={item.label}
                                     type="button"
                                     onClick={() => setSketchWidth(item.w)}
-                                    className={`px-2 py-1 rounded-lg text-[10px] font-bold transition-colors cursor-pointer ${
+                                    className={`px-2 py-1 rounded-md text-[10px] font-bold transition-colors cursor-pointer ${
                                         sketchWidth === item.w ? 'bg-white text-neutral-900 shadow-xs' : 'text-neutral-400 hover:text-white'
                                     }`}
                                 >
@@ -517,7 +517,7 @@ export const LabDiagramCanvas: React.FC<LabDiagramCanvasProps> = ({
                             <button
                                 type="button"
                                 onClick={clearSketchCanvas}
-                                className="p-1.5 hover:bg-neutral-800 rounded-lg text-neutral-400 hover:text-rose-400 transition-colors cursor-pointer"
+                                className="p-1.5 hover:bg-neutral-800 rounded-md text-neutral-400 hover:text-rose-400 transition-colors cursor-pointer"
                                 title="Clear Sketch"
                             >
                                 <RotateCcw size={14} />
@@ -534,7 +534,7 @@ export const LabDiagramCanvas: React.FC<LabDiagramCanvasProps> = ({
                             <button
                                 type="button"
                                 onClick={saveSketchToDiagram}
-                                className="flex items-center gap-1 px-3 py-1 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-bold shadow-xs cursor-pointer transition-all active:scale-95"
+                                className="flex items-center gap-1 px-3 py-1 bg-black hover:bg-neutral-800 text-white rounded-md text-xs font-bold shadow-xs cursor-pointer transition-all active:scale-95"
                             >
                                 <Check size={13} />
                                 <span>Save Drawing</span>
@@ -546,7 +546,7 @@ export const LabDiagramCanvas: React.FC<LabDiagramCanvasProps> = ({
                     <div className="flex-1 w-full flex items-center justify-center p-2 relative">
                         <canvas
                             ref={canvasRef}
-                            className="w-full h-[580px] rounded-2xl bg-white/90 shadow-sm border border-neutral-300 touch-none cursor-crosshair"
+                            className="w-full h-[580px] rounded-md bg-white/90 shadow-sm border border-neutral-300 touch-none cursor-crosshair"
                             onPointerDown={handlePointerDown}
                             onPointerMove={handlePointerMove}
                             onPointerUp={handlePointerUp}
@@ -568,7 +568,7 @@ export const LabDiagramCanvas: React.FC<LabDiagramCanvasProps> = ({
                             <img 
                                 src={diagram.image} 
                                 alt={diagram.caption || "Lab schematic"} 
-                                className={`max-w-full max-h-[640px] rounded-lg shadow-sm border border-neutral-300/80 bg-white/95 p-3 ${
+                                className={`max-w-full max-h-[640px] rounded-md shadow-sm border border-neutral-300/80 bg-white/95 p-3 ${
                                     diagram.fit === 'cover' ? 'object-cover' : 'object-contain'
                                 }`}
                             />
@@ -576,7 +576,7 @@ export const LabDiagramCanvas: React.FC<LabDiagramCanvasProps> = ({
 
                         {/* Floating Control Bar for Existing Diagram (Export Shielded) */}
                         <div 
-                            className={`absolute top-6 right-6 flex items-center gap-1.5 bg-white/95 backdrop-blur-md border border-neutral-200 shadow-lg rounded-xl p-1.5 transition-opacity export-ignore hover-control-bar ${
+                            className={`absolute top-6 right-6 flex items-center gap-1.5 bg-white/95 backdrop-blur-md border border-neutral-200 shadow-sm rounded-md p-1.5 transition-opacity export-ignore hover-control-bar ${
                                 isHovered ? 'opacity-100' : 'opacity-0 sm:opacity-30'
                             }`}
                             data-export-ignore
@@ -585,7 +585,7 @@ export const LabDiagramCanvas: React.FC<LabDiagramCanvasProps> = ({
                             <button
                                 type="button"
                                 onClick={startSketchMode}
-                                className="p-1.5 hover:bg-neutral-100 rounded-lg text-indigo-600 hover:text-indigo-900 transition-colors cursor-pointer"
+                                className="p-1.5 hover:bg-neutral-100 rounded-md text-black hover:text-neutral-900 transition-colors cursor-pointer"
                                 title="Annotate / Draw on Diagram"
                             >
                                 <Edit3 size={13} />
@@ -596,7 +596,7 @@ export const LabDiagramCanvas: React.FC<LabDiagramCanvasProps> = ({
                             <button
                                 type="button"
                                 onClick={() => handleScale(-0.1)}
-                                className="p-1.5 hover:bg-neutral-100 rounded-lg text-neutral-600 hover:text-neutral-900 transition-colors cursor-pointer"
+                                className="p-1.5 hover:bg-neutral-100 rounded-md text-neutral-600 hover:text-neutral-900 transition-colors cursor-pointer"
                                 title="Zoom Out Diagram"
                             >
                                 <ZoomOut size={13} />
@@ -607,7 +607,7 @@ export const LabDiagramCanvas: React.FC<LabDiagramCanvasProps> = ({
                             <button
                                 type="button"
                                 onClick={() => handleScale(0.1)}
-                                className="p-1.5 hover:bg-neutral-100 rounded-lg text-neutral-600 hover:text-neutral-900 transition-colors cursor-pointer"
+                                className="p-1.5 hover:bg-neutral-100 rounded-md text-neutral-600 hover:text-neutral-900 transition-colors cursor-pointer"
                                 title="Zoom In Diagram"
                             >
                                 <ZoomIn size={13} />
@@ -618,7 +618,7 @@ export const LabDiagramCanvas: React.FC<LabDiagramCanvasProps> = ({
                             <button
                                 type="button"
                                 onClick={handleToggleFit}
-                                className="p-1.5 hover:bg-neutral-100 rounded-lg text-neutral-600 hover:text-neutral-900 transition-colors cursor-pointer"
+                                className="p-1.5 hover:bg-neutral-100 rounded-md text-neutral-600 hover:text-neutral-900 transition-colors cursor-pointer"
                                 title={diagram.fit === 'cover' ? 'Switch to Contain' : 'Switch to Fill/Cover'}
                             >
                                 <Maximize2 size={13} />
@@ -627,7 +627,7 @@ export const LabDiagramCanvas: React.FC<LabDiagramCanvasProps> = ({
                             <button
                                 type="button"
                                 onClick={() => fileInputRef.current?.click()}
-                                className="p-1.5 hover:bg-neutral-100 rounded-lg text-blue-600 transition-colors cursor-pointer"
+                                className="p-1.5 hover:bg-neutral-100 rounded-md text-blue-600 transition-colors cursor-pointer"
                                 title="Replace Diagram"
                             >
                                 <Upload size={13} />
@@ -636,7 +636,7 @@ export const LabDiagramCanvas: React.FC<LabDiagramCanvasProps> = ({
                             <button
                                 type="button"
                                 onClick={() => onUpdateDiagram(null)}
-                                className="p-1.5 hover:bg-rose-50 rounded-lg text-rose-500 hover:text-rose-700 transition-colors cursor-pointer"
+                                className="p-1.5 hover:bg-rose-50 rounded-md text-rose-500 hover:text-rose-700 transition-colors cursor-pointer"
                                 title="Remove Diagram"
                             >
                                 <Trash2 size={13} />
@@ -665,7 +665,7 @@ export const LabDiagramCanvas: React.FC<LabDiagramCanvasProps> = ({
                                         setCaptionDraft(null);
                                     }}
                                     autoFocus
-                                    className="w-full px-3 py-1 text-xs border border-blue-400 rounded-lg bg-white shadow-xs focus:outline-none font-sans"
+                                    className="w-full px-3 py-1 text-xs border border-blue-400 rounded-md bg-white shadow-xs focus:outline-none font-sans"
                                 />
                             </div>
                         ) : (
@@ -696,10 +696,10 @@ export const LabDiagramCanvas: React.FC<LabDiagramCanvasProps> = ({
                 // Blank Page Dropzone, Sketch Trigger & Templates
                 // Marked with export-ignore so exporting an empty sheet yields clean white/grid paper!
                 <div 
-                    className="w-full max-w-xl flex flex-col items-center justify-center text-center p-6 sm:p-8 rounded-3xl border-2 border-dashed border-neutral-300 bg-white/70 hover:bg-white/95 hover:border-blue-400 transition-all shadow-xs export-ignore"
+                    className="w-full max-w-xl flex flex-col items-center justify-center text-center p-6 sm:p-8 rounded-md border-2 border-dashed border-neutral-300 bg-white/70 hover:bg-white/95 hover:border-black transition-all shadow-xs export-ignore"
                     data-export-ignore
                 >
-                    <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-purple-50 to-indigo-50 border border-purple-200/70 flex items-center justify-center text-purple-600 mb-4 shadow-xs">
+                    <div className="w-14 h-14 rounded-md bg-white border border-neutral-200 flex items-center justify-center text-black mb-4 shadow-xs">
                         <ImageIcon size={26} />
                     </div>
 
@@ -715,7 +715,7 @@ export const LabDiagramCanvas: React.FC<LabDiagramCanvasProps> = ({
                         <button
                             type="button"
                             onClick={() => fileInputRef.current?.click()}
-                            className="flex items-center gap-2 px-4 py-2.5 bg-neutral-900 hover:bg-black text-white rounded-xl text-xs font-bold transition-all shadow-sm active:scale-98 cursor-pointer"
+                            className="flex items-center gap-2 px-4 py-2.5 bg-neutral-900 hover:bg-neutral-800 text-white rounded-md text-xs font-bold transition-all shadow-sm active:scale-98 cursor-pointer"
                         >
                             <Upload size={14} />
                             <span>Upload Your Diagram</span>
@@ -724,7 +724,7 @@ export const LabDiagramCanvas: React.FC<LabDiagramCanvasProps> = ({
                         <button
                             type="button"
                             onClick={startSketchMode}
-                            className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm active:scale-98 cursor-pointer"
+                            className="flex items-center gap-2 px-4 py-2.5 bg-black hover:bg-neutral-700 text-white rounded-md text-xs font-bold transition-all shadow-sm active:scale-98 cursor-pointer"
                             title="Open interactive freehand drawing canvas"
                         >
                             <PenTool size={14} />
@@ -734,10 +734,10 @@ export const LabDiagramCanvas: React.FC<LabDiagramCanvasProps> = ({
                         <button
                             type="button"
                             onClick={handlePasteClipboard}
-                            className="flex items-center gap-2 px-3.5 py-2.5 bg-white hover:bg-neutral-50 text-neutral-700 border border-neutral-200 rounded-xl text-xs font-bold transition-all active:scale-98 cursor-pointer"
+                            className="flex items-center gap-2 px-3.5 py-2.5 bg-white hover:bg-neutral-50 text-neutral-700 border border-neutral-200 rounded-md text-xs font-bold transition-all active:scale-98 cursor-pointer"
                             title="Paste image directly from clipboard (Ctrl + V)"
                         >
-                            <Clipboard size={14} className="text-indigo-600" />
+                            <Clipboard size={14} className="text-black" />
                             <span>Paste (Ctrl+V)</span>
                         </button>
                     </div>
@@ -755,7 +755,7 @@ export const LabDiagramCanvas: React.FC<LabDiagramCanvasProps> = ({
                                     key={preset.id}
                                     type="button"
                                     onClick={() => handlePresetSelect(preset)}
-                                    className="p-2.5 rounded-xl border border-neutral-200 bg-white hover:border-purple-400 hover:bg-purple-50/50 transition-all text-left group flex flex-col justify-between cursor-pointer"
+                                    className="p-2.5 rounded-md border border-neutral-200 bg-white hover:border-purple-400 hover:bg-purple-50/50 transition-all text-left group flex flex-col justify-between cursor-pointer"
                                 >
                                     <div>
                                         <span className="text-[9px] font-mono font-bold text-purple-600 block uppercase">

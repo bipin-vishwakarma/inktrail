@@ -22,8 +22,8 @@ const PROVIDER_ICONS: Record<string, React.ReactNode> = {
             <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z" />
         </svg>
     ),
-    student: <GraduationCap size={16} className="text-violet-600" />,
-    email: <Mail size={16} className="text-indigo-500" />,
+    student: <GraduationCap size={16} className="text-black" />,
+    email: <Mail size={16} className="text-neutral-800" />,
 };
 
 export default function AccountPage() {
@@ -42,10 +42,10 @@ export default function AccountPage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-violet-50 via-white to-indigo-50 gap-4">
+            <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-neutral-100 via-white to-neutral-50 gap-4">
                 <Text2HandwritingLogo size={44} className="animate-pulse" />
                 <div className="flex items-center gap-2 text-xs font-bold text-neutral-500">
-                    <div className="w-2 h-2 rounded-full bg-violet-600 animate-ping" />
+                    <div className="w-2 h-2 rounded-full bg-black animate-ping" />
                     <span>Loading student account...</span>
                 </div>
             </div>
@@ -80,17 +80,17 @@ export default function AccountPage() {
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-indigo-50">
+        <div className="min-h-screen bg-gradient-to-br from-neutral-100 via-white to-neutral-50">
             {/* Navbar-like header */}
             <div className="border-b border-neutral-200 bg-white/80 backdrop-blur-sm sticky top-0 z-10">
                 <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-sm text-neutral-500 hover:text-violet-600 transition-colors">
+                    <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-sm text-neutral-500 hover:text-black transition-colors">
                         ← Back
                     </button>
                     <span className="font-black text-neutral-900">My Account</span>
                     <button
                         onClick={() => navigate('/editor')}
-                        className="text-sm font-semibold text-violet-600 hover:text-violet-700 transition-colors"
+                        className="text-sm font-semibold text-black hover:text-neutral-800 transition-colors"
                     >
                         Open Editor →
                     </button>
@@ -103,11 +103,11 @@ export default function AccountPage() {
                 <motion.div
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-white rounded-3xl shadow-sm border border-neutral-100 p-6"
+                    className="bg-white rounded-md shadow-sm border border-neutral-100 p-6"
                 >
                     <div className="flex items-start gap-5">
                         {/* Avatar */}
-                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white text-2xl font-black flex-shrink-0 shadow-lg">
+                        <div className="w-16 h-16 rounded-md bg-black text-white flex items-center justify-center text-white text-2xl font-black flex-shrink-0 shadow-sm">
                             {initial}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -117,10 +117,10 @@ export default function AccountPage() {
                                     <input
                                         value={editName}
                                         onChange={e => setEditName(e.target.value)}
-                                        className="text-xl font-black text-neutral-900 border-b-2 border-violet-400 focus:outline-none bg-transparent flex-1"
+                                        className="text-xl font-black text-neutral-900 border-b-2 border-neutral-400 focus:outline-none bg-transparent flex-1"
                                         autoFocus
                                     />
-                                    <button onClick={handleSaveName} disabled={saving} className="text-emerald-500 hover:text-emerald-600">
+                                    <button onClick={handleSaveName} disabled={saving} className="text-black hover:text-black">
                                         {saving ? <Loader2 size={18} className="animate-spin" /> : <Check size={18} />}
                                     </button>
                                     <button onClick={() => setEditingName(false)} className="text-neutral-400 hover:text-neutral-600">
@@ -130,7 +130,7 @@ export default function AccountPage() {
                             ) : (
                                 <div className="flex items-center gap-2 mb-1">
                                     <h2 className="text-xl font-black text-neutral-900 truncate">{user.name}</h2>
-                                    <button onClick={() => { setEditName(user.name); setEditingName(true); }} className="text-neutral-400 hover:text-violet-500 transition-colors">
+                                    <button onClick={() => { setEditName(user.name); setEditingName(true); }} className="text-neutral-400 hover:text-black transition-colors">
                                         <Edit2 size={15} />
                                     </button>
                                 </div>
@@ -144,17 +144,17 @@ export default function AccountPage() {
                                     {providerLabel[user.authProvider] || user.authProvider}
                                 </div>
                                 {user.studentId && (
-                                    <div className="px-2.5 py-1 rounded-full bg-violet-100 text-xs font-semibold text-violet-700">
+                                    <div className="px-2.5 py-1 rounded-full bg-neutral-200 text-xs font-semibold text-neutral-800">
                                         {user.studentId}
                                     </div>
                                 )}
                                 {user.collegeName && (
-                                    <div className="px-2.5 py-1 rounded-full bg-indigo-100 text-xs font-semibold text-indigo-700 truncate max-w-[140px]">
+                                    <div className="px-2.5 py-1 rounded-full bg-neutral-100 text-xs font-semibold text-neutral-700 truncate max-w-[140px]">
                                         {user.collegeName}
                                     </div>
                                 )}
-                                <div className="px-2 py-0.5 rounded-full bg-emerald-50 text-[10px] font-bold text-emerald-700 flex items-center gap-1">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                <div className="px-2 py-0.5 rounded-full bg-neutral-50 text-[10px] font-bold text-neutral-800 flex items-center gap-1">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-black animate-pulse" />
                                     <span>Supabase Cloud Auth</span>
                                 </div>
                             </div>
@@ -170,8 +170,8 @@ export default function AccountPage() {
                     className="grid grid-cols-3 gap-4"
                 >
                     {statCards.map(({ label, value, icon: Icon, color }) => (
-                        <div key={label} className="bg-white rounded-2xl shadow-sm border border-neutral-100 p-4 text-center">
-                            <div className={`w-9 h-9 rounded-xl mx-auto mb-2 flex items-center justify-center bg-${color}-100`}>
+                        <div key={label} className="bg-white rounded-md shadow-sm border border-neutral-100 p-4 text-center">
+                            <div className={`w-9 h-9 rounded-md mx-auto mb-2 flex items-center justify-center bg-${color}-100`}>
                                 <Icon size={18} className={`text-${color}-500`} />
                             </div>
                             <p className="text-xl font-black text-neutral-900">{value}</p>
@@ -185,7 +185,7 @@ export default function AccountPage() {
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.14 }}
-                    className="bg-gradient-to-br from-violet-600 via-indigo-600 to-purple-800 rounded-3xl p-6 sm:p-7 text-white relative overflow-hidden shadow-xl"
+                    className="bg-gradient-to-br from-black via-black to-purple-800 rounded-md p-6 sm:p-7 text-white relative overflow-hidden shadow-sm"
                 >
                     <div className="absolute top-[-50px] right-[-50px] w-48 h-48 bg-yellow-400/20 rounded-full blur-3xl pointer-events-none" />
                     <div className="absolute bottom-[-30px] left-[-30px] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
@@ -218,8 +218,8 @@ export default function AccountPage() {
                                 'Full Pro Access Included Free During Beta'
                             ].map(f => (
                                 <div key={f} className="flex items-center gap-2 text-xs sm:text-sm text-white/95">
-                                    <div className="w-4 h-4 rounded-full bg-emerald-400/20 flex items-center justify-center shrink-0">
-                                        <Check size={11} className="text-emerald-300 font-bold" />
+                                    <div className="w-4 h-4 rounded-full bg-neutral-400/20 flex items-center justify-center shrink-0">
+                                        <Check size={11} className="text-neutral-300 font-bold" />
                                     </div>
                                     <span>{f}</span>
                                 </div>
@@ -229,7 +229,7 @@ export default function AccountPage() {
                         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2 border-t border-white/15">
                             <div className="flex-1">
                                 <p className="text-xs text-white/70">
-                                    Account status: <span className="text-emerald-300 font-bold">Free Beta Student Pass Active</span>
+                                    Account status: <span className="text-neutral-300 font-bold">Free Beta Student Pass Active</span>
                                 </p>
                                 <p className="text-[11px] text-white/50">
                                     Enjoy zero-cost exports and unlimited digital notebooks during this testing period.
@@ -241,9 +241,9 @@ export default function AccountPage() {
                                     localStorage.setItem('text2handwriting_beta_claimed', 'true');
                                     alert('🎉 Free Beta Pass confirmed! You have full unlimited access to all Text2Handwriting tools.');
                                 }}
-                                className="px-5 py-3 bg-white text-violet-900 hover:bg-violet-50 rounded-xl font-bold text-sm shadow-md hover:scale-102 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                                className="px-5 py-3 bg-white text-neutral-900 hover:bg-neutral-100 rounded-md font-bold text-sm shadow-md hover:scale-102 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
                             >
-                                <Sparkles size={16} className="text-violet-700" />
+                                <Sparkles size={16} className="text-neutral-800" />
                                 <span>Claim Free Beta Access</span>
                             </button>
                         </div>
@@ -255,7 +255,7 @@ export default function AccountPage() {
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.18 }}
-                    className="bg-white rounded-3xl shadow-sm border border-neutral-100 divide-y divide-neutral-100 overflow-hidden"
+                    className="bg-white rounded-md shadow-sm border border-neutral-100 divide-y divide-neutral-100 overflow-hidden"
                 >
                     {[
                         { label: 'Privacy Policy', href: '/privacy', icon: Shield },
@@ -283,7 +283,7 @@ export default function AccountPage() {
                     <button
                         onClick={handleLogout}
                         disabled={isLoading}
-                        className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl border-2 border-red-200 text-red-500 font-bold hover:bg-red-50 hover:border-red-400 transition-all"
+                        className="w-full flex items-center justify-center gap-2 py-4 rounded-md border-2 border-red-200 text-red-500 font-bold hover:bg-red-50 hover:border-red-400 transition-all"
                     >
                         <LogOut size={18} />
                         Sign Out

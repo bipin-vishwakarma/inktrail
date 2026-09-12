@@ -1348,11 +1348,11 @@ export default function EditorPage() {
                         value={headerText}
                         onChange={(e) => setPageOptions({ headerText: e.target.value })}
                         placeholder="Untitled Assignment"
-                        className="bg-neutral-50 hover:bg-neutral-100/80 focus:bg-white text-xs font-semibold text-neutral-800 placeholder:text-neutral-400 border border-neutral-200/60 focus:border-neutral-900 px-2.5 py-1 rounded-lg outline-none transition-all max-w-[140px] sm:max-w-[200px] truncate"
+                        className="bg-neutral-50 hover:bg-neutral-100/80 focus:bg-white text-xs font-semibold text-neutral-800 placeholder:text-neutral-400 border border-neutral-200/60 focus:border-neutral-900 px-2.5 py-1 rounded-md outline-none transition-all max-w-[140px] sm:max-w-[200px] truncate"
                     />
 
                     {/* Stats Pill */}
-                    <div className="hidden md:flex items-center gap-2 text-[11px] font-semibold text-neutral-500 bg-neutral-100 px-2.5 py-1 rounded-lg">
+                    <div className="hidden md:flex items-center gap-2 text-[11px] font-semibold text-neutral-500 bg-neutral-100 px-2.5 py-1 rounded-md">
                         <span>{pages.length} {pages.length === 1 ? 'page' : 'pages'}</span>
                         <span className="w-1 h-1 rounded-full bg-neutral-400" />
                         <span>{wordCount} words</span>
@@ -1360,11 +1360,11 @@ export default function EditorPage() {
                 </div>
 
                 {/* Center: Canvas Zoom & Fit Dock */}
-                <div className="hidden lg:flex items-center gap-1 bg-neutral-100/90 border border-neutral-200/80 p-1 rounded-xl shadow-2xs text-neutral-700">
+                <div className="hidden lg:flex items-center gap-1 bg-neutral-100/90 border border-neutral-200/80 p-1 rounded-md shadow-2xs text-neutral-700">
                     <button 
                         onClick={zoomOut}
                         title="Zoom Out"
-                        className="p-1.5 hover:bg-white hover:text-neutral-900 rounded-lg text-neutral-600 transition-all active:scale-95"
+                        className="p-1.5 hover:bg-white hover:text-neutral-900 rounded-md text-neutral-600 transition-all active:scale-95"
                     >
                         <ZoomOut size={13} />
                     </button>
@@ -1372,7 +1372,7 @@ export default function EditorPage() {
                     <button 
                         onClick={zoom100}
                         title="Reset to 100%"
-                        className="px-2 py-0.5 text-xs font-mono font-bold text-neutral-800 hover:bg-white rounded-lg transition-colors min-w-[44px] text-center"
+                        className="px-2 py-0.5 text-xs font-mono font-bold text-neutral-800 hover:bg-white rounded-md transition-colors min-w-[44px] text-center"
                     >
                         {Math.round(scale * 100)}%
                     </button>
@@ -1380,7 +1380,7 @@ export default function EditorPage() {
                     <button 
                         onClick={zoomIn}
                         title="Zoom In"
-                        className="p-1.5 hover:bg-white hover:text-neutral-900 rounded-lg text-neutral-600 transition-all active:scale-95"
+                        className="p-1.5 hover:bg-white hover:text-neutral-900 rounded-md text-neutral-600 transition-all active:scale-95"
                     >
                         <ZoomIn size={13} />
                     </button>
@@ -1389,7 +1389,7 @@ export default function EditorPage() {
 
                     <button 
                         onClick={zoomFitWidth}
-                        className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all ${
+                        className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
                             zoomMode === 'fit-width' ? 'bg-white text-neutral-900 shadow-2xs font-bold' : 'text-neutral-500 hover:text-neutral-900'
                         }`}
                     >
@@ -1398,7 +1398,7 @@ export default function EditorPage() {
 
                     <button 
                         onClick={zoomFitPage}
-                        className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all ${
+                        className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
                             zoomMode === 'fit-page' ? 'bg-white text-neutral-900 shadow-2xs font-bold' : 'text-neutral-500 hover:text-neutral-900'
                         }`}
                     >
@@ -1416,7 +1416,7 @@ export default function EditorPage() {
                             addToast('🎲 Rolled organic human realism variations!', 'success');
                         }}
                         title="Roll random organic handwriting flaws, slant & lighting"
-                        className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 rounded-xl text-xs font-bold transition-all active:scale-95 border border-amber-200/80 shadow-2xs"
+                        className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 rounded-md text-xs font-bold transition-all active:scale-95 border border-amber-200/80 shadow-2xs"
                     >
                         <Dices size={13} className="text-amber-600" />
                         <span className="hidden sm:inline">Randomize</span>
@@ -1427,7 +1427,7 @@ export default function EditorPage() {
                         type="button"
                         onClick={() => setIsOnboardingOpen(true)}
                         title="Open Interactive Student Tour & Features Guide"
-                        className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-neutral-100 hover:bg-amber-50 hover:text-amber-700 text-neutral-700 rounded-xl text-xs font-bold transition-all active:scale-95 border border-neutral-200/60 cursor-pointer"
+                        className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-neutral-100 hover:bg-amber-50 hover:text-amber-700 text-neutral-700 rounded-md text-xs font-bold transition-all active:scale-95 border border-neutral-200/60 cursor-pointer"
                     >
                         <Sparkles size={13} className="text-amber-500" />
                         <span className="hidden md:inline">Tour</span>
@@ -1439,13 +1439,13 @@ export default function EditorPage() {
                             type="button"
                             onClick={() => setIsExploreMenuOpen(!isExploreMenuOpen)}
                             title="Explore Text2Handwriting Site Pages"
-                            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-neutral-100 hover:bg-neutral-200/70 text-neutral-700 rounded-xl text-xs font-bold transition-all active:scale-95 border border-neutral-200/60 cursor-pointer"
+                            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-neutral-100 hover:bg-neutral-200/70 text-neutral-700 rounded-md text-xs font-bold transition-all active:scale-95 border border-neutral-200/60 cursor-pointer"
                         >
-                            <Compass size={13} className="text-indigo-600" />
+                            <Compass size={13} className="text-black" />
                             <span className="hidden lg:inline text-[11px]">Explore</span>
                         </button>
                         {isExploreMenuOpen && (
-                            <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-xl border border-neutral-200 py-1.5 z-50 text-left text-xs font-bold">
+                            <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-md shadow-sm border border-neutral-200 py-1.5 z-50 text-left text-xs font-bold">
                                 <div className="px-3 py-1.5 text-[10px] text-neutral-400 font-mono uppercase tracking-wider border-b border-neutral-100">
                                     Text2Handwriting Site Pages
                                 </div>
@@ -1465,7 +1465,7 @@ export default function EditorPage() {
                     <button 
                         onClick={() => setShowResetModal(true)}
                         title="Reset document styles or clear page"
-                        className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-neutral-100 hover:bg-rose-50 hover:text-rose-600 text-neutral-600 rounded-xl text-xs font-bold transition-all active:scale-95 border border-neutral-200/60"
+                        className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-neutral-100 hover:bg-rose-50 hover:text-rose-600 text-neutral-600 rounded-md text-xs font-bold transition-all active:scale-95 border border-neutral-200/60"
                     >
                         <RotateCcw size={13} />
                         <span className="hidden sm:inline">Reset</span>
@@ -1475,7 +1475,7 @@ export default function EditorPage() {
                     <button 
                         onClick={() => setShowCreatorModal(true)}
                         title="Created with passion by Bipin Vishwakarma — View Profile & Socials"
-                        className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1.5 bg-neutral-100 hover:bg-neutral-200/70 text-neutral-700 rounded-xl text-xs font-bold transition-all active:scale-95 border border-neutral-200/60"
+                        className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1.5 bg-neutral-100 hover:bg-neutral-200/70 text-neutral-700 rounded-md text-xs font-bold transition-all active:scale-95 border border-neutral-200/60"
                     >
                         <div className="relative flex items-center justify-center">
                             <img 
@@ -1486,7 +1486,7 @@ export default function EditorPage() {
                                     (e.target as HTMLImageElement).src = 'https://github.com/bipin-vishwakarma.png';
                                 }}
                             />
-                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 absolute -bottom-0.5 -right-0.5 ring-1 ring-white" />
+                            <div className="w-1.5 h-1.5 rounded-full bg-black absolute -bottom-0.5 -right-0.5 ring-1 ring-white" />
                         </div>
                         <span className="hidden md:inline text-[11px] font-semibold text-neutral-800">Bipin</span>
                     </button>
@@ -1494,7 +1494,7 @@ export default function EditorPage() {
                     <button 
                         onClick={() => setIsHistoryOpen(true)}
                         title="Version History"
-                        className="p-2 hover:bg-neutral-100 rounded-xl text-neutral-600 hover:text-neutral-900 transition-colors"
+                        className="p-2 hover:bg-neutral-100 rounded-md text-neutral-600 hover:text-neutral-900 transition-colors"
                     >
                         <Clock size={16} />
                     </button>
@@ -1505,7 +1505,7 @@ export default function EditorPage() {
                     {/* Primary Export Preview Button */}
                     <button 
                         onClick={() => handleStartExport('pdf')}
-                        className="flex items-center gap-2 px-4 py-2 bg-neutral-900 hover:bg-black text-white rounded-xl text-xs font-bold shadow-md shadow-neutral-900/15 transition-all active:scale-95"
+                        className="flex items-center gap-2 px-4 py-2 bg-neutral-900 hover:bg-neutral-800 text-white rounded-md text-xs font-bold shadow-md shadow-neutral-900/15 transition-all active:scale-95"
                     >
                         <Download size={14} />
                         <span>Export Preview</span>
@@ -1531,7 +1531,7 @@ export default function EditorPage() {
                             <button
                                 key={t.id}
                                 onClick={() => setActiveSidebarTab(t.id)}
-                                className={`py-1.5 px-1 rounded-xl text-[11px] font-bold flex flex-col sm:flex-row items-center justify-center gap-1 transition-all ${
+                                className={`py-1.5 px-1 rounded-md text-[11px] font-bold flex flex-col sm:flex-row items-center justify-center gap-1 transition-all ${
                                     activeSidebarTab === t.id
                                         ? 'bg-neutral-900 text-white shadow-xs'
                                         : 'text-neutral-500 hover:text-neutral-900 hover:bg-neutral-200/60'
@@ -1550,7 +1550,7 @@ export default function EditorPage() {
                         {activeSidebarTab === 'write' && (
                             <div className="flex-1 flex flex-col min-h-0 space-y-3.5">
                                 {/* Heading Option */}
-                                <div className="shrink-0 bg-neutral-50/90 p-3.5 rounded-2xl border border-neutral-200/80 space-y-2.5 shadow-2xs">
+                                <div className="shrink-0 bg-neutral-50/90 p-3.5 rounded-md border border-neutral-200/80 space-y-2.5 shadow-2xs">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-1.5">
                                             <span className="text-[10px] font-black uppercase tracking-widest text-neutral-400">
@@ -1580,7 +1580,7 @@ export default function EditorPage() {
                                                 onChange={e => setPageOptions({ headerText: e.target.value })}
                                                 placeholder="Name: Bipin Vishwakarma     Sap ID: 500124214&#10;Subject: Human Computer Interaction"
                                                 rows={Math.min(4, Math.max(2, (headerText.split('\n').length)))}
-                                                className="w-full min-h-[58px] max-h-[120px] p-2.5 rounded-xl bg-white border border-neutral-200/90 text-neutral-900 text-xs leading-relaxed focus:bg-white focus:outline-none focus:ring-2 focus:ring-neutral-900/15 focus:border-neutral-400 transition-all resize-y font-sans font-medium custom-scrollbar"
+                                                className="w-full min-h-[58px] max-h-[120px] p-2.5 rounded-md bg-white border border-neutral-200/90 text-neutral-900 text-xs leading-relaxed focus:bg-white focus:outline-none focus:ring-2 focus:ring-neutral-900/15 focus:border-neutral-400 transition-all resize-y font-sans font-medium custom-scrollbar"
                                             />
                                             {/* Quick Heading Template Chips */}
                                             <div className="flex items-center gap-1.5 flex-wrap text-[10px]">
@@ -1635,7 +1635,7 @@ export default function EditorPage() {
                                                 onClick={() => fileInputRef.current?.click()}
                                                 disabled={isImporting}
                                                 title="Import Word (.docx), PDF (.pdf), Markdown (.md), Text (.txt), or Image OCR"
-                                                className="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200/80 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer shadow-2xs active:scale-95 disabled:opacity-50"
+                                                className="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200/80 rounded-md text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer shadow-2xs active:scale-95 disabled:opacity-50"
                                             >
                                                 {isImporting ? (
                                                     <Loader2 size={12} className="animate-spin text-blue-600" />
@@ -1648,7 +1648,7 @@ export default function EditorPage() {
                                                 type="button"
                                                 onClick={handlePasteClipboard}
                                                 title="Paste text from clipboard (auto-cleans AI preambles)"
-                                                className="px-2.5 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer border border-neutral-200/70 shadow-2xs active:scale-95"
+                                                className="px-2.5 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 rounded-md text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer border border-neutral-200/70 shadow-2xs active:scale-95"
                                             >
                                                 <Clipboard size={12} />
                                                 <span>Paste</span>
@@ -1657,7 +1657,7 @@ export default function EditorPage() {
                                                 type="button"
                                                 onClick={handleCleanAIText}
                                                 title="Clean AI formatting, remove chat intros, and format headers & Q/A"
-                                                className="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200/80 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer shadow-2xs active:scale-95"
+                                                className="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200/80 rounded-md text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer shadow-2xs active:scale-95"
                                             >
                                                 <Sparkles size={12} className="text-amber-600" />
                                                 <span>Clean AI</span>
@@ -1666,7 +1666,7 @@ export default function EditorPage() {
                                                 type="button"
                                                 onClick={() => setIsEditorExpanded(true)}
                                                 title="Open Fullscreen Focus Mode"
-                                                className="px-2 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer border border-neutral-200/60"
+                                                className="px-2 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-md text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer border border-neutral-200/60"
                                             >
                                                 <Maximize2 size={12} />
                                                 <span className="hidden sm:inline">Focus</span>
@@ -1680,7 +1680,7 @@ export default function EditorPage() {
                                                         }
                                                     }}
                                                     title="Clear All Text"
-                                                    className="p-1.5 text-neutral-400 hover:text-rose-600 rounded-lg transition-colors cursor-pointer"
+                                                    className="p-1.5 text-neutral-400 hover:text-rose-600 rounded-md transition-colors cursor-pointer"
                                                 >
                                                     <Trash2 size={13} />
                                                 </button>
@@ -1690,7 +1690,7 @@ export default function EditorPage() {
 
                                     {/* AI Detection & 1-Click Auto-Format Banner */}
                                     {isLikelyAIText(draftText) && (
-                                        <div className="flex items-center justify-between px-3 py-1.5 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/80 rounded-xl text-[11px] text-amber-900 animate-in fade-in duration-150 shrink-0">
+                                        <div className="flex items-center justify-between px-3 py-1.5 bg-black text-white border border-amber-200/80 rounded-md text-[11px] text-amber-900 animate-in fade-in duration-150 shrink-0">
                                             <div className="flex items-center gap-1.5 font-medium">
                                                 <Sparkles size={12} className="text-amber-600 shrink-0" />
                                                 <span>AI chat formatting detected</span>
@@ -1707,7 +1707,7 @@ export default function EditorPage() {
 
                                     {/* Inset Textarea Container - Floating Scrollbar & Status Bar */}
                                     <div 
-                                        className={`flex-1 min-h-[260px] flex flex-col rounded-2xl bg-neutral-50/90 border transition-all shadow-2xs overflow-hidden relative ${
+                                        className={`flex-1 min-h-[260px] flex flex-col rounded-md bg-neutral-50/90 border transition-all shadow-2xs overflow-hidden relative ${
                                             isDraggingFile 
                                                 ? 'border-blue-500 ring-2 ring-blue-500/20 bg-blue-50/30' 
                                                 : 'border-neutral-200 focus-within:bg-white focus-within:border-neutral-400 focus-within:ring-2 focus-within:ring-neutral-900/10'
@@ -1736,7 +1736,7 @@ export default function EditorPage() {
                                     >
                                         {/* Drag & Drop Visual Dropzone Overlay */}
                                         {isDraggingFile && (
-                                            <div className="absolute inset-0 z-30 bg-blue-600/90 text-white rounded-2xl flex flex-col items-center justify-center gap-2.5 p-6 backdrop-blur-xs pointer-events-none animate-in fade-in duration-150 border-2 border-white/40 shadow-2xl">
+                                            <div className="absolute inset-0 z-30 bg-blue-600/90 text-white rounded-md flex flex-col items-center justify-center gap-2.5 p-6 backdrop-blur-xs pointer-events-none animate-in fade-in duration-150 border-2 border-white/40 shadow-sm">
                                                 <FileUp size={36} className="animate-bounce text-blue-200" />
                                                 <div className="text-center">
                                                     <p className="font-bold text-sm text-white">Drop document to import</p>
@@ -1747,7 +1747,7 @@ export default function EditorPage() {
 
                                         {/* Loading / Extraction Progress Badge */}
                                         {isImporting && importProgress && (
-                                            <div className="absolute top-3 right-3 z-30 bg-neutral-900/95 text-white text-[11px] font-medium px-3 py-1.5 rounded-xl shadow-xl flex items-center gap-2 border border-white/20 backdrop-blur-md animate-in fade-in">
+                                            <div className="absolute top-3 right-3 z-30 bg-neutral-900/95 text-white text-[11px] font-medium px-3 py-1.5 rounded-md shadow-sm flex items-center gap-2 border border-white/20 backdrop-blur-md animate-in fade-in">
                                                 <Loader2 size={13} className="animate-spin text-blue-400" />
                                                 <span>{importProgress}</span>
                                             </div>
@@ -1841,7 +1841,7 @@ export default function EditorPage() {
                                     <select
                                         value={font}
                                         onChange={e => setFont(e.target.value)}
-                                        className="w-full p-3 rounded-2xl bg-neutral-50 border border-neutral-200 text-neutral-900 text-xs font-bold focus:bg-white focus:outline-none focus:ring-2 focus:ring-neutral-900/10 cursor-pointer transition-all"
+                                        className="w-full p-3 rounded-md bg-neutral-50 border border-neutral-200 text-neutral-900 text-xs font-bold focus:bg-white focus:outline-none focus:ring-2 focus:ring-neutral-900/10 cursor-pointer transition-all"
                                     >
                                         {FONTS.map(f => (
                                             <option key={f.name} value={f.name} className="py-1">{f.label}</option>
@@ -1850,7 +1850,7 @@ export default function EditorPage() {
                                 </div>
 
                                 {/* Font Size & Baseline Slider */}
-                                <div className="space-y-4 bg-neutral-50 p-4 rounded-2xl border border-neutral-200/70">
+                                <div className="space-y-4 bg-neutral-50 p-4 rounded-md border border-neutral-200/70">
                                     <div>
                                         <div className="flex justify-between text-xs mb-1.5 text-neutral-600 font-bold">
                                             <span>Font Size</span>
@@ -1887,7 +1887,7 @@ export default function EditorPage() {
                                     <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400 block mb-2">
                                         Text Alignment
                                     </label>
-                                    <div className="flex bg-neutral-100 p-1 rounded-2xl border border-neutral-200/70">
+                                    <div className="flex bg-neutral-100 p-1 rounded-md border border-neutral-200/70">
                                         {[
                                             { id: 'left' as const, icon: AlignLeft },
                                             { id: 'center' as const, icon: AlignCenter },
@@ -1897,7 +1897,7 @@ export default function EditorPage() {
                                             <button 
                                                 key={opt.id} 
                                                 onClick={() => setTextAlign(opt.id)} 
-                                                className={`flex-1 p-2 flex justify-center rounded-xl transition-all ${
+                                                className={`flex-1 p-2 flex justify-center rounded-md transition-all ${
                                                     textAlign === opt.id ? 'bg-white text-neutral-900 shadow-xs' : 'text-neutral-500 hover:text-neutral-900'
                                                 }`}
                                             >
@@ -1949,7 +1949,7 @@ export default function EditorPage() {
                                                         setSpiralBinding(false);
                                                     }
                                                 }}
-                                                className={`p-3.5 rounded-2xl text-xs font-bold flex items-center justify-between border transition-all ${
+                                                className={`p-3.5 rounded-md text-xs font-bold flex items-center justify-between border transition-all ${
                                                     paper.id === p.id 
                                                         ? 'bg-neutral-900 text-white border-neutral-900 shadow-xs' 
                                                         : 'bg-neutral-50 border-neutral-200/70 text-neutral-700 hover:bg-neutral-100'
@@ -1963,10 +1963,10 @@ export default function EditorPage() {
                                 </div>
 
                                 {/* Lab Practical & Mixed Pages Mode Card */}
-                                <div className="p-4 rounded-2xl bg-gradient-to-br from-indigo-50/90 via-white to-blue-50/70 border border-blue-200/90 shadow-xs space-y-3">
+                                <div className="p-4 rounded-md bg-gradient-to-br from-neutral-50/90 via-white to-blue-50/70 border border-blue-200/90 shadow-xs space-y-3">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-2">
-                                            <div className="w-7 h-7 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-xs">
+                                            <div className="w-7 h-7 rounded-md bg-blue-600 text-white flex items-center justify-center shadow-xs">
                                                 <FlaskConical size={14} />
                                             </div>
                                             <div>
@@ -2011,7 +2011,7 @@ export default function EditorPage() {
                                                     <button
                                                         type="button"
                                                         onClick={() => setLabNotebookStartWith('blank')}
-                                                        className={`p-2 rounded-xl text-left border transition-all cursor-pointer ${
+                                                        className={`p-2 rounded-md text-left border transition-all cursor-pointer ${
                                                             labNotebookStartWith === 'blank'
                                                                 ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
                                                                 : 'bg-white border-neutral-200 text-neutral-700 hover:bg-neutral-50'
@@ -2025,7 +2025,7 @@ export default function EditorPage() {
                                                     <button
                                                         type="button"
                                                         onClick={() => setLabNotebookStartWith('ruled')}
-                                                        className={`p-2 rounded-xl text-left border transition-all cursor-pointer ${
+                                                        className={`p-2 rounded-md text-left border transition-all cursor-pointer ${
                                                             labNotebookStartWith === 'ruled'
                                                                 ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
                                                                 : 'bg-white border-neutral-200 text-neutral-700 hover:bg-neutral-50'
@@ -2048,7 +2048,7 @@ export default function EditorPage() {
                                                     <button
                                                         type="button"
                                                         onClick={() => setLabDiagramPaper('blank')}
-                                                        className={`p-2 rounded-xl text-center border font-bold text-[11px] transition-all cursor-pointer ${
+                                                        className={`p-2 rounded-md text-center border font-bold text-[11px] transition-all cursor-pointer ${
                                                             labDiagramPaper === 'blank'
                                                                 ? 'bg-neutral-900 text-white border-neutral-900 shadow-xs'
                                                                 : 'bg-white border-neutral-200 text-neutral-700 hover:bg-neutral-50'
@@ -2059,7 +2059,7 @@ export default function EditorPage() {
                                                     <button
                                                         type="button"
                                                         onClick={() => setLabDiagramPaper('grid')}
-                                                        className={`p-2 rounded-xl text-center border font-bold text-[11px] transition-all cursor-pointer ${
+                                                        className={`p-2 rounded-md text-center border font-bold text-[11px] transition-all cursor-pointer ${
                                                             labDiagramPaper === 'grid'
                                                                 ? 'bg-neutral-900 text-white border-neutral-900 shadow-xs'
                                                                 : 'bg-white border-neutral-200 text-neutral-700 hover:bg-neutral-50'
@@ -2095,7 +2095,7 @@ export default function EditorPage() {
                                 </div>
 
                                 {/* 3D Twin-Wire Spiral Binding Toggle */}
-                                <div className="p-3.5 rounded-2xl bg-neutral-50 border border-neutral-200/70 space-y-2">
+                                <div className="p-3.5 rounded-md bg-neutral-50 border border-neutral-200/70 space-y-2">
                                     <label className="flex items-center justify-between cursor-pointer">
                                         <div className="flex items-center gap-2">
                                             <span className="text-xs font-bold text-neutral-900">3D Spiral Binding (Twin-Wire)</span>
@@ -2114,7 +2114,7 @@ export default function EditorPage() {
                                 </div>
 
                                 {/* Page Number Option */}
-                                <label className="flex items-center gap-3 p-3.5 rounded-2xl bg-neutral-50 border border-neutral-200/70 cursor-pointer">
+                                <label className="flex items-center gap-3 p-3.5 rounded-md bg-neutral-50 border border-neutral-200/70 cursor-pointer">
                                     <input 
                                         type="checkbox" 
                                         checked={showPageNumbers} 
@@ -2125,7 +2125,7 @@ export default function EditorPage() {
                                 </label>
 
                                 {/* Classic Student Notebook Date & Page Box */}
-                                <div className="p-3.5 rounded-2xl bg-neutral-50 border border-neutral-200/70 space-y-2.5">
+                                <div className="p-3.5 rounded-md bg-neutral-50 border border-neutral-200/70 space-y-2.5">
                                     <label className="flex items-center justify-between cursor-pointer">
                                         <div className="flex items-center gap-2">
                                             <span className="text-xs font-bold text-neutral-900">Classic Notebook Date & Page Box</span>
@@ -2150,7 +2150,7 @@ export default function EditorPage() {
                                                     value={notebookDate}
                                                     onChange={e => setNotebookDate(e.target.value)}
                                                     placeholder={new Date().toLocaleDateString('en-GB')}
-                                                    className="flex-1 px-2.5 py-1 text-xs font-mono font-semibold bg-white border border-neutral-200 rounded-lg outline-none focus:border-neutral-900"
+                                                    className="flex-1 px-2.5 py-1 text-xs font-mono font-semibold bg-white border border-neutral-200 rounded-md outline-none focus:border-neutral-900"
                                                 />
                                             </div>
                                             <div className="flex items-center gap-2">
@@ -2158,7 +2158,7 @@ export default function EditorPage() {
                                                 <select
                                                     value={notebookBrand}
                                                     onChange={e => setNotebookBrand(e.target.value)}
-                                                    className="flex-1 px-2 py-1 text-xs font-bold bg-white border border-neutral-200 rounded-lg outline-none focus:border-neutral-900 cursor-pointer"
+                                                    className="flex-1 px-2 py-1 text-xs font-bold bg-white border border-neutral-200 rounded-md outline-none focus:border-neutral-900 cursor-pointer"
                                                 >
                                                     <option value="YOUVA">YOUVA (Navneet)</option>
                                                     <option value="CLASSMATE">CLASSMATE</option>
@@ -2180,7 +2180,7 @@ export default function EditorPage() {
                                 </div>
 
                                 {/* Smart Margin Indexing Option */}
-                                <div className="p-3.5 rounded-2xl bg-neutral-50 border border-neutral-200/70 space-y-1.5">
+                                <div className="p-3.5 rounded-md bg-neutral-50 border border-neutral-200/70 space-y-1.5">
                                     <label className="flex items-center justify-between cursor-pointer">
                                         <div className="flex items-center gap-2">
                                             <span className="text-xs font-bold text-neutral-900">Smart Margin Indexing</span>
@@ -2199,7 +2199,7 @@ export default function EditorPage() {
                                 </div>
 
                                 {/* Margins */}
-                                <div className="space-y-3 bg-neutral-50 p-4 rounded-2xl border border-neutral-200/70">
+                                <div className="space-y-3 bg-neutral-50 p-4 rounded-md border border-neutral-200/70">
                                     <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400 block">
                                         Page Margins (px)
                                     </label>
@@ -2274,7 +2274,7 @@ export default function EditorPage() {
                                     </div>
                                 </div>
 
-                                <div className="space-y-4 bg-neutral-50 p-4 rounded-2xl border border-neutral-200/70">
+                                <div className="space-y-4 bg-neutral-50 p-4 rounded-md border border-neutral-200/70">
                                     <div>
                                         <div className="flex justify-between text-xs mb-1 text-neutral-600 font-bold">
                                             <span>Baseline Wobble</span>
@@ -2312,7 +2312,7 @@ export default function EditorPage() {
                                 <CameraPhysicsControls />
 
                                 {/* Sticky Note Extra */}
-                                <div className="p-4 rounded-2xl bg-neutral-50 border border-neutral-200/70 space-y-3">
+                                <div className="p-4 rounded-md bg-neutral-50 border border-neutral-200/70 space-y-3">
                                     <label className="flex items-center gap-3 cursor-pointer">
                                         <input 
                                             type="checkbox" 
@@ -2330,7 +2330,7 @@ export default function EditorPage() {
                                             value={stickyNoteText}
                                             onChange={e => setStickyNoteText(e.target.value)}
                                             placeholder="Write reminder note..."
-                                            className="w-full h-18 p-3 rounded-xl bg-amber-100 text-amber-950 border border-amber-300/60 text-xs font-sans font-semibold focus:outline-none resize-none shadow-xs"
+                                            className="w-full h-18 p-3 rounded-md bg-amber-100 text-amber-950 border border-amber-300/60 text-xs font-sans font-semibold focus:outline-none resize-none shadow-xs"
                                         />
                                      )}
                                 </div>
@@ -2535,7 +2535,7 @@ export default function EditorPage() {
                                                  {/* Sticky Note */}
                                                 {showStickyNote && isFirstTextPage && !isDiagram && (
                                                     <div 
-                                                        className="absolute top-6 right-6 w-36 h-36 bg-amber-200 text-amber-950 p-4 shadow-xl rotate-3 z-20 font-sans text-xs font-semibold leading-snug rounded-xs border border-amber-300 pointer-events-none"
+                                                        className="absolute top-6 right-6 w-36 h-36 bg-amber-200 text-amber-950 p-4 shadow-sm rotate-3 z-20 font-sans text-xs font-semibold leading-snug rounded-xs border border-amber-300 pointer-events-none"
                                                     >
                                                         <div className="w-12 h-3 bg-amber-300/60 -top-1.5 left-1/2 -translate-x-1/2 absolute rounded-xs" />
                                                         {stickyNoteText}
@@ -3032,7 +3032,7 @@ export default function EditorPage() {
             {/* ==================== RESET CONFIRMATION MODAL ==================== */}
             {showResetModal && (
                 <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
-                    <div className="bg-white rounded-3xl p-6 sm:p-7 max-w-sm w-full shadow-2xl border border-neutral-200/80 space-y-4">
+                    <div className="bg-white rounded-md p-6 sm:p-7 max-w-sm w-full shadow-sm border border-neutral-200/80 space-y-4">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <div className="w-8 h-8 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center">
@@ -3052,7 +3052,7 @@ export default function EditorPage() {
                         <div className="space-y-2.5 pt-1">
                             <button
                                 onClick={handleResetStylesOnly}
-                                className="w-full py-3 px-4 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 rounded-2xl text-xs font-bold text-left transition-colors flex flex-col gap-0.5"
+                                className="w-full py-3 px-4 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 rounded-md text-xs font-bold text-left transition-colors flex flex-col gap-0.5"
                             >
                                 <span className="font-bold text-neutral-900">Reset Styles Only</span>
                                 <span className="text-[10px] text-neutral-500 font-normal">Restores default font, paper, margins, and effects. Keeps your text.</span>
@@ -3060,7 +3060,7 @@ export default function EditorPage() {
 
                             <button
                                 onClick={handleResetEverything}
-                                className="w-full py-3 px-4 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-2xl text-xs font-bold text-left transition-colors flex flex-col gap-0.5"
+                                className="w-full py-3 px-4 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-md text-xs font-bold text-left transition-colors flex flex-col gap-0.5"
                             >
                                 <span className="font-bold text-rose-700">Reset Everything (Start Fresh)</span>
                                 <span className="text-[10px] text-rose-500 font-normal">Clears all text and resets all settings to default.</span>
@@ -3161,11 +3161,11 @@ export default function EditorPage() {
                     aria-label="Distraction-Free Focus Editor"
                     className="fixed inset-0 z-50 bg-neutral-950/75 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200"
                 >
-                    <div className="relative w-full max-w-5xl h-[92vh] bg-white rounded-3xl shadow-2xl flex flex-col border border-neutral-200 overflow-hidden ring-1 ring-black/10">
+                    <div className="relative w-full max-w-5xl h-[92vh] bg-white rounded-md shadow-sm flex flex-col border border-neutral-200 overflow-hidden ring-1 ring-black/10">
                         {/* Top Toolbar */}
                         <div className="px-5 py-3.5 bg-neutral-50/95 border-b border-neutral-200 flex items-center justify-between gap-4 select-none shrink-0">
                             <div className="flex items-center gap-3">
-                                <span className="p-2 rounded-xl bg-neutral-900 text-white shadow-xs">
+                                <span className="p-2 rounded-md bg-neutral-900 text-white shadow-xs">
                                     <Sparkles size={16} />
                                 </span>
                                 <div>
@@ -3189,7 +3189,7 @@ export default function EditorPage() {
 
                             <div className="flex items-center gap-2">
                                 {/* Font Size Toggle */}
-                                <div className="hidden sm:flex items-center bg-neutral-200/60 p-0.5 rounded-lg text-[11px] font-semibold text-neutral-600">
+                                <div className="hidden sm:flex items-center bg-neutral-200/60 p-0.5 rounded-md text-[11px] font-semibold text-neutral-600">
                                     <button
                                         type="button"
                                         onClick={() => setEditorFontSize('sm')}
@@ -3224,7 +3224,7 @@ export default function EditorPage() {
                                     type="button"
                                     onClick={handlePasteClipboard}
                                     title="Paste from clipboard"
-                                    className="px-2.5 py-1.5 bg-white hover:bg-neutral-100 border border-neutral-200 rounded-lg text-neutral-700 text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
+                                    className="px-2.5 py-1.5 bg-white hover:bg-neutral-100 border border-neutral-200 rounded-md text-neutral-700 text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
                                 >
                                     <Clipboard size={13} />
                                     <span className="hidden md:inline">Paste</span>
@@ -3233,7 +3233,7 @@ export default function EditorPage() {
                                     type="button"
                                     onClick={handleCleanSpacing}
                                     title="Clean extra empty lines"
-                                    className="px-2.5 py-1.5 bg-white hover:bg-neutral-100 border border-neutral-200 rounded-lg text-neutral-700 text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
+                                    className="px-2.5 py-1.5 bg-white hover:bg-neutral-100 border border-neutral-200 rounded-md text-neutral-700 text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
                                 >
                                     <Sparkles size={13} className="text-amber-500" />
                                     <span className="hidden md:inline">Clean Spacing</span>
@@ -3243,7 +3243,7 @@ export default function EditorPage() {
                                 <button
                                     type="button"
                                     onClick={() => setIsEditorExpanded(false)}
-                                    className="px-3 py-1.5 bg-neutral-900 hover:bg-neutral-800 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-colors cursor-pointer ml-1"
+                                    className="px-3 py-1.5 bg-neutral-900 hover:bg-neutral-800 text-white rounded-md text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-colors cursor-pointer ml-1"
                                 >
                                     <Minimize2 size={13} />
                                     <span>Done</span>
@@ -3261,7 +3261,7 @@ export default function EditorPage() {
                                     onClick={() => fileInputRef.current?.click()}
                                     disabled={isImporting}
                                     title="Import Word (.docx), PDF (.pdf), Markdown (.md), Text (.txt), or Image OCR"
-                                    className="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200/80 rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all cursor-pointer disabled:opacity-50"
+                                    className="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200/80 rounded-md text-xs font-semibold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all cursor-pointer disabled:opacity-50"
                                 >
                                     {isImporting ? (
                                         <Loader2 size={13} className="animate-spin text-blue-600" />
@@ -3274,7 +3274,7 @@ export default function EditorPage() {
                                     type="button"
                                     onClick={handleCleanAIText}
                                     title="Auto-Clean ChatGPT / Claude dumps (removes chat greetings, formats headings & Q/A)"
-                                    className="px-2.5 py-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer"
+                                    className="px-2.5 py-1 bg-black text-white hover:bg-neutral-800 text-white rounded-md text-xs font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer"
                                 >
                                     <Sparkles size={13} />
                                     <span>Clean AI Text</span>
@@ -3283,7 +3283,7 @@ export default function EditorPage() {
                                     type="button"
                                     onClick={handlePasteClipboard}
                                     title="Paste from clipboard"
-                                    className="px-2 py-1 bg-white hover:bg-neutral-100 text-neutral-800 border border-neutral-200 rounded-lg text-xs font-semibold flex items-center gap-1 shadow-2xs active:scale-95 transition-all cursor-pointer"
+                                    className="px-2 py-1 bg-white hover:bg-neutral-100 text-neutral-800 border border-neutral-200 rounded-md text-xs font-semibold flex items-center gap-1 shadow-2xs active:scale-95 transition-all cursor-pointer"
                                 >
                                     <Clipboard size={12} />
                                     <span>Paste</span>
@@ -3292,7 +3292,7 @@ export default function EditorPage() {
                                     type="button"
                                     onClick={handleCleanSpacing}
                                     title="Clean extra empty lines"
-                                    className="px-2 py-1 bg-white hover:bg-neutral-100 text-neutral-700 border border-neutral-200 rounded-lg text-xs font-semibold flex items-center gap-1 shadow-2xs active:scale-95 transition-all cursor-pointer"
+                                    className="px-2 py-1 bg-white hover:bg-neutral-100 text-neutral-700 border border-neutral-200 rounded-md text-xs font-semibold flex items-center gap-1 shadow-2xs active:scale-95 transition-all cursor-pointer"
                                 >
                                     <span>Clean Space</span>
                                 </button>
@@ -3392,7 +3392,7 @@ export default function EditorPage() {
                                         setDraftText(prev => prev + (prev.endsWith('\n') || !prev ? '' : '\n') + sampleCompare);
                                     }}
                                     title="2-Column Student Comparison Table"
-                                    className="px-2 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 rounded-md text-xs font-semibold shadow-2xs cursor-pointer active:scale-95 transition-all"
+                                    className="px-2 py-1 bg-neutral-50 hover:bg-neutral-100 text-neutral-900 border border-neutral-200 rounded-md text-xs font-semibold shadow-2xs cursor-pointer active:scale-95 transition-all"
                                 >
                                     ⚖️ Table
                                 </button>
@@ -3438,7 +3438,7 @@ export default function EditorPage() {
                         >
                             {/* Drag & Drop Visual Dropzone Overlay */}
                             {isDraggingFile && (
-                                <div className="absolute inset-0 z-30 bg-blue-600/90 text-white flex flex-col items-center justify-center gap-3 p-8 backdrop-blur-xs pointer-events-none animate-in fade-in duration-150 border-4 border-dashed border-white/50 shadow-2xl">
+                                <div className="absolute inset-0 z-30 bg-blue-600/90 text-white flex flex-col items-center justify-center gap-3 p-8 backdrop-blur-xs pointer-events-none animate-in fade-in duration-150 border-4 border-dashed border-white/50 shadow-sm">
                                     <FileUp size={48} className="animate-bounce text-blue-200" />
                                     <div className="text-center">
                                         <p className="font-bold text-lg text-white">Drop document to import into Focus Mode</p>
@@ -3449,7 +3449,7 @@ export default function EditorPage() {
 
                             {/* Loading / Extraction Progress Badge */}
                             {isImporting && importProgress && (
-                                <div className="absolute top-4 right-6 z-30 bg-neutral-900/95 text-white text-xs font-medium px-4 py-2 rounded-xl shadow-2xl flex items-center gap-2.5 border border-white/20 backdrop-blur-md animate-in fade-in">
+                                <div className="absolute top-4 right-6 z-30 bg-neutral-900/95 text-white text-xs font-medium px-4 py-2 rounded-md shadow-sm flex items-center gap-2.5 border border-white/20 backdrop-blur-md animate-in fade-in">
                                     <Loader2 size={14} className="animate-spin text-blue-400" />
                                     <span>{importProgress}</span>
                                 </div>
@@ -3520,7 +3520,7 @@ export default function EditorPage() {
             {/* MS Word / Notion Style Floating Mini-Toolbar */}
             {floatingToolbar.isOpen && (
                 <div
-                    className="ms-word-floating-toolbar fixed z-50 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1.5 bg-neutral-900/95 text-white rounded-2xl shadow-2xl border border-white/20 backdrop-blur-md animate-in fade-in zoom-in-95 duration-150 select-none pointer-events-auto"
+                    className="ms-word-floating-toolbar fixed z-50 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1.5 bg-neutral-900/95 text-white rounded-md shadow-sm border border-white/20 backdrop-blur-md animate-in fade-in zoom-in-95 duration-150 select-none pointer-events-auto"
                     style={{
                         left: `${floatingToolbar.x}px`,
                         top: `${floatingToolbar.y}px`,

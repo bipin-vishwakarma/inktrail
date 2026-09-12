@@ -9,7 +9,7 @@ export default function FAQPage() {
                 <section className="space-y-10">
                     <div>
                         <h4 className="text-xl font-bold text-neutral-900 mb-3 flex items-center gap-2">
-                             <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+                             <span className="w-1.5 h-1.5 rounded-full bg-neutral-800" />
                              Is Text2Handwriting really free?
                         </h4>
                         <p className="text-neutral-600 leading-relaxed">
@@ -19,7 +19,7 @@ export default function FAQPage() {
 
                     <div>
                         <h4 className="text-xl font-bold text-neutral-900 mb-3 flex items-center gap-2">
-                             <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+                             <span className="w-1.5 h-1.5 rounded-full bg-neutral-800" />
                              How does the AI Humanizer work?
                         </h4>
                         <p className="text-neutral-600 leading-relaxed">
@@ -29,7 +29,7 @@ export default function FAQPage() {
 
                     <div>
                         <h4 className="text-xl font-bold text-neutral-900 mb-3 flex items-center gap-2">
-                             <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+                             <span className="w-1.5 h-1.5 rounded-full bg-neutral-800" />
                              Is my data secure and private?
                         </h4>
                         <p className="text-neutral-600 leading-relaxed">
@@ -39,7 +39,7 @@ export default function FAQPage() {
 
                     <div>
                         <h4 className="text-xl font-bold text-neutral-900 mb-3 flex items-center gap-2">
-                             <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+                             <span className="w-1.5 h-1.5 rounded-full bg-neutral-800" />
                              Can I use my own handwriting font?
                         </h4>
                         <p className="text-neutral-600 leading-relaxed">
@@ -49,7 +49,7 @@ export default function FAQPage() {
 
                     <div>
                         <h4 className="text-xl font-bold text-neutral-900 mb-3 flex items-center gap-2">
-                             <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+                             <span className="w-1.5 h-1.5 rounded-full bg-neutral-800" />
                              What file formats are supported for export?
                         </h4>
                         <p className="text-neutral-600 leading-relaxed">

@@ -101,13 +101,13 @@ export default function HistoryModal({ isOpen, onClose }: HistoryModalProps) {
                                 <div className="hidden sm:block h-6 w-px bg-neutral-100 mx-2" />
                                 <button 
                                     onClick={onClose}
-                                    className="p-2 -ml-2 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded-xl transition-all flex items-center gap-2 group"
+                                    className="p-2 -ml-2 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded-md transition-all flex items-center gap-2 group"
                                     title="Go Back"
                                 >
                                     <ArrowLeft size={20} className="group-hover:-translate-x-0.5 transition-transform" />
                                 </button>
                                 <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-indigo-50 rounded-xl text-indigo-600">
+                                    <div className="p-2 bg-neutral-50 rounded-md text-black">
                                         <Clock size={20} />
                                     </div>
                                     <div>
@@ -132,7 +132,7 @@ export default function HistoryModal({ isOpen, onClose }: HistoryModalProps) {
                         {/* SEARCH BAR SECTION */}
                         <div className="px-5 sm:px-8 py-3 sm:py-4 bg-[#FAFAFA] border-b border-neutral-100 shrink-0 relative z-10 overflow-hidden isolate">
                             <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] bg-size-[24px_24px] opacity-20 pointer-events-none" />
-                            <div className="relative flex items-center gap-3 px-4 py-2.5 sm:py-3 glass rounded-2xl border border-neutral-100 focus-within:border-indigo-200 focus-within:ring-2 focus-within:ring-indigo-500/10 transition-all overflow-hidden isolate">
+                            <div className="relative flex items-center gap-3 px-4 py-2.5 sm:py-3 glass rounded-md border border-neutral-100 focus-within:border-neutral-200 focus-within:ring-2 focus-within:ring-neutral-800/10 transition-all overflow-hidden isolate">
                                 <Search size={16} className="text-neutral-400" />
                                 <input 
                                     type="text" 
@@ -148,7 +148,7 @@ export default function HistoryModal({ isOpen, onClose }: HistoryModalProps) {
                         <div className="flex-1 overflow-y-auto p-2 sm:p-4 bg-white relative custom-scrollbar">
                             {isLoading ? (
                                 <div className="flex flex-col items-center justify-center h-full opacity-40">
-                                    <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4" />
+                                    <div className="w-8 h-8 border-2 border-neutral-800 border-t-transparent rounded-full animate-spin mb-4" />
                                     <p className="font-medium text-xs text-neutral-400">Loading...</p>
                                 </div>
                             ) : filteredFiles.length === 0 ? (
@@ -167,7 +167,7 @@ export default function HistoryModal({ isOpen, onClose }: HistoryModalProps) {
                                             initial={{ opacity: 0, x: -10 }}
                                             animate={{ opacity: 1, x: 0 }}
                                             transition={{ delay: index * 0.02 }}
-                                            className="group flex items-center justify-between p-3 rounded-xl hover:bg-neutral-50 transition-colors border border-transparent hover:border-neutral-100"
+                                            className="group flex items-center justify-between p-3 rounded-md hover:bg-neutral-50 transition-colors border border-transparent hover:border-neutral-100"
                                         >
                                             <div className="min-w-0 flex-1 pl-1">
                                                 <span className="font-medium text-neutral-700 text-sm truncate block" title={file.name}>
@@ -178,14 +178,14 @@ export default function HistoryModal({ isOpen, onClose }: HistoryModalProps) {
                                             <div className="flex items-center gap-1 ml-4 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <button 
                                                     onClick={() => handleDownload(file)}
-                                                    className="p-1.5 text-neutral-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+                                                    className="p-1.5 text-neutral-400 hover:text-black hover:bg-neutral-50 rounded-md transition-all"
                                                     title="Download"
                                                 >
                                                     <Download size={16} />
                                                 </button>
                                                 <button 
                                                     onClick={() => handleDelete(file.id)}
-                                                    className="p-1.5 text-neutral-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
+                                                    className="p-1.5 text-neutral-400 hover:text-rose-500 hover:bg-rose-50 rounded-md transition-all"
                                                     title="Delete"
                                                 >
                                                     <Trash2 size={16} />
@@ -200,7 +200,7 @@ export default function HistoryModal({ isOpen, onClose }: HistoryModalProps) {
                         {/* Footer Info */}
                         <div className="p-4 sm:p-5 bg-white border-t border-neutral-100 shrink-0 text-center relative z-10">
                             <div className="flex items-center justify-center gap-1.5 sm:gap-2 text-[9px] sm:text-[10px] font-black text-neutral-300 uppercase tracking-widest leading-none">
-                                <ShieldCheck size={12} className="text-emerald-500" />
+                                <ShieldCheck size={12} className="text-black" />
                                 <span>Encrypted Local Storage</span>
                             </div>
                         </div>

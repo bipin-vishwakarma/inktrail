@@ -110,14 +110,14 @@ export default function AuthModal() {
             {isAuthModalOpen && (
                 <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-neutral-950/65 backdrop-blur-md">
                     {/* Ambient Luminous Bloom */}
-                    <div className="absolute w-96 h-96 bg-gradient-to-tr from-violet-600/30 via-indigo-500/20 to-cyan-400/20 rounded-full blur-3xl pointer-events-none" />
+                    <div className="absolute w-96 h-96 bg-gradient-to-tr from-black/30 via-neutral-800/20 to-cyan-400/20 rounded-full blur-3xl pointer-events-none" />
 
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95, y: 15 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 15 }}
                         transition={{ type: "spring", damping: 26, stiffness: 320 }}
-                        className="bg-white/95 backdrop-blur-xl rounded-3xl overflow-hidden isolate shadow-2xl max-w-md w-full relative flex flex-col border border-white/60 ring-1 ring-neutral-900/10"
+                        className="bg-white/95 backdrop-blur-xl rounded-md overflow-hidden isolate shadow-sm max-w-md w-full relative flex flex-col border border-white/60 ring-1 ring-neutral-900/10"
                     >
                         {/* HEADER with Text2Handwriting Logo & Status */}
                         <div className="px-6 py-4.5 border-b border-neutral-100 flex items-center justify-between bg-gradient-to-r from-neutral-50/90 via-white to-neutral-50/90 shrink-0">
@@ -128,7 +128,7 @@ export default function AuthModal() {
                                         <span>Student Cloud Vault</span>
                                         <span className="px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-mono font-bold">Beta</span>
                                     </h2>
-                                    <p className="text-[11px] text-emerald-600 font-bold flex items-center gap-1">
+                                    <p className="text-[11px] text-black font-bold flex items-center gap-1">
                                         <CheckCircle2 size={11} /> 100% Free Forever for Students
                                     </p>
                                 </div>
@@ -155,17 +155,17 @@ export default function AuthModal() {
                             <button
                                 type="button"
                                 onClick={() => { setAuthTab('oauth'); setErrorMessage(null); }}
-                                className={`flex-1 py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                                className={`flex-1 py-2 px-3 rounded-md transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                                     authTab === 'oauth' ? 'bg-white text-neutral-900 shadow-xs ring-1 ring-black/5' : 'text-neutral-500 hover:text-neutral-800 hover:bg-white/40'
                                 }`}
                             >
-                                <Sparkles size={13} className="text-indigo-500" />
+                                <Sparkles size={13} className="text-neutral-800" />
                                 <span>Fast OAuth</span>
                             </button>
                             <button
                                 type="button"
                                 onClick={() => { setAuthTab('student'); setErrorMessage(null); }}
-                                className={`flex-1 py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                                className={`flex-1 py-2 px-3 rounded-md transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                                     authTab === 'student' ? 'bg-white text-neutral-900 shadow-xs ring-1 ring-black/5' : 'text-neutral-500 hover:text-neutral-800 hover:bg-white/40'
                                 }`}
                             >
@@ -175,7 +175,7 @@ export default function AuthModal() {
                             <button
                                 type="button"
                                 onClick={() => { setAuthTab('email'); setErrorMessage(null); }}
-                                className={`flex-1 py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                                className={`flex-1 py-2 px-3 rounded-md transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                                     authTab === 'email' ? 'bg-white text-neutral-900 shadow-xs ring-1 ring-black/5' : 'text-neutral-500 hover:text-neutral-800 hover:bg-white/40'
                                 }`}
                             >
@@ -189,7 +189,7 @@ export default function AuthModal() {
                             {/* Error banner */}
                             {errorMessage && (
                                 <div
-                                    className={`mb-4 p-3.5 rounded-2xl text-xs flex items-start gap-2.5 border shadow-xs ${
+                                    className={`mb-4 p-3.5 rounded-md text-xs flex items-start gap-2.5 border shadow-xs ${
                                         errorMessage.toLowerCase().includes('provider is not enabled') ||
                                         errorMessage.toLowerCase().includes('unsupported provider') ||
                                         errorMessage.toLowerCase().includes('rebwoyqwxnoqmxvumzjf')
@@ -224,7 +224,7 @@ export default function AuthModal() {
                                                     href="https://supabase.com/dashboard/project/rebwoyqwxnoqmxvumzjf/auth/providers"
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-700 hover:bg-amber-800 text-white rounded-lg font-bold text-[11px] shadow-xs"
+                                                    className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-700 hover:bg-amber-800 text-white rounded-md font-bold text-[11px] shadow-xs"
                                                 >
                                                     <span>Open Supabase Providers</span>
                                                     <ExternalLink size={11} />
@@ -235,7 +235,7 @@ export default function AuthModal() {
                                                         setErrorMessage(null);
                                                         setAuthTab('student');
                                                     }}
-                                                    className="inline-flex items-center gap-1 px-2.5 py-1 bg-white border border-amber-300 hover:bg-amber-100/60 text-amber-950 rounded-lg font-bold text-[11px] cursor-pointer"
+                                                    className="inline-flex items-center gap-1 px-2.5 py-1 bg-white border border-amber-300 hover:bg-amber-100/60 text-amber-950 rounded-md font-bold text-[11px] cursor-pointer"
                                                 >
                                                     <GraduationCap size={12} className="text-amber-700" />
                                                     <span>Use Student ID</span>
@@ -248,8 +248,8 @@ export default function AuthModal() {
 
                             {/* Success banner */}
                             {successMessage && (
-                                <div className="mb-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-start gap-2">
-                                    <CheckCircle2 size={15} className="shrink-0 mt-0.5 text-emerald-600" />
+                                <div className="mb-4 p-3 rounded-md bg-neutral-50 border border-neutral-200 text-neutral-800 text-xs flex items-start gap-2">
+                                    <CheckCircle2 size={15} className="shrink-0 mt-0.5 text-black" />
                                     <span>{successMessage}</span>
                                 </div>
                             )}
@@ -257,7 +257,7 @@ export default function AuthModal() {
                             {authTab === 'oauth' && (
                                 <div className="space-y-3.5">
                                     <div className="text-center mb-4">
-                                        <div className="w-12 h-12 mx-auto mb-2 bg-linear-to-br from-indigo-50 to-blue-50 rounded-2xl flex items-center justify-center shadow-xs border border-indigo-100/60">
+                                        <div className="w-12 h-12 mx-auto mb-2 bg-linear-to-br from-neutral-50 to-blue-50 rounded-md flex items-center justify-center shadow-xs border border-neutral-100/60">
                                             <Text2HandwritingLogo size={32} />
                                         </div>
                                         <h3 className="text-sm font-extrabold text-neutral-900">Sign in to Text2Handwriting</h3>
@@ -271,7 +271,7 @@ export default function AuthModal() {
                                         type="button"
                                         onClick={handleGoogleAuth}
                                         disabled={isLoading}
-                                        className="w-full py-3 px-4 bg-white hover:bg-neutral-50 text-neutral-800 border border-neutral-300 rounded-2xl font-bold text-xs flex items-center justify-center gap-3 transition-all shadow-2xs hover:shadow-xs active:scale-98 disabled:opacity-60 cursor-pointer"
+                                        className="w-full py-3 px-4 bg-white hover:bg-neutral-50 text-neutral-800 border border-neutral-300 rounded-md font-bold text-xs flex items-center justify-center gap-3 transition-all shadow-2xs hover:shadow-xs active:scale-98 disabled:opacity-60 cursor-pointer"
                                     >
                                         <svg className="w-4 h-4" viewBox="0 0 24 24">
                                             <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z" />
@@ -287,7 +287,7 @@ export default function AuthModal() {
                                         type="button"
                                         onClick={handleGithubAuth}
                                         disabled={isLoading}
-                                        className="w-full py-3 px-4 bg-neutral-900 hover:bg-black text-white rounded-2xl font-bold text-xs flex items-center justify-center gap-3 transition-all shadow-md shadow-neutral-900/10 active:scale-98 disabled:opacity-60 cursor-pointer"
+                                        className="w-full py-3 px-4 bg-neutral-900 hover:bg-neutral-800 text-white rounded-md font-bold text-xs flex items-center justify-center gap-3 transition-all shadow-md shadow-neutral-900/10 active:scale-98 disabled:opacity-60 cursor-pointer"
                                     >
                                         <Github size={16} />
                                         <span>Continue with GitHub</span>
@@ -299,9 +299,9 @@ export default function AuthModal() {
                                             type="button"
                                             onClick={() => loginWithStudentId('Student Scholar', '500124890', 'University College')}
                                             disabled={isLoading}
-                                            className="w-full py-2.5 px-3 bg-violet-50 hover:bg-violet-100/80 text-violet-800 border border-violet-200/80 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
+                                            className="w-full py-2.5 px-3 bg-neutral-100 hover:bg-neutral-200/80 text-neutral-800 border border-neutral-200/80 rounded-md font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
                                         >
-                                            <School size={14} className="text-violet-600" />
+                                            <School size={14} className="text-black" />
                                             <span>⚡ Quick Student Demo Sign In</span>
                                         </button>
                                     </div>
@@ -320,7 +320,7 @@ export default function AuthModal() {
                                             value={studentName}
                                             onChange={(e) => setStudentName(e.target.value)}
                                             placeholder="e.g. Bipin Vishwakarma"
-                                            className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-semibold text-neutral-900 focus:bg-white focus:border-neutral-900 focus:outline-none"
+                                            className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-md text-xs font-semibold text-neutral-900 focus:bg-white focus:border-neutral-900 focus:outline-none"
                                         />
                                     </div>
 
@@ -334,7 +334,7 @@ export default function AuthModal() {
                                             value={collegeName}
                                             onChange={(e) => setCollegeName(e.target.value)}
                                             placeholder="e.g. University / Institute of Technology"
-                                            className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-semibold text-neutral-900 focus:bg-white focus:border-neutral-900 focus:outline-none"
+                                            className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-md text-xs font-semibold text-neutral-900 focus:bg-white focus:border-neutral-900 focus:outline-none"
                                         />
                                     </div>
 
@@ -348,14 +348,14 @@ export default function AuthModal() {
                                             value={studentId}
                                             onChange={(e) => setStudentId(e.target.value)}
                                             placeholder="e.g. 500124890 / Roll ID"
-                                            className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-semibold text-neutral-900 focus:bg-white focus:border-neutral-900 focus:outline-none"
+                                            className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-md text-xs font-semibold text-neutral-900 focus:bg-white focus:border-neutral-900 focus:outline-none"
                                         />
                                     </div>
 
                                     <button
                                         type="submit"
                                         disabled={isLoading}
-                                        className="w-full mt-2 py-3 bg-neutral-900 hover:bg-black text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md active:scale-98 disabled:opacity-60 cursor-pointer"
+                                        className="w-full mt-2 py-3 bg-neutral-900 hover:bg-neutral-800 text-white rounded-md font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md active:scale-98 disabled:opacity-60 cursor-pointer"
                                     >
                                         {isLoading ? (
                                             <Loader2 size={15} className="animate-spin" />
@@ -371,11 +371,11 @@ export default function AuthModal() {
 
                             {authTab === 'email' && (
                                 <form onSubmit={handleEmailSubmit} className="space-y-3.5">
-                                    <div className="flex bg-neutral-100 p-1 rounded-xl gap-1 text-[11px] font-bold mb-3">
+                                    <div className="flex bg-neutral-100 p-1 rounded-md gap-1 text-[11px] font-bold mb-3">
                                         <button
                                             type="button"
                                             onClick={() => setEmailSubTab('magic')}
-                                            className={`flex-1 py-1.5 rounded-lg transition-all ${
+                                            className={`flex-1 py-1.5 rounded-md transition-all ${
                                                 emailSubTab === 'magic' ? 'bg-white text-neutral-900 shadow-xs' : 'text-neutral-500'
                                             }`}
                                         >
@@ -384,7 +384,7 @@ export default function AuthModal() {
                                         <button
                                             type="button"
                                             onClick={() => setEmailSubTab('password')}
-                                            className={`flex-1 py-1.5 rounded-lg transition-all ${
+                                            className={`flex-1 py-1.5 rounded-md transition-all ${
                                                 emailSubTab === 'password' ? 'bg-white text-neutral-900 shadow-xs' : 'text-neutral-500'
                                             }`}
                                         >
@@ -404,7 +404,7 @@ export default function AuthModal() {
                                                     value={emailName}
                                                     onChange={(e) => setEmailName(e.target.value)}
                                                     placeholder="e.g. Aarav Sharma"
-                                                    className="w-full pl-8 pr-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-semibold text-neutral-900 focus:bg-white focus:border-neutral-900 focus:outline-none"
+                                                    className="w-full pl-8 pr-3 py-2 bg-neutral-50 border border-neutral-200 rounded-md text-xs font-semibold text-neutral-900 focus:bg-white focus:border-neutral-900 focus:outline-none"
                                                 />
                                             </div>
                                         </div>
@@ -422,7 +422,7 @@ export default function AuthModal() {
                                                 value={emailInput}
                                                 onChange={(e) => setEmailInput(e.target.value)}
                                                 placeholder="name@student.edu"
-                                                className="w-full pl-8 pr-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-semibold text-neutral-900 focus:bg-white focus:border-neutral-900 focus:outline-none"
+                                                className="w-full pl-8 pr-3 py-2 bg-neutral-50 border border-neutral-200 rounded-md text-xs font-semibold text-neutral-900 focus:bg-white focus:border-neutral-900 focus:outline-none"
                                             />
                                         </div>
                                     </div>
@@ -440,7 +440,7 @@ export default function AuthModal() {
                                                     value={passwordInput}
                                                     onChange={(e) => setPasswordInput(e.target.value)}
                                                     placeholder="••••••••"
-                                                    className="w-full pl-8 pr-9 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-semibold text-neutral-900 focus:bg-white focus:border-neutral-900 focus:outline-none"
+                                                    className="w-full pl-8 pr-9 py-2 bg-neutral-50 border border-neutral-200 rounded-md text-xs font-semibold text-neutral-900 focus:bg-white focus:border-neutral-900 focus:outline-none"
                                                 />
                                                 <button
                                                     type="button"
@@ -456,7 +456,7 @@ export default function AuthModal() {
                                     <button
                                         type="submit"
                                         disabled={isLoading}
-                                        className="w-full mt-2 py-3 bg-neutral-900 hover:bg-black text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md active:scale-98 disabled:opacity-60 cursor-pointer"
+                                        className="w-full mt-2 py-3 bg-neutral-900 hover:bg-neutral-800 text-white rounded-md font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md active:scale-98 disabled:opacity-60 cursor-pointer"
                                     >
                                         {isLoading ? (
                                             <Loader2 size={15} className="animate-spin" />
@@ -484,7 +484,7 @@ export default function AuthModal() {
                                                 <button
                                                     type="button"
                                                     onClick={() => setIsSignUp(false)}
-                                                    className="text-violet-600 font-bold hover:underline"
+                                                    className="text-black font-bold hover:underline"
                                                 >
                                                     Already have an account? Sign In
                                                 </button>
@@ -492,7 +492,7 @@ export default function AuthModal() {
                                                 <button
                                                     type="button"
                                                     onClick={() => setIsSignUp(true)}
-                                                    className="text-violet-600 font-bold hover:underline"
+                                                    className="text-black font-bold hover:underline"
                                                 >
                                                     Don't have an account? Create one
                                                 </button>
@@ -504,7 +504,7 @@ export default function AuthModal() {
 
                             {/* PRIVACY & ENCRYPTION BADGE */}
                             <div className="mt-5 pt-4 border-t border-neutral-100 flex items-center justify-between text-[10px] text-neutral-400 font-bold uppercase tracking-wider">
-                                <div className="flex items-center gap-1.5 text-emerald-600">
+                                <div className="flex items-center gap-1.5 text-black">
                                     <ShieldCheck size={13} />
                                     <span>{isSupabaseConfigured ? 'Supabase Auth' : 'Client Encrypted'}</span>
                                 </div>

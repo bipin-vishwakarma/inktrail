@@ -28,12 +28,12 @@ export const CreatorModal: React.FC<CreatorModalProps> = ({ isOpen, onClose }) =
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: 15 }}
                     transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-                    className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-black/5 overflow-hidden z-10 flex flex-col"
+                    className="relative w-full max-w-lg bg-white rounded-md shadow-sm border border-black/5 overflow-hidden z-10 flex flex-col"
                 >
                     {/* Header bar */}
                     <div className="flex items-center justify-between px-6 py-4 border-b border-black/5 bg-neutral-50/50">
                         <div className="flex items-center gap-2">
-                            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                            <span className="w-2.5 h-2.5 rounded-full bg-black animate-pulse" />
                             <span className="text-xs font-black uppercase tracking-widest text-neutral-400">About the Creator</span>
                         </div>
                         <button
@@ -49,7 +49,7 @@ export const CreatorModal: React.FC<CreatorModalProps> = ({ isOpen, onClose }) =
                     <div className="p-6 sm:p-8 flex flex-col items-center text-center">
                         {/* Avatar Image with verified ring */}
                         <div className="relative mb-5 group">
-                            <div className="absolute -inset-1 bg-gradient-to-r from-amber-500 via-indigo-500 to-rose-500 rounded-full blur-sm opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
+                            <div className="absolute -inset-1 bg-gradient-to-r from-amber-500 via-neutral-800 to-rose-500 rounded-full blur-sm opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
                             <img
                                 src="https://avatars.githubusercontent.com/u/151464007?v=4"
                                 alt="Bipin Vishwakarma"
@@ -57,7 +57,7 @@ export const CreatorModal: React.FC<CreatorModalProps> = ({ isOpen, onClose }) =
                                     // Fallback to GitHub direct avatar
                                     (e.target as HTMLImageElement).src = 'https://github.com/bipin-vishwakarma.png';
                                 }}
-                                className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover border-4 border-white shadow-xl"
+                                className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover border-4 border-white shadow-sm"
                             />
                             <div className="absolute bottom-1 right-1 bg-amber-400 text-neutral-900 p-1.5 rounded-full shadow-md border-2 border-white">
                                 <Sparkles size={14} />
@@ -67,7 +67,7 @@ export const CreatorModal: React.FC<CreatorModalProps> = ({ isOpen, onClose }) =
                         <h2 className="text-2xl sm:text-3xl font-display font-black text-neutral-900 tracking-tight mb-1">
                             Bipin Vishwakarma
                         </h2>
-                        <p className="text-xs font-bold uppercase tracking-wider text-indigo-600 mb-4 flex items-center gap-1.5">
+                        <p className="text-xs font-bold uppercase tracking-wider text-black mb-4 flex items-center gap-1.5">
                             <Code2 size={13} /> Creator & Developer · Text2Handwriting
                         </p>
 
@@ -81,7 +81,7 @@ export const CreatorModal: React.FC<CreatorModalProps> = ({ isOpen, onClose }) =
                                 href="https://github.com/bipin-vishwakarma"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center justify-center gap-2.5 px-4 py-3 bg-neutral-900 hover:bg-black text-white rounded-2xl text-xs font-bold transition-all shadow-sm hover:shadow-md group"
+                                className="flex items-center justify-center gap-2.5 px-4 py-3 bg-neutral-900 hover:bg-neutral-800 text-white rounded-md text-xs font-bold transition-all shadow-sm hover:shadow-md group"
                             >
                                 <Github size={16} />
                                 <span>GitHub Profile</span>
@@ -92,7 +92,7 @@ export const CreatorModal: React.FC<CreatorModalProps> = ({ isOpen, onClose }) =
                                 href="https://instagram.com/bipin_vishwakarma"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center justify-center gap-2.5 px-4 py-3 bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 hover:opacity-95 text-white rounded-2xl text-xs font-bold transition-all shadow-sm hover:shadow-md group"
+                                className="flex items-center justify-center gap-2.5 px-4 py-3 bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 hover:opacity-95 text-white rounded-md text-xs font-bold transition-all shadow-sm hover:shadow-md group"
                             >
                                 <Instagram size={16} />
                                 <span>Instagram</span>
@@ -103,7 +103,7 @@ export const CreatorModal: React.FC<CreatorModalProps> = ({ isOpen, onClose }) =
                                 href="https://www.linkedin.com/in/bipin-vishwakarma-b407313b8"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center justify-center gap-2.5 px-4 py-3 bg-[#0A66C2] hover:bg-[#084e96] text-white rounded-2xl text-xs font-bold transition-all shadow-sm hover:shadow-md group"
+                                className="flex items-center justify-center gap-2.5 px-4 py-3 bg-[#0A66C2] hover:bg-[#084e96] text-white rounded-md text-xs font-bold transition-all shadow-sm hover:shadow-md group"
                             >
                                 <Linkedin size={16} />
                                 <span>LinkedIn</span>
@@ -112,7 +112,7 @@ export const CreatorModal: React.FC<CreatorModalProps> = ({ isOpen, onClose }) =
 
                             <a
                                 href="mailto:Bipinvishwakarma145@gmail.com"
-                                className="flex items-center justify-center gap-2.5 px-4 py-3 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 rounded-2xl text-xs font-bold transition-all shadow-2xs group"
+                                className="flex items-center justify-center gap-2.5 px-4 py-3 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 rounded-md text-xs font-bold transition-all shadow-2xs group"
                             >
                                 <Mail size={16} className="text-neutral-600" />
                                 <span>Email Me</span>
@@ -129,7 +129,7 @@ export const CreatorModal: React.FC<CreatorModalProps> = ({ isOpen, onClose }) =
                                 href="https://github.com/bipin-vishwakarma/text2handwriting"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="font-bold text-neutral-800 hover:text-indigo-600 transition-colors flex items-center gap-1"
+                                className="font-bold text-neutral-800 hover:text-black transition-colors flex items-center gap-1"
                             >
                                 Star on GitHub ⭐
                             </a>

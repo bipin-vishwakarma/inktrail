@@ -97,7 +97,7 @@ export default function OnboardingPage() {
             subtitle: 'Text2Handwriting turns your typed text into beautiful, realistic handwritten PDFs — in seconds.',
             content: (
                 <div className="flex flex-col items-center gap-6 py-4">
-                    <div className="w-24 h-24 bg-violet-100 rounded-3xl flex items-center justify-center shadow-lg">
+                    <div className="w-24 h-24 bg-neutral-200 rounded-md flex items-center justify-center shadow-sm">
                         <Text2HandwritingLogo size={56} />
                     </div>
                     <div className="grid grid-cols-3 gap-4 w-full max-w-sm">
@@ -106,7 +106,7 @@ export default function OnboardingPage() {
                             { emoji: '🪄', label: 'AI transforms' },
                             { emoji: '📄', label: 'Export PDF' },
                         ].map(item => (
-                            <div key={item.label} className="flex flex-col items-center gap-2 bg-white rounded-2xl p-4 shadow-sm border border-neutral-100">
+                            <div key={item.label} className="flex flex-col items-center gap-2 bg-white rounded-md p-4 shadow-sm border border-neutral-100">
                                 <span className="text-3xl">{item.emoji}</span>
                                 <span className="text-xs font-semibold text-neutral-600">{item.label}</span>
                             </div>
@@ -127,13 +127,13 @@ export default function OnboardingPage() {
                             <button
                                 key={id}
                                 onClick={() => toggleUseCase(id)}
-                                className={`flex flex-col items-start gap-2 p-4 rounded-2xl border-2 transition-all text-left ${
+                                className={`flex flex-col items-start gap-2 p-4 rounded-md border-2 transition-all text-left ${
                                     active
-                                        ? 'border-violet-500 bg-violet-50 shadow-md'
-                                        : 'border-neutral-200 bg-white hover:border-violet-300 hover:bg-violet-50/50'
+                                        ? 'border-black bg-neutral-100 shadow-md'
+                                        : 'border-neutral-200 bg-white hover:border-neutral-300 hover:bg-neutral-100/50'
                                 }`}
                             >
-                                <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${active ? 'bg-violet-500' : 'bg-neutral-100'}`}>
+                                <div className={`w-9 h-9 rounded-md flex items-center justify-center ${active ? 'bg-black' : 'bg-neutral-100'}`}>
                                     <Icon size={18} className={active ? 'text-white' : 'text-neutral-500'} />
                                 </div>
                                 <div>
@@ -141,7 +141,7 @@ export default function OnboardingPage() {
                                     <p className="text-xs text-neutral-500">{desc}</p>
                                 </div>
                                 {active && (
-                                    <div className="absolute top-3 right-3 w-5 h-5 bg-violet-500 rounded-full flex items-center justify-center">
+                                    <div className="absolute top-3 right-3 w-5 h-5 bg-black rounded-full flex items-center justify-center">
                                         <Check size={12} className="text-white" />
                                     </div>
                                 )}
@@ -161,17 +161,17 @@ export default function OnboardingPage() {
                         <button
                             key={id}
                             onClick={() => setPaperPick(id)}
-                            className={`flex flex-col items-start gap-1.5 p-4 rounded-2xl border-2 text-left transition-all ${
+                            className={`flex flex-col items-start gap-1.5 p-4 rounded-md border-2 text-left transition-all ${
                                 paperPick === id
-                                    ? 'border-violet-500 bg-violet-50 shadow-md'
-                                    : 'border-neutral-200 bg-white hover:border-violet-300'
+                                    ? 'border-black bg-neutral-100 shadow-md'
+                                    : 'border-neutral-200 bg-white hover:border-neutral-300'
                             }`}
                         >
                             <span className="text-2xl">{emoji}</span>
                             <p className="font-bold text-sm text-neutral-800">{label}</p>
                             <p className="text-xs text-neutral-500">{desc}</p>
                             {paperPick === id && (
-                                <div className="w-5 h-5 bg-violet-500 rounded-full flex items-center justify-center mt-1">
+                                <div className="w-5 h-5 bg-black rounded-full flex items-center justify-center mt-1">
                                     <Check size={12} className="text-white" />
                                 </div>
                             )}
@@ -186,8 +186,8 @@ export default function OnboardingPage() {
             subtitle: 'Your Text2Handwriting workspace is ready. Start writing your first page.',
             content: (
                 <div className="flex flex-col items-center gap-6 py-2">
-                    <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center">
-                        <Sparkles size={36} className="text-emerald-500" />
+                    <div className="w-20 h-20 bg-neutral-100 rounded-full flex items-center justify-center">
+                        <Sparkles size={36} className="text-black" />
                     </div>
                     <div className="w-full space-y-3">
                         {[
@@ -195,9 +195,9 @@ export default function OnboardingPage() {
                             { icon: BookOpen, text: 'Paste or type your notes in the editor' },
                             { icon: FlaskConical, text: 'Enable Lab Notebook mode for practicals' },
                         ].map(({ icon: Icon, text }) => (
-                            <div key={text} className="flex items-center gap-3 bg-white rounded-xl p-3 border border-neutral-100 shadow-sm">
-                                <div className="w-8 h-8 bg-violet-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <Icon size={16} className="text-violet-600" />
+                            <div key={text} className="flex items-center gap-3 bg-white rounded-md p-3 border border-neutral-100 shadow-sm">
+                                <div className="w-8 h-8 bg-neutral-200 rounded-md flex items-center justify-center flex-shrink-0">
+                                    <Icon size={16} className="text-black" />
                                 </div>
                                 <p className="text-sm font-medium text-neutral-700">{text}</p>
                             </div>
@@ -210,10 +210,10 @@ export default function OnboardingPage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-violet-50 via-white to-indigo-50 gap-4">
+            <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-neutral-100 via-white to-neutral-50 gap-4">
                 <Text2HandwritingLogo size={44} className="animate-pulse" />
                 <div className="flex items-center gap-2 text-xs font-bold text-neutral-500">
-                    <div className="w-2 h-2 rounded-full bg-violet-600 animate-ping" />
+                    <div className="w-2 h-2 rounded-full bg-black animate-ping" />
                     <span>Preparing your student workspace...</span>
                 </div>
             </div>
@@ -225,11 +225,11 @@ export default function OnboardingPage() {
     const currentSlide = slides[step] || slides[0];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-indigo-50 flex flex-col">
+        <div className="min-h-screen bg-gradient-to-br from-neutral-100 via-white to-neutral-50 flex flex-col">
             {/* Top progress bar */}
             <div className="w-full h-1 bg-neutral-200">
                 <motion.div
-                    className="h-full bg-gradient-to-r from-violet-500 to-indigo-500"
+                    className="h-full bg-black text-white"
                     animate={{ width: `${((step + 1) / TOTAL_STEPS) * 100}%` }}
                     transition={{ duration: 0.4 }}
                 />
@@ -274,7 +274,7 @@ export default function OnboardingPage() {
                 <button
                     onClick={goBack}
                     disabled={step === 0}
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl border-2 border-neutral-200 font-semibold text-neutral-600 hover:border-neutral-300 disabled:opacity-30 transition-all"
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-md border-2 border-neutral-200 font-semibold text-neutral-600 hover:border-neutral-300 disabled:opacity-30 transition-all"
                 >
                     <ArrowLeft size={16} /> Back
                 </button>
@@ -285,7 +285,7 @@ export default function OnboardingPage() {
                         <button
                             key={i}
                             onClick={() => { setDirection(i > step ? 1 : -1); setStep(i); }}
-                            className={`rounded-full transition-all ${i === step ? 'w-6 h-2.5 bg-violet-500' : 'w-2.5 h-2.5 bg-neutral-300 hover:bg-neutral-400'}`}
+                            className={`rounded-full transition-all ${i === step ? 'w-6 h-2.5 bg-black' : 'w-2.5 h-2.5 bg-neutral-300 hover:bg-neutral-400'}`}
                         />
                     ))}
                 </div>
@@ -293,14 +293,14 @@ export default function OnboardingPage() {
                 {step < TOTAL_STEPS - 1 ? (
                     <button
                         onClick={goNext}
-                        className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-semibold transition-colors"
+                        className="flex items-center gap-2 px-5 py-2.5 rounded-md bg-black hover:bg-neutral-800 text-white font-semibold transition-colors"
                     >
                         Next <ArrowRight size={16} />
                     </button>
                 ) : (
                     <button
                         onClick={finish}
-                        className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold transition-colors"
+                        className="flex items-center gap-2 px-5 py-2.5 rounded-md bg-black hover:bg-neutral-800 text-white font-bold transition-colors"
                     >
                         Open Editor <ArrowRight size={16} />
                     </button>

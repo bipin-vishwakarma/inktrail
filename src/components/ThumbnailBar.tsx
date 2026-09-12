@@ -39,13 +39,13 @@ export const ThumbnailBar: React.FC<ThumbnailBarProps> = ({
             aria-label="Page thumbnail navigation"
             className="fixed right-3 sm:right-5 top-1/2 -translate-y-1/2 z-30 select-none transition-all duration-300"
         >
-            <div className="bg-white/92 backdrop-blur-md border border-neutral-200/90 shadow-2xl shadow-neutral-950/10 rounded-2xl p-2 flex flex-col items-center gap-2 text-xs">
+            <div className="bg-white/92 backdrop-blur-md border border-neutral-200/90 shadow-sm shadow-neutral-950/10 rounded-md p-2 flex flex-col items-center gap-2 text-xs">
                 {/* Collapsed View: Compact Vertical Pill */}
                 {isCollapsed ? (
                     <button
                         type="button"
                         onClick={() => setIsCollapsed(false)}
-                        className="flex flex-col items-center gap-1.5 py-2 px-1.5 text-neutral-700 hover:text-neutral-950 hover:bg-neutral-100/90 rounded-xl transition-all cursor-pointer font-bold text-[10px]"
+                        className="flex flex-col items-center gap-1.5 py-2 px-1.5 text-neutral-700 hover:text-neutral-950 hover:bg-neutral-100/90 rounded-md transition-all cursor-pointer font-bold text-[10px]"
                         title="Expand thumbnail sidebar"
                     >
                         <Layers size={14} className="text-blue-600" />
@@ -63,7 +63,7 @@ export const ThumbnailBar: React.FC<ThumbnailBarProps> = ({
                             <button
                                 type="button"
                                 onClick={() => setIsCollapsed(true)}
-                                className="p-1 text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 rounded-lg transition-colors cursor-pointer"
+                                className="p-1 text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 rounded-md transition-colors cursor-pointer"
                                 title="Collapse thumbnail sidebar"
                             >
                                 <ChevronsRight size={13} />
@@ -75,7 +75,7 @@ export const ThumbnailBar: React.FC<ThumbnailBarProps> = ({
                             type="button"
                             onClick={handlePrev}
                             disabled={activePageIndex === 0}
-                            className={`p-1 rounded-lg transition-all cursor-pointer ${
+                            className={`p-1 rounded-md transition-all cursor-pointer ${
                                 activePageIndex === 0
                                     ? 'text-neutral-300 cursor-not-allowed'
                                     : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100'
@@ -114,9 +114,9 @@ export const ThumbnailBar: React.FC<ThumbnailBarProps> = ({
                                                     <span className="text-[6px] font-bold text-purple-700 uppercase tracking-tighter">Diagram</span>
                                                 </div>
                                             ) : pageMaterials[idx] === 'grid' ? (
-                                                <div className="flex-1 flex flex-col items-center justify-center text-emerald-600 bg-emerald-50/40 rounded-xs my-0.5 border border-emerald-200/50">
+                                                <div className="flex-1 flex flex-col items-center justify-center text-black bg-neutral-50/40 rounded-xs my-0.5 border border-neutral-200/50">
                                                     <span className="text-[9px]">📐</span>
-                                                    <span className="text-[6px] font-bold text-emerald-700 uppercase tracking-tighter">Graph</span>
+                                                    <span className="text-[6px] font-bold text-neutral-800 uppercase tracking-tighter">Graph</span>
                                                 </div>
                                             ) : (
                                                 <>
@@ -160,7 +160,7 @@ export const ThumbnailBar: React.FC<ThumbnailBarProps> = ({
                             type="button"
                             onClick={handleNext}
                             disabled={activePageIndex === totalPages - 1}
-                            className={`p-1 rounded-lg transition-all cursor-pointer ${
+                            className={`p-1 rounded-md transition-all cursor-pointer ${
                                 activePageIndex === totalPages - 1
                                     ? 'text-neutral-300 cursor-not-allowed'
                                     : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100'

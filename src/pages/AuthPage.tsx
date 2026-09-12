@@ -122,10 +122,10 @@ export default function AuthPage() {
 
     if (isLoading && hasIncomingCode) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-violet-50 via-white to-indigo-50 gap-4">
+            <div className="min-h-screen flex flex-col items-center justify-center bg-white gap-4">
                 <Text2HandwritingLogo size={44} className="animate-pulse" />
                 <div className="flex items-center gap-2 text-xs font-bold text-neutral-500">
-                    <div className="w-2 h-2 rounded-full bg-violet-600 animate-ping" />
+                    <div className="w-2 h-2 rounded-full bg-black animate-ping" />
                     <span>Securely signing you in...</span>
                 </div>
             </div>
@@ -133,13 +133,13 @@ export default function AuthPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-indigo-50 flex">
+        <div className="min-h-screen bg-white flex">
             {/* Left panel — branding */}
             <motion.div
                 initial={{ opacity: 0, x: -40 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.55 }}
-                className="hidden lg:flex flex-col justify-between w-[45%] bg-gradient-to-br from-violet-700 via-indigo-700 to-purple-800 p-12 text-white relative overflow-hidden"
+                className="hidden lg:flex flex-col justify-between w-[45%] bg-black p-12 text-white relative overflow-hidden"
             >
                 <div className="absolute top-[-80px] left-[-80px] w-[340px] h-[340px] bg-white/10 rounded-full blur-3xl pointer-events-none" />
                 <div className="absolute bottom-[-60px] right-[-60px] w-[260px] h-[260px] bg-white/10 rounded-full blur-3xl pointer-events-none" />
@@ -179,8 +179,8 @@ export default function AuthPage() {
 
             {/* Right panel — auth form */}
             <div className="flex-1 flex flex-col relative overflow-hidden">
-                {/* Radiant Ambient Bloom */}
-                <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[480px] h-[480px] bg-gradient-to-tr from-violet-400/20 via-indigo-400/15 to-cyan-400/15 rounded-full blur-3xl pointer-events-none -z-10" />
+                {/* Radiant Ambient Bloom removed for minimal style */}
+
 
                 {/* Back to Home Header */}
                 <div className="p-6 sm:p-8 flex justify-between items-center relative z-20">

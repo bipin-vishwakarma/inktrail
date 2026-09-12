@@ -27,7 +27,7 @@ export const PenPresetSelector: React.FC = () => {
                         key={p.id}
                         type="button"
                         onClick={() => setPenType(p.id)}
-                        className={`p-2 rounded-xl flex flex-col items-center gap-1.5 transition-all text-center border ${
+                        className={`p-2 rounded-md flex flex-col items-center gap-1.5 transition-all text-center border ${
                             penType === p.id
                                 ? 'bg-neutral-900 text-white border-neutral-900 shadow-sm scale-105'
                                 : 'bg-neutral-50 border-black/5 text-neutral-600 hover:bg-neutral-100'
