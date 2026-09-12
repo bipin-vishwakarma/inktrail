@@ -57,7 +57,7 @@ export default function AboutPage() {
 
                 {/* Student Founder Story */}
                 <section className="p-8 rounded-3xl bg-gradient-to-br from-indigo-50/80 via-white to-blue-50/60 border border-blue-100 shadow-sm flex flex-col md:flex-row gap-6 items-center">
-                    <div className="w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden shrink-0 ring-2 ring-blue-500/20 shadow-md">
+                    <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden shrink-0 ring-2 ring-blue-500/20 shadow-md">
                         <img 
                             src="https://avatars.githubusercontent.com/u/151464007?v=4" 
                             alt="Bipin Vishwakarma" 
