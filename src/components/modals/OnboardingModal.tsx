@@ -328,7 +328,7 @@ export default function OnboardingModal({ isOpen: propIsOpen, onClose: propOnClo
                                 </label>
 
                                 <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-                                    {currentIndex > 0 && (
+                                    {currentIndex > 0 ? (
                                         <button
                                             type="button"
                                             onClick={handlePrev}
@@ -336,6 +336,14 @@ export default function OnboardingModal({ isOpen: propIsOpen, onClose: propOnClo
                                         >
                                             <ArrowLeft size={13} />
                                             <span>Back</span>
+                                        </button>
+                                    ) : (
+                                        <button
+                                            type="button"
+                                            onClick={onClose}
+                                            className="px-3.5 py-2 text-xs font-bold text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100 rounded-xl transition-all cursor-pointer"
+                                        >
+                                            Skip Tour
                                         </button>
                                     )}
 
