@@ -210,7 +210,7 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
                                 color: preset.inkColor,
                                 lineHeight: '32px',
                             }}
-                            className="text-lg sm:text-2xl font-normal whitespace-pre-wrap select-none leading-[32px] tracking-wide"
+                            className="text-base sm:text-xl font-normal whitespace-pre-wrap select-none leading-[32px] tracking-wide"
                         >
                             {preset.afterText}
                         </div>

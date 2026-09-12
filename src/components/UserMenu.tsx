@@ -25,19 +25,9 @@ export default function UserMenu() {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [isOpen]);
 
-    // Not signed in — navigate to /auth page (not modal)
+    // Not signed in — hide the user menu so we just see 'Open Studio'
     if (!user) {
-        return (
-            <button
-                type="button"
-                onClick={() => navigate('/auth?redirect=/editor')}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-violet-600 hover:bg-violet-700 text-white rounded-xl text-xs font-bold shadow-sm transition-all cursor-pointer whitespace-nowrap"
-                title="Sign in with Student ID or Google account"
-            >
-                <GraduationCap size={13} />
-                <span>Student Sign In</span>
-            </button>
-        );
+        return null;
     }
 
     const docCount = user.savedDocsCount || Math.max(1, history.length);

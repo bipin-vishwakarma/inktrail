@@ -209,21 +209,7 @@ export default function LandingPage() {
                         style={{ y: yHeroContent }}
                         className="lg:col-span-5 text-left space-y-6 z-10"
                     >
-                        {/* Status Kicker */}
-                        <motion.div
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.4 }}
-                            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-stone-900/[0.04] border border-stone-900/10 text-xs font-semibold text-stone-700 shadow-2xs"
-                        >
-                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                            <span>Free Public Beta</span>
-                            <span className="text-stone-300">·</span>
-                            <span>Zero Watermarks</span>
-                            <span className="text-stone-300">·</span>
-                            <span>Local & Private</span>
-                        </motion.div>
-
+                        {/* Status Kicker Removed */}
                         {/* Grand Display Headline */}
                         <motion.h1
                             initial={{ opacity: 0, y: 20 }}
