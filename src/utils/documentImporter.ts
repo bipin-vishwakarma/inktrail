@@ -1,5 +1,5 @@
 /**
- * Intelligent Document Importer for InkTrail
+ * Intelligent Document Importer for Text2Handwriting
  * 
  * Extracts and normalizes text from various file formats:
  * - .docx (Microsoft Word documents via mammoth)

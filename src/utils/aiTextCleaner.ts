@@ -1,5 +1,5 @@
 /**
- * Intelligent AI Text Cleaner & Formatter for InkTrail
+ * Intelligent AI Text Cleaner & Formatter for Text2Handwriting
  * 
  * Automatically cleans text copied from ChatGPT, Claude, Gemini, DeepSeek, etc.:
  * 1. Strips conversational AI preamble (e.g. "Yes bro — I checked...", "Sure, here is your assignment...")

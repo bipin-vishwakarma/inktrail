@@ -5,9 +5,9 @@ import { Link } from 'react-router-dom';
 export default function AboutPage() {
     return (
         <PageLayout 
-            title="About InkTrail" 
+            title="About Text2Handwriting" 
             subtitle="Bridging analog nostalgia and hyper-realistic handwriting simulation for students and creators worldwide."
-            description="Discover the story behind InkTrail. Born from authentic student coursework challenges, built with human error algorithms, authentic lab practical notebooks, and local-first privacy."
+            description="Discover the story behind Text2Handwriting. Born from authentic student coursework challenges, built with human error algorithms, authentic lab practical notebooks, and local-first privacy."
         >
             <div className="space-y-12">
                 <section>
@@ -16,7 +16,7 @@ export default function AboutPage() {
                         Our Vision & Origins
                     </h3>
                     <p>
-                        In an era dominated by sterile digital fonts and repetitive typing, the irreplaceable warmth and character of handwritten work was getting lost. <strong>InkTrail</strong> was created by <strong>Bipin Vishwakarma</strong>, a passionate student engineer and creator, to bridge the divide between analog authenticity and digital speed.
+                        In an era dominated by sterile digital fonts and repetitive typing, the irreplaceable warmth and character of handwritten work was getting lost. <strong>Text2Handwriting</strong> was created by <strong>Bipin Vishwakarma</strong>, a passionate student engineer and creator, to bridge the divide between analog authenticity and digital speed.
                     </p>
                     <p>
                         What started as a tool to solve the grueling physical fatigue of writing 40-page university assignments and practical lab manuals has evolved into the most comprehensive handwriting realism simulator on the internet.
@@ -72,9 +72,9 @@ export default function AboutPage() {
                             <GraduationCap size={16} className="text-blue-600" />
                             <span className="text-xs font-mono font-bold uppercase tracking-wider text-blue-700">Built by Students, for Students</span>
                         </div>
-                        <h3 className="text-lg font-bold text-neutral-900 m-0">The InkTrail Student Initiative</h3>
+                        <h3 className="text-lg font-bold text-neutral-900 m-0">The Text2Handwriting Student Initiative</h3>
                         <p className="text-sm text-neutral-600 leading-relaxed m-0">
-                            Crafted with passion by <strong>Bipin Vishwakarma</strong>. InkTrail is dedicated to helping engineering, science, and humanities students balance demanding academic coursework with modern assistive productivity tooling.
+                            Crafted with passion by <strong>Bipin Vishwakarma</strong>. Text2Handwriting is dedicated to helping engineering, science, and humanities students balance demanding academic coursework with modern assistive productivity tooling.
                         </p>
                     </div>
                 </section>
@@ -90,7 +90,7 @@ export default function AboutPage() {
                         to="/editor"
                         className="px-6 py-3 bg-white text-neutral-900 hover:bg-neutral-100 rounded-full font-bold text-sm shrink-0 transition-transform active:scale-95 shadow-md"
                     >
-                        Launch InkTrail Studio ➔
+                        Launch Text2Handwriting Studio ➔
                     </Link>
                 </section>
             </div>

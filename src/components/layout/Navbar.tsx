@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Sparkles, ExternalLink } from 'lucide-react';
-import InkTrailLogo from '../common/InkTrailLogo';
+import Text2HandwritingLogo from '../common/Text2HandwritingLogo';
 import { useStore } from '../../lib/store';
 import UserMenu from '../UserMenu';
 
@@ -92,8 +92,8 @@ export default function Navbar() {
                 <div className="w-full max-w-5xl glass rounded-full px-4 sm:px-6 py-2 sm:py-2.5 flex justify-between items-center pointer-events-auto ring-1 ring-black/5 shadow-lg shadow-black/5">
                     {/* Brand Logo */}
                     <Link to="/" className="flex items-center gap-2.5 group relative shrink-0">
-                        <InkTrailLogo size={32} />
-                        <span className="text-lg sm:text-xl font-display font-black text-neutral-900 tracking-tight">InkTrail.</span>
+                        <Text2HandwritingLogo size={32} />
+                        <span className="text-lg sm:text-xl font-display font-black text-neutral-900 tracking-tight">Text2Handwriting.</span>
                     </Link>
 
                     {/* Desktop Navigation Links */}
@@ -230,7 +230,7 @@ export default function Navbar() {
                                 Terms
                             </Link>
                             <a
-                                href="https://github.com/bipin-vishwakarma/inktrail"
+                                href="https://github.com/bipin-vishwakarma/text2handwriting"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center gap-1 hover:text-neutral-900"

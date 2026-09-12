@@ -118,7 +118,7 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
                             <span>Side-by-Side Comparison</span>
                         </div>
                         <h3 className="text-xl sm:text-2xl font-black font-display text-neutral-900 tracking-tight">
-                            Mechanical Type vs. InkTrail Handwriting
+                            Mechanical Type vs. Text2Handwriting Handwriting
                         </h3>
                         <p className="text-xs sm:text-sm text-neutral-500 mt-0.5">
                             Drag the center slider to inspect authentic baseline jitter, pen ink bleeding, and margin lines.
@@ -198,7 +198,7 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
                     <div className="relative z-10 self-end">
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-black shadow-xs">
                             <CheckCircle2 size={12} className="text-emerald-600" />
-                            InkTrail Organic Handwriting
+                            Text2Handwriting Organic Handwriting
                         </span>
                     </div>
 

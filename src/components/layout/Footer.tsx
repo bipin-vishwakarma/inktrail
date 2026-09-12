@@ -1,5 +1,5 @@
 import { Github, PenTool, Heart } from 'lucide-react';
-import InkTrailLogo from '../common/InkTrailLogo';
+import Text2HandwritingLogo from '../common/Text2HandwritingLogo';
 import { Link } from 'react-router-dom';
 import { motion, type Variants } from 'framer-motion';
 
@@ -40,8 +40,8 @@ export default function Footer() {
                     {/* Brand Column */}
                     <motion.div variants={itemVariants} className="col-span-2 lg:col-span-4">
                         <Link to="/" className="flex items-center gap-3 mb-6 group">
-                             <InkTrailLogo size={38} />
-                             <span className="font-display font-bold text-2xl tracking-tight text-neutral-900">InkTrail.</span>
+                             <Text2HandwritingLogo size={38} />
+                             <span className="font-display font-bold text-2xl tracking-tight text-neutral-900">Text2Handwriting.</span>
                         </Link>
                         <p className="text-neutral-500 leading-relaxed max-w-sm text-sm font-medium">
                             Hyper-realistic handwriting simulator with authentic human errors, pen scratch-outs, smartphone cast shadows, and realistic desk lighting.
@@ -82,7 +82,7 @@ export default function Footer() {
                         <h4 className="font-black text-xs uppercase tracking-[0.2em] text-neutral-400 mb-6 focus:outline-none">Links</h4>
                         <ul className="space-y-3">
                             <li><a href="https://github.com/bipin-vishwakarma" target="_blank" rel="noopener noreferrer" className="text-neutral-500 hover:text-purple-600 transition-colors flex items-center gap-3 text-sm font-bold"><Github size={14} /> GitHub Profile</a></li>
-                            <li><a href="https://github.com/bipin-vishwakarma/inktrail" target="_blank" rel="noopener noreferrer" className="text-neutral-500 hover:text-neutral-900 transition-colors flex items-center gap-3 text-sm font-bold"><PenTool size={14} /> Repository</a></li>
+                            <li><a href="https://github.com/bipin-vishwakarma/text2handwriting" target="_blank" rel="noopener noreferrer" className="text-neutral-500 hover:text-neutral-900 transition-colors flex items-center gap-3 text-sm font-bold"><PenTool size={14} /> Repository</a></li>
                         </ul>
                     </motion.div>
                 </div>
@@ -91,9 +91,9 @@ export default function Footer() {
                 <div className="border-t border-black/5 pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
                     <div className="flex items-center gap-4">
                         <p className="text-xs text-neutral-400 font-bold">
-                            &copy; {new Date().getFullYear()} InkTrail. Open Source.
+                            &copy; {new Date().getFullYear()} Text2Handwriting. Open Source.
                         </p>
-                        <a href="https://github.com/bipin-vishwakarma/inktrail" target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-neutral-900 transition-colors" title="View Source on GitHub">
+                        <a href="https://github.com/bipin-vishwakarma/text2handwriting" target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-neutral-900 transition-colors" title="View Source on GitHub">
                             <Github size={14} />
                         </a>
                     </div>

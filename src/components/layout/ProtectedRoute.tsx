@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import InkTrailLogo from '../common/InkTrailLogo';
+import Text2HandwritingLogo from '../common/Text2HandwritingLogo';
 
 interface ProtectedRouteProps {
     children: React.ReactNode;
@@ -23,7 +23,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-paper gap-4">
                 <div className="relative">
-                    <InkTrailLogo size={44} className="animate-pulse" />
+                    <Text2HandwritingLogo size={44} className="animate-pulse" />
                 </div>
                 <div className="flex items-center gap-2 text-xs font-bold text-neutral-500">
                     <div className="w-2 h-2 rounded-full bg-violet-600 animate-ping" />

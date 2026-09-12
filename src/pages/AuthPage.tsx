@@ -6,7 +6,7 @@ import {
     BookOpen, PenTool, Sparkles, CheckCircle2, AlertCircle, KeyRound, Lock, User, ExternalLink
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import InkTrailLogo from '../components/common/InkTrailLogo';
+import Text2HandwritingLogo from '../components/common/Text2HandwritingLogo';
 
 type AuthStep = 'choose' | 'student-form' | 'email-magic' | 'email-password' | 'magic-sent';
 
@@ -63,7 +63,7 @@ export default function AuthPage() {
         }
     }, [isAuthenticated, navigate, redirect]);
 
-    const isNewUser = () => !localStorage.getItem('inktrail_onboarding_done');
+    const isNewUser = () => !localStorage.getItem('text2handwriting_onboarding_done');
 
     const afterAuth = () => {
         const dest = isNewUser() ? '/onboarding' : (searchParams.get('redirect') || '/editor');
@@ -174,7 +174,7 @@ export default function AuthPage() {
     if (isLoading && hasIncomingCode) {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-violet-50 via-white to-indigo-50 gap-4">
-                <InkTrailLogo size={44} className="animate-pulse" />
+                <Text2HandwritingLogo size={44} className="animate-pulse" />
                 <div className="flex items-center gap-2 text-xs font-bold text-neutral-500">
                     <div className="w-2 h-2 rounded-full bg-violet-600 animate-ping" />
                     <span>Finalizing student sign-in with Google...</span>
@@ -198,8 +198,8 @@ export default function AuthPage() {
 
                 <div className="relative z-10">
                     <div className="flex items-center gap-3 mb-14">
-                        <InkTrailLogo size={38} className="drop-shadow-md" />
-                        <span className="text-2xl font-black tracking-tight">InkTrail</span>
+                        <Text2HandwritingLogo size={38} className="drop-shadow-md" />
+                        <span className="text-2xl font-black tracking-tight">Text2Handwriting</span>
                     </div>
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-400 text-yellow-950 font-black text-xs mb-4 shadow-sm">
                         <Sparkles size={12} className="text-yellow-900" />
@@ -242,8 +242,8 @@ export default function AuthPage() {
                 >
                     {/* Mobile logo */}
                     <div className="flex lg:hidden items-center gap-2.5 mb-8 justify-center">
-                        <InkTrailLogo size={36} />
-                        <span className="text-xl font-black text-neutral-900">InkTrail</span>
+                        <Text2HandwritingLogo size={36} />
+                        <span className="text-xl font-black text-neutral-900">Text2Handwriting</span>
                     </div>
 
                     {/* Global Error Notice */}
@@ -340,7 +340,7 @@ export default function AuthPage() {
                                 exit={{ opacity: 0, x: -20 }}
                                 transition={{ duration: 0.28 }}
                             >
-                                <h1 className="text-3xl font-black text-neutral-900 mb-1">Welcome to InkTrail</h1>
+                                <h1 className="text-3xl font-black text-neutral-900 mb-1">Welcome to Text2Handwriting</h1>
                                 <p className="text-neutral-500 mb-4 text-sm">Sign in to save documents & sync handwriting across devices.</p>
 
                                 {/* Supabase Cloud Connection Status Badge */}
@@ -363,7 +363,7 @@ export default function AuthPage() {
                                     {showSupabaseInfo && (
                                         <div className="mt-2.5 pt-2.5 border-t border-neutral-100 text-[11px] text-neutral-600 space-y-1.5 leading-relaxed">
                                             <p className="font-semibold text-neutral-800">Supabase Backend Status:</p>
-                                            <p>Project: <span className="font-mono text-violet-700 font-bold">inktrail (rebwoyqwxnoqmxvumzjf)</span></p>
+                                            <p>Project: <span className="font-mono text-violet-700 font-bold">text2handwriting (rebwoyqwxnoqmxvumzjf)</span></p>
                                             <p className="text-emerald-700 font-semibold">
                                                 ✓ Supabase database & profiles are connected. Email Magic Link, Password auth, and Student ID are live.
                                             </p>

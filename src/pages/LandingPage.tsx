@@ -101,10 +101,10 @@ const PAPER_SHOWCASE: {
 const FAQ_ITEMS = [
     {
         q: "How realistic does the handwriting look when printed or exported?",
-        a: "InkTrail is engineered specifically to eliminate mechanical font uniformity. Every letter features natural stroke-width variations, micro-slant baseline jitter, realistic pen ink bleeding, and optional human scratch-outs. When printed on physical A4 paper or exported as a PDF, it produces authentic, natural handwriting."
+        a: "Text2Handwriting is engineered specifically to eliminate mechanical font uniformity. Every letter features natural stroke-width variations, micro-slant baseline jitter, realistic pen ink bleeding, and optional human scratch-outs. When printed on physical A4 paper or exported as a PDF, it produces authentic, natural handwriting."
     },
     {
-        q: "Is InkTrail really 100% free during the public beta?",
+        q: "Is Text2Handwriting really 100% free during the public beta?",
         a: "Yes! Every single feature — unlimited 4K PDF exports, metallic spiral coils, authentic student paper formats, and the interactive lab diagram canvas — is completely free. There are zero paywalls and zero credit card requirements."
     },
     {
@@ -113,11 +113,11 @@ const FAQ_ITEMS = [
     },
     {
         q: "Are my assignments and private notes stored on external servers?",
-        a: "By default, InkTrail processes all text-to-handwriting generation and PDF exports 100% locally in your browser memory. Your text never leaves your device unless you opt into Supabase Cloud Sync."
+        a: "By default, Text2Handwriting processes all text-to-handwriting generation and PDF exports 100% locally in your browser memory. Your text never leaves your device unless you opt into Supabase Cloud Sync."
     },
     {
         q: "Can I use custom fonts or add my own handwriting?",
-        a: "Yes! InkTrail comes preloaded with over 30 authentic Indian and international student handwriting styles (from neat cursive to rushed ballpoint scribble), and supports uploading custom TTF/WOFF font files."
+        a: "Yes! Text2Handwriting comes preloaded with over 30 authentic Indian and international student handwriting styles (from neat cursive to rushed ballpoint scribble), and supports uploading custom TTF/WOFF font files."
     }
 ];
 
@@ -349,7 +349,7 @@ export default function LandingPage() {
                         Mechanical Type vs. Organic Ink
                     </h2>
                     <p className="text-stone-600 text-sm sm:text-base mt-2">
-                        Drag the center slider horizontally to compare rigid computer fonts against InkTrail's authentic ink absorption, motor jitter, and margin layout.
+                        Drag the center slider horizontally to compare rigid computer fonts against Text2Handwriting's authentic ink absorption, motor jitter, and margin layout.
                     </p>
                 </div>
 
@@ -373,7 +373,7 @@ export default function LandingPage() {
                         <span>Workflow · 4 Simple Steps</span>
                     </span>
                     <h2 className="text-3xl sm:text-5xl font-black text-stone-950 tracking-tight font-display">
-                        How InkTrail Works
+                        How Text2Handwriting Works
                     </h2>
                     <p className="text-stone-600 text-sm sm:text-base mt-2.5 leading-relaxed">
                         Four straightforward steps to turn digital text into authentic student lab records, registers, and handwritten assignments.
@@ -460,7 +460,7 @@ export default function LandingPage() {
                                 Realism & Human Flaws
                             </h3>
                             <p className="text-xs text-stone-600 leading-relaxed">
-                                Eliminate mechanical perfection. InkTrail adds organic motor jitter, subtle line-drift waves, slight character width variations, realistic pen pressure, and deliberate human scratch-outs with wavy ink strokes.
+                                Eliminate mechanical perfection. Text2Handwriting adds organic motor jitter, subtle line-drift waves, slight character width variations, realistic pen pressure, and deliberate human scratch-outs with wavy ink strokes.
                             </p>
                         </div>
                         <div className="mt-6 pt-4 border-t border-stone-100 flex items-center gap-1.5 text-[11px] font-mono text-cyan-700 font-bold">
@@ -521,7 +521,7 @@ export default function LandingPage() {
                                 Test Your Own Text Right Here
                             </h3>
                             <p className="text-xs sm:text-sm text-stone-600 mt-1">
-                                Type or pick an assignment preset below to watch InkTrail render authentic handwriting in real time.
+                                Type or pick an assignment preset below to watch Text2Handwriting render authentic handwriting in real time.
                             </p>
                         </div>
 
@@ -833,7 +833,7 @@ export default function LandingPage() {
                             </div>
                             <h3 className="text-xl font-black text-stone-900 mb-2">Human Imperfections & Scratch-Outs</h3>
                             <p className="text-sm text-stone-600 leading-relaxed">
-                                Real handwriting has character. InkTrail adds realistic baseline drift, pen pressure variations, and realistic human typos with authentic wavy strikethroughs.
+                                Real handwriting has character. Text2Handwriting adds realistic baseline drift, pen pressure variations, and realistic human typos with authentic wavy strikethroughs.
                             </p>
                         </div>
                         <div className="mt-6 pt-4 border-t border-stone-100 text-xs font-mono text-purple-600 font-bold">
@@ -901,7 +901,7 @@ export default function LandingPage() {
                         Frequently Asked Questions
                     </h2>
                     <p className="text-stone-600 text-sm mt-2">
-                        Everything you need to know about InkTrail, authenticity, and student export rights.
+                        Everything you need to know about Text2Handwriting, authenticity, and student export rights.
                     </p>
                 </div>
 

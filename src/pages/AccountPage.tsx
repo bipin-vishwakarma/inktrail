@@ -6,7 +6,7 @@ import {
     Edit2, Check, X, GraduationCap, Mail, Loader2, Sparkles
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import InkTrailLogo from '../components/common/InkTrailLogo';
+import Text2HandwritingLogo from '../components/common/Text2HandwritingLogo';
 
 const PROVIDER_ICONS: Record<string, React.ReactNode> = {
     google: (
@@ -43,7 +43,7 @@ export default function AccountPage() {
     if (isLoading) {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-violet-50 via-white to-indigo-50 gap-4">
-                <InkTrailLogo size={44} className="animate-pulse" />
+                <Text2HandwritingLogo size={44} className="animate-pulse" />
                 <div className="flex items-center gap-2 text-xs font-bold text-neutral-500">
                     <div className="w-2 h-2 rounded-full bg-violet-600 animate-ping" />
                     <span>Loading student account...</span>
@@ -205,7 +205,7 @@ export default function AccountPage() {
                             All Features Are 100% Free Right Now 🔥
                         </h3>
                         <p className="text-white/85 text-sm sm:text-base leading-relaxed mb-5 max-w-xl">
-                            InkTrail is currently in <b>active public beta</b>. Because we are testing and perfecting the platform, every single feature — unlimited 4K PDF exports, 3D metallic spirals, lab diagram canvases, and all 15+ student paper types — is <b>completely free for all students</b>. No credit card, no paywalls.
+                            Text2Handwriting is currently in <b>active public beta</b>. Because we are testing and perfecting the platform, every single feature — unlimited 4K PDF exports, 3D metallic spirals, lab diagram canvases, and all 15+ student paper types — is <b>completely free for all students</b>. No credit card, no paywalls.
                         </p>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
@@ -238,8 +238,8 @@ export default function AccountPage() {
                             <button
                                 type="button"
                                 onClick={() => {
-                                    localStorage.setItem('inktrail_beta_claimed', 'true');
-                                    alert('🎉 Free Beta Pass confirmed! You have full unlimited access to all InkTrail tools.');
+                                    localStorage.setItem('text2handwriting_beta_claimed', 'true');
+                                    alert('🎉 Free Beta Pass confirmed! You have full unlimited access to all Text2Handwriting tools.');
                                 }}
                                 className="px-5 py-3 bg-white text-violet-900 hover:bg-violet-50 rounded-xl font-bold text-sm shadow-md hover:scale-102 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
                             >

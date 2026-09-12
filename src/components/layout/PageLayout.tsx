@@ -10,7 +10,7 @@ interface PageLayoutProps {
 
 export default function PageLayout({ title, subtitle, description, children }: PageLayoutProps) {
     useEffect(() => {
-        document.title = `${title} | InkTrail - Text to Handwriting`;
+        document.title = `${title} | Text2Handwriting - Text to Handwriting`;
         
         const metaDesc = document.querySelector('meta[name="description"]');
         if (metaDesc) {

@@ -1131,7 +1131,7 @@ export default function EditorPage() {
 
     useEffect(() => {
         try {
-            const hasSeen = localStorage.getItem('inktrail_onboarding_dismissed');
+            const hasSeen = localStorage.getItem('text2handwriting_onboarding_dismissed');
             if (!hasSeen && !hasSeenOnboarding) {
                 setIsOnboardingOpen(true);
             }
@@ -1336,7 +1336,7 @@ export default function EditorPage() {
                         </div>
                         <div className="h-4 w-px bg-neutral-200" />
                         <div className="flex items-center gap-1.5">
-                            <span className="font-display font-extrabold text-sm tracking-tight text-neutral-900">InkTrail</span>
+                            <span className="font-display font-extrabold text-sm tracking-tight text-neutral-900">Text2Handwriting</span>
                         </div>
                     </div>
 
@@ -1438,7 +1438,7 @@ export default function EditorPage() {
                         <button 
                             type="button"
                             onClick={() => setIsExploreMenuOpen(!isExploreMenuOpen)}
-                            title="Explore InkTrail Site Pages"
+                            title="Explore Text2Handwriting Site Pages"
                             className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-neutral-100 hover:bg-neutral-200/70 text-neutral-700 rounded-xl text-xs font-bold transition-all active:scale-95 border border-neutral-200/60 cursor-pointer"
                         >
                             <Compass size={13} className="text-indigo-600" />
@@ -1447,7 +1447,7 @@ export default function EditorPage() {
                         {isExploreMenuOpen && (
                             <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-xl border border-neutral-200 py-1.5 z-50 text-left text-xs font-bold">
                                 <div className="px-3 py-1.5 text-[10px] text-neutral-400 font-mono uppercase tracking-wider border-b border-neutral-100">
-                                    InkTrail Site Pages
+                                    Text2Handwriting Site Pages
                                 </div>
                                 <Link to="/features" onClick={() => setIsExploreMenuOpen(false)} className="block px-3 py-2 text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Features & Tools</Link>
                                 <Link to="/how-it-works" onClick={() => setIsExploreMenuOpen(false)} className="block px-3 py-2 text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">How It Works Guide</Link>

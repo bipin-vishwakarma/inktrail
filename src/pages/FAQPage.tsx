@@ -4,16 +4,16 @@ export default function FAQPage() {
     return (
         <PageLayout 
             title="Help Center" 
-            subtitle="Frequently asked questions about InkTrail."
+            subtitle="Frequently asked questions about Text2Handwriting."
         >
                 <section className="space-y-10">
                     <div>
                         <h4 className="text-xl font-bold text-neutral-900 mb-3 flex items-center gap-2">
                              <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
-                             Is InkTrail really free?
+                             Is Text2Handwriting really free?
                         </h4>
                         <p className="text-neutral-600 leading-relaxed">
-                            Yes, the core text-to-handwriting features of InkTrail are completely free to use. We believe in providing accessible creative tools. While we may introduce premium templates or advanced AI features in the future, the essential conversion tools will always remain free.
+                            Yes, the core text-to-handwriting features of Text2Handwriting are completely free to use. We believe in providing accessible creative tools. While we may introduce premium templates or advanced AI features in the future, the essential conversion tools will always remain free.
                         </p>
                     </div>
 
@@ -43,7 +43,7 @@ export default function FAQPage() {
                              Can I use my own handwriting font?
                         </h4>
                         <p className="text-neutral-600 leading-relaxed">
-                            InkTrail supports custom font uploads (.ttf/.otf/.woff) directly in the Editor. Upload your own handwriting font for a truly personalized result, or choose from our curated selection of optimized handwriting fonts.
+                            Text2Handwriting supports custom font uploads (.ttf/.otf/.woff) directly in the Editor. Upload your own handwriting font for a truly personalized result, or choose from our curated selection of optimized handwriting fonts.
                         </p>
                     </div>
 
@@ -53,7 +53,7 @@ export default function FAQPage() {
                              What file formats are supported for export?
                         </h4>
                         <p className="text-neutral-600 leading-relaxed">
-                            InkTrail supports high-definition PDF exports for multi-page documents, perfectly formatted for printing on A4 or Letter sizes. Additionally, you can export your work as a ZIP file containing individual high-quality PNG images for easy digital sharing.
+                            Text2Handwriting supports high-definition PDF exports for multi-page documents, perfectly formatted for printing on A4 or Letter sizes. Additionally, you can export your work as a ZIP file containing individual high-quality PNG images for easy digital sharing.
                         </p>
                     </div>
                 </section>

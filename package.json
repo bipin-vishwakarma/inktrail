@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/schema/package.json",
-  "name": "inktrail",
+  "name": "text2handwriting",
   "private": true,
   "version": "2.0.1",
   "type": "module",

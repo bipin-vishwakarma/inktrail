@@ -60,7 +60,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 function mapSupabaseUserToProfile(su: SupabaseUser): UserProfile {
     const meta = su.user_metadata || {};
-    const fullName = meta.full_name || meta.name || meta.user_name || su.email?.split('@')[0] || 'InkTrail Scholar';
+    const fullName = meta.full_name || meta.name || meta.user_name || su.email?.split('@')[0] || 'Text2Handwriting Scholar';
     const parts = fullName.trim().split(' ');
     const given = parts[0] || 'Scholar';
     const rest = parts.slice(1).join(' ');
@@ -93,7 +93,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<UserProfile | null>(() => {
         if (typeof window === 'undefined') return null;
         try {
-            const stored = localStorage.getItem('inktrail_user');
+            const stored = localStorage.getItem('text2handwriting_user');
             if (stored) {
                 const parsed = JSON.parse(stored);
                 return {
@@ -130,12 +130,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(updated);
         if (updated) {
             try {
-                localStorage.setItem('inktrail_user', JSON.stringify(updated));
+                localStorage.setItem('text2handwriting_user', JSON.stringify(updated));
             } catch (err) {
                 console.warn('Failed to write user to localStorage:', err);
             }
         } else {
-            localStorage.removeItem('inktrail_user');
+            localStorage.removeItem('text2handwriting_user');
             localStorage.removeItem('papertrail_user');
         }
     }, []);
@@ -187,7 +187,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
                     // If landing on root or auth page after OAuth, redirect into the app
                     if (window.location.pathname === '/' || window.location.pathname === '/auth') {
-                        const isNew = !localStorage.getItem('inktrail_onboarding_done');
+                        const isNew = !localStorage.getItem('text2handwriting_onboarding_done');
                         const target = isNew ? '/onboarding' : '/editor';
                         window.location.replace(target);
                         return;
@@ -568,7 +568,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             if (!prev) return null;
             const updated = { ...prev, ...updates };
             try {
-                localStorage.setItem('inktrail_user', JSON.stringify(updated));
+                localStorage.setItem('text2handwriting_user', JSON.stringify(updated));
             } catch (e) {
                 console.warn('Failed to update local user:', e);
             }
@@ -595,7 +595,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             if (!prev) return null;
             const updated = { ...prev, savedDocsCount: (prev.savedDocsCount || 0) + 1 };
             try {
-                localStorage.setItem('inktrail_user', JSON.stringify(updated));
+                localStorage.setItem('text2handwriting_user', JSON.stringify(updated));
             } catch (e) {
                 console.warn('Failed to update local user savedDocsCount:', e);
             }

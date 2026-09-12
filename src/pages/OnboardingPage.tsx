@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useStore } from '../lib/store';
-import InkTrailLogo from '../components/common/InkTrailLogo';
+import Text2HandwritingLogo from '../components/common/Text2HandwritingLogo';
 
 const TOTAL_STEPS = 4;
 
@@ -75,12 +75,12 @@ export default function OnboardingPage() {
         else if (paperPick === 'graph') setPaperMaterial('graph');
         else if (paperPick === 'dotted') setPaperMaterial('dotted');
 
-        localStorage.setItem('inktrail_onboarding_done', 'true');
+        localStorage.setItem('text2handwriting_onboarding_done', 'true');
         navigate('/editor', { replace: true });
     };
 
     const skip = () => {
-        localStorage.setItem('inktrail_onboarding_done', 'true');
+        localStorage.setItem('text2handwriting_onboarding_done', 'true');
         navigate('/editor', { replace: true });
     };
 
@@ -94,11 +94,11 @@ export default function OnboardingPage() {
         {
             id: 0,
             title: `Welcome, ${user?.given_name || 'Scholar'} 👋`,
-            subtitle: 'InkTrail turns your typed text into beautiful, realistic handwritten PDFs — in seconds.',
+            subtitle: 'Text2Handwriting turns your typed text into beautiful, realistic handwritten PDFs — in seconds.',
             content: (
                 <div className="flex flex-col items-center gap-6 py-4">
                     <div className="w-24 h-24 bg-violet-100 rounded-3xl flex items-center justify-center shadow-lg">
-                        <InkTrailLogo size={56} />
+                        <Text2HandwritingLogo size={56} />
                     </div>
                     <div className="grid grid-cols-3 gap-4 w-full max-w-sm">
                         {[
@@ -117,7 +117,7 @@ export default function OnboardingPage() {
         },
         {
             id: 1,
-            title: 'What will you use InkTrail for?',
+            title: 'What will you use Text2Handwriting for?',
             subtitle: 'Pick all that apply — we\'ll personalize your experience.',
             content: (
                 <div className="grid grid-cols-2 gap-3 w-full">
@@ -183,7 +183,7 @@ export default function OnboardingPage() {
         {
             id: 3,
             title: "You're all set! 🎉",
-            subtitle: 'Your InkTrail workspace is ready. Start writing your first page.',
+            subtitle: 'Your Text2Handwriting workspace is ready. Start writing your first page.',
             content: (
                 <div className="flex flex-col items-center gap-6 py-2">
                     <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center">
@@ -211,7 +211,7 @@ export default function OnboardingPage() {
     if (isLoading) {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-violet-50 via-white to-indigo-50 gap-4">
-                <InkTrailLogo size={44} className="animate-pulse" />
+                <Text2HandwritingLogo size={44} className="animate-pulse" />
                 <div className="flex items-center gap-2 text-xs font-bold text-neutral-500">
                     <div className="w-2 h-2 rounded-full bg-violet-600 animate-ping" />
                     <span>Preparing your student workspace...</span>
@@ -238,8 +238,8 @@ export default function OnboardingPage() {
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4">
                 <div className="flex items-center gap-2">
-                    <InkTrailLogo size={28} />
-                    <span className="font-black text-neutral-900">InkTrail</span>
+                    <Text2HandwritingLogo size={28} />
+                    <span className="font-black text-neutral-900">Text2Handwriting</span>
                 </div>
                 <div className="flex items-center gap-3">
                     <span className="text-sm text-neutral-400">{step + 1} of {TOTAL_STEPS}</span>

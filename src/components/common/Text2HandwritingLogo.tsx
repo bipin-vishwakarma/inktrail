@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface InkTrailLogoProps {
+interface Text2HandwritingLogoProps {
     size?: number;
     className?: string;
     variant?: 'icon' | 'full';
@@ -8,7 +8,7 @@ interface InkTrailLogoProps {
     animated?: boolean;
 }
 
-export const InkTrailLogo: React.FC<InkTrailLogoProps> = ({
+export const Text2HandwritingLogo: React.FC<Text2HandwritingLogoProps> = ({
     size = 36,
     className = '',
     variant = 'icon',
@@ -28,7 +28,7 @@ export const InkTrailLogo: React.FC<InkTrailLogoProps> = ({
             className={`shrink-0 overflow-visible transition-transform duration-300 ${
                 animated ? 'hover:scale-110 active:scale-95' : ''
             }`}
-            aria-label="InkTrail Logo"
+            aria-label="Text2Handwriting Logo"
         >
             <style>{`
                 @keyframes inkFlow_${id} {
@@ -128,30 +128,7 @@ export const InkTrailLogo: React.FC<InkTrailLogoProps> = ({
                 opacity="0.8"
             />
 
-            {/* 3D Iconic Gold Nib Head */}
-            <g className={animated ? `logo-gold-nib-${id}` : ''}>
-                {/* Nib Silhouette Base */}
-                <path
-                    d="M 50 10 L 35 34 C 37 42, 42 46, 50 48 C 58 46, 63 42, 65 34 Z"
-                    fill={`url(#goldNibGrad-${id})`}
-                    stroke="#78350f"
-                    strokeWidth="1.2"
-                />
-
-                {/* Platinum Central Inlay */}
-                <path
-                    d="M 50 12 L 42 32 C 45 37, 47 39, 50 40 C 53 39, 55 37, 58 32 Z"
-                    fill={`url(#platFacet-${id})`}
-                />
-
-                {/* Center Slit & Breather Hole */}
-                <line x1="50" y1="10" x2="50" y2="30" stroke="#0f172a" strokeWidth="1.2" strokeLinecap="round" />
-                <circle cx="50" cy="30" r="2.2" fill="#0f172a" />
-
-                {/* Glowing Cyan Droplet at Apex */}
-                <circle cx="50" cy="9" r="3.2" fill="#38bdf8" filter={`url(#haloGlow-${id})`} />
-                <circle cx="50" cy="8.2" r="1.2" fill="#ffffff" />
-            </g>
+            
         </svg>
     );
 
@@ -172,7 +149,7 @@ export const InkTrailLogo: React.FC<InkTrailLogoProps> = ({
             <div className="flex flex-col">
                 <div className="flex items-center gap-1.5">
                     <span className="text-xl sm:text-2xl font-black font-display tracking-tight text-neutral-900 leading-none">
-                        Ink<span className="bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-600 bg-clip-text text-transparent">Trail</span>
+                        Text<span className="bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-600 bg-clip-text text-transparent">2Handwriting</span>
                         <span className="text-violet-600 font-serif">.</span>
                     </span>
 
@@ -187,4 +164,4 @@ export const InkTrailLogo: React.FC<InkTrailLogoProps> = ({
     );
 };
 
-export default InkTrailLogo;
+export default Text2HandwritingLogo;
