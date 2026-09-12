@@ -269,7 +269,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             clearTimeout(safetyTimer);
             subscription.unsubscribe();
         };
-    }, [persistUser]);
+    }, [persistUser, addToast]);
 
     const login = useCallback((customProfile?: Partial<UserProfile>) => {
         const defaultProfile: UserProfile = {

@@ -67,9 +67,9 @@ export default function NotebookHero3D({
 
         // 2. Camera: Studio perspective lens with realistic depth & uncaged headroom
         const camera = new THREE.PerspectiveCamera(32, width / height, 0.1, 100);
-        camera.position.set(0, 0.05, 8.8);
+        camera.position.set(0, 0.05, 11.5);
 
-        // 3. High-Fidelity Renderer
+                        // 3. High-Fidelity Renderer
         const renderer = new THREE.WebGLRenderer({
             canvas,
             alpha: true,
@@ -81,28 +81,33 @@ export default function NotebookHero3D({
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         renderer.setClearColor(0x000000, 0);
-
-        // 4. Balanced Studio Lighting Rig (Clean contrast, no overexposure)
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.95);
+        
+        // 4. Balanced Studio Lighting Rig
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1.3);
         scene.add(ambientLight);
 
         // Warm Key Light (Top-right studio lamp)
-        const keyLight = new THREE.DirectionalLight(0xfffdf0, 1.4);
+        const keyLight = new THREE.DirectionalLight(0xfffdf0, 1.8);
         keyLight.position.set(5.0, 7.5, 6.0);
         keyLight.castShadow = true;
         keyLight.shadow.mapSize.set(1024, 1024);
         keyLight.shadow.bias = -0.0001;
         scene.add(keyLight);
 
+        // Bright Spotlight for glossy premium feel
+        const spotLight = new THREE.SpotLight(0xffffff, 1.2);
+        spotLight.position.set(0, 5, 5);
+        spotLight.angle = Math.PI / 4;
+        spotLight.penumbra = 0.5;
+        scene.add(spotLight);
+
         // Cool Sky Fill Light
-        const fillLight = new THREE.DirectionalLight(0xdbeafe, 0.55);
+        const fillLight = new THREE.DirectionalLight(0xdbeafe, 0.7);
         fillLight.position.set(-5, 4, 4);
         scene.add(fillLight);
 
         // Specular glint for spiral rings
-        const coilGlint = new THREE.PointLight(0x818cf8, 1.0, 10);
-        coilGlint.position.set(0, 1.2, 2.2);
-        scene.add(coilGlint);
+        
 
         // 5. Notebook Master Assembly Group
         const notebookGroup = new THREE.Group();
@@ -122,26 +127,22 @@ export default function NotebookHero3D({
         sCtx.fillRect(0, 0, 512, 512);
 
         const shadowTexture = new THREE.CanvasTexture(shadowCanvas);
+        shadowTexture.colorSpace = THREE.SRGBColorSpace;
         
         // Soft contact shadow placed directly behind the notebook pages (NEVER intersects paper)
-        const shadowGeo = new THREE.PlaneGeometry(6.6, 4.8);
+        const shadowGeo = new THREE.PlaneGeometry(7.6, 5.6);
         const shadowMat = new THREE.MeshBasicMaterial({
             map: shadowTexture,
             transparent: true,
-            opacity: 0.85,
+            opacity: 0.98,
             depthWrite: false,
         });
         const contactShadowMesh = new THREE.Mesh(shadowGeo, shadowMat);
         contactShadowMesh.position.set(0, 0, -0.05);
         contactShadowMesh.renderOrder = -1;
-        notebookGroup.add(contactShadowMesh);
+        // notebookGroup.add(contactShadowMesh);
 
-        // Ground ambient desk shadow lying horizontally well below the book
-        const floorGeo = new THREE.PlaneGeometry(10.0, 7.0);
-        const floorShadowMesh = new THREE.Mesh(floorGeo, shadowMat);
-        floorShadowMesh.position.set(0, -2.6, -0.5);
-        floorShadowMesh.rotation.x = -Math.PI / 2;
-        scene.add(floorShadowMesh);
+        
 
         // --- LEFT PAGE: Circuit Diagram & Schematic Canvas ---
         const leftCanvas = document.createElement('canvas');
@@ -251,17 +252,17 @@ export default function NotebookHero3D({
             lCtx.fillStyle = inkRef.current;
             lCtx.fillText("Slope = ΔV/ΔI = 4.82 Ω", 530, 965);
 
-            // Spiral puncture holes
-            for (let y = 140; y < 1260; y += 44) {
-                lCtx.fillStyle = '#cbd5e1';
-                lCtx.beginPath();
-                lCtx.arc(980, y, 7, 0, Math.PI * 2);
-                lCtx.fill();
-            }
+            // Center Crease Shadow
+            const lGrad = lCtx.createLinearGradient(924, 0, 1024, 0);
+            lGrad.addColorStop(0, 'rgba(0,0,0,0)');
+            lGrad.addColorStop(1, 'rgba(0,0,0,0.1)');
+            lCtx.fillStyle = lGrad;
+            lCtx.fillRect(924, 0, 100, 1360);
         };
 
         renderLeftPage();
         const leftTexture = new THREE.CanvasTexture(leftCanvas);
+        leftTexture.colorSpace = THREE.SRGBColorSpace;
         leftTexture.anisotropy = 8;
 
         // --- RIGHT PAGE: DYNAMIC REAL-TIME INSCRIBING NOTEBOOK ---
@@ -271,6 +272,7 @@ export default function NotebookHero3D({
         const rCtx = rightCanvas.getContext('2d')!;
 
         const rightTexture = new THREE.CanvasTexture(rightCanvas);
+        rightTexture.colorSpace = THREE.SRGBColorSpace;
         rightTexture.anisotropy = 8;
 
         // Offscreen static background cache for 60fps write rendering
@@ -284,13 +286,12 @@ export default function NotebookHero3D({
             rBgCtx.fillStyle = paperType === 'parchment' ? '#fbf4e6' : '#fdfbf7';
             rBgCtx.fillRect(0, 0, 1024, 1360);
 
-            // Puncture holes along spine
-            for (let y = 140; y < 1260; y += 44) {
-                rBgCtx.fillStyle = '#cbd5e1';
-                rBgCtx.beginPath();
-                rBgCtx.arc(44, y, 7, 0, Math.PI * 2);
-                rBgCtx.fill();
-            }
+            // Center Crease Shadow
+            const rGrad = rBgCtx.createLinearGradient(0, 0, 100, 0);
+            rGrad.addColorStop(0, 'rgba(0,0,0,0.15)');
+            rGrad.addColorStop(1, 'rgba(0,0,0,0)');
+            rBgCtx.fillStyle = rGrad;
+            rBgCtx.fillRect(0, 0, 100, 1360);
 
             // Red margin double line
             rBgCtx.strokeStyle = '#ef4444';
@@ -346,7 +347,7 @@ export default function NotebookHero3D({
         }
         leftGeo.computeVertexNormals();
 
-        const pageMatConfig = { roughness: 0.85, metalness: 0.0, side: THREE.FrontSide };
+        const pageMatConfig = { roughness: 0.7, metalness: 0.05, side: THREE.FrontSide };
         const leftMat = new THREE.MeshStandardMaterial({ map: leftTexture, ...pageMatConfig });
         const leftMesh = new THREE.Mesh(leftGeo, leftMat);
         leftMesh.position.set(-1.35, 0, 0);
@@ -370,69 +371,50 @@ export default function NotebookHero3D({
         rightMesh.position.set(1.35, 0, 0);
         rightMesh.castShadow = true;
         rightMesh.receiveShadow = true;
-        notebookGroup.add(rightMesh);
+                notebookGroup.add(rightMesh);
 
-        // Soft Organic Paper Stack Rim (Warm ivory ream strictly underneath, NO dark boundary box)
-        const paperStackMat = new THREE.MeshStandardMaterial({
-            color: 0xf5efe6,
-            roughness: 0.95,
-            metalness: 0.0,
-        });
-        const stackGeo = new THREE.BoxGeometry(2.62, 3.76, 0.02);
-        const leftStackMesh = new THREE.Mesh(stackGeo, paperStackMat);
-        leftStackMesh.position.set(-1.35, 0, -0.016);
-        notebookGroup.add(leftStackMesh);
-
-        const rightStackMesh = new THREE.Mesh(stackGeo, paperStackMat);
-        rightStackMesh.position.set(1.35, 0, -0.016);
-        notebookGroup.add(rightStackMesh);
-
-        // Twin-Wire Spiral Coils
+                // --- Shiny Metal Spiral Coils ---
         const coilsGroup = new THREE.Group();
-        const coilCount = 28;
-        const coilSpacing = 3.6 / (coilCount - 1);
-        const coilGeo = new THREE.TorusGeometry(0.13, 0.018, 14, 28, Math.PI * 1.96);
-        const coilMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, metalness: 0.95, roughness: 0.12 });
-
-        for (let i = 0; i < coilCount; i++) {
+        const coilGeo = new THREE.TorusGeometry(0.065, 0.018, 16, 32);
+        const coilMat = new THREE.MeshStandardMaterial({ 
+            color: 0xdddddd,
+            roughness: 0.2,
+            metalness: 0.95
+        });
+        
+        for (let y = 1.75; y >= -1.75; y -= 0.12) {
             const coil = new THREE.Mesh(coilGeo, coilMat);
-            coil.position.set(0, 1.8 - i * coilSpacing, 0.02);
-            coil.rotation.z = Math.PI / 2;
-            coil.rotation.y = 0.15;
+            coil.position.set(0, y, -0.01);
+            coil.rotation.x = Math.PI / 2 + 0.2; // Angle the spirals
             coil.castShadow = true;
             coilsGroup.add(coil);
         }
         notebookGroup.add(coilsGroup);
 
-        // 3D Fountain Pen Assembly (Tip anchored at penGroup origin)
-        const penGroup = new THREE.Group();
+        // Thick Paper Stack Rim ("Lots of pages" effect)
+        const paperStackMat = new THREE.MeshStandardMaterial({
+            color: 0xf0f0f0, // slightly darker to show page layers
+            roughness: 0.9,
+            metalness: 0.0,
+        });
+        // Make the stack much thicker (0.15) to look like a lot of pages
+        const stackGeo = new THREE.BoxGeometry(2.68, 3.82, 0.15);
         
-        // Barrel
-        const barrelGeo = new THREE.CylinderGeometry(0.042, 0.038, 1.8, 16);
-        const barrelMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.25, metalness: 0.85 });
-        const barrel = new THREE.Mesh(barrelGeo, barrelMat);
-        barrel.position.y = 1.15;
-        penGroup.add(barrel);
+        const leftStackMesh = new THREE.Mesh(stackGeo, paperStackMat);
+        leftStackMesh.position.set(-1.35, 0, -0.08); // Offset by half thickness
+        leftStackMesh.castShadow = true;
+        leftStackMesh.receiveShadow = true;
+        notebookGroup.add(leftStackMesh);
 
-        // 24K Gold Accent Ring
-        const goldMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.2, metalness: 0.95 });
-        const ringGeo = new THREE.CylinderGeometry(0.044, 0.044, 0.05, 16);
-        const ring = new THREE.Mesh(ringGeo, goldMat);
-        ring.position.y = 0.245;
-        penGroup.add(ring);
+        const rightStackMesh = new THREE.Mesh(stackGeo, paperStackMat);
+        rightStackMesh.position.set(1.35, 0, -0.08);
+        rightStackMesh.castShadow = true;
+        rightStackMesh.receiveShadow = true;
+        notebookGroup.add(rightStackMesh);
 
-        // Gold Nib (Apex pointed down at local y = 0)
-        const nibGeo = new THREE.ConeGeometry(0.038, 0.22, 14);
-        const nib = new THREE.Mesh(nibGeo, goldMat);
-        nib.position.y = 0.11;
-        nib.rotation.x = Math.PI; // point cone apex to y = 0
-        penGroup.add(nib);
+        
 
-        // Pen writing angle in hand
-        penGroup.rotation.z = -0.42;
-        penGroup.rotation.x = 0.38;
-        penGroup.position.set(1.4, 0, 0.1);
-        notebookGroup.add(penGroup);
+        
 
         // Real-Time Inscription State
         let currentLine = 0;
@@ -444,7 +426,7 @@ export default function NotebookHero3D({
         let lastPaper = paperRef.current;
 
         // Viewport tracking & Frameless Floating Scale
-        const baseScale = 0.72; // Wide breathing room, uncaged, no boundary box clipping
+        const baseScale = 1.05; // Wide breathing room, uncaged, no boundary box clipping
         let targetRotX = 0.10;  // Upright legible angle (eliminates downward tilt)
         let targetRotY = -0.04; // Subtle angle showing both schematic and writing pages
         let targetZ = 0.0;
@@ -459,20 +441,29 @@ export default function NotebookHero3D({
             const x = (e.clientX / window.innerWidth) * 2 - 1;
             const y = -(e.clientY / window.innerHeight) * 2 + 1;
             // Heavily dampened luxury float (stable, non-dizzying)
-            targetRotY = -0.04 + x * 0.05;
-            targetRotX = 0.10 - y * 0.04;
+            targetRotY = -0.04 + x * 0.12;
+            targetRotX = 0.10 - y * 0.08;
             targetZ = x * 0.02;
         };
         window.addEventListener('mousemove', handlePointerMove, { passive: true });
 
-        const handleResize = () => {
+                const handleResize = () => {
             if (!container || !renderer) return;
             width = container.clientWidth;
             height = container.clientHeight;
             camera.aspect = width / height;
+            
+            // Dynamically pull camera back on narrower screens to prevent edge clipping
+            if (camera.aspect < 1.0) {
+                camera.position.z = 11.5 + (1.0 - camera.aspect) * 8.0;
+            } else {
+                camera.position.z = 11.5;
+            }
+            
             camera.updateProjectionMatrix();
             renderer.setSize(width, height);
         };
+        handleResize(); // call immediately to set initial correct Z
         window.addEventListener('resize', handleResize);
 
         // IntersectionObserver to pause rendering when hero notebook is offscreen
@@ -574,42 +565,29 @@ export default function NotebookHero3D({
 
                             rightTexture.needsUpdate = true;
 
-                            // Compute 3D pen tip coordinates from 2D canvas pixel coordinates
-                            const u = penCanvasX / 1024;
-                            const v = penCanvasY / 1360;
-                            const target3DX = 0.025 + u * 2.65;
-                            const target3DY = (0.5 - v) * 3.8;
-                            const normX = 1 - u;
-                            const arch = Math.sin(normX * Math.PI) * 0.05;
-                            const cornerCurl = normX < 0.12 ? Math.pow(0.12 - normX, 2) * 1.5 : 0;
                             
-                            // Lift pen slightly during line transition
-                            const isTransitioning = currentChar === 0;
                             const target3DZ = arch + cornerCurl + (isTransitioning ? 0.08 : 0.025);
 
                             // Pen micro-bob cadence while writing
                             const penBob = Math.sin(elapsedTime * 28) * 0.004;
 
-                            penGroup.position.x = THREE.MathUtils.lerp(penGroup.position.x, target3DX, 0.35);
-                            penGroup.position.y = THREE.MathUtils.lerp(penGroup.position.y, target3DY, 0.35);
-                            penGroup.position.z = THREE.MathUtils.lerp(penGroup.position.z, target3DZ + penBob, 0.35);
+                            
                         }
                     }
                 }
             }
 
             // Ambient breathing float (calm, subtle micro-movement)
-            const idleFloat = Math.sin(elapsedTime * 1.2) * 0.03;
-            const idleTilt = Math.cos(elapsedTime * 1.0) * 0.008;
+                        const idleFloat = Math.sin(elapsedTime * 1.5) * 0.08;
+            const idleTilt = Math.cos(elapsedTime * 1.2) * 0.02;
 
             notebookGroup.position.y = THREE.MathUtils.lerp(notebookGroup.position.y, idleFloat, 0.06);
             notebookGroup.rotation.x = THREE.MathUtils.lerp(notebookGroup.rotation.x, targetRotX + idleTilt, 0.06);
             notebookGroup.rotation.y = THREE.MathUtils.lerp(notebookGroup.rotation.y, targetRotY, 0.06);
             notebookGroup.rotation.z = THREE.MathUtils.lerp(notebookGroup.rotation.z, targetZ, 0.06);
 
-            floorShadowMesh.scale.set(1 + idleFloat * 0.2, 1 + idleFloat * 0.2, 1);
-            floorShadowMesh.position.x = notebookGroup.rotation.y * 0.4;
-            coilGlint.position.y = 1.2 + Math.sin(elapsedTime * 1.5) * 1.2;
+            
+            
 
             renderer.render(scene, camera);
         };
@@ -625,17 +603,19 @@ export default function NotebookHero3D({
             leftMat.dispose();
             rightGeo.dispose();
             rightMat.dispose();
-            stackGeo.dispose();
+                                    stackGeo.dispose();
             paperStackMat.dispose();
             coilGeo.dispose();
             coilMat.dispose();
-            barrelGeo.dispose();
-            barrelMat.dispose();
-            ringGeo.dispose();
-            goldMat.dispose();
-            nibGeo.dispose();
+            
+            
+            
+            
+            
+            
+            
             shadowGeo.dispose();
-            floorGeo.dispose();
+            
             shadowMat.dispose();
             shadowTexture.dispose();
             leftTexture.dispose();
@@ -647,7 +627,7 @@ export default function NotebookHero3D({
     return (
         <div
             ref={containerRef}
-            className={`relative w-full h-[460px] sm:h-[540px] lg:h-[620px] select-none ${className}`}
+            className={`relative w-full h-[520px] sm:h-[640px] lg:h-[760px] select-none ${className}`}
         >
             {/* Subtle Minimal Controls */}
             <div className="absolute top-3 right-3 z-20 flex items-center gap-1.5 p-1 rounded-full bg-white/85 backdrop-blur-md border border-stone-200/80 shadow-xs pointer-events-auto">
@@ -676,3 +656,19 @@ export default function NotebookHero3D({
         </div>
     );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

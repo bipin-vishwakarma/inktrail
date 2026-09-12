@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense, lazy } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import {
@@ -7,7 +7,8 @@ import {
     FlaskConical, Eye, PenTool, ShieldCheck,
     CheckCircle2, FileText, Layers
 } from 'lucide-react';
-import NotebookHero3D from '../components/landing/NotebookHero3D';
+const NotebookHero3D = lazy(() => import('../components/landing/NotebookHero3D'));
+import { Loader2 } from 'lucide-react';
 import BeforeAfterSlider from '../components/landing/BeforeAfterSlider';
 import TiltCard from '../components/landing/TiltCard';
 import { useStore } from '../lib/store';
@@ -120,6 +121,12 @@ const FAQ_ITEMS = [
         a: "Yes! Text2Handwriting comes preloaded with over 30 authentic Indian and international student handwriting styles (from neat cursive to rushed ballpoint scribble), and supports uploading custom TTF/WOFF font files."
     }
 ];
+
+const NotebookLoader = () => (
+    <div className="w-full h-[520px] sm:h-[640px] lg:h-[760px] flex items-center justify-center bg-stone-100/50 rounded-3xl animate-pulse">
+        <Loader2 className="text-stone-300 animate-spin" size={32} />
+    </div>
+);
 
 export default function LandingPage() {
     const navigate = useNavigate();
@@ -313,9 +320,9 @@ export default function LandingPage() {
                         {/* Uncaged 3D Notebook Canvas (Free Floating, Interactive) */}
                         <motion.div 
                             style={{ y: yHeroNotebook }}
-                            className="w-full relative cursor-grab active:cursor-grabbing"
+                            className="w-full relative cursor-grab active:cursor-grabbing drop-shadow-[0_25px_35px_rgba(0,0,0,0.15)]"
                         >
-                            <NotebookHero3D activeInk={activeInk} />
+                            <Suspense fallback={<NotebookLoader />}><NotebookHero3D activeInk={activeInk} /></Suspense>
                         </motion.div>
                     </div>
 
@@ -966,3 +973,9 @@ export default function LandingPage() {
         </div>
     );
 }
+
+
+
+
+
+

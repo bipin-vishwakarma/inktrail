@@ -18,7 +18,7 @@ const PROVIDER_ICONS: Record<string, React.ReactNode> = {
         </svg>
     ),
     github: (
-        <svg viewBox="0 0 24 24" className="w-4 h-4 fill-neutral-800">
+        <svg viewBox="0 0 24 24" className="w-4 h-4 fill-stone-800">
             <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z" />
         </svg>
     ),
@@ -42,9 +42,9 @@ export default function AccountPage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-violet-50 via-white to-indigo-50 gap-4">
+            <div className="min-h-screen flex flex-col items-center justify-center bg-[#FAF8F5] selection:bg-violet-200 selection:text-violet-900 gap-4">
                 <Text2HandwritingLogo size={44} className="animate-pulse" />
-                <div className="flex items-center gap-2 text-xs font-bold text-neutral-500">
+                <div className="flex items-center gap-2 text-xs font-bold text-stone-500">
                     <div className="w-2 h-2 rounded-full bg-violet-600 animate-ping" />
                     <span>Loading student account...</span>
                 </div>
@@ -80,14 +80,14 @@ export default function AccountPage() {
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-indigo-50">
+        <div className="min-h-screen relative overflow-hidden bg-[#FAF8F5] text-stone-900 selection:bg-violet-200 selection:text-violet-900"><div className="pointer-events-none -z-10 absolute inset-0 overflow-hidden"><div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(124,58,237,0.06),rgba(255,255,255,0))]" /></div>
             {/* Navbar-like header */}
-            <div className="border-b border-neutral-200 bg-white/80 backdrop-blur-sm sticky top-0 z-10">
+            <div className="border-b border-stone-200 bg-white/80 backdrop-blur-sm sticky top-0 z-10">
                 <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-sm text-neutral-500 hover:text-violet-600 transition-colors">
+                    <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-sm text-stone-500 hover:text-violet-600 transition-colors">
                         ← Back
                     </button>
-                    <span className="font-black text-neutral-900">My Account</span>
+                    <span className="font-black text-stone-900">My Account</span>
                     <button
                         onClick={() => navigate('/editor')}
                         className="text-sm font-semibold text-violet-600 hover:text-violet-700 transition-colors"
@@ -103,7 +103,7 @@ export default function AccountPage() {
                 <motion.div
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-white rounded-3xl shadow-sm border border-neutral-100 p-6"
+                    className="bg-white rounded-3xl shadow-sm border border-stone-100 p-6"
                 >
                     <div className="flex items-start gap-5">
                         {/* Avatar */}
@@ -117,29 +117,29 @@ export default function AccountPage() {
                                     <input
                                         value={editName}
                                         onChange={e => setEditName(e.target.value)}
-                                        className="text-xl font-black text-neutral-900 border-b-2 border-violet-400 focus:outline-none bg-transparent flex-1"
+                                        className="text-xl font-black text-stone-900 border-b-2 border-violet-400 focus:outline-none bg-transparent flex-1"
                                         autoFocus
                                     />
                                     <button onClick={handleSaveName} disabled={saving} className="text-emerald-500 hover:text-emerald-600">
                                         {saving ? <Loader2 size={18} className="animate-spin" /> : <Check size={18} />}
                                     </button>
-                                    <button onClick={() => setEditingName(false)} className="text-neutral-400 hover:text-neutral-600">
+                                    <button onClick={() => setEditingName(false)} className="text-stone-400 hover:text-stone-600">
                                         <X size={18} />
                                     </button>
                                 </div>
                             ) : (
                                 <div className="flex items-center gap-2 mb-1">
-                                    <h2 className="text-xl font-black text-neutral-900 truncate">{user.name}</h2>
-                                    <button onClick={() => { setEditName(user.name); setEditingName(true); }} className="text-neutral-400 hover:text-violet-500 transition-colors">
+                                    <h2 className="text-xl font-black text-stone-900 truncate">{user.name}</h2>
+                                    <button onClick={() => { setEditName(user.name); setEditingName(true); }} className="text-stone-400 hover:text-violet-500 transition-colors">
                                         <Edit2 size={15} />
                                     </button>
                                 </div>
                             )}
-                            <p className="text-neutral-500 text-sm truncate">{user.email}</p>
+                            <p className="text-stone-500 text-sm truncate">{user.email}</p>
 
                             {/* Provider badge */}
                             <div className="flex flex-wrap items-center gap-1.5 mt-2">
-                                <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-neutral-100 text-xs font-semibold text-neutral-600">
+                                <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-stone-100 text-xs font-semibold text-stone-600">
                                     {PROVIDER_ICONS[user.authProvider]}
                                     {providerLabel[user.authProvider] || user.authProvider}
                                 </div>
@@ -170,12 +170,12 @@ export default function AccountPage() {
                     className="grid grid-cols-3 gap-4"
                 >
                     {statCards.map(({ label, value, icon: Icon, color }) => (
-                        <div key={label} className="bg-white rounded-2xl shadow-sm border border-neutral-100 p-4 text-center">
+                        <div key={label} className="bg-white rounded-2xl shadow-sm border border-stone-100 p-4 text-center">
                             <div className={`w-9 h-9 rounded-xl mx-auto mb-2 flex items-center justify-center bg-${color}-100`}>
                                 <Icon size={18} className={`text-${color}-500`} />
                             </div>
-                            <p className="text-xl font-black text-neutral-900">{value}</p>
-                            <p className="text-xs text-neutral-500 mt-0.5">{label}</p>
+                            <p className="text-xl font-black text-stone-900">{value}</p>
+                            <p className="text-xs text-stone-500 mt-0.5">{label}</p>
                         </div>
                     ))}
                 </motion.div>
@@ -255,7 +255,7 @@ export default function AccountPage() {
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.18 }}
-                    className="bg-white rounded-3xl shadow-sm border border-neutral-100 divide-y divide-neutral-100 overflow-hidden"
+                    className="bg-white rounded-3xl shadow-sm border border-stone-100 divide-y divide-stone-100 overflow-hidden"
                 >
                     {[
                         { label: 'Privacy Policy', href: '/privacy', icon: Shield },
@@ -265,11 +265,11 @@ export default function AccountPage() {
                         <button
                             key={label}
                             onClick={() => navigate(href)}
-                            className="w-full flex items-center gap-3 px-6 py-4 hover:bg-neutral-50 transition-colors text-left"
+                            className="w-full flex items-center gap-3 px-6 py-4 hover:bg-stone-50 transition-colors text-left"
                         >
-                            <Icon size={18} className="text-neutral-400" />
-                            <span className="font-medium text-neutral-700">{label}</span>
-                            <ChevronRight size={16} className="ml-auto text-neutral-300" />
+                            <Icon size={18} className="text-stone-400" />
+                            <span className="font-medium text-stone-700">{label}</span>
+                            <ChevronRight size={16} className="ml-auto text-stone-300" />
                         </button>
                     ))}
                 </motion.div>
@@ -288,7 +288,7 @@ export default function AccountPage() {
                         <LogOut size={18} />
                         Sign Out
                     </button>
-                    <p className="text-center text-xs text-neutral-400 mt-3">
+                    <p className="text-center text-xs text-stone-400 mt-3">
                         Member since {new Date(user.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long' })}
                     </p>
                 </motion.div>
@@ -296,3 +296,4 @@ export default function AccountPage() {
         </div>
     );
 }
+

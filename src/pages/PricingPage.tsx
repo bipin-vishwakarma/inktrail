@@ -1,149 +1,116 @@
-import { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { supabase } from '../lib/supabase';
-import { loadRazorpay } from '../lib/razorpay';
-import { Check, Star } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { FileText, Check, ArrowRight, Zap, ShieldCheck, Star } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import PageLayout from '../components/layout/PageLayout';
+import MagneticButton from '../components/ui/MagneticButton';
 
 export default function PricingPage() {
-    const { user, isAuthenticated, setAuthModalOpen } = useAuth();
-    const [isProcessing, setIsProcessing] = useState(false);
-
-    const handleUpgrade = async () => {
-        if (!isAuthenticated || !user) {
-            setAuthModalOpen(true);
-            return;
-        }
-
-        try {
-            setIsProcessing(true);
-
-            if (!supabase) {
-                throw new Error('Supabase is not configured.');
-            }
-
-            // 1. Create order on the server
-            const { data: orderData, error: orderError } = await supabase.functions.invoke('create-razorpay-order', {
-                body: { amount: 9900, currency: 'INR' } // ₹99
-            });
-
-            if (orderError || !orderData) {
-                throw new Error(orderError?.message || 'Failed to create order');
-            }
-
-            // 2. Load Razorpay Script
-            const res = await loadRazorpay();
-            if (!res) {
-                throw new Error('Razorpay SDK failed to load. Are you online?');
-            }
-
-            // 3. Initialize Razorpay
-            const options = {
-                key: import.meta.env.VITE_RAZORPAY_KEY_ID, 
-                amount: orderData.amount,
-                currency: orderData.currency,
-                name: 'InkTrail Premium',
-                description: 'Lifetime Access to Pro Features',
-                order_id: orderData.id,
-                handler: async function (response: any) {
-                    try {
-                        // 4. Verify Payment on the server
-                        const { data: verifyData, error: verifyError } = await supabase!.functions.invoke('verify-razorpay-payment', {
-                            body: {
-                                razorpay_order_id: response.razorpay_order_id,
-                                razorpay_payment_id: response.razorpay_payment_id,
-                                razorpay_signature: response.razorpay_signature,
-                            }
-                        });
-
-                        if (verifyError || !verifyData?.success) {
-                            alert('Payment verification failed. Please contact support.');
-                        } else {
-                            alert('Payment successful! You are now a Pro member. Please refresh the page.');
-                            window.location.reload();
-                        }
-                    } catch (err) {
-                        console.error('Verification error:', err);
-                        alert('Something went wrong during verification.');
-                    }
-                },
-                prefill: {
-                    name: user.name,
-                    email: user.email,
-                },
-                theme: {
-                    color: '#6366f1',
-                },
-            };
-
-            const paymentObject = new (window as any).Razorpay(options);
-            paymentObject.on('payment.failed', function (response: any) {
-                alert('Payment failed: ' + response.error.description);
-            });
-            paymentObject.open();
-        } catch (error: any) {
-            console.error('Checkout error:', error);
-            alert(error.message);
-        } finally {
-            setIsProcessing(false);
-        }
-    };
-
     return (
-        <main className="flex-1 flex flex-col items-center justify-center px-4 py-24 sm:px-6 lg:px-8">
-            <div className="text-center max-w-2xl mx-auto mb-16">
-                <h1 className="text-4xl font-extrabold text-slate-900 sm:text-5xl tracking-tight mb-4">
-                    Simple, transparent pricing
-                </h1>
-                <p className="text-xl text-slate-600">
-                    Unlock all premium handwriting styles, remove watermarks, and get lifetime access to all future updates for a single one-time payment.
-                </p>
-            </div>
-
-            <div className="w-full max-w-lg bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden relative">
-                <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-indigo-500 to-purple-600" />
+        <PageLayout maxWidth="max-w-5xl" 
+            title="Fair pricing for students." 
+            subtitle="Stop paying for expensive monthly subscriptions you only use once a semester. Our editor is 100% free to use—you only pay when you export the final PDF."
+        >
+            <div className="relative max-w-4xl mx-auto mt-8">
+                {/* Decorative background glow */}
+                <div className="absolute -inset-1 bg-gradient-to-r from-violet-600 to-fuchsia-600 rounded-[2.5rem] blur-xl opacity-20" />
                 
-                <div className="p-8 sm:p-10">
-                    <div className="flex items-center justify-between mb-8">
-                        <div>
-                            <h3 className="text-2xl font-bold text-slate-900 inline-flex items-center gap-2">
-                                <Star className="w-6 h-6 text-indigo-600 fill-indigo-600" />
-                                Lifetime Pro
-                            </h3>
-                            <p className="text-slate-500 mt-1">One time payment</p>
+                <div className="relative bg-white/90 backdrop-blur-xl rounded-[2rem] shadow-2xl border border-stone-100/50 overflow-hidden flex flex-col lg:flex-row">
+                    
+                    {/* Left: Value Proposition */}
+                    <div className="flex-1 p-8 lg:p-12 border-b lg:border-b-0 lg:border-r border-stone-100">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-100 text-violet-700 text-sm font-bold mb-6">
+                            <Zap className="w-4 h-4" />
+                            <span>Pay-As-You-Go</span>
                         </div>
-                        <div className="text-right">
-                            <span className="text-4xl font-extrabold text-slate-900">₹99</span>
-                        </div>
+                        
+                        <h3 className="text-3xl font-display font-black text-stone-900 mb-4 leading-tight">
+                            Everything you need to bypass detection.
+                        </h3>
+                        
+                        <p className="text-stone-600 mb-8 leading-relaxed">
+                            No watermarks, no hidden fees, no subscriptions. Get access to our entire suite of premium handwritten fonts and human imperfection engines instantly.
+                        </p>
+
+                        <ul className="space-y-4 mb-8">
+                            {[
+                                'Full access to 30+ premium handwritten fonts',
+                                'Human Imperfection Engine (Bypass AI detection)',
+                                'All custom ink colors & real paper textures',
+                                'Live real-time preview (No watermark)',
+                                'Secure 256-bit encryption on export'
+                            ].map((feature, i) => (
+                                <motion.li 
+                                    initial={{ opacity: 0, x: -10 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: i * 0.1 }}
+                                    key={i} 
+                                    className="flex items-start gap-3"
+                                >
+                                    <div className="mt-0.5 w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                                        <Check className="w-3 h-3 text-emerald-600" />
+                                    </div>
+                                    <span className="text-stone-700 font-medium">{feature}</span>
+                                </motion.li>
+                            ))}
+                        </ul>
                     </div>
 
-                    <ul className="space-y-4 mb-8">
-                        {[
-                            'Access to all 54 Premium Fonts',
-                            'No Watermarks on exports',
-                            'High-resolution PDF downloads',
-                            'Priority Cloud Backup',
-                            'Lifetime access to all future updates'
-                        ].map((feature, i) => (
-                            <li key={i} className="flex items-start gap-3">
-                                <Check className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
-                                <span className="text-slate-700">{feature}</span>
-                            </li>
-                        ))}
-                    </ul>
+                    {/* Right: The Pricing */}
+                    <div className="w-full lg:w-[26rem] bg-stone-50/50 p-8 lg:p-12 flex flex-col justify-center">
+                        <div className="mb-2 text-stone-500 font-semibold uppercase tracking-wider text-sm">
+                            Per Document Export
+                        </div>
+                        
+                        <div className="flex items-baseline gap-2 mb-2">
+                            <span className="text-5xl font-display font-black text-stone-900">₹10</span>
+                            <span className="text-stone-500 font-medium">base fee</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xl font-bold text-stone-700 mb-8">
+                            <span>+</span>
+                            <span className="text-3xl font-black text-violet-600">₹2</span>
+                            <span className="text-stone-500 text-base font-medium">per page</span>
+                        </div>
 
-                    <button
-                        onClick={handleUpgrade}
-                        disabled={isProcessing || user?.isPro}
-                        className={`w-full py-4 px-6 rounded-2xl text-white font-semibold text-lg transition-all duration-200 shadow-lg shadow-indigo-200 flex items-center justify-center gap-2
-                            ${user?.isPro 
-                                ? 'bg-slate-800 cursor-not-allowed shadow-none' 
-                                : 'bg-indigo-600 hover:bg-indigo-700 hover:shadow-indigo-300 active:scale-[0.98]'
-                            }`}
-                    >
-                        {isProcessing ? 'Loading Checkout...' : (user?.isPro ? 'You are a Pro Member' : 'Upgrade to Pro Lifetime')}
-                    </button>
+                        <div className="p-4 bg-white rounded-2xl border border-stone-200 shadow-sm mb-8">
+                            <div className="flex items-center justify-between text-sm font-semibold mb-2">
+                                <span className="text-stone-500">Example: 5-page assignment</span>
+                                <span className="text-stone-900">₹20</span>
+                            </div>
+                            <div className="w-full h-1.5 bg-stone-100 rounded-full overflow-hidden">
+                                <div className="h-full bg-gradient-to-r from-violet-500 to-fuchsia-500 w-full" />
+                            </div>
+                        </div>
+
+                        <Link to="/editor" className="w-full block">
+                            <MagneticButton className="w-full py-4 bg-stone-900 hover:bg-stone-800 text-white rounded-2xl font-bold text-lg shadow-xl shadow-stone-900/20 transition-all flex items-center justify-center gap-2 group">
+                                Start Writing for Free
+                                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                            </MagneticButton>
+                        </Link>
+                        
+                        <p className="text-center text-xs text-stone-400 mt-4 font-medium flex items-center justify-center gap-1.5">
+                            <ShieldCheck className="w-4 h-4" />
+                            No credit card required to start
+                        </p>
+                    </div>
                 </div>
             </div>
-        </main>
+
+            {/* Social Proof / Trust */}
+            <div className="mt-16 text-center pb-8">
+                <div className="flex items-center justify-center gap-1 mb-3">
+                    {[1, 2, 3, 4, 5].map(i => (
+                        <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400" />
+                    ))}
+                </div>
+                <p className="text-stone-900 font-bold text-lg">
+                    "Saved me from writing a 30-page lab manual by hand."
+                </p>
+                <p className="text-stone-500 mt-1">
+                    Trusted by 10,000+ students across India
+                </p>
+            </div>
+        </PageLayout>
     );
 }
+

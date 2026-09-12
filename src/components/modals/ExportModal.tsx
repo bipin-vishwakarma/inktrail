@@ -1,6 +1,9 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, FileText, ImageIcon, X, Loader2, Play, ZoomIn, ZoomOut } from 'lucide-react';
+import { CheckCircle2, FileText, ImageIcon, X, Loader2, ZoomIn, ZoomOut, Lock } from 'lucide-react';
 import { useState, useRef } from 'react';
+import { useAuth } from '../../context/AuthContext';
+import { supabase } from '../../lib/supabase';
+import { loadRazorpay } from '../../lib/razorpay';
 import { useScrollLock } from '../../hooks/useScrollLock';
 import { HandwrittenWord } from '../HandwrittenWord';
 import { CameraOverlay } from '../CameraOverlay';
@@ -158,6 +161,74 @@ export default function ExportModal({
     wordCount = 0,
 }: ExportModalProps) {
     const [fileName, setFileName] = useState(initialFileName);
+    const { user, isAuthenticated, setAuthModalOpen } = useAuth();
+    const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+    
+    const totalPrice = 10 + (pages.length * 2);
+
+    const handleExportPaymentAndStart = async () => {
+        if (!isAuthenticated || !user) {
+            setAuthModalOpen(true);
+            return;
+        }
+
+        try {
+            setIsProcessingPayment(true);
+            if (!supabase) throw new Error('Supabase is not configured.');
+
+            const { data: orderData, error: orderError } = await supabase.functions.invoke('create-razorpay-order', {
+                body: { pageCount: pages.length, currency: 'INR' }
+            });
+            if (orderError || !orderData) throw new Error(orderError?.message || 'Failed to create order');
+
+            const res = await loadRazorpay();
+            if (!res) throw new Error('Razorpay SDK failed to load. Are you online?');
+
+            const options = {
+                key: import.meta.env.VITE_RAZORPAY_KEY_ID, 
+                amount: orderData.amount,
+                currency: orderData.currency,
+                name: 'InkTrail Export',
+                description: 'Export ' + pages.length + ' Pages',
+                order_id: orderData.id,
+                handler: async function (response: Record<string, string>) {
+                    try {
+                        const { data: verifyData, error: verifyError } = await supabase!.functions.invoke('verify-razorpay-payment', {
+                            body: {
+                                razorpay_order_id: response.razorpay_order_id,
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                razorpay_signature: response.razorpay_signature,
+                            }
+                        });
+
+                        if (verifyError || !verifyData?.success) {
+                            alert('Payment verification failed.');
+                            setIsProcessingPayment(false);
+                        } else {
+                            onStart(fileName, activeFormat);
+                        }
+                    } catch {
+                        alert('Something went wrong during verification.');
+                        setIsProcessingPayment(false);
+                    }
+                },
+                prefill: { name: user.name, email: user.email },
+                theme: { color: '#000000' },
+                modal: { ondismiss: () => setIsProcessingPayment(false) }
+            };
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const paymentObject = new (window as any).Razorpay(options);
+            paymentObject.on('payment.failed', function (response: Record<string, Record<string, string>>) {
+                alert('Payment failed: ' + response.error.description);
+                setIsProcessingPayment(false);
+            });
+            paymentObject.open();
+        } catch (err: unknown) {
+            alert(err instanceof Error ? err.message : 'An unknown error occurred');
+            setIsProcessingPayment(false);
+        }
+    };
     const [activeFormat, setActiveFormat] = useState<'pdf' | 'zip'>(format);
     const [previewScale, setPreviewScale] = useState(0.62);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -836,11 +907,15 @@ export default function ExportModal({
                                     {/* Button States */}
                                     {status === 'idle' || status === 'error' ? (
                                         <button
-                                            onClick={() => onStart(fileName, activeFormat)}
-                                            className="w-full py-4 bg-neutral-900 hover:bg-black text-white rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-neutral-900/20 active:scale-[0.98]"
+                                            onClick={handleExportPaymentAndStart}
+                                            disabled={isProcessingPayment}
+                                            className="w-full py-4 bg-neutral-900 hover:bg-black text-white rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-neutral-900/20 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
                                         >
-                                            <Play size={16} fill="white" />
-                                            <span>Download {activeFormat.toUpperCase()}</span>
+                                            {isProcessingPayment ? (
+                                                <><Loader2 size={16} className="animate-spin" /><span>Processing Checkout...</span></>
+                                            ) : (
+                                                <><Lock size={16} /><span>Pay ₹{totalPrice} & Download {activeFormat.toUpperCase()}</span></>
+                                            )}
                                         </button>
                                     ) : status === 'complete' ? (
                                         <button

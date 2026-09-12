@@ -1,10 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /api/
-Disallow: /private/
 
-# Sitemaps
-Sitemap: https://inktrail-omega.vercel.app/sitemap.xml
-
-# Host
-Host: https://inktrail-omega.vercel.app
+Sitemap: https://text2handwriting.me/sitemap.xml

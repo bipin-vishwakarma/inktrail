@@ -1,3 +1,4 @@
+import confetti from 'canvas-confetti';
 import { useState, useMemo, useDeferredValue, useEffect, useRef, useCallback } from 'react';
 
 import { 
@@ -1313,6 +1314,7 @@ export default function EditorPage() {
             
             setExportStatus('complete');
             addToast('Export Complete!', 'success');
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#8B5CF6', '#D946EF', '#3B82F6'] });
         } catch (err) {
             console.error('Export error:', err);
             setExportStatus('error');
@@ -1321,10 +1323,10 @@ export default function EditorPage() {
     };
 
     return (
-        <div className="w-screen h-screen overflow-hidden flex flex-col bg-white text-neutral-900 font-sans select-none">
+        <div className="w-screen h-screen overflow-hidden flex flex-col bg-white text-stone-900 font-sans select-none">
             
             {/* ==================== TOP BAR (Apple/Linear Aesthetic) ==================== */}
-            <header className="h-14 bg-white border-b border-neutral-200/80 px-4 sm:px-6 flex items-center justify-between shrink-0 z-30">
+            <header className="h-14 bg-white/70 backdrop-blur-2xl border-b border-stone-200/80 px-4 sm:px-6 flex items-center justify-between shrink-0 z-30">
                 {/* Left: macOS Dots, Brand Badge & Editable Document Title */}
                 <div className="flex items-center gap-4 min-w-0">
                     <div className="flex items-center gap-3 shrink-0">
@@ -1334,13 +1336,13 @@ export default function EditorPage() {
                             <div className="w-3 h-3 rounded-full bg-[#FFBD2E] shadow-inner" />
                             <div className="w-3 h-3 rounded-full bg-[#28C840] shadow-inner" />
                         </div>
-                        <div className="h-4 w-px bg-neutral-200" />
+                        <div className="h-4 w-px bg-stone-200" />
                         <div className="flex items-center gap-1.5">
-                            <span className="font-display font-extrabold text-sm tracking-tight text-neutral-900">Text2Handwriting</span>
+                            <span className="font-display font-extrabold text-sm tracking-tight text-stone-900">Text2Handwriting</span>
                         </div>
                     </div>
 
-                    <div className="h-4 w-px bg-neutral-200 hidden sm:block shrink-0" />
+                    <div className="h-4 w-px bg-stone-200 hidden sm:block shrink-0" />
 
                     {/* Editable Document Title */}
                     <input 
@@ -1348,23 +1350,23 @@ export default function EditorPage() {
                         value={headerText}
                         onChange={(e) => setPageOptions({ headerText: e.target.value })}
                         placeholder="Untitled Assignment"
-                        className="bg-neutral-50 hover:bg-neutral-100/80 focus:bg-white text-xs font-semibold text-neutral-800 placeholder:text-neutral-400 border border-neutral-200/60 focus:border-neutral-900 px-2.5 py-1 rounded-lg outline-none transition-all max-w-[140px] sm:max-w-[200px] truncate"
+                        className="bg-stone-50 hover:bg-stone-100/80 focus:bg-white text-xs font-semibold text-stone-800 placeholder:text-stone-400 border border-stone-200/60 focus:border-stone-900 px-2.5 py-1 rounded-lg outline-none transition-all max-w-[140px] sm:max-w-[200px] truncate"
                     />
 
                     {/* Stats Pill */}
-                    <div className="hidden md:flex items-center gap-2 text-[11px] font-semibold text-neutral-500 bg-neutral-100 px-2.5 py-1 rounded-lg">
+                    <div className="hidden md:flex items-center gap-2 text-[11px] font-semibold text-stone-500 bg-stone-100 px-2.5 py-1 rounded-lg">
                         <span>{pages.length} {pages.length === 1 ? 'page' : 'pages'}</span>
-                        <span className="w-1 h-1 rounded-full bg-neutral-400" />
+                        <span className="w-1 h-1 rounded-full bg-stone-400" />
                         <span>{wordCount} words</span>
                     </div>
                 </div>
 
                 {/* Center: Canvas Zoom & Fit Dock */}
-                <div className="hidden lg:flex items-center gap-1 bg-neutral-100/90 border border-neutral-200/80 p-1 rounded-xl shadow-2xs text-neutral-700">
+                <div className="hidden lg:flex items-center gap-1 bg-stone-100/90 border border-stone-200/80 p-1 rounded-xl shadow-2xs text-stone-700">
                     <button 
                         onClick={zoomOut}
                         title="Zoom Out"
-                        className="p-1.5 hover:bg-white hover:text-neutral-900 rounded-lg text-neutral-600 transition-all active:scale-95"
+                        className="p-1.5 hover:bg-white hover:text-stone-900 rounded-lg text-stone-600 transition-all active:scale-95"
                     >
                         <ZoomOut size={13} />
                     </button>
@@ -1372,7 +1374,7 @@ export default function EditorPage() {
                     <button 
                         onClick={zoom100}
                         title="Reset to 100%"
-                        className="px-2 py-0.5 text-xs font-mono font-bold text-neutral-800 hover:bg-white rounded-lg transition-colors min-w-[44px] text-center"
+                        className="px-2 py-0.5 text-xs font-mono font-bold text-stone-800 hover:bg-white rounded-lg transition-colors min-w-[44px] text-center"
                     >
                         {Math.round(scale * 100)}%
                     </button>
@@ -1380,17 +1382,17 @@ export default function EditorPage() {
                     <button 
                         onClick={zoomIn}
                         title="Zoom In"
-                        className="p-1.5 hover:bg-white hover:text-neutral-900 rounded-lg text-neutral-600 transition-all active:scale-95"
+                        className="p-1.5 hover:bg-white hover:text-stone-900 rounded-lg text-stone-600 transition-all active:scale-95"
                     >
                         <ZoomIn size={13} />
                     </button>
 
-                    <div className="h-3 w-px bg-neutral-300 mx-0.5" />
+                    <div className="h-3 w-px bg-stone-300 mx-0.5" />
 
                     <button 
                         onClick={zoomFitWidth}
                         className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all ${
-                            zoomMode === 'fit-width' ? 'bg-white text-neutral-900 shadow-2xs font-bold' : 'text-neutral-500 hover:text-neutral-900'
+                            zoomMode === 'fit-width' ? 'bg-white text-stone-900 shadow-2xs font-bold' : 'text-stone-500 hover:text-stone-900'
                         }`}
                     >
                         Fit Width
@@ -1399,7 +1401,7 @@ export default function EditorPage() {
                     <button 
                         onClick={zoomFitPage}
                         className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all ${
-                            zoomMode === 'fit-page' ? 'bg-white text-neutral-900 shadow-2xs font-bold' : 'text-neutral-500 hover:text-neutral-900'
+                            zoomMode === 'fit-page' ? 'bg-white text-stone-900 shadow-2xs font-bold' : 'text-stone-500 hover:text-stone-900'
                         }`}
                     >
                         Fit Page
@@ -1427,7 +1429,7 @@ export default function EditorPage() {
                         type="button"
                         onClick={() => setIsOnboardingOpen(true)}
                         title="Open Interactive Student Tour & Features Guide"
-                        className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-neutral-100 hover:bg-amber-50 hover:text-amber-700 text-neutral-700 rounded-xl text-xs font-bold transition-all active:scale-95 border border-neutral-200/60 cursor-pointer"
+                        className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-stone-100 hover:bg-amber-50 hover:text-amber-700 text-stone-700 rounded-xl text-xs font-bold transition-all active:scale-95 border border-stone-200/60 cursor-pointer"
                     >
                         <Sparkles size={13} className="text-amber-500" />
                         <span className="hidden md:inline">Tour</span>
@@ -1439,24 +1441,24 @@ export default function EditorPage() {
                             type="button"
                             onClick={() => setIsExploreMenuOpen(!isExploreMenuOpen)}
                             title="Explore Text2Handwriting Site Pages"
-                            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-neutral-100 hover:bg-neutral-200/70 text-neutral-700 rounded-xl text-xs font-bold transition-all active:scale-95 border border-neutral-200/60 cursor-pointer"
+                            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-stone-100 hover:bg-stone-200/70 text-stone-700 rounded-xl text-xs font-bold transition-all active:scale-95 border border-stone-200/60 cursor-pointer"
                         >
                             <Compass size={13} className="text-indigo-600" />
                             <span className="hidden lg:inline text-[11px]">Explore</span>
                         </button>
                         {isExploreMenuOpen && (
-                            <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-xl border border-neutral-200 py-1.5 z-50 text-left text-xs font-bold">
-                                <div className="px-3 py-1.5 text-[10px] text-neutral-400 font-mono uppercase tracking-wider border-b border-neutral-100">
+                            <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-xl border border-stone-200 py-1.5 z-50 text-left text-xs font-bold">
+                                <div className="px-3 py-1.5 text-[10px] text-stone-400 font-mono uppercase tracking-wider border-b border-stone-100">
                                     Text2Handwriting Site Pages
                                 </div>
-                                <Link to="/features" onClick={() => setIsExploreMenuOpen(false)} className="block px-3 py-2 text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Features & Tools</Link>
-                                <Link to="/how-it-works" onClick={() => setIsExploreMenuOpen(false)} className="block px-3 py-2 text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">How It Works Guide</Link>
-                                <Link to="/faq" onClick={() => setIsExploreMenuOpen(false)} className="block px-3 py-2 text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Student FAQ</Link>
-                                <Link to="/about" onClick={() => setIsExploreMenuOpen(false)} className="block px-3 py-2 text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">About & Origins</Link>
-                                <Link to="/changelog" onClick={() => setIsExploreMenuOpen(false)} className="block px-3 py-2 text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Changelog (v2.1)</Link>
-                                <div className="border-t border-neutral-100 my-1" />
-                                <Link to="/disclaimer" onClick={() => setIsExploreMenuOpen(false)} className="block px-3 py-1.5 text-neutral-500 hover:text-neutral-800 text-[11px]">Disclaimer</Link>
-                                <Link to="/privacy" onClick={() => setIsExploreMenuOpen(false)} className="block px-3 py-1.5 text-neutral-500 hover:text-neutral-800 text-[11px]">Privacy & Terms</Link>
+                                <Link to="/features" onClick={() => setIsExploreMenuOpen(false)} className="block px-3 py-2 text-stone-700 hover:bg-stone-50 hover:text-stone-900">Features & Tools</Link>
+                                <Link to="/how-it-works" onClick={() => setIsExploreMenuOpen(false)} className="block px-3 py-2 text-stone-700 hover:bg-stone-50 hover:text-stone-900">How It Works Guide</Link>
+                                <Link to="/faq" onClick={() => setIsExploreMenuOpen(false)} className="block px-3 py-2 text-stone-700 hover:bg-stone-50 hover:text-stone-900">Student FAQ</Link>
+                                <Link to="/about" onClick={() => setIsExploreMenuOpen(false)} className="block px-3 py-2 text-stone-700 hover:bg-stone-50 hover:text-stone-900">About & Origins</Link>
+                                <Link to="/changelog" onClick={() => setIsExploreMenuOpen(false)} className="block px-3 py-2 text-stone-700 hover:bg-stone-50 hover:text-stone-900">Changelog (v2.1)</Link>
+                                <div className="border-t border-stone-100 my-1" />
+                                <Link to="/disclaimer" onClick={() => setIsExploreMenuOpen(false)} className="block px-3 py-1.5 text-stone-500 hover:text-stone-800 text-[11px]">Disclaimer</Link>
+                                <Link to="/privacy" onClick={() => setIsExploreMenuOpen(false)} className="block px-3 py-1.5 text-stone-500 hover:text-stone-800 text-[11px]">Privacy & Terms</Link>
                             </div>
                         )}
                     </div>
@@ -1465,7 +1467,7 @@ export default function EditorPage() {
                     <button 
                         onClick={() => setShowResetModal(true)}
                         title="Reset document styles or clear page"
-                        className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-neutral-100 hover:bg-rose-50 hover:text-rose-600 text-neutral-600 rounded-xl text-xs font-bold transition-all active:scale-95 border border-neutral-200/60"
+                        className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-stone-100 hover:bg-rose-50 hover:text-rose-600 text-stone-600 rounded-xl text-xs font-bold transition-all active:scale-95 border border-stone-200/60"
                     >
                         <RotateCcw size={13} />
                         <span className="hidden sm:inline">Reset</span>
@@ -1475,7 +1477,7 @@ export default function EditorPage() {
                     <button 
                         onClick={() => setShowCreatorModal(true)}
                         title="Created with passion by Bipin Vishwakarma — View Profile & Socials"
-                        className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1.5 bg-neutral-100 hover:bg-neutral-200/70 text-neutral-700 rounded-xl text-xs font-bold transition-all active:scale-95 border border-neutral-200/60"
+                        className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1.5 bg-stone-100 hover:bg-stone-200/70 text-stone-700 rounded-xl text-xs font-bold transition-all active:scale-95 border border-stone-200/60"
                     >
                         <div className="relative flex items-center justify-center">
                             <img 
@@ -1488,13 +1490,13 @@ export default function EditorPage() {
                             />
                             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 absolute -bottom-0.5 -right-0.5 ring-1 ring-white" />
                         </div>
-                        <span className="hidden md:inline text-[11px] font-semibold text-neutral-800">Bipin</span>
+                        <span className="hidden md:inline text-[11px] font-semibold text-stone-800">Bipin</span>
                     </button>
 
                     <button 
                         onClick={() => setIsHistoryOpen(true)}
                         title="Version History"
-                        className="p-2 hover:bg-neutral-100 rounded-xl text-neutral-600 hover:text-neutral-900 transition-colors"
+                        className="p-2 hover:bg-stone-100 rounded-xl text-stone-600 hover:text-stone-900 transition-colors"
                     >
                         <Clock size={16} />
                     </button>
@@ -1503,24 +1505,18 @@ export default function EditorPage() {
                     <UserMenu />
 
                     {/* Primary Export Preview Button */}
-                    <button 
-                        onClick={() => handleStartExport('pdf')}
-                        className="flex items-center gap-2 px-4 py-2 bg-neutral-900 hover:bg-black text-white rounded-xl text-xs font-bold shadow-md shadow-neutral-900/15 transition-all active:scale-95"
-                    >
-                        <Download size={14} />
-                        <span>Export Preview</span>
-                    </button>
+                    <button onClick={() => handleStartExport('pdf')} className="relative overflow-hidden group flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-violet-500 to-fuchsia-500 hover:from-violet-400 hover:to-fuchsia-400 text-white rounded-xl text-xs font-bold shadow-lg shadow-violet-500/30 transition-all active:scale-95"><div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:animate-[shimmer_1.5s_infinite]" /><span className="relative z-10 flex items-center gap-2"><Download size={14} /><span>Export Preview</span></span></button>
                 </div>
             </header>
 
             {/* ==================== WORKSTATION BODY ==================== */}
-            <div className="flex-1 flex overflow-hidden relative">
+            <div className="flex-1 flex overflow-hidden relative bg-[#FAF8F5]"><div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(124,58,237,0.06),rgba(255,255,255,0))] pointer-events-none" />
                 
                 {/* 1. LEFT SIDEBAR CONTROLS */}
-                <div className={`w-full lg:w-[400px] bg-white border-r border-neutral-200/80 flex flex-col shrink-0 overflow-hidden z-20 ${mobileTab === 'canvas' ? 'hidden lg:flex' : 'flex'}`}>
+                <div className={`w-full lg:w-[400px] bg-white/70 backdrop-blur-2xl border-r border-stone-200/80 flex flex-col shrink-0 overflow-hidden z-20 ${mobileTab === 'canvas' ? 'hidden lg:flex' : 'flex'}`}>
                     
                     {/* Navigation Tabs (Apple/Linear Segmented Style) */}
-                    <div className="grid grid-cols-5 bg-neutral-100/90 p-1.5 shrink-0 border-b border-neutral-200/80 gap-1">
+                    <div className="grid grid-cols-5 bg-stone-100/90 p-1.5 shrink-0 border-b border-stone-200/80 gap-1">
                         {[
                             { id: 'write' as const, label: 'Write', icon: FileText },
                             { id: 'pen' as const, label: 'Pen', icon: Palette },
@@ -1533,8 +1529,8 @@ export default function EditorPage() {
                                 onClick={() => setActiveSidebarTab(t.id)}
                                 className={`py-1.5 px-1 rounded-xl text-[11px] font-bold flex flex-col sm:flex-row items-center justify-center gap-1 transition-all ${
                                     activeSidebarTab === t.id
-                                        ? 'bg-neutral-900 text-white shadow-xs'
-                                        : 'text-neutral-500 hover:text-neutral-900 hover:bg-neutral-200/60'
+                                        ? 'bg-stone-900 text-white shadow-xs'
+                                        : 'text-stone-500 hover:text-stone-900 hover:bg-stone-200/60'
                                 }`}
                             >
                                 <t.icon size={13} />
@@ -1550,10 +1546,10 @@ export default function EditorPage() {
                         {activeSidebarTab === 'write' && (
                             <div className="flex-1 flex flex-col min-h-0 space-y-3.5">
                                 {/* Heading Option */}
-                                <div className="shrink-0 bg-neutral-50/90 p-3.5 rounded-2xl border border-neutral-200/80 space-y-2.5 shadow-2xs">
+                                <div className="shrink-0 bg-stone-50/90 p-3.5 rounded-2xl border border-stone-200/80 space-y-2.5 shadow-2xs">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-1.5">
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-neutral-400">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-stone-400">
                                                 Document Heading
                                             </span>
                                             {showHeader && (
@@ -1562,12 +1558,12 @@ export default function EditorPage() {
                                                 </span>
                                             )}
                                         </div>
-                                        <label className="flex items-center gap-1.5 cursor-pointer text-xs font-bold text-neutral-700 select-none">
+                                        <label className="flex items-center gap-1.5 cursor-pointer text-xs font-bold text-stone-700 select-none">
                                             <input 
                                                 type="checkbox" 
                                                 checked={showHeader} 
                                                 onChange={e => setPageOptions({ showHeader: e.target.checked })} 
-                                                className="w-3.5 h-3.5 rounded border-neutral-300 accent-neutral-900 cursor-pointer"
+                                                className="w-3.5 h-3.5 rounded border-stone-300 accent-stone-900 cursor-pointer"
                                             />
                                             <span className="text-[11px]">Show Heading</span>
                                         </label>
@@ -1580,22 +1576,22 @@ export default function EditorPage() {
                                                 onChange={e => setPageOptions({ headerText: e.target.value })}
                                                 placeholder="Name: Bipin Vishwakarma     Sap ID: 500124214&#10;Subject: Human Computer Interaction"
                                                 rows={Math.min(4, Math.max(2, (headerText.split('\n').length)))}
-                                                className="w-full min-h-[58px] max-h-[120px] p-2.5 rounded-xl bg-white border border-neutral-200/90 text-neutral-900 text-xs leading-relaxed focus:bg-white focus:outline-none focus:ring-2 focus:ring-neutral-900/15 focus:border-neutral-400 transition-all resize-y font-sans font-medium custom-scrollbar"
+                                                className="w-full min-h-[58px] max-h-[120px] p-2.5 rounded-xl bg-white border border-stone-200/90 text-stone-900 text-xs leading-relaxed focus:bg-white focus:outline-none focus:ring-2 focus:ring-stone-900/15 focus:border-stone-400 transition-all resize-y font-sans font-medium custom-scrollbar"
                                             />
                                             {/* Quick Heading Template Chips */}
                                             <div className="flex items-center gap-1.5 flex-wrap text-[10px]">
-                                                <span className="text-neutral-400 font-bold text-[9px] uppercase tracking-wider">Presets:</span>
+                                                <span className="text-stone-400 font-bold text-[9px] uppercase tracking-wider">Presets:</span>
                                                 <button
                                                     type="button"
                                                     onClick={() => setPageOptions({ headerText: 'Name: Bipin Vishwakarma     Sap ID: 500124214\nSubject: Assignment 1' })}
-                                                    className="px-2 py-0.5 rounded-md bg-white hover:bg-neutral-200/70 text-neutral-600 border border-neutral-200 transition-colors cursor-pointer"
+                                                    className="px-2 py-0.5 rounded-md bg-white hover:bg-stone-200/70 text-stone-600 border border-stone-200 transition-colors cursor-pointer"
                                                 >
                                                     Name & Sap ID
                                                 </button>
                                                 <button
                                                     type="button"
                                                     onClick={() => setPageOptions({ headerText: 'Assignment: Module 3 Notes\nDate: ' + new Date().toLocaleDateString('en-GB') })}
-                                                    className="px-2 py-0.5 rounded-md bg-white hover:bg-neutral-200/70 text-neutral-600 border border-neutral-200 transition-colors cursor-pointer"
+                                                    className="px-2 py-0.5 rounded-md bg-white hover:bg-stone-200/70 text-stone-600 border border-stone-200 transition-colors cursor-pointer"
                                                 >
                                                     Assignment & Date
                                                 </button>
@@ -1603,7 +1599,7 @@ export default function EditorPage() {
                                                     <button
                                                         type="button"
                                                         onClick={() => setPageOptions({ headerText: '' })}
-                                                        className="text-neutral-400 hover:text-rose-600 text-[10px] ml-auto transition-colors font-medium"
+                                                        className="text-stone-400 hover:text-rose-600 text-[10px] ml-auto transition-colors font-medium"
                                                     >
                                                         Clear
                                                     </button>
@@ -1618,13 +1614,13 @@ export default function EditorPage() {
                                     {/* Action Bar & Stats */}
                                     <div className="flex items-center justify-between shrink-0 gap-2">
                                         <div className="flex items-center gap-1.5 flex-wrap">
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-neutral-400">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-stone-400">
                                                 Text Content
                                             </span>
-                                            <span className="text-[10px] font-semibold px-2 py-0.5 bg-neutral-100 text-neutral-600 rounded-full font-mono">
+                                            <span className="text-[10px] font-semibold px-2 py-0.5 bg-stone-100 text-stone-600 rounded-full font-mono">
                                                 {wordCount} words
                                             </span>
-                                            <span className="text-[10px] font-semibold px-1.5 py-0.5 bg-neutral-100 text-neutral-500 rounded-full font-mono hidden sm:inline-block">
+                                            <span className="text-[10px] font-semibold px-1.5 py-0.5 bg-stone-100 text-stone-500 rounded-full font-mono hidden sm:inline-block">
                                                 {draftText.length} chars
                                             </span>
                                         </div>
@@ -1648,7 +1644,7 @@ export default function EditorPage() {
                                                 type="button"
                                                 onClick={handlePasteClipboard}
                                                 title="Paste text from clipboard (auto-cleans AI preambles)"
-                                                className="px-2.5 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer border border-neutral-200/70 shadow-2xs active:scale-95"
+                                                className="px-2.5 py-1 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer border border-stone-200/70 shadow-2xs active:scale-95"
                                             >
                                                 <Clipboard size={12} />
                                                 <span>Paste</span>
@@ -1666,7 +1662,7 @@ export default function EditorPage() {
                                                 type="button"
                                                 onClick={() => setIsEditorExpanded(true)}
                                                 title="Open Fullscreen Focus Mode"
-                                                className="px-2 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer border border-neutral-200/60"
+                                                className="px-2 py-1 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer border border-stone-200/60"
                                             >
                                                 <Maximize2 size={12} />
                                                 <span className="hidden sm:inline">Focus</span>
@@ -1680,7 +1676,7 @@ export default function EditorPage() {
                                                         }
                                                     }}
                                                     title="Clear All Text"
-                                                    className="p-1.5 text-neutral-400 hover:text-rose-600 rounded-lg transition-colors cursor-pointer"
+                                                    className="p-1.5 text-stone-400 hover:text-rose-600 rounded-lg transition-colors cursor-pointer"
                                                 >
                                                     <Trash2 size={13} />
                                                 </button>
@@ -1707,10 +1703,10 @@ export default function EditorPage() {
 
                                     {/* Inset Textarea Container - Floating Scrollbar & Status Bar */}
                                     <div 
-                                        className={`flex-1 min-h-[260px] flex flex-col rounded-2xl bg-neutral-50/90 border transition-all shadow-2xs overflow-hidden relative ${
+                                        className={`flex-1 min-h-[260px] flex flex-col rounded-2xl bg-stone-50/90 border transition-all shadow-2xs overflow-hidden relative ${
                                             isDraggingFile 
                                                 ? 'border-blue-500 ring-2 ring-blue-500/20 bg-blue-50/30' 
-                                                : 'border-neutral-200 focus-within:bg-white focus-within:border-neutral-400 focus-within:ring-2 focus-within:ring-neutral-900/10'
+                                                : 'border-stone-200 focus-within:bg-white focus-within:border-stone-400 focus-within:ring-2 focus-within:ring-stone-900/10'
                                         }`}
                                         onDragOver={(e) => {
                                             e.preventDefault();
@@ -1747,7 +1743,7 @@ export default function EditorPage() {
 
                                         {/* Loading / Extraction Progress Badge */}
                                         {isImporting && importProgress && (
-                                            <div className="absolute top-3 right-3 z-30 bg-neutral-900/95 text-white text-[11px] font-medium px-3 py-1.5 rounded-xl shadow-xl flex items-center gap-2 border border-white/20 backdrop-blur-md animate-in fade-in">
+                                            <div className="absolute top-3 right-3 z-30 bg-stone-900/95 text-white text-[11px] font-medium px-3 py-1.5 rounded-xl shadow-xl flex items-center gap-2 border border-white/20 backdrop-blur-md animate-in fade-in">
                                                 <Loader2 size={13} className="animate-spin text-blue-400" />
                                                 <span>{importProgress}</span>
                                             </div>
@@ -1769,19 +1765,19 @@ export default function EditorPage() {
                                                 updateCursorPos(e);
                                             }}
                                             placeholder="Start typing your text here...&#10;&#10;Supports markdown bullets, Q1/Ans formatting, [[boxes]], and [compare] tables!"
-                                            className={`flex-1 w-full p-4 bg-transparent border-0 text-neutral-900 ${
+                                            className={`flex-1 w-full p-4 bg-transparent border-0 text-stone-900 ${
                                                 editorFontSize === 'sm' ? 'text-xs' : editorFontSize === 'lg' ? 'text-base' : 'text-sm'
                                             } leading-relaxed focus:outline-none transition-all resize-none font-sans overflow-y-auto custom-scrollbar pr-3`}
                                         />
 
                                         {/* Textarea Bottom Status Bar */}
-                                        <div className="px-3.5 py-1.5 bg-neutral-100/70 border-t border-neutral-200/60 flex items-center justify-between text-[11px] text-neutral-500 font-medium select-none shrink-0">
+                                        <div className="px-3.5 py-1.5 bg-stone-100/70 border-t border-stone-200/60 flex items-center justify-between text-[11px] text-stone-500 font-medium select-none shrink-0">
                                             <div className="flex items-center gap-2.5">
-                                                <span className="font-mono text-[10px] text-neutral-600 bg-white/80 px-1.5 py-0.5 rounded border border-neutral-200/60">
+                                                <span className="font-mono text-[10px] text-stone-600 bg-white/80 px-1.5 py-0.5 rounded border border-stone-200/60">
                                                     Ln {cursorPos.line}, Col {cursorPos.col}
                                                 </span>
-                                                <span className="text-neutral-300">•</span>
-                                                <span className="text-[10px] text-neutral-500">
+                                                <span className="text-stone-300">•</span>
+                                                <span className="text-[10px] text-stone-500">
                                                     ~{Math.max(1, Math.ceil(wordCount / 220))} {Math.ceil(wordCount / 220) === 1 ? 'page' : 'pages'}
                                                 </span>
                                             </div>
@@ -1791,7 +1787,7 @@ export default function EditorPage() {
                                                     type="button"
                                                     onClick={() => setEditorFontSize(f => f === 'sm' ? 'base' : f === 'base' ? 'lg' : 'sm')}
                                                     title="Toggle Editor Text Size"
-                                                    className="px-2 py-0.5 rounded-md hover:bg-neutral-200/80 text-[10px] font-bold text-neutral-600 transition-colors cursor-pointer"
+                                                    className="px-2 py-0.5 rounded-md hover:bg-stone-200/80 text-[10px] font-bold text-stone-600 transition-colors cursor-pointer"
                                                 >
                                                     Text: {editorFontSize === 'sm' ? 'Compact' : editorFontSize === 'base' ? 'Medium' : 'Large'}
                                                 </button>
@@ -1799,7 +1795,7 @@ export default function EditorPage() {
                                                     type="button"
                                                     onClick={() => setIsEditorExpanded(true)}
                                                     title="Open Fullscreen Focus Mode"
-                                                    className="p-1 rounded-md hover:bg-neutral-200/80 text-neutral-600 transition-colors cursor-pointer"
+                                                    className="p-1 rounded-md hover:bg-stone-200/80 text-stone-600 transition-colors cursor-pointer"
                                                 >
                                                     <Maximize2 size={12} />
                                                 </button>
@@ -1813,14 +1809,14 @@ export default function EditorPage() {
                         {/* TAB 2: PEN & STYLE */}
                         {activeSidebarTab === 'pen' && (
                             <div className="space-y-6">
-                                <div className="flex justify-between items-center pb-1 border-b border-neutral-100">
-                                    <span className="text-xs font-bold text-neutral-800">Pen & Typography</span>
+                                <div className="flex justify-between items-center pb-1 border-b border-stone-100">
+                                    <span className="text-xs font-bold text-stone-800">Pen & Typography</span>
                                     <button
                                         onClick={() => {
                                             resetFormatting();
                                             addToast('Pen settings reset to defaults', 'info');
                                         }}
-                                        className="flex items-center gap-1 text-[11px] text-neutral-400 hover:text-neutral-800 font-semibold px-2 py-0.5 rounded-md hover:bg-neutral-100 transition-colors"
+                                        className="flex items-center gap-1 text-[11px] text-stone-400 hover:text-stone-800 font-semibold px-2 py-0.5 rounded-md hover:bg-stone-100 transition-colors"
                                         title="Reset font size, line spacing and baseline"
                                     >
                                         <RotateCcw size={11} />
@@ -1831,17 +1827,17 @@ export default function EditorPage() {
                                 {/* Font Selection */}
                                 <div>
                                     <div className="flex justify-between items-center mb-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400">
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-stone-400">
                                             Handwriting Style
                                         </label>
-                                        <span className="text-[10px] font-bold px-2 py-0.5 bg-neutral-100 text-neutral-600 rounded-full">
+                                        <span className="text-[10px] font-bold px-2 py-0.5 bg-stone-100 text-stone-600 rounded-full">
                                             {FONTS.length} Fonts
                                         </span>
                                     </div>
                                     <select
                                         value={font}
                                         onChange={e => setFont(e.target.value)}
-                                        className="w-full p-3 rounded-2xl bg-neutral-50 border border-neutral-200 text-neutral-900 text-xs font-bold focus:bg-white focus:outline-none focus:ring-2 focus:ring-neutral-900/10 cursor-pointer transition-all"
+                                        className="w-full p-3 rounded-2xl bg-stone-50 border border-stone-200 text-stone-900 text-xs font-bold focus:bg-white focus:outline-none focus:ring-2 focus:ring-stone-900/10 cursor-pointer transition-all"
                                     >
                                         {FONTS.map(f => (
                                             <option key={f.name} value={f.name} className="py-1">{f.label}</option>
@@ -1850,11 +1846,11 @@ export default function EditorPage() {
                                 </div>
 
                                 {/* Font Size & Baseline Slider */}
-                                <div className="space-y-4 bg-neutral-50 p-4 rounded-2xl border border-neutral-200/70">
+                                <div className="space-y-4 bg-stone-50 p-4 rounded-2xl border border-stone-200/70">
                                     <div>
-                                        <div className="flex justify-between text-xs mb-1.5 text-neutral-600 font-bold">
+                                        <div className="flex justify-between text-xs mb-1.5 text-stone-600 font-bold">
                                             <span>Font Size</span>
-                                            <span className="font-mono text-neutral-900">{fontSize}px</span>
+                                            <span className="font-mono text-stone-900">{fontSize}px</span>
                                         </div>
                                         <input 
                                             type="range" 
@@ -1862,14 +1858,14 @@ export default function EditorPage() {
                                             max="64" 
                                             value={fontSize} 
                                             onChange={e => setFontSize(Number(e.target.value))} 
-                                            className="w-full accent-neutral-900 cursor-pointer" 
+                                            className="w-full accent-stone-900 cursor-pointer" 
                                         />
                                     </div>
 
                                     <div>
-                                        <div className="flex justify-between text-xs mb-1.5 text-neutral-600 font-bold">
+                                        <div className="flex justify-between text-xs mb-1.5 text-stone-600 font-bold">
                                             <span>Line Nudge / Baseline</span>
-                                            <span className="font-mono text-neutral-900">{baseline}px</span>
+                                            <span className="font-mono text-stone-900">{baseline}px</span>
                                         </div>
                                         <input 
                                             type="range" 
@@ -1877,17 +1873,17 @@ export default function EditorPage() {
                                             max="30" 
                                             value={baseline} 
                                             onChange={e => setBaseline(Number(e.target.value))} 
-                                            className="w-full accent-neutral-900 cursor-pointer" 
+                                            className="w-full accent-stone-900 cursor-pointer" 
                                         />
                                     </div>
                                 </div>
 
                                 {/* Text Alignment */}
                                 <div>
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400 block mb-2">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-stone-400 block mb-2">
                                         Text Alignment
                                     </label>
-                                    <div className="flex bg-neutral-100 p-1 rounded-2xl border border-neutral-200/70">
+                                    <div className="flex bg-stone-100 p-1 rounded-2xl border border-stone-200/70">
                                         {[
                                             { id: 'left' as const, icon: AlignLeft },
                                             { id: 'center' as const, icon: AlignCenter },
@@ -1898,7 +1894,7 @@ export default function EditorPage() {
                                                 key={opt.id} 
                                                 onClick={() => setTextAlign(opt.id)} 
                                                 className={`flex-1 p-2 flex justify-center rounded-xl transition-all ${
-                                                    textAlign === opt.id ? 'bg-white text-neutral-900 shadow-xs' : 'text-neutral-500 hover:text-neutral-900'
+                                                    textAlign === opt.id ? 'bg-white text-stone-900 shadow-xs' : 'text-stone-500 hover:text-stone-900'
                                                 }`}
                                             >
                                                 <opt.icon size={15} />
@@ -1917,14 +1913,14 @@ export default function EditorPage() {
                         {/* TAB 3: PAPER & LAYOUT */}
                         {activeSidebarTab === 'paper' && (
                             <div className="space-y-6">
-                                <div className="flex justify-between items-center pb-1 border-b border-neutral-100">
-                                    <span className="text-xs font-bold text-neutral-800">Paper & Margins</span>
+                                <div className="flex justify-between items-center pb-1 border-b border-stone-100">
+                                    <span className="text-xs font-bold text-stone-800">Paper & Margins</span>
                                     <button
                                         onClick={() => {
                                             resetPaperSettings();
                                             addToast('Paper and margins reset to defaults', 'info');
                                         }}
-                                        className="flex items-center gap-1 text-[11px] text-neutral-400 hover:text-neutral-800 font-semibold px-2 py-0.5 rounded-md hover:bg-neutral-100 transition-colors"
+                                        className="flex items-center gap-1 text-[11px] text-stone-400 hover:text-stone-800 font-semibold px-2 py-0.5 rounded-md hover:bg-stone-100 transition-colors"
                                         title="Reset paper sheet and margin dimensions"
                                     >
                                         <RotateCcw size={11} />
@@ -1934,7 +1930,7 @@ export default function EditorPage() {
 
                                 {/* Paper Type Selection */}
                                 <div>
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400 block mb-2.5">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-stone-400 block mb-2.5">
                                         Paper Material
                                     </label>
                                     <div className="grid grid-cols-1 gap-2">
@@ -1951,8 +1947,8 @@ export default function EditorPage() {
                                                 }}
                                                 className={`p-3.5 rounded-2xl text-xs font-bold flex items-center justify-between border transition-all ${
                                                     paper.id === p.id 
-                                                        ? 'bg-neutral-900 text-white border-neutral-900 shadow-xs' 
-                                                        : 'bg-neutral-50 border-neutral-200/70 text-neutral-700 hover:bg-neutral-100'
+                                                        ? 'bg-stone-900 text-white border-stone-900 shadow-xs' 
+                                                        : 'bg-stone-50 border-stone-200/70 text-stone-700 hover:bg-stone-100'
                                                 }`}
                                             >
                                                 <span>{p.name}</span>
@@ -1970,7 +1966,7 @@ export default function EditorPage() {
                                                 <FlaskConical size={14} />
                                             </div>
                                             <div>
-                                                <span className="text-xs font-bold text-neutral-900 block leading-tight">
+                                                <span className="text-xs font-bold text-stone-900 block leading-tight">
                                                     Lab Practical Notebook
                                                 </span>
                                                 <span className="text-[10px] text-blue-700 font-semibold">
@@ -1991,12 +1987,12 @@ export default function EditorPage() {
                                                         addToast('Lab Practical Mode turned off.', 'info');
                                                     }
                                                 }} 
-                                                className="w-4 h-4 rounded border-neutral-300 accent-blue-600 cursor-pointer"
+                                                className="w-4 h-4 rounded border-stone-300 accent-blue-600 cursor-pointer"
                                             />
                                         </label>
                                     </div>
 
-                                    <p className="text-[10px] text-neutral-600 leading-relaxed">
+                                    <p className="text-[10px] text-stone-600 leading-relaxed">
                                         Designed for college lab manuals (Physics, Chemistry, Engineering) — interleaving facing diagram sheets with ruled experiment writeups.
                                     </p>
 
@@ -2004,7 +2000,7 @@ export default function EditorPage() {
                                         <div className="pt-2.5 border-t border-blue-200/70 space-y-3">
                                             {/* Page Sequence Order */}
                                             <div>
-                                                <label className="text-[10px] font-black uppercase tracking-wider text-neutral-500 block mb-1.5">
+                                                <label className="text-[10px] font-black uppercase tracking-wider text-stone-500 block mb-1.5">
                                                     Page Sequence
                                                 </label>
                                                 <div className="grid grid-cols-2 gap-2">
@@ -2014,11 +2010,11 @@ export default function EditorPage() {
                                                         className={`p-2 rounded-xl text-left border transition-all cursor-pointer ${
                                                             labNotebookStartWith === 'blank'
                                                                 ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
-                                                                : 'bg-white border-neutral-200 text-neutral-700 hover:bg-neutral-50'
+                                                                : 'bg-white border-stone-200 text-stone-700 hover:bg-stone-50'
                                                         }`}
                                                     >
                                                         <div className="font-bold text-[11px] leading-snug">Diagram First</div>
-                                                        <div className={`text-[9px] ${labNotebookStartWith === 'blank' ? 'text-blue-100' : 'text-neutral-500'}`}>
+                                                        <div className={`text-[9px] ${labNotebookStartWith === 'blank' ? 'text-blue-100' : 'text-stone-500'}`}>
                                                             Plain Left ➔ Ruled Right
                                                         </div>
                                                     </button>
@@ -2028,11 +2024,11 @@ export default function EditorPage() {
                                                         className={`p-2 rounded-xl text-left border transition-all cursor-pointer ${
                                                             labNotebookStartWith === 'ruled'
                                                                 ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
-                                                                : 'bg-white border-neutral-200 text-neutral-700 hover:bg-neutral-50'
+                                                                : 'bg-white border-stone-200 text-stone-700 hover:bg-stone-50'
                                                         }`}
                                                     >
                                                         <div className="font-bold text-[11px] leading-snug">Ruled First</div>
-                                                        <div className={`text-[9px] ${labNotebookStartWith === 'ruled' ? 'text-blue-100' : 'text-neutral-500'}`}>
+                                                        <div className={`text-[9px] ${labNotebookStartWith === 'ruled' ? 'text-blue-100' : 'text-stone-500'}`}>
                                                             Ruled Theory ➔ Diagram
                                                         </div>
                                                     </button>
@@ -2041,7 +2037,7 @@ export default function EditorPage() {
 
                                             {/* Facing Diagram Sheet Surface */}
                                             <div>
-                                                <label className="text-[10px] font-black uppercase tracking-wider text-neutral-500 block mb-1.5">
+                                                <label className="text-[10px] font-black uppercase tracking-wider text-stone-500 block mb-1.5">
                                                     Diagram Sheet Surface
                                                 </label>
                                                 <div className="grid grid-cols-2 gap-2">
@@ -2050,8 +2046,8 @@ export default function EditorPage() {
                                                         onClick={() => setLabDiagramPaper('blank')}
                                                         className={`p-2 rounded-xl text-center border font-bold text-[11px] transition-all cursor-pointer ${
                                                             labDiagramPaper === 'blank'
-                                                                ? 'bg-neutral-900 text-white border-neutral-900 shadow-xs'
-                                                                : 'bg-white border-neutral-200 text-neutral-700 hover:bg-neutral-50'
+                                                                ? 'bg-stone-900 text-white border-stone-900 shadow-xs'
+                                                                : 'bg-white border-stone-200 text-stone-700 hover:bg-stone-50'
                                                         }`}
                                                     >
                                                         Plain White Sheet
@@ -2061,8 +2057,8 @@ export default function EditorPage() {
                                                         onClick={() => setLabDiagramPaper('grid')}
                                                         className={`p-2 rounded-xl text-center border font-bold text-[11px] transition-all cursor-pointer ${
                                                             labDiagramPaper === 'grid'
-                                                                ? 'bg-neutral-900 text-white border-neutral-900 shadow-xs'
-                                                                : 'bg-white border-neutral-200 text-neutral-700 hover:bg-neutral-50'
+                                                                ? 'bg-stone-900 text-white border-stone-900 shadow-xs'
+                                                                : 'bg-white border-stone-200 text-stone-700 hover:bg-stone-50'
                                                         }`}
                                                     >
                                                         Millimeter Graph
@@ -2072,7 +2068,7 @@ export default function EditorPage() {
 
                                             {/* Diagram Status & Reset */}
                                             <div className="flex items-center justify-between pt-1">
-                                                <span className="text-[10px] text-neutral-500 font-medium">
+                                                <span className="text-[10px] text-stone-500 font-medium">
                                                     {Object.keys(pageDiagrams).length} diagram(s) attached
                                                 </span>
                                                 {Object.keys(pageDiagrams).length > 0 && (
@@ -2095,70 +2091,70 @@ export default function EditorPage() {
                                 </div>
 
                                 {/* 3D Twin-Wire Spiral Binding Toggle */}
-                                <div className="p-3.5 rounded-2xl bg-neutral-50 border border-neutral-200/70 space-y-2">
+                                <div className="p-3.5 rounded-2xl bg-stone-50 border border-stone-200/70 space-y-2">
                                     <label className="flex items-center justify-between cursor-pointer">
                                         <div className="flex items-center gap-2">
-                                            <span className="text-xs font-bold text-neutral-900">3D Spiral Binding (Twin-Wire)</span>
+                                            <span className="text-xs font-bold text-stone-900">3D Spiral Binding (Twin-Wire)</span>
                                             <span className="text-[9px] font-bold px-1.5 py-0.5 bg-blue-100 text-blue-800 rounded-md">3D</span>
                                         </div>
                                         <input 
                                             type="checkbox" 
                                             checked={spiralBinding} 
                                             onChange={e => setSpiralBinding(e.target.checked)} 
-                                            className="w-4 h-4 rounded border-neutral-300 accent-neutral-900 cursor-pointer"
+                                            className="w-4 h-4 rounded border-stone-300 accent-stone-900 cursor-pointer"
                                         />
                                     </label>
-                                    <p className="text-[10px] text-neutral-500 leading-relaxed">
+                                    <p className="text-[10px] text-stone-500 leading-relaxed">
                                         Renders authentic 30-coil metallic silver rings with realistic drop shadows and alternating left/right page parity.
                                     </p>
                                 </div>
 
                                 {/* Page Number Option */}
-                                <label className="flex items-center gap-3 p-3.5 rounded-2xl bg-neutral-50 border border-neutral-200/70 cursor-pointer">
+                                <label className="flex items-center gap-3 p-3.5 rounded-2xl bg-stone-50 border border-stone-200/70 cursor-pointer">
                                     <input 
                                         type="checkbox" 
                                         checked={showPageNumbers} 
                                         onChange={e => setPageOptions({ showPageNumbers: e.target.checked })} 
-                                        className="w-4 h-4 rounded border-neutral-300 accent-neutral-900 cursor-pointer"
+                                        className="w-4 h-4 rounded border-stone-300 accent-stone-900 cursor-pointer"
                                     />
-                                    <span className="text-xs font-bold text-neutral-800">Show Bottom Page Numbers (— 1 —)</span>
+                                    <span className="text-xs font-bold text-stone-800">Show Bottom Page Numbers (— 1 —)</span>
                                 </label>
 
                                 {/* Classic Student Notebook Date & Page Box */}
-                                <div className="p-3.5 rounded-2xl bg-neutral-50 border border-neutral-200/70 space-y-2.5">
+                                <div className="p-3.5 rounded-2xl bg-stone-50 border border-stone-200/70 space-y-2.5">
                                     <label className="flex items-center justify-between cursor-pointer">
                                         <div className="flex items-center gap-2">
-                                            <span className="text-xs font-bold text-neutral-900">Classic Notebook Date & Page Box</span>
+                                            <span className="text-xs font-bold text-stone-900">Classic Notebook Date & Page Box</span>
                                             <span className="text-[9px] font-bold px-1.5 py-0.5 bg-rose-100 text-rose-800 rounded-md">Iconic</span>
                                         </div>
                                         <input 
                                             type="checkbox" 
                                             checked={showNotebookHeaderBox} 
                                             onChange={e => setShowNotebookHeaderBox(e.target.checked)} 
-                                            className="w-4 h-4 rounded border-neutral-300 accent-neutral-900 cursor-pointer"
+                                            className="w-4 h-4 rounded border-stone-300 accent-stone-900 cursor-pointer"
                                         />
                                     </label>
-                                    <p className="text-[10px] text-neutral-500 leading-relaxed">
+                                    <p className="text-[10px] text-stone-500 leading-relaxed">
                                         Renders the pre-printed red Classmate/Navneet header box in the top-right corner with DATE and dynamic PAGE NO.
                                     </p>
                                     {showNotebookHeaderBox && (
                                         <div className="pt-2 space-y-2 border-t border-rose-200/60">
                                             <div className="flex items-center gap-2">
-                                                <label className="text-[11px] font-bold text-neutral-600 shrink-0">Custom Date:</label>
+                                                <label className="text-[11px] font-bold text-stone-600 shrink-0">Custom Date:</label>
                                                 <input 
                                                     type="text" 
                                                     value={notebookDate}
                                                     onChange={e => setNotebookDate(e.target.value)}
                                                     placeholder={new Date().toLocaleDateString('en-GB')}
-                                                    className="flex-1 px-2.5 py-1 text-xs font-mono font-semibold bg-white border border-neutral-200 rounded-lg outline-none focus:border-neutral-900"
+                                                    className="flex-1 px-2.5 py-1 text-xs font-mono font-semibold bg-white border border-stone-200 rounded-lg outline-none focus:border-stone-900"
                                                 />
                                             </div>
                                             <div className="flex items-center gap-2">
-                                                <label className="text-[11px] font-bold text-neutral-600 shrink-0">Brand Label:</label>
+                                                <label className="text-[11px] font-bold text-stone-600 shrink-0">Brand Label:</label>
                                                 <select
                                                     value={notebookBrand}
                                                     onChange={e => setNotebookBrand(e.target.value)}
-                                                    className="flex-1 px-2 py-1 text-xs font-bold bg-white border border-neutral-200 rounded-lg outline-none focus:border-neutral-900 cursor-pointer"
+                                                    className="flex-1 px-2 py-1 text-xs font-bold bg-white border border-stone-200 rounded-lg outline-none focus:border-stone-900 cursor-pointer"
                                                 >
                                                     <option value="YOUVA">YOUVA (Navneet)</option>
                                                     <option value="CLASSMATE">CLASSMATE</option>
@@ -2167,12 +2163,12 @@ export default function EditorPage() {
                                                 </select>
                                             </div>
                                             <label className="flex items-center justify-between cursor-pointer pt-1">
-                                                <span className="text-[11px] font-bold text-neutral-600">Circle Today's Day (M T W T F S S)</span>
+                                                <span className="text-[11px] font-bold text-stone-600">Circle Today's Day (M T W T F S S)</span>
                                                 <input
                                                     type="checkbox"
                                                     checked={notebookDayCircle}
                                                     onChange={e => setNotebookDayCircle(e.target.checked)}
-                                                    className="w-3.5 h-3.5 rounded border-neutral-300 accent-neutral-900 cursor-pointer"
+                                                    className="w-3.5 h-3.5 rounded border-stone-300 accent-stone-900 cursor-pointer"
                                                 />
                                             </label>
                                         </div>
@@ -2180,61 +2176,61 @@ export default function EditorPage() {
                                 </div>
 
                                 {/* Smart Margin Indexing Option */}
-                                <div className="p-3.5 rounded-2xl bg-neutral-50 border border-neutral-200/70 space-y-1.5">
+                                <div className="p-3.5 rounded-2xl bg-stone-50 border border-stone-200/70 space-y-1.5">
                                     <label className="flex items-center justify-between cursor-pointer">
                                         <div className="flex items-center gap-2">
-                                            <span className="text-xs font-bold text-neutral-900">Smart Margin Indexing</span>
+                                            <span className="text-xs font-bold text-stone-900">Smart Margin Indexing</span>
                                             <span className="text-[9px] font-bold px-1.5 py-0.5 bg-blue-100 text-blue-800 rounded-md">Student</span>
                                         </div>
                                         <input 
                                             type="checkbox" 
                                             checked={smartMarginIndexing} 
                                             onChange={e => setSmartMarginIndexing(e.target.checked)} 
-                                            className="w-4 h-4 rounded border-neutral-300 accent-neutral-900 cursor-pointer"
+                                            className="w-4 h-4 rounded border-stone-300 accent-stone-900 cursor-pointer"
                                         />
                                     </label>
-                                    <p className="text-[10px] text-neutral-500 leading-relaxed">
+                                    <p className="text-[10px] text-stone-500 leading-relaxed">
                                         Automatically places question markers (Q1., Q.1), answer tags (Ans:, Sol:), and Roman numerals in the left margin area like a real student notebook.
                                     </p>
                                 </div>
 
                                 {/* Margins */}
-                                <div className="space-y-3 bg-neutral-50 p-4 rounded-2xl border border-neutral-200/70">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400 block">
+                                <div className="space-y-3 bg-stone-50 p-4 rounded-2xl border border-stone-200/70">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-stone-400 block">
                                         Page Margins (px)
                                     </label>
                                     
                                     <div className="grid grid-cols-2 gap-3">
                                         <div>
-                                            <div className="flex justify-between text-xs mb-1 text-neutral-500 font-bold">
+                                            <div className="flex justify-between text-xs mb-1 text-stone-500 font-bold">
                                                 <span>Top</span>
-                                                <span className="font-mono text-neutral-900">{marginTop}</span>
+                                                <span className="font-mono text-stone-900">{marginTop}</span>
                                             </div>
-                                            <input type="range" min="20" max="150" value={marginTop} onChange={e => setMargins({ top: Number(e.target.value) })} className="w-full accent-neutral-900 cursor-pointer" />
+                                            <input type="range" min="20" max="150" value={marginTop} onChange={e => setMargins({ top: Number(e.target.value) })} className="w-full accent-stone-900 cursor-pointer" />
                                         </div>
 
                                         <div>
-                                            <div className="flex justify-between text-xs mb-1 text-neutral-500 font-bold">
+                                            <div className="flex justify-between text-xs mb-1 text-stone-500 font-bold">
                                                 <span>Bottom</span>
-                                                <span className="font-mono text-neutral-900">{marginBottom}</span>
+                                                <span className="font-mono text-stone-900">{marginBottom}</span>
                                             </div>
-                                            <input type="range" min="20" max="150" value={marginBottom} onChange={e => setMargins({ bottom: Number(e.target.value) })} className="w-full accent-neutral-900 cursor-pointer" />
+                                            <input type="range" min="20" max="150" value={marginBottom} onChange={e => setMargins({ bottom: Number(e.target.value) })} className="w-full accent-stone-900 cursor-pointer" />
                                         </div>
 
                                         <div>
-                                            <div className="flex justify-between text-xs mb-1 text-neutral-500 font-bold">
+                                            <div className="flex justify-between text-xs mb-1 text-stone-500 font-bold">
                                                 <span>Left</span>
-                                                <span className="font-mono text-neutral-900">{marginLeft}</span>
+                                                <span className="font-mono text-stone-900">{marginLeft}</span>
                                             </div>
-                                            <input type="range" min="20" max="150" value={marginLeft} onChange={e => setMargins({ left: Number(e.target.value) })} className="w-full accent-neutral-900 cursor-pointer" />
+                                            <input type="range" min="20" max="150" value={marginLeft} onChange={e => setMargins({ left: Number(e.target.value) })} className="w-full accent-stone-900 cursor-pointer" />
                                         </div>
 
                                         <div>
-                                            <div className="flex justify-between text-xs mb-1 text-neutral-500 font-bold">
+                                            <div className="flex justify-between text-xs mb-1 text-stone-500 font-bold">
                                                 <span>Right</span>
-                                                <span className="font-mono text-neutral-900">{marginRight}</span>
+                                                <span className="font-mono text-stone-900">{marginRight}</span>
                                             </div>
-                                            <input type="range" min="10" max="100" value={marginRight} onChange={e => setMargins({ right: Number(e.target.value) })} className="w-full accent-neutral-900 cursor-pointer" />
+                                            <input type="range" min="10" max="100" value={marginRight} onChange={e => setMargins({ right: Number(e.target.value) })} className="w-full accent-stone-900 cursor-pointer" />
                                         </div>
                                     </div>
                                 </div>
@@ -2244,8 +2240,8 @@ export default function EditorPage() {
                         {/* TAB 4: REALISM & ERRORS */}
                         {activeSidebarTab === 'realism' && (
                             <div className="space-y-6">
-                                <div className="flex justify-between items-center pb-1 border-b border-neutral-100">
-                                    <span className="text-xs font-bold text-neutral-800">Human Imperfections</span>
+                                <div className="flex justify-between items-center pb-1 border-b border-stone-100">
+                                    <span className="text-xs font-bold text-stone-800">Human Imperfections</span>
                                     <div className="flex items-center gap-1.5">
                                         <button
                                             onClick={() => {
@@ -2265,7 +2261,7 @@ export default function EditorPage() {
                                                 setSmudge(0);
                                                 addToast('Realism controls reset', 'info');
                                             }}
-                                            className="flex items-center gap-1 text-[11px] text-neutral-400 hover:text-neutral-800 font-semibold px-2 py-0.5 rounded-md hover:bg-neutral-100 transition-colors"
+                                            className="flex items-center gap-1 text-[11px] text-stone-400 hover:text-stone-800 font-semibold px-2 py-0.5 rounded-md hover:bg-stone-100 transition-colors"
                                             title="Reset wobble, pressure and smudge"
                                         >
                                             <RotateCcw size={11} />
@@ -2274,29 +2270,29 @@ export default function EditorPage() {
                                     </div>
                                 </div>
 
-                                <div className="space-y-4 bg-neutral-50 p-4 rounded-2xl border border-neutral-200/70">
+                                <div className="space-y-4 bg-stone-50 p-4 rounded-2xl border border-stone-200/70">
                                     <div>
-                                        <div className="flex justify-between text-xs mb-1 text-neutral-600 font-bold">
+                                        <div className="flex justify-between text-xs mb-1 text-stone-600 font-bold">
                                             <span>Baseline Wobble</span>
-                                            <span className="font-mono text-neutral-900">{jitter}</span>
+                                            <span className="font-mono text-stone-900">{jitter}</span>
                                         </div>
-                                        <input type="range" min="0" max="6" step="0.5" value={jitter} onChange={e => setJitter(Number(e.target.value))} className="w-full accent-neutral-900 cursor-pointer" />
+                                        <input type="range" min="0" max="6" step="0.5" value={jitter} onChange={e => setJitter(Number(e.target.value))} className="w-full accent-stone-900 cursor-pointer" />
                                     </div>
 
                                     <div>
-                                        <div className="flex justify-between text-xs mb-1 text-neutral-600 font-bold">
+                                        <div className="flex justify-between text-xs mb-1 text-stone-600 font-bold">
                                             <span>Pen Pressure Variation</span>
-                                            <span className="font-mono text-neutral-900">{Math.round(pressure * 100)}%</span>
+                                            <span className="font-mono text-stone-900">{Math.round(pressure * 100)}%</span>
                                         </div>
-                                        <input type="range" min="0" max="1" step="0.1" value={pressure} onChange={e => setPressure(Number(e.target.value))} className="w-full accent-neutral-900 cursor-pointer" />
+                                        <input type="range" min="0" max="1" step="0.1" value={pressure} onChange={e => setPressure(Number(e.target.value))} className="w-full accent-stone-900 cursor-pointer" />
                                     </div>
 
                                     <div>
-                                        <div className="flex justify-between text-xs mb-1 text-neutral-600 font-bold">
+                                        <div className="flex justify-between text-xs mb-1 text-stone-600 font-bold">
                                             <span>Ink Smudge</span>
-                                            <span className="font-mono text-neutral-900">{smudge}</span>
+                                            <span className="font-mono text-stone-900">{smudge}</span>
                                         </div>
-                                        <input type="range" min="0" max="5" step="0.5" value={smudge} onChange={e => setSmudge(Number(e.target.value))} className="w-full accent-neutral-900 cursor-pointer" />
+                                        <input type="range" min="0" max="5" step="0.5" value={smudge} onChange={e => setSmudge(Number(e.target.value))} className="w-full accent-stone-900 cursor-pointer" />
                                     </div>
                                 </div>
 
@@ -2312,17 +2308,17 @@ export default function EditorPage() {
                                 <CameraPhysicsControls />
 
                                 {/* Sticky Note Extra */}
-                                <div className="p-4 rounded-2xl bg-neutral-50 border border-neutral-200/70 space-y-3">
+                                <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200/70 space-y-3">
                                     <label className="flex items-center gap-3 cursor-pointer">
                                         <input 
                                             type="checkbox" 
                                             checked={showStickyNote} 
                                             onChange={e => setShowStickyNote(e.target.checked)} 
-                                            className="w-4 h-4 rounded border-neutral-300 accent-neutral-900 cursor-pointer"
+                                            className="w-4 h-4 rounded border-stone-300 accent-stone-900 cursor-pointer"
                                         />
                                         <div>
-                                            <span className="text-xs font-bold text-neutral-900 block">Sticky Post-it Note</span>
-                                            <span className="text-[10px] text-neutral-500 font-medium">Adds a yellow taped reminder on page 1</span>
+                                            <span className="text-xs font-bold text-stone-900 block">Sticky Post-it Note</span>
+                                            <span className="text-[10px] text-stone-500 font-medium">Adds a yellow taped reminder on page 1</span>
                                         </div>
                                     </label>
                                     {showStickyNote && (
@@ -2411,15 +2407,15 @@ export default function EditorPage() {
                                 >
                                     {/* Per-Page Floating Controls Pill Bar (Hover/Active) */}
                                     <div className="absolute -top-9 left-1 right-1 flex items-center justify-between opacity-80 group-hover/page:opacity-100 transition-opacity z-20 pointer-events-auto px-1">
-                                        <div className="flex items-center gap-1.5 bg-neutral-900/90 text-white text-[11px] font-semibold px-2.5 py-0.5 rounded-full shadow-md backdrop-blur-xs">
+                                        <div className="flex items-center gap-1.5 bg-stone-900/90 text-white text-[11px] font-semibold px-2.5 py-0.5 rounded-full shadow-md backdrop-blur-xs">
                                             <span className="font-mono">Page {pIdx + 1}</span>
-                                            <span className="text-neutral-500">•</span>
-                                            <span className={isDiagram ? 'text-cyan-300 font-bold' : 'text-neutral-300'}>
+                                            <span className="text-stone-500">•</span>
+                                            <span className={isDiagram ? 'text-cyan-300 font-bold' : 'text-stone-300'}>
                                                 {isDiagram ? '🔬 Lab Diagram' : `${effectivePaper.name.split(' ')[0]} Ruled`}
                                             </span>
                                         </div>
 
-                                        <div className="flex items-center gap-1.5 bg-white/95 border border-neutral-200/90 shadow-md rounded-full px-2 py-0.5 backdrop-blur-xs text-[11px]">
+                                        <div className="flex items-center gap-1.5 bg-white/95 border border-stone-200/90 shadow-md rounded-full px-2 py-0.5 backdrop-blur-xs text-[11px]">
                                             <select
                                                 value={pageMaterialOverrides[pIdx] || (page.isDiagramPage ? labDiagramPaper : '')}
                                                 onChange={(e) => {
@@ -2431,7 +2427,7 @@ export default function EditorPage() {
                                                     }
                                                 }}
                                                 onClick={(e) => e.stopPropagation()}
-                                                className="text-[10px] font-bold bg-transparent text-neutral-700 outline-none cursor-pointer"
+                                                className="text-[10px] font-bold bg-transparent text-stone-700 outline-none cursor-pointer"
                                                 title="Override paper surface for this page"
                                             >
                                                 <option value="">Paper: Default ({paper.name.split(' ')[0]})</option>
@@ -2443,7 +2439,7 @@ export default function EditorPage() {
                                                 <option value="vintage">Vintage Sheet</option>
                                             </select>
 
-                                            <span className="text-neutral-300 text-xs">|</span>
+                                            <span className="text-stone-300 text-xs">|</span>
 
                                             <button
                                                 type="button"
@@ -2465,7 +2461,7 @@ export default function EditorPage() {
                                                 className={`text-[10px] font-bold px-2 py-0.5 rounded-full transition-colors flex items-center gap-1 cursor-pointer ${
                                                     isDiagram
                                                         ? 'bg-blue-100 text-blue-800 hover:bg-blue-200'
-                                                        : 'text-neutral-600 hover:bg-neutral-100'
+                                                        : 'text-stone-600 hover:bg-stone-100'
                                                 }`}
                                                 title="Toggle diagram canvas on this page"
                                             >
@@ -2566,7 +2562,7 @@ export default function EditorPage() {
                                                                     const isToday = dIdx === ((new Date().getDay() + 6) % 7);
                                                                     return (
                                                                         <span key={dIdx} className="relative inline-flex items-center justify-center w-3 h-3">
-                                                                            <span className={isToday && notebookDayCircle ? 'text-blue-700 font-black' : 'text-neutral-500'}>
+                                                                            <span className={isToday && notebookDayCircle ? 'text-blue-700 font-black' : 'text-stone-500'}>
                                                                                 {day}
                                                                             </span>
                                                                             {isToday && notebookDayCircle && (
@@ -2806,7 +2802,7 @@ export default function EditorPage() {
                                                                             {line.marginIndex}
                                                                         </span>
                                                                     ) : (
-                                                                        <span className="opacity-0 group-hover/margin:opacity-60 text-[10px] text-neutral-400 font-mono select-none px-1 rounded hover:bg-neutral-200/50">
+                                                                        <span className="opacity-0 group-hover/margin:opacity-60 text-[10px] text-stone-400 font-mono select-none px-1 rounded hover:bg-stone-200/50">
                                                                             + Q.
                                                                         </span>
                                                                     )}
@@ -2837,7 +2833,7 @@ export default function EditorPage() {
                                                                         height: `${paper.lineHeight}px`,
                                                                         lineHeight: `${paper.lineHeight}px`,
                                                                     }}
-                                                                    className="w-full bg-blue-50/80 border border-dashed border-blue-400 rounded-xs px-1 outline-none text-neutral-900 shadow-inner"
+                                                                    className="w-full bg-blue-50/80 border border-dashed border-blue-400 rounded-xs px-1 outline-none text-stone-900 shadow-inner"
                                                                 />
                                                             ) : line.type === 'comparison' && line.leftTokens && line.rightTokens ? (
                                                                 <div className="w-full flex items-center h-full relative">
@@ -3032,30 +3028,30 @@ export default function EditorPage() {
             {/* ==================== RESET CONFIRMATION MODAL ==================== */}
             {showResetModal && (
                 <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
-                    <div className="bg-white rounded-3xl p-6 sm:p-7 max-w-sm w-full shadow-2xl border border-neutral-200/80 space-y-4">
+                    <div className="bg-white rounded-3xl p-6 sm:p-7 max-w-sm w-full shadow-2xl border border-stone-200/80 space-y-4">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <div className="w-8 h-8 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center">
                                     <RotateCcw size={16} />
                                 </div>
-                                <h3 className="font-bold text-sm text-neutral-900">Reset Document</h3>
+                                <h3 className="font-bold text-sm text-stone-900">Reset Document</h3>
                             </div>
-                            <button onClick={() => setShowResetModal(false)} className="p-1 text-neutral-400 hover:text-neutral-700 rounded-full">
+                            <button onClick={() => setShowResetModal(false)} className="p-1 text-stone-400 hover:text-stone-700 rounded-full">
                                 <X size={18} />
                             </button>
                         </div>
 
-                        <p className="text-xs text-neutral-500 leading-relaxed">
+                        <p className="text-xs text-stone-500 leading-relaxed">
                             Choose how you would like to reset your document:
                         </p>
 
                         <div className="space-y-2.5 pt-1">
                             <button
                                 onClick={handleResetStylesOnly}
-                                className="w-full py-3 px-4 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 rounded-2xl text-xs font-bold text-left transition-colors flex flex-col gap-0.5"
+                                className="w-full py-3 px-4 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-2xl text-xs font-bold text-left transition-colors flex flex-col gap-0.5"
                             >
-                                <span className="font-bold text-neutral-900">Reset Styles Only</span>
-                                <span className="text-[10px] text-neutral-500 font-normal">Restores default font, paper, margins, and effects. Keeps your text.</span>
+                                <span className="font-bold text-stone-900">Reset Styles Only</span>
+                                <span className="text-[10px] text-stone-500 font-normal">Restores default font, paper, margins, and effects. Keeps your text.</span>
                             </button>
 
                             <button
@@ -3069,7 +3065,7 @@ export default function EditorPage() {
 
                         <button
                             onClick={() => setShowResetModal(false)}
-                            className="w-full py-2.5 text-xs font-bold text-neutral-500 hover:text-neutral-800 transition-colors"
+                            className="w-full py-2.5 text-xs font-bold text-stone-500 hover:text-stone-800 transition-colors"
                         >
                             Cancel
                         </button>
@@ -3159,28 +3155,28 @@ export default function EditorPage() {
                     role="dialog"
                     aria-modal="true"
                     aria-label="Distraction-Free Focus Editor"
-                    className="fixed inset-0 z-50 bg-neutral-950/75 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200"
+                    className="fixed inset-0 z-50 bg-stone-950/75 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200"
                 >
-                    <div className="relative w-full max-w-5xl h-[92vh] bg-white rounded-3xl shadow-2xl flex flex-col border border-neutral-200 overflow-hidden ring-1 ring-black/10">
+                    <div className="relative w-full max-w-5xl h-[92vh] bg-white rounded-3xl shadow-2xl flex flex-col border border-stone-200 overflow-hidden ring-1 ring-black/10">
                         {/* Top Toolbar */}
-                        <div className="px-5 py-3.5 bg-neutral-50/95 border-b border-neutral-200 flex items-center justify-between gap-4 select-none shrink-0">
+                        <div className="px-5 py-3.5 bg-stone-50/95 border-b border-stone-200 flex items-center justify-between gap-4 select-none shrink-0">
                             <div className="flex items-center gap-3">
-                                <span className="p-2 rounded-xl bg-neutral-900 text-white shadow-xs">
+                                <span className="p-2 rounded-xl bg-stone-900 text-white shadow-xs">
                                     <Sparkles size={16} />
                                 </span>
                                 <div>
-                                    <h3 className="text-sm font-bold text-neutral-900 tracking-tight flex items-center gap-2">
+                                    <h3 className="text-sm font-bold text-stone-900 tracking-tight flex items-center gap-2">
                                         Focus Writing Mode
-                                        <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-neutral-200/70 text-neutral-700">
+                                        <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-stone-200/70 text-stone-700">
                                             Distraction Free
                                         </span>
                                     </h3>
-                                    <div className="flex items-center gap-2 text-[11px] text-neutral-500 font-medium">
+                                    <div className="flex items-center gap-2 text-[11px] text-stone-500 font-medium">
                                         <span>{wordCount} words</span>
                                         <span>•</span>
                                         <span>{draftText.length} characters</span>
                                         <span>•</span>
-                                        <span className="text-neutral-700 font-semibold">
+                                        <span className="text-stone-700 font-semibold">
                                             ~{Math.max(1, Math.ceil(wordCount / 220))} handwritten {Math.ceil(wordCount / 220) === 1 ? 'page' : 'pages'}
                                         </span>
                                     </div>
@@ -3189,12 +3185,12 @@ export default function EditorPage() {
 
                             <div className="flex items-center gap-2">
                                 {/* Font Size Toggle */}
-                                <div className="hidden sm:flex items-center bg-neutral-200/60 p-0.5 rounded-lg text-[11px] font-semibold text-neutral-600">
+                                <div className="hidden sm:flex items-center bg-stone-200/60 p-0.5 rounded-lg text-[11px] font-semibold text-stone-600">
                                     <button
                                         type="button"
                                         onClick={() => setEditorFontSize('sm')}
                                         className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
-                                            editorFontSize === 'sm' ? 'bg-white text-neutral-900 shadow-2xs' : 'hover:text-neutral-900'
+                                            editorFontSize === 'sm' ? 'bg-white text-stone-900 shadow-2xs' : 'hover:text-stone-900'
                                         }`}
                                     >
                                         Compact
@@ -3203,7 +3199,7 @@ export default function EditorPage() {
                                         type="button"
                                         onClick={() => setEditorFontSize('base')}
                                         className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
-                                            editorFontSize === 'base' ? 'bg-white text-neutral-900 shadow-2xs' : 'hover:text-neutral-900'
+                                            editorFontSize === 'base' ? 'bg-white text-stone-900 shadow-2xs' : 'hover:text-stone-900'
                                         }`}
                                     >
                                         Medium
@@ -3212,7 +3208,7 @@ export default function EditorPage() {
                                         type="button"
                                         onClick={() => setEditorFontSize('lg')}
                                         className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
-                                            editorFontSize === 'lg' ? 'bg-white text-neutral-900 shadow-2xs' : 'hover:text-neutral-900'
+                                            editorFontSize === 'lg' ? 'bg-white text-stone-900 shadow-2xs' : 'hover:text-stone-900'
                                         }`}
                                     >
                                         Large
@@ -3224,7 +3220,7 @@ export default function EditorPage() {
                                     type="button"
                                     onClick={handlePasteClipboard}
                                     title="Paste from clipboard"
-                                    className="px-2.5 py-1.5 bg-white hover:bg-neutral-100 border border-neutral-200 rounded-lg text-neutral-700 text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
+                                    className="px-2.5 py-1.5 bg-white hover:bg-stone-100 border border-stone-200 rounded-lg text-stone-700 text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
                                 >
                                     <Clipboard size={13} />
                                     <span className="hidden md:inline">Paste</span>
@@ -3233,7 +3229,7 @@ export default function EditorPage() {
                                     type="button"
                                     onClick={handleCleanSpacing}
                                     title="Clean extra empty lines"
-                                    className="px-2.5 py-1.5 bg-white hover:bg-neutral-100 border border-neutral-200 rounded-lg text-neutral-700 text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
+                                    className="px-2.5 py-1.5 bg-white hover:bg-stone-100 border border-stone-200 rounded-lg text-stone-700 text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
                                 >
                                     <Sparkles size={13} className="text-amber-500" />
                                     <span className="hidden md:inline">Clean Spacing</span>
@@ -3243,19 +3239,19 @@ export default function EditorPage() {
                                 <button
                                     type="button"
                                     onClick={() => setIsEditorExpanded(false)}
-                                    className="px-3 py-1.5 bg-neutral-900 hover:bg-neutral-800 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-colors cursor-pointer ml-1"
+                                    className="px-3 py-1.5 bg-stone-900 hover:bg-stone-800 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-colors cursor-pointer ml-1"
                                 >
                                     <Minimize2 size={13} />
                                     <span>Done</span>
-                                    <kbd className="hidden lg:inline ml-1 text-[9px] bg-neutral-700 text-neutral-300 px-1 py-0.5 rounded">Esc</kbd>
+                                    <kbd className="hidden lg:inline ml-1 text-[9px] bg-stone-700 text-stone-300 px-1 py-0.5 rounded">Esc</kbd>
                                 </button>
                             </div>
                         </div>
 
                         {/* MS Word-Style Ribbon Toolbar */}
-                        <div className="px-5 py-2.5 bg-neutral-100/75 border-b border-neutral-200 flex items-center gap-3 overflow-x-auto custom-scrollbar select-none shrink-0">
+                        <div className="px-5 py-2.5 bg-stone-100/75 border-b border-stone-200 flex items-center gap-3 overflow-x-auto custom-scrollbar select-none shrink-0">
                             {/* Group 1: AI & Actions */}
-                            <div className="flex items-center gap-1.5 shrink-0 pr-2 border-r border-neutral-200">
+                            <div className="flex items-center gap-1.5 shrink-0 pr-2 border-r border-stone-200">
                                 <button
                                     type="button"
                                     onClick={() => fileInputRef.current?.click()}
@@ -3283,7 +3279,7 @@ export default function EditorPage() {
                                     type="button"
                                     onClick={handlePasteClipboard}
                                     title="Paste from clipboard"
-                                    className="px-2 py-1 bg-white hover:bg-neutral-100 text-neutral-800 border border-neutral-200 rounded-lg text-xs font-semibold flex items-center gap-1 shadow-2xs active:scale-95 transition-all cursor-pointer"
+                                    className="px-2 py-1 bg-white hover:bg-stone-100 text-stone-800 border border-stone-200 rounded-lg text-xs font-semibold flex items-center gap-1 shadow-2xs active:scale-95 transition-all cursor-pointer"
                                 >
                                     <Clipboard size={12} />
                                     <span>Paste</span>
@@ -3292,22 +3288,22 @@ export default function EditorPage() {
                                     type="button"
                                     onClick={handleCleanSpacing}
                                     title="Clean extra empty lines"
-                                    className="px-2 py-1 bg-white hover:bg-neutral-100 text-neutral-700 border border-neutral-200 rounded-lg text-xs font-semibold flex items-center gap-1 shadow-2xs active:scale-95 transition-all cursor-pointer"
+                                    className="px-2 py-1 bg-white hover:bg-stone-100 text-stone-700 border border-stone-200 rounded-lg text-xs font-semibold flex items-center gap-1 shadow-2xs active:scale-95 transition-all cursor-pointer"
                                 >
                                     <span>Clean Space</span>
                                 </button>
                             </div>
 
                             {/* Group 2: Document Structure & Headings */}
-                            <div className="flex items-center gap-1 shrink-0 pr-2 border-r border-neutral-200">
-                                <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider mr-1">Style:</span>
+                            <div className="flex items-center gap-1 shrink-0 pr-2 border-r border-stone-200">
+                                <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider mr-1">Style:</span>
                                 <button
                                     type="button"
                                     onClick={() => {
                                         setDraftText(prev => prev + (prev.endsWith('\n') || !prev ? '' : '\n') + '__TITLE OF ASSIGNMENT__\n\n');
                                     }}
                                     title="Title / Double Underline (__TITLE__)"
-                                    className="px-2 py-1 bg-white hover:bg-neutral-100 text-neutral-800 border border-neutral-200 rounded-md text-xs font-bold shadow-2xs cursor-pointer active:scale-95 transition-all"
+                                    className="px-2 py-1 bg-white hover:bg-stone-100 text-stone-800 border border-stone-200 rounded-md text-xs font-bold shadow-2xs cursor-pointer active:scale-95 transition-all"
                                 >
                                     Title (H1)
                                 </button>
@@ -3317,7 +3313,7 @@ export default function EditorPage() {
                                         setDraftText(prev => prev + (prev.endsWith('\n') || !prev ? '' : '\n') + '__Section Name__\n');
                                     }}
                                     title="Subheading (__Section__)"
-                                    className="px-2 py-1 bg-white hover:bg-neutral-100 text-neutral-800 border border-neutral-200 rounded-md text-xs font-semibold shadow-2xs cursor-pointer active:scale-95 transition-all"
+                                    className="px-2 py-1 bg-white hover:bg-stone-100 text-stone-800 border border-stone-200 rounded-md text-xs font-semibold shadow-2xs cursor-pointer active:scale-95 transition-all"
                                 >
                                     Section (H2)
                                 </button>
@@ -3334,13 +3330,13 @@ export default function EditorPage() {
                             </div>
 
                             {/* Group 3: Formatting & Emphasis */}
-                            <div className="flex items-center gap-1 shrink-0 pr-2 border-r border-neutral-200">
-                                <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider mr-1">Font:</span>
+                            <div className="flex items-center gap-1 shrink-0 pr-2 border-r border-stone-200">
+                                <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider mr-1">Font:</span>
                                 <button
                                     type="button"
                                     onClick={() => applyFormatToSelection('__', '__')}
                                     title="Double Underline (__text__)"
-                                    className="w-7 h-7 bg-white hover:bg-neutral-100 text-neutral-900 border border-neutral-200 rounded-md text-xs font-bold flex items-center justify-center underline underline-offset-2 shadow-2xs cursor-pointer"
+                                    className="w-7 h-7 bg-white hover:bg-stone-100 text-stone-900 border border-stone-200 rounded-md text-xs font-bold flex items-center justify-center underline underline-offset-2 shadow-2xs cursor-pointer"
                                 >
                                     U
                                 </button>
@@ -3348,7 +3344,7 @@ export default function EditorPage() {
                                     type="button"
                                     onClick={() => applyFormatToSelection('[[', ']]')}
                                     title="Hand-Drawn Formula Box ([[text]])"
-                                    className="px-2 h-7 bg-white hover:bg-neutral-100 text-neutral-900 border border-neutral-200 rounded-md text-xs font-mono font-bold flex items-center justify-center shadow-2xs cursor-pointer"
+                                    className="px-2 h-7 bg-white hover:bg-stone-100 text-stone-900 border border-stone-200 rounded-md text-xs font-mono font-bold flex items-center justify-center shadow-2xs cursor-pointer"
                                 >
                                     [Box]
                                 </button>
@@ -3356,7 +3352,7 @@ export default function EditorPage() {
                                     type="button"
                                     onClick={() => applyFormatToSelection('~~', '~~')}
                                     title="Scribble Strike-Through (~~text~~)"
-                                    className="w-7 h-7 bg-white hover:bg-neutral-100 text-rose-600 border border-neutral-200 rounded-md text-xs font-bold flex items-center justify-center line-through shadow-2xs cursor-pointer"
+                                    className="w-7 h-7 bg-white hover:bg-stone-100 text-rose-600 border border-stone-200 rounded-md text-xs font-bold flex items-center justify-center line-through shadow-2xs cursor-pointer"
                                 >
                                     S
                                 </button>
@@ -3364,14 +3360,14 @@ export default function EditorPage() {
 
                             {/* Group 4: Inserts */}
                             <div className="flex items-center gap-1 shrink-0">
-                                <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider mr-1">Insert:</span>
+                                <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider mr-1">Insert:</span>
                                 <button
                                     type="button"
                                     onClick={() => {
                                         setDraftText(prev => prev + (prev.endsWith('\n') || !prev ? '' : '\n') + '• ');
                                     }}
                                     title="Bullet List Item (•)"
-                                    className="px-2 py-1 bg-white hover:bg-neutral-100 text-neutral-800 border border-neutral-200 rounded-md text-xs font-semibold shadow-2xs cursor-pointer active:scale-95 transition-all"
+                                    className="px-2 py-1 bg-white hover:bg-stone-100 text-stone-800 border border-stone-200 rounded-md text-xs font-semibold shadow-2xs cursor-pointer active:scale-95 transition-all"
                                 >
                                     • Bullet
                                 </button>
@@ -3381,7 +3377,7 @@ export default function EditorPage() {
                                         setDraftText(prev => prev + (prev.endsWith('\n') || !prev ? '' : '\n') + '1. ');
                                     }}
                                     title="Numbered List Item (1.)"
-                                    className="px-2 py-1 bg-white hover:bg-neutral-100 text-neutral-800 border border-neutral-200 rounded-md text-xs font-semibold shadow-2xs cursor-pointer active:scale-95 transition-all"
+                                    className="px-2 py-1 bg-white hover:bg-stone-100 text-stone-800 border border-stone-200 rounded-md text-xs font-semibold shadow-2xs cursor-pointer active:scale-95 transition-all"
                                 >
                                     1. Numbered
                                 </button>
@@ -3402,7 +3398,7 @@ export default function EditorPage() {
                                         setDraftText(prev => prev + ' → ');
                                     }}
                                     title="Student Handwritten Arrow (→)"
-                                    className="px-2 py-1 bg-white hover:bg-neutral-100 text-blue-700 border border-neutral-200 rounded-md text-xs font-bold shadow-2xs cursor-pointer active:scale-95 transition-all"
+                                    className="px-2 py-1 bg-white hover:bg-stone-100 text-blue-700 border border-stone-200 rounded-md text-xs font-bold shadow-2xs cursor-pointer active:scale-95 transition-all"
                                 >
                                     → Arrow
                                 </button>
@@ -3449,7 +3445,7 @@ export default function EditorPage() {
 
                             {/* Loading / Extraction Progress Badge */}
                             {isImporting && importProgress && (
-                                <div className="absolute top-4 right-6 z-30 bg-neutral-900/95 text-white text-xs font-medium px-4 py-2 rounded-xl shadow-2xl flex items-center gap-2.5 border border-white/20 backdrop-blur-md animate-in fade-in">
+                                <div className="absolute top-4 right-6 z-30 bg-stone-900/95 text-white text-xs font-medium px-4 py-2 rounded-xl shadow-2xl flex items-center gap-2.5 border border-white/20 backdrop-blur-md animate-in fade-in">
                                     <Loader2 size={14} className="animate-spin text-blue-400" />
                                     <span>{importProgress}</span>
                                 </div>
@@ -3471,21 +3467,21 @@ export default function EditorPage() {
                                     updateCursorPos(e);
                                 }}
                                 placeholder="Write your long assignment or notes here in focus mode...&#10;&#10;Supports Tab indentation, smart Enter list continuation, and instant live sync to handwritten paper."
-                                className={`flex-1 w-full p-6 bg-transparent border-0 text-neutral-900 ${
+                                className={`flex-1 w-full p-6 bg-transparent border-0 text-stone-900 ${
                                     editorFontSize === 'sm' ? 'text-sm' : editorFontSize === 'lg' ? 'text-lg' : 'text-base'
                                 } leading-relaxed focus:outline-none resize-none font-sans overflow-y-auto custom-scrollbar`}
                             />
                         </div>
 
                         {/* Bottom Status Bar */}
-                        <div className="px-5 py-2.5 bg-neutral-50 border-t border-neutral-200 flex items-center justify-between text-xs text-neutral-500 font-medium select-none shrink-0">
+                        <div className="px-5 py-2.5 bg-stone-50 border-t border-stone-200 flex items-center justify-between text-xs text-stone-500 font-medium select-none shrink-0">
                             <div className="flex items-center gap-3">
-                                <span className="font-mono text-xs text-neutral-700 bg-white px-2 py-0.5 rounded border border-neutral-200 shadow-2xs">
+                                <span className="font-mono text-xs text-stone-700 bg-white px-2 py-0.5 rounded border border-stone-200 shadow-2xs">
                                     Line {cursorPos.line}, Column {cursorPos.col}
                                 </span>
-                                <span className="text-neutral-400">•</span>
+                                <span className="text-stone-400">•</span>
                                 <span>Tab: 4 spaces indent</span>
-                                <span className="text-neutral-400">•</span>
+                                <span className="text-stone-400">•</span>
                                 <span>Enter: Auto-bullet continuation</span>
                             </div>
 
@@ -3498,7 +3494,7 @@ export default function EditorPage() {
                                                 setDraftText('');
                                             }
                                         }}
-                                        className="text-neutral-400 hover:text-red-600 transition-colors flex items-center gap-1 cursor-pointer"
+                                        className="text-stone-400 hover:text-red-600 transition-colors flex items-center gap-1 cursor-pointer"
                                     >
                                         <Trash2 size={12} />
                                         <span>Clear</span>
@@ -3507,7 +3503,7 @@ export default function EditorPage() {
                                 <button
                                     type="button"
                                     onClick={() => setIsEditorExpanded(false)}
-                                    className="text-neutral-900 font-semibold hover:underline cursor-pointer flex items-center gap-1"
+                                    className="text-stone-900 font-semibold hover:underline cursor-pointer flex items-center gap-1"
                                 >
                                     Return to Document & Preview →
                                 </button>
@@ -3520,7 +3516,7 @@ export default function EditorPage() {
             {/* MS Word / Notion Style Floating Mini-Toolbar */}
             {floatingToolbar.isOpen && (
                 <div
-                    className="ms-word-floating-toolbar fixed z-50 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1.5 bg-neutral-900/95 text-white rounded-2xl shadow-2xl border border-white/20 backdrop-blur-md animate-in fade-in zoom-in-95 duration-150 select-none pointer-events-auto"
+                    className="ms-word-floating-toolbar fixed z-50 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1.5 bg-stone-900/95 text-white rounded-2xl shadow-2xl border border-white/20 backdrop-blur-md animate-in fade-in zoom-in-95 duration-150 select-none pointer-events-auto"
                     style={{
                         left: `${floatingToolbar.x}px`,
                         top: `${floatingToolbar.y}px`,
@@ -3568,7 +3564,7 @@ export default function EditorPage() {
                         onMouseDown={(e) => e.preventDefault()}
                         onClick={() => applyFormatToSelection('', '')}
                         title="Clear Formatting from Selection"
-                        className="px-1.5 py-0.5 hover:bg-white/20 text-neutral-400 hover:text-white rounded-md text-xs transition-colors cursor-pointer"
+                        className="px-1.5 py-0.5 hover:bg-white/20 text-stone-400 hover:text-white rounded-md text-xs transition-colors cursor-pointer"
                     >
                         ✕
                     </button>
@@ -3592,3 +3588,8 @@ export default function EditorPage() {
         </div>
     );
 }
+
+
+
+
+

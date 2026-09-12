@@ -25,6 +25,7 @@ const AboutPage = lazy(() => import('./pages/AboutPage'));
 const SupportPage = lazy(() => import('./pages/SupportPage'));
 const ChangelogPage = lazy(() => import('./pages/ChangelogPage'));
 const PricingPage = lazy(() => import('./pages/PricingPage'));
+const SeoLandingPage = lazy(() => import('./pages/SeoLandingPage'));
 
 // Loading Fallback
 const PageLoader = () => (
@@ -61,6 +62,35 @@ function InnerApp() {
           <Route path="support" element={<SupportPage />} />
           <Route path="changelog" element={<ChangelogPage />} />
           <Route path="pricing" element={<PricingPage />} />
+
+          {/* SEO Landing Pages */}
+          <Route path="text-to-cursive" element={
+            <SeoLandingPage 
+              seoTitle="Text to Cursive Converter | Generate Realistic Cursive Handwriting"
+              seoDescription="Convert your typed text into beautiful, flowing cursive handwriting. Perfect for letters, invitations, and stylish assignments."
+              h1="Text to Cursive Converter"
+              subtitle="Instantly transform your boring digital text into stunning, realistic cursive handwriting."
+              keyword="Text to Cursive"
+            />
+          } />
+          <Route path="assignment-maker-online" element={
+            <SeoLandingPage 
+              seoTitle="Assignment Maker Online | Text to Handwriting Converter"
+              seoDescription="The #1 assignment maker online. Type your text and instantly generate realistic handwritten notebook pages for your college or school assignments."
+              h1="Assignment Maker Online"
+              subtitle="Save hours of writing. Type your assignment and let our engine convert it into realistic handwriting on lined paper."
+              keyword="Assignment Maker"
+            />
+          } />
+          <Route path="realistic-handwriting-generator" element={
+            <SeoLandingPage 
+              seoTitle="Realistic Handwriting Generator | Text2Handwriting"
+              seoDescription="Generate ultra-realistic handwriting from text. Includes natural ink smudges, varied pressure, and 3D notebook physics."
+              h1="Realistic Handwriting Generator"
+              subtitle="The most advanced AI-powered text to handwriting generator. Indistinguishable from real human handwriting."
+              keyword="Handwriting Generator"
+            />
+          } />
 
           {/* Redirects for deleted pages */}
           <Route path="features" element={<Navigate to="/#features" replace />} />

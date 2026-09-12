@@ -68,89 +68,95 @@ async function capturePage(element: HTMLElement, format: 'jpeg' | 'png'): Promis
 
 // Main Export Function
 export async function exportDocument({ name, format, onProgress }: ExportOptions): Promise<void> {
-    // 1. Wait for Fonts
-    await document.fonts.ready;
-
-    // 2. Get Pages
-    const pages = getVisiblePages();
-    if (pages.length === 0) {
-        if (window.innerWidth < 1024) {
-            throw new Error('Please switch to the "Preview" tab to export.');
-        }
-        throw new Error('No visible pages found to export.');
-    }
-
-    const totalPages = pages.length;
-    const finalFileName = `${sanitizeFileName(name)}.${format}`;
+    document.body.classList.add('exporting');
     
-    // 3. Process Pages in Batches (Parallel)
-    // Batch size of 4 strikes a balance between speed and memory usage
-    const BATCH_SIZE = 4;
-    const pageImages: { index: number, data: string, type: 'jpeg' | 'png' }[] = [];
-    
-    for (let i = 0; i < totalPages; i += BATCH_SIZE) {
-        const batch = pages.slice(i, i + BATCH_SIZE);
-        
-        // Process batch in parallel
-        const batchResults = await Promise.all(batch.map(async (page, batchIndex) => {
-            const globalIndex = i + batchIndex;
-            
-            if (format === 'pdf') {
-                const dataUrl = await capturePage(page, 'jpeg');
-                return { 
-                    index: globalIndex, 
-                    data: dataUrl,
-                    type: 'jpeg' as const
-                };
-            } else {
-                const dataUrl = await capturePage(page, 'png');
-                // Remove data URL prefix for ZIP
-                return { 
-                    index: globalIndex, 
-                    data: dataUrl.split(',')[1],
-                    type: 'png' as const
-                };
+    try {
+        // 1. Wait for Fonts
+        await document.fonts.ready;
+
+        // 2. Get Pages
+        const pages = getVisiblePages();
+        if (pages.length === 0) {
+            if (window.innerWidth < 1024) {
+                throw new Error('Please switch to the "Preview" tab to export.');
             }
-        }));
-        
-        pageImages.push(...batchResults);
-        
-        // Update Progress
-        const currentProgress = Math.round(((i + batch.length) / totalPages) * 90); // 90% for capture
-        onProgress(currentProgress);
-        
-        // Small delay to let UI breathe
-        await new Promise(resolve => setTimeout(resolve, 10));
-    }
+            throw new Error('No visible pages found to export.');
+        }
 
-    // Sort to ensure order (reassurance, though map preserves order)
-    pageImages.sort((a, b) => a.index - b.index);
+        const totalPages = pages.length;
+        const finalFileName = `${sanitizeFileName(name)}.${format}`;
+        
+        // 3. Process Pages in Batches (Parallel)
+        // Batch size of 4 strikes a balance between speed and memory usage
+        const BATCH_SIZE = 4;
+        const pageImages: { index: number, data: string, type: 'jpeg' | 'png' }[] = [];
+        
+        for (let i = 0; i < totalPages; i += BATCH_SIZE) {
+            const batch = pages.slice(i, i + BATCH_SIZE);
+            
+            // Process batch in parallel
+            const batchResults = await Promise.all(batch.map(async (page, batchIndex) => {
+                const globalIndex = i + batchIndex;
+                
+                if (format === 'pdf') {
+                    const dataUrl = await capturePage(page, 'jpeg');
+                    return { 
+                        index: globalIndex, 
+                        data: dataUrl,
+                        type: 'jpeg' as const
+                    };
+                } else {
+                    const dataUrl = await capturePage(page, 'png');
+                    // Remove data URL prefix for ZIP
+                    return { 
+                        index: globalIndex, 
+                        data: dataUrl.split(',')[1],
+                        type: 'png' as const
+                    };
+                }
+            }));
+            
+            pageImages.push(...batchResults);
+            
+            // Update Progress
+            const currentProgress = Math.round(((i + batch.length) / totalPages) * 90); // 90% for capture
+            onProgress(currentProgress);
+            
+            // Small delay to let UI breathe
+            await new Promise(resolve => setTimeout(resolve, 10));
+        }
 
-    // 4. Generate Final File
-    if (format === 'pdf') {
-        const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4', compress: true });
+        // Sort to ensure order (reassurance, though map preserves order)
+        pageImages.sort((a, b) => a.index - b.index);
+
+        // 4. Generate Final File
+        if (format === 'pdf') {
+            const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4', compress: true });
+            
+            pageImages.forEach((img, idx) => {
+                if (idx > 0) pdf.addPage();
+                pdf.addImage(img.data, 'JPEG', 0, 0, 210, 297);
+            });
+            
+            const blob = pdf.output('blob');
+            triggerDownload(blob, finalFileName);
+            saveExportedFile(blob, finalFileName, 'pdf').catch(() => {});
+            
+        } else {
+            const zip = new JSZip();
+            pageImages.forEach((img) => {
+                zip.file(`page-${img.index + 1}.png`, img.data, { base64: true });
+            });
+            
+            const content = await zip.generateAsync({ type: 'blob' });
+            triggerDownload(content, finalFileName);
+            saveExportedFile(content, finalFileName, 'zip').catch(() => {});
+        }
         
-        pageImages.forEach((img, idx) => {
-            if (idx > 0) pdf.addPage();
-            pdf.addImage(img.data, 'JPEG', 0, 0, 210, 297);
-        });
-        
-        const blob = pdf.output('blob');
-        triggerDownload(blob, finalFileName);
-        saveExportedFile(blob, finalFileName, 'pdf').catch(() => {});
-        
-    } else {
-        const zip = new JSZip();
-        pageImages.forEach((img) => {
-            zip.file(`page-${img.index + 1}.png`, img.data, { base64: true });
-        });
-        
-        const content = await zip.generateAsync({ type: 'blob' });
-        triggerDownload(content, finalFileName);
-        saveExportedFile(content, finalFileName, 'zip').catch(() => {});
+        onProgress(100);
+    } finally {
+        document.body.classList.remove('exporting');
     }
-    
-    onProgress(100);
 }
 
 function triggerDownload(blob: Blob, filename: string) {

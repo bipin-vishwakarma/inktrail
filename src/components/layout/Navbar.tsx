@@ -100,45 +100,58 @@ export default function Navbar() {
                     {/* Desktop Navigation Links */}
                     <div className="hidden md:flex items-center gap-1 bg-neutral-100/70 p-1 rounded-full border border-neutral-200/50">
                         {/* Scroll links — scroll on landing, route to `/#section` elsewhere */}
-                        {scrollLinks.map((link) => (
-                            <Link
-                                key={link.name}
-                                to={isOnLanding ? `#${link.sectionId}` : `/#${link.sectionId}`}
-                                onClick={(e) => handleScrollLinkClick(e, link.sectionId)}
-                                className={`px-3 py-1 text-xs font-bold rounded-full transition-all flex items-center gap-1.5 cursor-pointer ${
-                                    isScrollLinkActive(link.sectionId)
-                                        ? 'bg-white text-neutral-950 shadow-xs'
-                                        : 'text-neutral-600 hover:text-neutral-900 hover:bg-white/50'
-                                }`}
-                            >
-                                <span>{link.name}</span>
-                            </Link>
-                        ))}
+                        {scrollLinks.map((link) => {
+                            const isActive = isScrollLinkActive(link.sectionId);
+                            return (
+                                <Link
+                                    key={link.name}
+                                    to={isOnLanding ? `#${link.sectionId}` : `/#${link.sectionId}`}
+                                    onClick={(e) => handleScrollLinkClick(e, link.sectionId)}
+                                    className={`relative px-3 py-1 text-xs font-bold rounded-full transition-colors flex items-center gap-1.5 cursor-pointer ${
+                                        isActive ? 'text-neutral-950' : 'text-neutral-600 hover:text-neutral-900 hover:bg-white/50'
+                                    }`}
+                                >
+                                    {isActive && (
+                                        <motion.div
+                                            layoutId="nav-pill"
+                                            className="absolute inset-0 bg-white rounded-full shadow-xs"
+                                            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                                        />
+                                    )}
+                                    <span className="relative z-10">{link.name}</span>
+                                </Link>
+                            );
+                        })}
 
                         {/* Separator */}
                         <span className="w-px h-4 bg-neutral-200/80 mx-0.5" />
 
                         {/* Page route links */}
-                        {pageLinks.map((link) => (
-                            <Link
-                                key={link.name}
-                                to={link.path}
-                                className={`px-3 py-1 text-xs font-bold rounded-full transition-all flex items-center gap-1.5 cursor-pointer ${
-                                    isPageLinkActive(link.path)
-                                        ? 'bg-white text-neutral-950 shadow-xs'
-                                        : 'text-neutral-600 hover:text-neutral-900 hover:bg-white/50'
-                                }`}
-                            >
-                                <span>{link.name}</span>
-                            </Link>
-                        ))}
+                        {pageLinks.map((link) => {
+                            const isActive = isPageLinkActive(link.path);
+                            return (
+                                <Link
+                                    key={link.name}
+                                    to={link.path}
+                                    className={`relative px-3 py-1 text-xs font-bold rounded-full transition-colors flex items-center gap-1.5 cursor-pointer ${
+                                        isActive ? 'text-neutral-950' : 'text-neutral-600 hover:text-neutral-900 hover:bg-white/50'
+                                    }`}
+                                >
+                                    {isActive && (
+                                        <motion.div
+                                            layoutId="nav-pill"
+                                            className="absolute inset-0 bg-white rounded-full shadow-xs"
+                                            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                                        />
+                                    )}
+                                    <span className="relative z-10">{link.name}</span>
+                                </Link>
+                            );
+                        })}
                     </div>
 
                     {/* Right Actions & Account */}
                     <div className="flex items-center gap-2 sm:gap-3">
-
-
-
                         <div className="hidden sm:block">
                             <UserMenu />
                         </div>
@@ -217,8 +230,6 @@ export default function Navbar() {
                                 </Link>
                             ))}
                         </div>
-
-
 
                         <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] font-medium text-neutral-500">
                             <Link to="/disclaimer" onClick={() => setMobileMenuOpen(false)} className="hover:text-neutral-900">

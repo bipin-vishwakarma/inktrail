@@ -175,7 +175,7 @@ export default function OnboardingModal({ isOpen: propIsOpen, onClose: propOnClo
         }
     };
 
-    const handleFinish = useCallback((_isCompletedTour: boolean = false) => {
+    const handleFinish = useCallback(() => {
         try {
             localStorage.setItem('text2handwriting_onboarding_dismissed', 'true');
         } catch {

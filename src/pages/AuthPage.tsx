@@ -136,24 +136,24 @@ export default function AuthPage() {
     }
 
     return (
-        <div className="min-h-screen flex bg-white font-sans selection:bg-violet-200 selection:text-violet-900">
+        <div className="h-[100dvh] overflow-hidden flex bg-white font-sans selection:bg-violet-200 selection:text-violet-900">
             {/* Left Panel: The Canvas */}
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.8 }}
-                className="hidden lg:flex flex-col justify-between w-[48%] relative overflow-hidden bg-[#0A0118]"
+                className="hidden lg:flex flex-col justify-between w-[48%] relative overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] bg-[#0A0118]"
             >
                 {/* Mesh Gradient Background */}
-                <div className="absolute inset-0 pointer-events-none">
+                <div className="absolute inset-0 pointer-events-none overflow-hidden">
                     <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] rounded-full bg-violet-600/30 blur-[100px] mix-blend-screen" />
                     <div className="absolute bottom-[-10%] right-[-10%] w-[70%] h-[70%] rounded-full bg-fuchsia-600/20 blur-[120px] mix-blend-screen" />
                     <div className="absolute top-[40%] left-[20%] w-[50%] h-[50%] rounded-full bg-indigo-500/20 blur-[100px] mix-blend-screen" />
                 </div>
 
                 {/* Top Section */}
-                <div className="relative z-10 p-12 lg:p-16">
-                    <div className="flex items-center gap-3 mb-16">
+                <div className="relative z-10 p-8 lg:p-12">
+                    <div className="flex items-center gap-3 mb-10">
                         <div className="bg-white/10 p-2 rounded-xl backdrop-blur-md border border-white/10">
                             <Text2HandwritingLogo size={32} className="text-white" />
                         </div>
@@ -165,7 +165,7 @@ export default function AuthPage() {
                         <span className="text-xs font-semibold text-violet-200 tracking-wide uppercase">Beta Access</span>
                     </div>
 
-                    <h2 className="text-5xl lg:text-6xl font-semibold tracking-tight text-white leading-[1.1] mb-6">
+                    <h2 className="text-4xl lg:text-5xl font-semibold tracking-tight text-white leading-[1.1] mb-5">
                         Your authentic <br />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400 italic font-medium">handwriting</span> <br />
                         digitized.
@@ -177,8 +177,8 @@ export default function AuthPage() {
                 </div>
 
                 {/* Bottom Section - Glassmorphism Features */}
-                <div className="relative z-10 p-12 lg:p-16 pt-0">
-                    <div className="flex flex-col gap-5">
+                <div className="relative z-10 p-8 lg:p-12 pt-0">
+                    <div className="flex flex-col gap-4">
                         {features.map(({ icon: Icon, text, desc }, i) => (
                             <motion.div 
                                 initial={{ opacity: 0, y: 20 }}
@@ -201,7 +201,7 @@ export default function AuthPage() {
             </motion.div>
 
             {/* Right Panel: The Form */}
-            <div className="flex-1 flex flex-col relative overflow-hidden bg-white">
+            <div className="flex-1 flex flex-col relative overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] bg-white">
                 
                 {/* Mobile Background Bloom */}
                 <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-violet-100/50 rounded-full blur-[100px] pointer-events-none lg:hidden -z-10" />
@@ -217,7 +217,7 @@ export default function AuthPage() {
                 </div>
 
                 {/* Main Form Area */}
-                <div className="flex-1 flex items-center justify-center p-6 lg:p-12">
+                <div className="flex-1 flex items-center justify-center p-6 lg:p-8">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -451,3 +451,8 @@ export default function AuthPage() {
         </div>
     );
 }
+
+
+
+
+

@@ -60,19 +60,12 @@ export default {
         return Response.json({ error: "Invalid signature" }, { status: 400, headers: corsHeaders });
       }
 
-      // Payment is verified! Use ctx.supabaseAdmin to bypass RLS and update the user's profile
-      const { error: dbError } = await ctx.supabaseAdmin
-        .from('profiles')
-        .update({ is_pro: true })
-        .eq('id', user.id);
-
-      if (dbError) {
-        throw dbError;
-      }
-
+      // Payment is verified! (For pay-per-export, we don't need to update a lifetime flag)
+      // If we wanted to track order history, we would insert into an 'orders' table here.
+      
       return Response.json({ success: true, message: "Payment verified successfully" }, { headers: corsHeaders });
-    } catch (err: any) {
-      return Response.json({ error: err.message }, { status: 500, headers: corsHeaders });
+    } catch (err: unknown) {
+      return Response.json({ error: err instanceof Error ? err.message : 'Unknown error' }, { status: 500, headers: corsHeaders });
     }
   }),
 };

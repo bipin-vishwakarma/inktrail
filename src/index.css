@@ -1038,3 +1038,22 @@ textarea::-webkit-scrollbar-thumb:active {
   animation: slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+
+/* Pay-per-export Watermark */
+.watermark-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 100;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Ctext x='50%25' y='50%25' font-size='48' font-family='sans-serif' font-weight='900' fill='rgba(0, 0, 0, 0.05)' text-anchor='middle' alignment-baseline='middle' transform='rotate(-45, 200, 200)'%3EPREVIEW%3C/text%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-position: center;
+}
+
+body.exporting .watermark-overlay {
+    display: none !important;
+}
+

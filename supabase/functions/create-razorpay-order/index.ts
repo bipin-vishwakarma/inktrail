@@ -30,10 +30,16 @@ export default {
          return Response.json({ error: "Unauthorized" }, { status: 401, headers: corsHeaders });
       }
 
-      const { amount, currency = "INR" } = await req.json();
-      if (!amount) {
-        return Response.json({ error: "Amount is required" }, { status: 400, headers: corsHeaders });
+      const { pageCount, currency = "INR" } = await req.json();
+      if (!pageCount || typeof pageCount !== 'number' || pageCount < 1) {
+        return Response.json({ error: "Valid pageCount is required" }, { status: 400, headers: corsHeaders });
       }
+
+      // Dynamic Pricing Logic: ₹10 base fee + ₹2 per page
+      const baseFee = 10;
+      const pricePerPage = 2;
+      const totalAmountInRupees = baseFee + (pricePerPage * pageCount);
+      const amountInPaise = totalAmountInRupees * 100;
 
       const authString = btoa(`${razorpayKeyId}:${razorpayKeySecret}`);
       const response = await fetch("https://api.razorpay.com/v1/orders", {
@@ -43,7 +49,7 @@ export default {
           "Authorization": `Basic ${authString}`
         },
         body: JSON.stringify({
-          amount: amount, 
+          amount: amountInPaise, 
           currency: currency,
           receipt: `receipt_${crypto.randomUUID().slice(0, 8)}`,
         })
@@ -56,8 +62,8 @@ export default {
       }
 
       return Response.json(order, { headers: corsHeaders });
-    } catch (err: any) {
-      return Response.json({ error: err.message }, { status: 500, headers: corsHeaders });
+    } catch (err: unknown) {
+      return Response.json({ error: err instanceof Error ? err.message : 'Unknown error' }, { status: 500, headers: corsHeaders });
     }
   }),
 };
