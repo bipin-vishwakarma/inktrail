@@ -31,8 +31,8 @@ export default function CookieConsent() {
                     <div className="bg-white/80 backdrop-blur-xl rounded-4xl p-6 shadow-premium border border-black/5 flex flex-col gap-4">
                         <div className="flex items-start justify-between gap-4">
                             <div className="flex gap-4">
-                                <div className="w-10 h-10 bg-neutral-50 rounded-md flex items-center justify-center shrink-0">
-                                    <Shield className="text-black" size={20} />
+                                <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center shrink-0">
+                                    <Shield className="text-indigo-600" size={20} />
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-neutral-900 text-sm">Privacy & Cookies</h4>
@@ -43,7 +43,7 @@ export default function CookieConsent() {
                             </div>
                             <button 
                                 onClick={() => { localStorage.setItem('cookie-consent', 'dismissed'); setIsVisible(false); }}
-                                className="p-1 hover:bg-neutral-800/5 rounded-md transition-colors"
+                                className="p-1 hover:bg-black/5 rounded-lg transition-colors"
                             >
                                 <X size={16} className="text-neutral-400" />
                             </button>
@@ -51,13 +51,13 @@ export default function CookieConsent() {
                         <div className="flex gap-3">
                             <button 
                                 onClick={handleAccept}
-                                className="flex-1 px-4 py-2.5 bg-neutral-900 text-white text-xs font-bold rounded-md hover:bg-neutral-800 transition-all active:scale-95"
+                                className="flex-1 px-4 py-2.5 bg-neutral-900 text-white text-xs font-bold rounded-xl hover:bg-black transition-all active:scale-95"
                             >
                                 Accept All
                             </button>
                             <Link 
                                 to="/privacy" 
-                                className="px-4 py-2.5 bg-neutral-100 text-neutral-600 text-xs font-bold rounded-md hover:bg-neutral-200 transition-all text-center"
+                                className="px-4 py-2.5 bg-neutral-100 text-neutral-600 text-xs font-bold rounded-xl hover:bg-neutral-200 transition-all text-center"
                             >
                                 Privacy Policy
                             </Link>

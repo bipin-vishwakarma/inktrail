@@ -9,8 +9,8 @@ export default function SupportPage() {
             subtitle="Get support, submit issues, or contribute to Text2Handwriting."
         >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-                <div className="p-8 bg-white border border-black/5 rounded-md hover:shadow-sm hover:shadow-neutral-900/5 transition-all">
-                    <div className="w-12 h-12 bg-neutral-900 text-white rounded-md flex items-center justify-center mb-6">
+                <div className="p-8 bg-white border border-black/5 rounded-3xl hover:shadow-xl hover:shadow-neutral-900/5 transition-all">
+                    <div className="w-12 h-12 bg-neutral-900 text-white rounded-2xl flex items-center justify-center mb-6">
                         <Github size={24} />
                     </div>
                     <h3 className="mt-0">GitHub Issues</h3>
@@ -27,8 +27,8 @@ export default function SupportPage() {
                     </a>
                 </div>
 
-                <div className="p-8 bg-white border border-black/5 rounded-md hover:shadow-sm hover:shadow-neutral-900/5 transition-all">
-                    <div className="w-12 h-12 bg-black text-white rounded-md flex items-center justify-center mb-6">
+                <div className="p-8 bg-white border border-black/5 rounded-3xl hover:shadow-xl hover:shadow-neutral-900/5 transition-all">
+                    <div className="w-12 h-12 bg-indigo-600 text-white rounded-2xl flex items-center justify-center mb-6">
                         <MessageSquare size={24} />
                     </div>
                     <h3 className="mt-0">Community & Developer</h3>
@@ -48,29 +48,29 @@ export default function SupportPage() {
 
             <h2 className="text-2xl font-display font-black mb-8 text-center sm:text-left">Quick Resources</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <Link to="/faq" className="p-6 bg-white border border-black/5 rounded-md hover:border-neutral-900/20 transition-colors flex items-center gap-4 group">
-                    <div className="w-10 h-10 bg-neutral-50 rounded-md flex items-center justify-center group-hover:bg-neutral-100 transition-colors">
+                <Link to="/faq" className="p-6 bg-white border border-black/5 rounded-2xl hover:border-neutral-900/20 transition-colors flex items-center gap-4 group">
+                    <div className="w-10 h-10 bg-neutral-50 rounded-lg flex items-center justify-center group-hover:bg-neutral-100 transition-colors">
                         <HelpCircle size={20} className="text-neutral-600" />
                     </div>
                     <span className="font-bold">Frequently Asked Questions</span>
                 </Link>
 
-                <Link to="/terms" className="p-6 bg-white border border-black/5 rounded-md hover:border-neutral-900/20 transition-colors flex items-center gap-4 group">
-                    <div className="w-10 h-10 bg-neutral-50 rounded-md flex items-center justify-center group-hover:bg-neutral-100 transition-colors">
+                <Link to="/terms" className="p-6 bg-white border border-black/5 rounded-2xl hover:border-neutral-900/20 transition-colors flex items-center gap-4 group">
+                    <div className="w-10 h-10 bg-neutral-50 rounded-lg flex items-center justify-center group-hover:bg-neutral-100 transition-colors">
                         <FileText size={20} className="text-neutral-600" />
                     </div>
                     <span className="font-bold">Terms of Service</span>
                 </Link>
 
-                <Link to="/privacy" className="p-6 bg-white border border-black/5 rounded-md hover:border-neutral-900/20 transition-colors flex items-center gap-4 group">
-                    <div className="w-10 h-10 bg-neutral-50 rounded-md flex items-center justify-center group-hover:bg-neutral-100 transition-colors">
+                <Link to="/privacy" className="p-6 bg-white border border-black/5 rounded-2xl hover:border-neutral-900/20 transition-colors flex items-center gap-4 group">
+                    <div className="w-10 h-10 bg-neutral-50 rounded-lg flex items-center justify-center group-hover:bg-neutral-100 transition-colors">
                         <Shield size={20} className="text-neutral-600" />
                     </div>
                     <span className="font-bold">Privacy Policy</span>
                 </Link>
             </div>
 
-            <section className="mt-16 p-8 border border-neutral-200 border-dashed rounded-md text-center">
+            <section className="mt-16 p-8 border border-neutral-200 border-dashed rounded-3xl text-center">
                 <h3 className="mt-0">Need a feature?</h3>
                 <p className="text-neutral-500 max-w-lg mx-auto mb-6">
                     We're always looking to improve. If you have an idea for a feature that would make Text2Handwriting better for you, let us know!

@@ -199,7 +199,7 @@ export default function ExportModal({
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.96, y: 15 }}
                         transition={{ type: "spring", damping: 26, stiffness: 320 }}
-                        className="bg-white rounded-md overflow-hidden shadow-sm w-full max-w-6xl h-[92vh] relative flex flex-col border border-neutral-200/80 z-10"
+                        className="bg-white rounded-3xl overflow-hidden shadow-2xl w-full max-w-6xl h-[92vh] relative flex flex-col border border-neutral-200/80 z-10"
                     >
                         {/* TOP BAR with macOS dots */}
                         <div className="h-14 px-6 border-b border-neutral-100 flex items-center justify-between bg-white shrink-0">
@@ -219,7 +219,7 @@ export default function ExportModal({
                             </div>
 
                             {/* Center Preview Zoom Controls */}
-                            <div className="hidden sm:flex items-center gap-1.5 bg-neutral-100 p-1 rounded-md border border-neutral-200/80 text-xs">
+                            <div className="hidden sm:flex items-center gap-1.5 bg-neutral-100 p-1 rounded-xl border border-neutral-200/80 text-xs">
                                 <button 
                                     onClick={() => setPreviewScale(s => Math.max(0.4, s - 0.1))} 
                                     title="Zoom Out Preview"
@@ -255,7 +255,7 @@ export default function ExportModal({
                                     <X size={18} />
                                 </button>
                             ) : (
-                                <div className="flex items-center gap-2 text-xs font-bold text-black">
+                                <div className="flex items-center gap-2 text-xs font-bold text-indigo-600">
                                     <Loader2 size={15} className="animate-spin" />
                                     <span>Exporting...</span>
                                 </div>
@@ -363,7 +363,7 @@ export default function ExportModal({
                                                 {/* Sticky Note */}
                                                 {showStickyNote && pIdx === 0 && (
                                                     <div 
-                                                        className="absolute top-6 right-6 w-36 h-36 bg-amber-200 text-amber-950 p-4 shadow-sm rotate-3 z-30 font-sans text-xs font-semibold leading-snug rounded-xs border border-amber-300 pointer-events-none"
+                                                        className="absolute top-6 right-6 w-36 h-36 bg-amber-200 text-amber-950 p-4 shadow-xl rotate-3 z-30 font-sans text-xs font-semibold leading-snug rounded-xs border border-amber-300 pointer-events-none"
                                                     >
                                                         <div className="w-12 h-3 bg-amber-300/60 -top-1.5 left-1/2 -translate-x-1/2 absolute rounded-xs" />
                                                         {stickyNoteText}
@@ -733,11 +733,11 @@ export default function ExportModal({
                                         <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400 mb-2.5 block">
                                             Export Format
                                         </label>
-                                        <div className="flex bg-neutral-100 p-1 rounded-md border border-neutral-200/70">
+                                        <div className="flex bg-neutral-100 p-1 rounded-2xl border border-neutral-200/70">
                                             <button 
                                                 type="button"
                                                 onClick={() => handleFormatSwitch('pdf')}
-                                                className={`flex-1 py-2.5 px-3 rounded-md text-xs font-bold transition-all flex items-center justify-center gap-2 ${
+                                                className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 ${
                                                     activeFormat === 'pdf' 
                                                         ? 'bg-white text-neutral-900 shadow-sm' 
                                                         : 'text-neutral-500 hover:text-neutral-800'
@@ -749,7 +749,7 @@ export default function ExportModal({
                                             <button 
                                                 type="button"
                                                 onClick={() => handleFormatSwitch('zip')}
-                                                className={`flex-1 py-2.5 px-3 rounded-md text-xs font-bold transition-all flex items-center justify-center gap-2 ${
+                                                className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 ${
                                                     activeFormat === 'zip' 
                                                         ? 'bg-white text-neutral-900 shadow-sm' 
                                                         : 'text-neutral-500 hover:text-neutral-800'
@@ -766,7 +766,7 @@ export default function ExportModal({
                                         <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400 mb-2 block">
                                             Document Name
                                         </label>
-                                        <div className="flex items-center gap-2 p-3 bg-neutral-50 border border-neutral-200 rounded-md focus-within:border-neutral-900 focus-within:ring-2 focus-within:ring-neutral-900/10 transition-all">
+                                        <div className="flex items-center gap-2 p-3 bg-neutral-50 border border-neutral-200 rounded-xl focus-within:border-neutral-900 focus-within:ring-2 focus-within:ring-neutral-900/10 transition-all">
                                             <input 
                                                 type="text" 
                                                 value={fileName}
@@ -779,20 +779,20 @@ export default function ExportModal({
                                     </div>
 
                                     {/* Document Summary Card */}
-                                    <div className="bg-neutral-50 rounded-md p-4 border border-neutral-200/70 space-y-3">
+                                    <div className="bg-neutral-50 rounded-2xl p-4 border border-neutral-200/70 space-y-3">
                                         <span className="text-[10px] font-black uppercase tracking-widest text-neutral-400 block">
                                             Document Stats
                                         </span>
                                         <div className="grid grid-cols-2 gap-2 text-xs">
-                                            <div className="p-2.5 bg-white rounded-md border border-neutral-100 shadow-2xs">
+                                            <div className="p-2.5 bg-white rounded-xl border border-neutral-100 shadow-2xs">
                                                 <div className="text-[10px] text-neutral-400 font-bold uppercase">Total Pages</div>
                                                 <div className="text-sm font-black text-neutral-900">{pages.length}</div>
                                             </div>
-                                            <div className="p-2.5 bg-white rounded-md border border-neutral-100 shadow-2xs">
+                                            <div className="p-2.5 bg-white rounded-xl border border-neutral-100 shadow-2xs">
                                                 <div className="text-[10px] text-neutral-400 font-bold uppercase">Word Count</div>
                                                 <div className="text-sm font-black text-neutral-900">{wordCount}</div>
                                             </div>
-                                            <div className="p-2.5 bg-white rounded-md border border-neutral-100 shadow-2xs col-span-2">
+                                            <div className="p-2.5 bg-white rounded-xl border border-neutral-100 shadow-2xs col-span-2">
                                                 <div className="text-[10px] text-neutral-400 font-bold uppercase">Paper Material</div>
                                                 <div className="text-xs font-bold text-neutral-800 truncate">{paper.name}</div>
                                             </div>
@@ -800,8 +800,8 @@ export default function ExportModal({
                                     </div>
 
                                     {/* Export Quality Tag */}
-                                    <div className="flex items-center gap-2 text-[11px] font-semibold text-neutral-500 bg-neutral-50 p-2.5 rounded-md border border-neutral-200/60">
-                                        <div className="w-2 h-2 rounded-full bg-black" />
+                                    <div className="flex items-center gap-2 text-[11px] font-semibold text-neutral-500 bg-neutral-50 p-2.5 rounded-xl border border-neutral-200/60">
+                                        <div className="w-2 h-2 rounded-full bg-emerald-500" />
                                         <span>Full 2X Ultra-HD DPI Capture</span>
                                     </div>
                                 </div>
@@ -837,7 +837,7 @@ export default function ExportModal({
                                     {status === 'idle' || status === 'error' ? (
                                         <button
                                             onClick={() => onStart(fileName, activeFormat)}
-                                            className="w-full py-4 bg-neutral-900 hover:bg-neutral-800 text-white rounded-md font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-sm shadow-neutral-900/20 active:scale-[0.98]"
+                                            className="w-full py-4 bg-neutral-900 hover:bg-black text-white rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-neutral-900/20 active:scale-[0.98]"
                                         >
                                             <Play size={16} fill="white" />
                                             <span>Download {activeFormat.toUpperCase()}</span>
@@ -845,7 +845,7 @@ export default function ExportModal({
                                     ) : status === 'complete' ? (
                                         <button
                                             onClick={onClose}
-                                            className="w-full py-4 bg-black hover:bg-neutral-800 text-white rounded-md font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-sm shadow-black/20 active:scale-[0.98]"
+                                            className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 active:scale-[0.98]"
                                         >
                                             <CheckCircle2 size={18} />
                                             <span>Export Complete — Close</span>
@@ -853,7 +853,7 @@ export default function ExportModal({
                                     ) : (
                                         <button
                                             disabled
-                                            className="w-full py-4 bg-neutral-100 text-neutral-400 rounded-md font-bold text-sm flex items-center justify-center gap-2 cursor-not-allowed"
+                                            className="w-full py-4 bg-neutral-100 text-neutral-400 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 cursor-not-allowed"
                                         >
                                             <Loader2 size={16} className="animate-spin" />
                                             <span>Generating Document...</span>

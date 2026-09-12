@@ -9,7 +9,7 @@ const updates = [
         title: "The Atmospheric Update",
         description: "A complete visual overhaul introducing a premium atmospheric background with dot grid and mesh gradients, a new high-end 3D depth system, and global animation orchestration.",
         icon: Star,
-        color: "bg-neutral-100 text-black"
+        color: "bg-indigo-100 text-indigo-600"
     },
     {
         version: "v1.2.0",
@@ -72,7 +72,7 @@ export default function ChangelogPage() {
                             <span className="text-xs font-bold text-neutral-500">{update.version}</span>
                         </div>
 
-                        <div className="bg-white border border-black/5 p-6 rounded-md hover:shadow-sm hover:shadow-neutral-900/5 transition-all">
+                        <div className="bg-white border border-black/5 p-6 rounded-3xl hover:shadow-xl hover:shadow-neutral-900/5 transition-all">
                             <h3 className="mt-0 mb-3 flex items-center gap-2">
                                 <update.icon size={20} className="text-neutral-900" />
                                 {update.title}

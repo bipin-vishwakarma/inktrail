@@ -52,7 +52,7 @@ export default function PageLayout({ title, subtitle, description, children }: P
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.1 }}
-                    className="bg-white rounded-md p-8 sm:p-12 shadow-premium border border-black/5 prose prose-neutral prose-lg max-w-none prose-headings:font-display prose-headings:font-bold prose-headings:text-neutral-900 prose-p:text-neutral-600 prose-a:text-black prose-a:no-underline hover:prose-a:underline prose-li:text-neutral-600"
+                    className="bg-white rounded-3xl p-8 sm:p-12 shadow-premium border border-black/5 prose prose-neutral prose-lg max-w-none prose-headings:font-display prose-headings:font-bold prose-headings:text-neutral-900 prose-p:text-neutral-600 prose-a:text-indigo-600 prose-a:no-underline hover:prose-a:underline prose-li:text-neutral-600"
                 >
                     {children}
                 </motion.div>

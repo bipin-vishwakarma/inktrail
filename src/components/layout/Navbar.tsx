@@ -89,7 +89,7 @@ export default function Navbar() {
                 }}
                 className="fixed top-3 sm:top-6 left-0 right-0 z-50 px-3 sm:px-6 flex justify-center pointer-events-none"
             >
-                <div className="w-full max-w-5xl glass rounded-full px-4 sm:px-6 py-2 sm:py-2.5 flex justify-between items-center pointer-events-auto ring-1 ring-black/5 shadow-sm shadow-black/5">
+                <div className="w-full max-w-5xl glass rounded-full px-4 sm:px-6 py-2 sm:py-2.5 flex justify-between items-center pointer-events-auto ring-1 ring-black/5 shadow-lg shadow-black/5">
                     {/* Brand Logo */}
                     <Link to="/" className="flex items-center gap-2.5 group relative shrink-0">
                         <Text2HandwritingLogo size={32} />
@@ -144,7 +144,7 @@ export default function Navbar() {
 
                         <Link
                             to="/editor"
-                            className="px-3.5 sm:px-5 py-1.5 sm:py-2 bg-black text-white text-white rounded-full text-xs sm:text-sm font-bold shadow-md shadow-black/20 hover:from-black hover:to-neutral-800 hover:scale-103 active:scale-97 transition-all flex items-center gap-1.5 whitespace-nowrap"
+                            className="px-3.5 sm:px-5 py-1.5 sm:py-2 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-full text-xs sm:text-sm font-bold shadow-md shadow-violet-600/20 hover:from-violet-500 hover:to-indigo-500 hover:scale-103 active:scale-97 transition-all flex items-center gap-1.5 whitespace-nowrap"
                         >
                             <Sparkles size={13} className="text-yellow-300" />
                             <span>Open Studio</span>
@@ -171,7 +171,7 @@ export default function Navbar() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.2 }}
-                        className="fixed inset-x-4 top-20 z-40 md:hidden bg-white/95 backdrop-blur-xl border border-neutral-200/90 rounded-md p-5 shadow-sm space-y-4"
+                        className="fixed inset-x-4 top-20 z-40 md:hidden bg-white/95 backdrop-blur-xl border border-neutral-200/90 rounded-3xl p-5 shadow-2xl space-y-4"
                     >
                         <div className="flex items-center justify-between pb-3 border-b border-neutral-100">
                             <span className="text-xs font-mono font-bold uppercase tracking-wider text-neutral-400">
@@ -190,7 +190,7 @@ export default function Navbar() {
                                         setMobileMenuOpen(false);
                                         handleScrollLinkClick(e, link.sectionId);
                                     }}
-                                    className={`p-3 rounded-md text-xs font-bold transition-all flex items-center justify-between border cursor-pointer ${
+                                    className={`p-3 rounded-2xl text-xs font-bold transition-all flex items-center justify-between border cursor-pointer ${
                                         isScrollLinkActive(link.sectionId)
                                             ? 'bg-neutral-900 text-white border-neutral-900 shadow-xs'
                                             : 'bg-neutral-50 border-neutral-200/70 text-neutral-700 hover:bg-neutral-100'
@@ -206,7 +206,7 @@ export default function Navbar() {
                                     key={link.name}
                                     to={link.path}
                                     onClick={() => setMobileMenuOpen(false)}
-                                    className={`p-3 rounded-md text-xs font-bold transition-all flex items-center justify-between border cursor-pointer ${
+                                    className={`p-3 rounded-2xl text-xs font-bold transition-all flex items-center justify-between border cursor-pointer ${
                                         isPageLinkActive(link.path)
                                             ? 'bg-neutral-900 text-white border-neutral-900 shadow-xs'
                                             : 'bg-neutral-50 border-neutral-200/70 text-neutral-700 hover:bg-neutral-100'

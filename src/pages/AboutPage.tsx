@@ -24,8 +24,8 @@ export default function AboutPage() {
                 </section>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="p-6 bg-white/70 rounded-md border border-black/5 hover:border-black/10 transition-all group shadow-xs">
-                        <div className="w-12 h-12 bg-rose-50 rounded-md flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <div className="p-6 bg-white/70 rounded-2xl border border-black/5 hover:border-black/10 transition-all group shadow-xs">
+                        <div className="w-12 h-12 bg-rose-50 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                             <Heart className="text-rose-500" size={24} />
                         </div>
                         <h4 className="font-bold text-lg mb-2">Human Imperfection Engine</h4>
@@ -34,8 +34,8 @@ export default function AboutPage() {
                         </p>
                     </div>
 
-                    <div className="p-6 bg-white/70 rounded-md border border-black/5 hover:border-black/10 transition-all group shadow-xs">
-                        <div className="w-12 h-12 bg-blue-50 rounded-md flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <div className="p-6 bg-white/70 rounded-2xl border border-black/5 hover:border-black/10 transition-all group shadow-xs">
+                        <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                             <FlaskConical className="text-blue-600" size={24} />
                         </div>
                         <h4 className="font-bold text-lg mb-2">Lab Practical Notebooks</h4>
@@ -44,9 +44,9 @@ export default function AboutPage() {
                         </p>
                     </div>
 
-                    <div className="p-6 bg-white/70 rounded-md border border-black/5 hover:border-black/10 transition-all group shadow-xs">
-                        <div className="w-12 h-12 bg-neutral-50 rounded-md flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                            <Shield className="text-black" size={24} />
+                    <div className="p-6 bg-white/70 rounded-2xl border border-black/5 hover:border-black/10 transition-all group shadow-xs">
+                        <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                            <Shield className="text-emerald-600" size={24} />
                         </div>
                         <h4 className="font-bold text-lg mb-2">100% Local-First Privacy</h4>
                         <p className="text-sm text-neutral-600 leading-relaxed">
@@ -56,8 +56,8 @@ export default function AboutPage() {
                 </div>
 
                 {/* Student Founder Story */}
-                <section className="p-8 rounded-md bg-white border border-neutral-200 shadow-sm flex flex-col md:flex-row gap-6 items-center">
-                    <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden shrink-0 ring-2 ring-neutral-200 shadow-sm">
+                <section className="p-8 rounded-3xl bg-gradient-to-br from-indigo-50/80 via-white to-blue-50/60 border border-blue-100 shadow-sm flex flex-col md:flex-row gap-6 items-center">
+                    <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden shrink-0 ring-2 ring-blue-500/20 shadow-md">
                         <img 
                             src="https://avatars.githubusercontent.com/u/151464007?v=4" 
                             alt="Bipin Vishwakarma" 
@@ -87,7 +87,7 @@ export default function AboutPage() {
                     </div>
                 </section>
 
-                <section className="bg-black text-white p-8 sm:p-10 rounded-md flex flex-col sm:flex-row items-center justify-between gap-6">
+                <section className="bg-neutral-900 text-white p-8 sm:p-10 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-6">
                     <div className="space-y-2">
                         <h3 className="text-white mt-0 text-xl font-bold">Experience the Studio Today</h3>
                         <p className="text-neutral-300 text-sm max-w-lg m-0">

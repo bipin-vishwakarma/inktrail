@@ -33,7 +33,7 @@ export default function NotFoundPage() {
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                     <button 
                         onClick={() => navigate(-1)}
-                        className="px-6 py-3 rounded-md border border-neutral-200 text-neutral-600 font-medium hover:bg-white hover:shadow-sm hover:-translate-y-0.5 transition-all flex items-center gap-2"
+                        className="px-6 py-3 rounded-xl border border-neutral-200 text-neutral-600 font-medium hover:bg-white hover:shadow-lg hover:-translate-y-0.5 transition-all flex items-center gap-2"
                     >
                         <ArrowLeft size={18} />
                         Go Back
@@ -41,7 +41,7 @@ export default function NotFoundPage() {
                     
                     <button 
                         onClick={() => navigate('/')}
-                        className="px-6 py-3 rounded-md bg-neutral-900 text-white font-bold hover:shadow-sm hover:shadow-neutral-900/20 hover:-translate-y-0.5 transition-all flex items-center gap-2"
+                        className="px-6 py-3 rounded-xl bg-neutral-900 text-white font-bold hover:shadow-xl hover:shadow-neutral-900/20 hover:-translate-y-0.5 transition-all flex items-center gap-2"
                     >
                         <Home size={18} />
                         Return Home

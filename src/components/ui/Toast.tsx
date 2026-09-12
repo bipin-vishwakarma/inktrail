@@ -41,7 +41,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
                             initial={{ opacity: 0, y: 50, scale: 0.9 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
-                            className="pointer-events-auto min-w-[300px] shadow-sm rounded-md bg-white border border-gray-100 overflow-hidden flex items-stretch"
+                            className="pointer-events-auto min-w-[300px] shadow-lg rounded-lg bg-white border border-gray-100 overflow-hidden flex items-stretch"
                         >
                             <div className={`w-2 ${toast.type === 'success' ? 'bg-green-500' :
                                     toast.type === 'error' ? 'bg-red-500' : 'bg-blue-500'

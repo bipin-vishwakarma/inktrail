@@ -113,8 +113,8 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
             {!hideHeader ? (
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                     <div>
-                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neutral-200 text-neutral-800 text-xs font-black tracking-wide uppercase mb-1.5">
-                            <Sparkles size={12} className="text-black" />
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-100 text-violet-800 text-xs font-black tracking-wide uppercase mb-1.5">
+                            <Sparkles size={12} className="text-violet-600" />
                             <span>Side-by-Side Comparison</span>
                         </div>
                         <h3 className="text-xl sm:text-2xl font-black font-display text-neutral-900 tracking-tight">
@@ -126,13 +126,13 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
                     </div>
 
                     {/* Preset Pills */}
-                    <div className="flex items-center gap-1.5 bg-neutral-100/80 p-1 rounded-md border border-neutral-200/80 self-stretch sm:self-auto overflow-x-auto">
+                    <div className="flex items-center gap-1.5 bg-neutral-100/80 p-1 rounded-2xl border border-neutral-200/80 self-stretch sm:self-auto overflow-x-auto">
                         {COMPARISON_PRESETS.map((p, idx) => (
                             <button
                                 key={p.id}
                                 type="button"
                                 onClick={() => setSelectedPreset(idx)}
-                                className={`px-3 py-1.5 rounded-md text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+                                className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                                     selectedPreset === idx
                                         ? 'bg-white text-neutral-950 shadow-xs border border-black/5'
                                         : 'text-neutral-600 hover:text-neutral-900'
@@ -145,19 +145,19 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
                 </div>
             ) : (
                 <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
-                    <span className="text-xs font-mono font-bold text-neutral-500 uppercase tracking-wider">
+                    <span className="text-xs font-mono font-bold text-stone-500 uppercase tracking-wider">
                         Select Subject Sample:
                     </span>
-                    <div className="flex items-center gap-1.5 bg-neutral-100 p-1 rounded-md border border-neutral-200">
+                    <div className="flex items-center gap-1.5 bg-stone-100 p-1 rounded-xl border border-stone-200">
                         {COMPARISON_PRESETS.map((p, idx) => (
                             <button
                                 key={p.id}
                                 type="button"
                                 onClick={() => setSelectedPreset(idx)}
-                                className={`px-3 py-1 rounded-md text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+                                className={`px-3 py-1 rounded-lg text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                                     selectedPreset === idx
-                                        ? 'bg-white text-neutral-950 shadow-xs font-extrabold'
-                                        : 'text-neutral-600 hover:text-neutral-900'
+                                        ? 'bg-white text-stone-950 shadow-xs font-extrabold'
+                                        : 'text-stone-600 hover:text-stone-900'
                                 }`}
                             >
                                 {p.title}
@@ -170,7 +170,7 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
             {/* Comparison Canvas Card */}
             <div
                 ref={containerRef}
-                className="relative h-[400px] sm:h-[440px] rounded-md overflow-hidden shadow-sm border border-neutral-300 ring-1 ring-black/5 cursor-ew-resize select-none bg-neutral-100"
+                className="relative h-[400px] sm:h-[440px] rounded-3xl overflow-hidden shadow-2xl border border-neutral-300 ring-1 ring-black/5 cursor-ew-resize select-none bg-stone-100"
                 onMouseDown={(e) => {
                     updatePosition(e.clientX);
                     setIsDragging(true);
@@ -196,8 +196,8 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
 
                     {/* Badge */}
                     <div className="relative z-10 self-end">
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neutral-50 border border-neutral-200 text-neutral-800 text-[11px] font-black shadow-xs">
-                            <CheckCircle2 size={12} className="text-black" />
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-black shadow-xs">
+                            <CheckCircle2 size={12} className="text-emerald-600" />
                             Text2Handwriting Organic Handwriting
                         </span>
                     </div>
@@ -224,7 +224,7 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
 
                 {/* 2. LEFT SIDE / FOREGROUND CLIP: STERILE DIGITAL TYPED TEXT */}
                 <div
-                    className="absolute inset-0 bg-[#f8fafc] border-r-2 border-black overflow-hidden flex flex-col justify-between p-6 sm:p-10 z-20 pointer-events-none"
+                    className="absolute inset-0 bg-[#f8fafc] border-r-2 border-violet-600 overflow-hidden flex flex-col justify-between p-6 sm:p-10 z-20 pointer-events-none"
                     style={{ clipPath: `inset(0 ${100 - sliderPos}% 0 0)` }}
                 >
                     {/* Faint terminal / digital grid */}
@@ -260,15 +260,15 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
                     style={{ left: `${sliderPos}%` }}
                 >
                     {/* Vertical Divider Line */}
-                    <div className="w-[3px] h-full bg-gradient-to-b from-black via-black to-cyan-500 shadow-sm" />
+                    <div className="w-[3px] h-full bg-gradient-to-b from-violet-500 via-indigo-600 to-cyan-500 shadow-lg" />
 
                     {/* Floating 3D Circular Handle */}
                     <div
-                        className={`absolute w-10 h-10 rounded-full bg-white text-neutral-900 border-2 border-black shadow-sm flex items-center justify-center transition-transform pointer-events-auto cursor-grab active:cursor-grabbing ${
-                            isDragging ? 'scale-115 ring-4 ring-black/30' : 'hover:scale-108'
+                        className={`absolute w-10 h-10 rounded-full bg-white text-neutral-900 border-2 border-violet-600 shadow-xl flex items-center justify-center transition-transform pointer-events-auto cursor-grab active:cursor-grabbing ${
+                            isDragging ? 'scale-115 ring-4 ring-violet-500/30' : 'hover:scale-108'
                         }`}
                     >
-                        <MoveHorizontal size={18} className="text-neutral-800" />
+                        <MoveHorizontal size={18} className="text-violet-700" />
                     </div>
                 </div>
             </div>

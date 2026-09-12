@@ -20,11 +20,11 @@ const SLIDES = [
         title: 'Smart Margin Indexing',
         badge: 'Exam & Assignment Mode',
         icon: FileText,
-        color: 'from-blue-500/10 to-neutral-800/10 text-blue-600',
+        color: 'from-blue-500/10 to-indigo-500/10 text-blue-600',
         headline: 'Question numbers automatically pin to the red margin',
         description: 'Type "Q1.", "Ans:", "(a)", or "(i)" anywhere in your text. Text2Handwriting automatically isolates the question index and stamps it into the authentic left red rule — just like real Indian student notebooks.',
         demo: (
-            <div className="w-full bg-white rounded-md border border-neutral-200/90 p-3 shadow-inner relative overflow-hidden text-left font-mono text-xs">
+            <div className="w-full bg-white rounded-xl border border-neutral-200/90 p-3 shadow-inner relative overflow-hidden text-left font-mono text-xs">
                 <div className="absolute top-0 bottom-0 left-16 w-[1.5px] bg-rose-400/80" />
                 <div className="space-y-2">
                     <div className="flex items-center">
@@ -54,7 +54,7 @@ const SLIDES = [
         demo: (
             <div className="w-full grid grid-cols-2 gap-2 text-left">
                 {/* Left Page (Blank Diagram) */}
-                <div className="bg-white rounded-md border-2 border-dashed border-purple-300 p-2 text-center flex flex-col items-center justify-center min-h-[90px] shadow-xs">
+                <div className="bg-white rounded-lg border-2 border-dashed border-purple-300 p-2 text-center flex flex-col items-center justify-center min-h-[90px] shadow-xs">
                     <div className="w-6 h-6 rounded-md bg-purple-100 flex items-center justify-center text-purple-600 mb-1">
                         <FlaskConical size={13} />
                     </div>
@@ -62,7 +62,7 @@ const SLIDES = [
                     <span className="text-[9px] text-neutral-500">Insert Schematics / Graphs</span>
                 </div>
                 {/* Right Page (Ruled Theory) */}
-                <div className="bg-white rounded-md border border-neutral-300 p-2 shadow-xs space-y-1.5 overflow-hidden">
+                <div className="bg-white rounded-lg border border-neutral-300 p-2 shadow-xs space-y-1.5 overflow-hidden">
                     <div className="text-[9px] font-black text-rose-600 border-b border-rose-300 pb-0.5">AIM & PROCEDURE</div>
                     <div className="h-[1px] bg-neutral-200 w-full" />
                     <div className="h-[1px] bg-neutral-200 w-4/5" />
@@ -81,14 +81,14 @@ const SLIDES = [
         headline: 'Authentic smartphone shadows, desk lamps & natural mistakes',
         description: 'Text2Handwriting goes far beyond simple fonts: it simulates human hand fatigue (writing gets slightly looser down the page), realistic ballpoint jitter, wavy pen strikethroughs, desk lamp warmth, and 3D smartphone cast shadows.',
         demo: (
-            <div className="w-full bg-linear-to-r from-amber-50/70 to-orange-50/50 rounded-md border border-amber-200/80 p-3 text-left space-y-2">
+            <div className="w-full bg-linear-to-r from-amber-50/70 to-orange-50/50 rounded-xl border border-amber-200/80 p-3 text-left space-y-2">
                 <div className="flex items-center justify-between text-[11px] font-bold text-neutral-800">
                     <span>✍️ Organic Human Fatigue</span>
-                    <span className="text-black font-mono text-[10px]">Active</span>
+                    <span className="text-emerald-600 font-mono text-[10px]">Active</span>
                 </div>
                 <div className="flex items-center justify-between text-[11px] font-bold text-neutral-800">
                     <span>📱 Smartphone Cast Shadow</span>
-                    <span className="text-black font-mono text-[10px]">125° Warm</span>
+                    <span className="text-emerald-600 font-mono text-[10px]">125° Warm</span>
                 </div>
                 <div className="flex items-center justify-between text-[11px] font-bold text-neutral-800">
                     <span>☕ Subtle Coffee / Desk Ring</span>
@@ -102,15 +102,15 @@ const SLIDES = [
         title: 'AI Cleaner & Multi-Format Import',
         badge: 'Clean ChatGPT Content',
         icon: Sparkles,
-        color: 'from-black/10 to-teal-500/10 text-black',
+        color: 'from-emerald-500/10 to-teal-500/10 text-emerald-600',
         headline: 'Strip AI preambles with 1 click or import Word & PDF files',
         description: 'Copied your homework from ChatGPT or Claude? Click "Clean AI" to instantly strip robot phrases like "Sure! Here is your assignment:". You can also drag-and-drop Word (.docx), PDF files, or run OCR on scanned notes.',
         demo: (
-            <div className="w-full bg-white rounded-md border border-neutral-200/90 p-2.5 text-left space-y-1.5 text-xs">
+            <div className="w-full bg-white rounded-xl border border-neutral-200/90 p-2.5 text-left space-y-1.5 text-xs">
                 <div className="text-[10px] text-rose-500 line-through bg-rose-50 px-1.5 py-0.5 rounded">
                     "Certainly! Below is the 5-page assignment on Data Structures:"
                 </div>
-                <div className="text-[10px] text-neutral-800 font-bold bg-neutral-50 px-1.5 py-0.5 rounded flex items-center gap-1">
+                <div className="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-1.5 py-0.5 rounded flex items-center gap-1">
                     <CheckCircle2 size={11} />
                     <span>Auto-Cleaned & Ready for Handwriting Simulation</span>
                 </div>
@@ -126,13 +126,13 @@ const SLIDES = [
         headline: 'Download sharp, printable PDFs with student date headers',
         description: 'Export clean multi-page documents as high-DPI PDFs or individual image ZIPs. Authentic Indian student notebook headers (Day tracker, Date, Page Number, and Youva/Classmate branding) are included automatically.',
         demo: (
-            <div className="w-full bg-neutral-900 text-white rounded-md p-3 text-left space-y-2">
+            <div className="w-full bg-neutral-900 text-white rounded-xl p-3 text-left space-y-2">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                        <Download size={14} className="text-neutral-400" />
+                        <Download size={14} className="text-emerald-400" />
                         <span className="text-xs font-bold font-mono">assignment_lab_final.pdf</span>
                     </div>
-                    <span className="text-[9px] bg-black/20 text-neutral-300 font-bold px-1.5 py-0.5 rounded">
+                    <span className="text-[9px] bg-emerald-500/20 text-emerald-300 font-bold px-1.5 py-0.5 rounded">
                         Vector / High DPI
                     </span>
                 </div>
@@ -230,7 +230,7 @@ export default function OnboardingModal({ isOpen: propIsOpen, onClose: propOnClo
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.94, y: 15 }}
                         transition={{ type: "spring", damping: 25, stiffness: 320 }}
-                        className="bg-white rounded-md overflow-hidden shadow-sm max-w-lg w-full relative flex flex-col border border-neutral-200"
+                        className="bg-white rounded-3xl overflow-hidden shadow-2xl max-w-lg w-full relative flex flex-col border border-neutral-200"
                     >
                         {/* TOP HEADER */}
                         <div className="px-6 py-4 border-b border-neutral-100 flex items-center justify-between bg-neutral-50/80">
@@ -267,7 +267,7 @@ export default function OnboardingModal({ isOpen: propIsOpen, onClose: propOnClo
                                 >
                                     {/* Icon & Badge */}
                                     <div className="flex items-center justify-between">
-                                        <div className={`w-12 h-12 rounded-md bg-linear-to-br ${slide.color} flex items-center justify-center shadow-xs`}>
+                                        <div className={`w-12 h-12 rounded-2xl bg-linear-to-br ${slide.color} flex items-center justify-center shadow-xs`}>
                                             <SlideIcon size={24} />
                                         </div>
                                         <span className="text-[10px] font-black uppercase tracking-wider bg-neutral-100 text-neutral-700 px-2.5 py-1 rounded-full">
@@ -332,7 +332,7 @@ export default function OnboardingModal({ isOpen: propIsOpen, onClose: propOnClo
                                         <button
                                             type="button"
                                             onClick={handlePrev}
-                                            className="px-3.5 py-2 text-xs font-bold text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 rounded-md transition-all cursor-pointer flex items-center gap-1"
+                                            className="px-3.5 py-2 text-xs font-bold text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 rounded-xl transition-all cursor-pointer flex items-center gap-1"
                                         >
                                             <ArrowLeft size={13} />
                                             <span>Back</span>
@@ -341,7 +341,7 @@ export default function OnboardingModal({ isOpen: propIsOpen, onClose: propOnClo
                                         <button
                                             type="button"
                                             onClick={onClose}
-                                            className="px-3.5 py-2 text-xs font-bold text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100 rounded-md transition-all cursor-pointer"
+                                            className="px-3.5 py-2 text-xs font-bold text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100 rounded-xl transition-all cursor-pointer"
                                         >
                                             Skip Tour
                                         </button>
@@ -350,7 +350,7 @@ export default function OnboardingModal({ isOpen: propIsOpen, onClose: propOnClo
                                     <button
                                         type="button"
                                         onClick={handleNext}
-                                        className="px-5 py-2.5 bg-neutral-900 hover:bg-neutral-800 text-white rounded-md text-xs font-bold flex items-center justify-center gap-2 shadow-sm active:scale-98 transition-all cursor-pointer"
+                                        className="px-5 py-2.5 bg-neutral-900 hover:bg-black text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-sm active:scale-98 transition-all cursor-pointer"
                                     >
                                         <span>{currentIndex === SLIDES.length - 1 ? 'Start Writing' : 'Next Slide'}</span>
                                         <ArrowRight size={13} />

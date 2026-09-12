@@ -120,7 +120,7 @@ export const CameraPhysicsControls: React.FC = () => {
                         type="button"
                         onClick={randomizeRealism}
                         title="Roll organic human realism (angles, jitter, natural flaws)"
-                        className="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200/60 rounded-md text-[10px] font-bold flex items-center gap-1 transition-all cursor-pointer shadow-2xs"
+                        className="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200/60 rounded-lg text-[10px] font-bold flex items-center gap-1 transition-all cursor-pointer shadow-2xs"
                     >
                         <Dices size={12} className="text-amber-700" />
                         <span>Randomize 🎲</span>
@@ -129,7 +129,7 @@ export const CameraPhysicsControls: React.FC = () => {
                         type="button"
                         onClick={resetEffects}
                         title="Reset all camera & visual effects to defaults"
-                        className="px-2 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-600 rounded-md text-[10px] font-bold flex items-center gap-1 transition-all cursor-pointer"
+                        className="px-2 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-600 rounded-lg text-[10px] font-bold flex items-center gap-1 transition-all cursor-pointer"
                     >
                         <RotateCcw size={11} />
                         <span>Reset</span>
@@ -138,11 +138,11 @@ export const CameraPhysicsControls: React.FC = () => {
             </div>
 
             {/* Scope Pill: Current Page vs All Pages */}
-            <div className="bg-neutral-100 p-1 rounded-md flex items-center gap-1 text-[10px] font-bold">
+            <div className="bg-neutral-100 p-1 rounded-xl flex items-center gap-1 text-[10px] font-bold">
                 <button
                     type="button"
                     onClick={() => setEffectScope('all')}
-                    className={`flex-1 py-1.5 rounded-md text-center transition-all ${
+                    className={`flex-1 py-1.5 rounded-lg text-center transition-all ${
                         effectScope === 'all'
                             ? 'bg-white text-neutral-900 shadow-2xs'
                             : 'text-neutral-500 hover:text-neutral-800'
@@ -153,9 +153,9 @@ export const CameraPhysicsControls: React.FC = () => {
                 <button
                     type="button"
                     onClick={() => setEffectScope('current')}
-                    className={`flex-1 py-1.5 rounded-md text-center transition-all ${
+                    className={`flex-1 py-1.5 rounded-lg text-center transition-all ${
                         effectScope === 'current'
-                            ? 'bg-white text-neutral-700 shadow-2xs'
+                            ? 'bg-white text-indigo-700 shadow-2xs'
                             : 'text-neutral-500 hover:text-neutral-800'
                     }`}
                 >
@@ -164,12 +164,12 @@ export const CameraPhysicsControls: React.FC = () => {
             </div>
 
             {effectScope === 'current' && Object.keys(currentPageOverrides).length > 0 && (
-                <div className="flex items-center justify-between px-2.5 py-1.5 bg-neutral-50/70 border border-neutral-100 rounded-md text-[10px]">
-                    <span className="text-neutral-800 font-medium">Page {activePageIndex + 1} has custom overrides</span>
+                <div className="flex items-center justify-between px-2.5 py-1.5 bg-indigo-50/70 border border-indigo-100 rounded-xl text-[10px]">
+                    <span className="text-indigo-800 font-medium">Page {activePageIndex + 1} has custom overrides</span>
                     <button
                         type="button"
                         onClick={() => applyPageEffectsToAll(activePageIndex)}
-                        className="text-black hover:text-neutral-900 font-bold flex items-center gap-1"
+                        className="text-indigo-600 hover:text-indigo-900 font-bold flex items-center gap-1"
                         title="Apply this page's custom effects to all other pages"
                     >
                         <Copy size={11} /> Apply to All
@@ -178,7 +178,7 @@ export const CameraPhysicsControls: React.FC = () => {
             )}
 
             {/* 1. Phone Cast Shadow Toggle & Controls */}
-            <div className="bg-neutral-50 p-3 rounded-md space-y-3">
+            <div className="bg-neutral-50 p-3 rounded-2xl space-y-3">
                 <label className="flex items-center justify-between cursor-pointer">
                     <div className="flex items-center gap-2">
                         <Smartphone size={14} className="text-neutral-500" />
@@ -243,7 +243,7 @@ export const CameraPhysicsControls: React.FC = () => {
             </div>
 
             {/* 2. 3D Perspective Tilt Toggle & Sliders */}
-            <div className="bg-neutral-50 p-3 rounded-md space-y-3">
+            <div className="bg-neutral-50 p-3 rounded-2xl space-y-3">
                 <label className="flex items-center justify-between cursor-pointer">
                     <div className="flex items-center gap-2">
                         <Maximize2 size={14} className="text-neutral-500" />
@@ -312,13 +312,13 @@ export const CameraPhysicsControls: React.FC = () => {
                 <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-tighter mb-1.5 block">
                     Room Lighting Environment
                 </span>
-                <div className="grid grid-cols-3 gap-1 bg-neutral-100 p-1 rounded-md">
+                <div className="grid grid-cols-3 gap-1 bg-neutral-100 p-1 rounded-xl">
                     {lightingModes.map((lm) => (
                         <button
                             key={lm.id}
                             type="button"
                             onClick={() => setLightingMode(lm.id)}
-                            className={`py-1.5 px-1 rounded-md text-[10px] font-bold flex flex-col items-center gap-0.5 transition-all ${
+                            className={`py-1.5 px-1 rounded-lg text-[10px] font-bold flex flex-col items-center gap-0.5 transition-all ${
                                 lightingMode === lm.id
                                     ? 'bg-white text-neutral-900 shadow-xs'
                                     : 'text-neutral-500 hover:text-neutral-800'
@@ -354,13 +354,13 @@ export const CameraPhysicsControls: React.FC = () => {
                 <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-tighter mb-1.5 block">
                     Paper Folds & Creases
                 </span>
-                <div className="grid grid-cols-3 gap-1 bg-neutral-100 p-1 rounded-md">
+                <div className="grid grid-cols-3 gap-1 bg-neutral-100 p-1 rounded-xl">
                     {creaseOptions.map((c) => (
                         <button
                             key={c.id}
                             type="button"
                             onClick={() => handleSetCrease(c.id)}
-                            className={`py-1.5 px-1 rounded-md text-[10px] font-bold transition-all ${
+                            className={`py-1.5 px-1 rounded-lg text-[10px] font-bold transition-all ${
                                 effectiveCrease === c.id
                                     ? 'bg-white text-neutral-900 shadow-xs'
                                     : 'text-neutral-500 hover:text-neutral-800'
@@ -373,7 +373,7 @@ export const CameraPhysicsControls: React.FC = () => {
             </div>
 
             {/* 5. Realistic Coffee Mug Ring Stain Toggle */}
-            <div className="bg-amber-50/60 border border-amber-200/50 p-3 rounded-md">
+            <div className="bg-amber-50/60 border border-amber-200/50 p-3 rounded-2xl">
                 <label className="flex items-center justify-between cursor-pointer">
                     <div className="flex items-center gap-2">
                         <Coffee size={14} className="text-amber-700" />
@@ -392,7 +392,7 @@ export const CameraPhysicsControls: React.FC = () => {
             </div>
 
             {/* 5.1. 3D Twin-Wire Spiral Binding Toggle */}
-            <div className="bg-neutral-50 border border-neutral-200/80 p-3 rounded-md">
+            <div className="bg-neutral-50 border border-neutral-200/80 p-3 rounded-2xl">
                 <label className="flex items-center justify-between cursor-pointer">
                     <div>
                         <span className="text-[11px] font-bold text-neutral-900 block">3D Spiral Binding (Twin-Wire)</span>
@@ -408,7 +408,7 @@ export const CameraPhysicsControls: React.FC = () => {
             </div>
 
             {/* 5.2. Reverse-Page Ink Ghosting (Bleed-Through) */}
-            <div className="bg-neutral-50 border border-neutral-200/80 p-3 rounded-md space-y-2">
+            <div className="bg-neutral-50 border border-neutral-200/80 p-3 rounded-2xl space-y-2">
                 <label className="flex items-center justify-between cursor-pointer">
                     <div>
                         <span className="text-[11px] font-bold text-neutral-900 block">Reverse-Page Ink Ghosting</span>

@@ -62,13 +62,13 @@ export const HumanErrorsControls: React.FC = () => {
                 <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-tighter mb-1.5 block">
                     Pen Scratch Style
                 </span>
-                <div className="grid grid-cols-4 gap-1.5 bg-neutral-100 p-1.5 rounded-md">
+                <div className="grid grid-cols-4 gap-1.5 bg-neutral-100 p-1.5 rounded-xl">
                     {strikeOptions.map((opt) => (
                         <button
                             key={opt.id}
                             type="button"
                             onClick={() => setStrikeStyle(opt.id)}
-                            className={`py-2 px-1 rounded-md text-[10px] font-bold flex flex-col items-center gap-1 transition-all ${
+                            className={`py-2 px-1 rounded-lg text-[10px] font-bold flex flex-col items-center gap-1 transition-all ${
                                 strikeStyle === opt.id
                                     ? 'bg-white text-neutral-900 shadow-xs'
                                     : 'text-neutral-500 hover:text-neutral-800 hover:bg-neutral-200/50'
@@ -87,11 +87,11 @@ export const HumanErrorsControls: React.FC = () => {
                     <span>Correction Ink Color</span>
                     <span className="text-neutral-900 font-black capitalize">{correctionColor}</span>
                 </div>
-                <div className="grid grid-cols-4 gap-1.5 bg-neutral-100 p-1.5 rounded-md">
+                <div className="grid grid-cols-4 gap-1.5 bg-neutral-100 p-1.5 rounded-xl">
                     <button
                         type="button"
                         onClick={() => setCorrectionColor('match')}
-                        className={`py-1.5 px-2 rounded-md text-[10px] font-bold flex items-center justify-center gap-1.5 transition-all ${
+                        className={`py-1.5 px-2 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1.5 transition-all ${
                             correctionColor === 'match' ? 'bg-white text-neutral-900 shadow-xs' : 'text-neutral-500 hover:text-neutral-800'
                         }`}
                     >
@@ -101,7 +101,7 @@ export const HumanErrorsControls: React.FC = () => {
                     <button
                         type="button"
                         onClick={() => setCorrectionColor('red')}
-                        className={`py-1.5 px-2 rounded-md text-[10px] font-bold flex items-center justify-center gap-1.5 transition-all ${
+                        className={`py-1.5 px-2 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1.5 transition-all ${
                             correctionColor === 'red' ? 'bg-white text-red-600 shadow-xs ring-1 ring-red-200' : 'text-neutral-500 hover:text-red-600'
                         }`}
                     >
@@ -111,17 +111,17 @@ export const HumanErrorsControls: React.FC = () => {
                     <button
                         type="button"
                         onClick={() => setCorrectionColor('green')}
-                        className={`py-1.5 px-2 rounded-md text-[10px] font-bold flex items-center justify-center gap-1.5 transition-all ${
-                            correctionColor === 'green' ? 'bg-white text-black shadow-xs ring-1 ring-neutral-200' : 'text-neutral-500 hover:text-black'
+                        className={`py-1.5 px-2 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1.5 transition-all ${
+                            correctionColor === 'green' ? 'bg-white text-emerald-600 shadow-xs ring-1 ring-emerald-200' : 'text-neutral-500 hover:text-emerald-600'
                         }`}
                     >
-                        <span className="w-2.5 h-2.5 rounded-full bg-black shadow-xs" />
+                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 shadow-xs" />
                         <span>Green</span>
                     </button>
                     <button
                         type="button"
                         onClick={() => setCorrectionColor('purple')}
-                        className={`py-1.5 px-2 rounded-md text-[10px] font-bold flex items-center justify-center gap-1.5 transition-all ${
+                        className={`py-1.5 px-2 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1.5 transition-all ${
                             correctionColor === 'purple' ? 'bg-white text-purple-600 shadow-xs ring-1 ring-purple-200' : 'text-neutral-500 hover:text-purple-600'
                         }`}
                     >
@@ -132,7 +132,7 @@ export const HumanErrorsControls: React.FC = () => {
             </div>
 
             {/* Caret Correction Mode Toggle */}
-            <label className="flex items-center justify-between p-2.5 bg-neutral-50 rounded-md cursor-pointer hover:bg-neutral-100/70 transition-colors">
+            <label className="flex items-center justify-between p-2.5 bg-neutral-50 rounded-xl cursor-pointer hover:bg-neutral-100/70 transition-colors">
                 <div className="flex flex-col">
                     <span className="text-[11px] font-bold text-neutral-700">Caret Correction (^)</span>
                     <span className="text-[9px] text-neutral-400">Writes fix above line with pen caret</span>
@@ -183,10 +183,10 @@ export const HumanErrorsControls: React.FC = () => {
             </div>
 
             {/* Ballpoint Pen Low-Ink & Drying Simulation */}
-            <div className="p-3.5 bg-neutral-50 border border-neutral-200/70 rounded-md space-y-3">
+            <div className="p-3.5 bg-neutral-50 border border-neutral-200/70 rounded-2xl space-y-3">
                 <label className="flex items-center justify-between cursor-pointer">
                     <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-md bg-blue-100 text-blue-700 flex items-center justify-center">
+                        <div className="w-6 h-6 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center">
                             <Droplet size={13} />
                         </div>
                         <div>
@@ -246,8 +246,8 @@ export const HumanErrorsControls: React.FC = () => {
             </div>
 
             {/* Syntax Tip Box */}
-            <div className="p-2.5 bg-neutral-50/60 border border-neutral-100/80 rounded-md text-[10px] text-neutral-950 space-y-1">
-                <div className="flex items-center gap-1 font-bold text-neutral-900">
+            <div className="p-2.5 bg-indigo-50/60 border border-indigo-100/80 rounded-xl text-[10px] text-indigo-950 space-y-1">
+                <div className="flex items-center gap-1 font-bold text-indigo-900">
                     <HelpCircle size={11} />
                     <span>Correction Markup Tips</span>
                 </div>

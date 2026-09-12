@@ -54,7 +54,7 @@ export default function Footer() {
                         <ul className="space-y-4">
                             <li><Link to="/#features" className="text-neutral-500 hover:text-neutral-900 transition-colors text-sm font-bold">Features</Link></li>
                             <li><Link to="/#how-it-works" className="text-neutral-500 hover:text-neutral-900 transition-colors text-sm font-bold">How It Works</Link></li>
-                            <li><Link to="/editor" className="text-neutral-500 hover:text-neutral-900 transition-colors text-sm font-bold text-left group flex items-center gap-2">Editor Studio <span className="w-1 h-1 rounded-full bg-neutral-200 group-hover:bg-neutral-800 transition-colors" /></Link></li>
+                            <li><Link to="/editor" className="text-neutral-500 hover:text-neutral-900 transition-colors text-sm font-bold text-left group flex items-center gap-2">Editor Studio <span className="w-1 h-1 rounded-full bg-neutral-200 group-hover:bg-indigo-500 transition-colors" /></Link></li>
                         </ul>
                     </motion.div>
 

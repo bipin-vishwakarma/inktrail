@@ -650,11 +650,11 @@ export default function NotebookHero3D({
             className={`relative w-full h-[460px] sm:h-[540px] lg:h-[620px] select-none ${className}`}
         >
             {/* Subtle Minimal Controls */}
-            <div className="absolute top-3 right-3 z-20 flex items-center gap-1.5 p-1 rounded-full bg-white/85 backdrop-blur-md border border-neutral-200/80 shadow-xs pointer-events-auto">
+            <div className="absolute top-3 right-3 z-20 flex items-center gap-1.5 p-1 rounded-full bg-white/85 backdrop-blur-md border border-stone-200/80 shadow-xs pointer-events-auto">
                 <button
                     type="button"
                     onClick={() => setIsPlaying(!isPlaying)}
-                    className="p-1.5 rounded-full text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100 cursor-pointer transition-colors"
+                    className="p-1.5 rounded-full text-stone-600 hover:text-stone-950 hover:bg-stone-100 cursor-pointer transition-colors"
                     title={isPlaying ? 'Pause Inscription' : 'Resume Inscription'}
                     aria-label={isPlaying ? 'Pause Inscription' : 'Resume Inscription'}
                 >
@@ -663,7 +663,7 @@ export default function NotebookHero3D({
                 <button
                     type="button"
                     onClick={handleRestart}
-                    className="p-1.5 rounded-full text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100 cursor-pointer transition-colors"
+                    className="p-1.5 rounded-full text-stone-600 hover:text-stone-950 hover:bg-stone-100 cursor-pointer transition-colors"
                     title="Replay Inscription"
                     aria-label="Replay Inscription"
                 >

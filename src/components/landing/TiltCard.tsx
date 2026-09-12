@@ -71,14 +71,14 @@ export const TiltCard: React.FC<TiltCardProps> = ({
                     transition: isHovered ? 'transform 0.1s ease-out' : 'transform 0.5s ease-out',
                     transformStyle: 'preserve-3d',
                 }}
-                className="relative w-full h-full rounded-md overflow-hidden"
+                className="relative w-full h-full rounded-3xl overflow-hidden"
             >
                 {children}
 
                 {/* Specular glare overlay */}
                 {glare && (
                     <div
-                        className="pointer-events-none absolute inset-0 transition-opacity duration-300 rounded-md mix-blend-overlay"
+                        className="pointer-events-none absolute inset-0 transition-opacity duration-300 rounded-3xl mix-blend-overlay"
                         style={{
                             background: `radial-gradient(circle at ${glarePos.x}% ${glarePos.y}%, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 65%)`,
                             opacity: glarePos.opacity,

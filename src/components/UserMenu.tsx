@@ -37,17 +37,17 @@ export default function UserMenu() {
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-md border border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50 transition-all bg-white shadow-2xs cursor-pointer"
+                className="flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-xl border border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50 transition-all bg-white shadow-2xs cursor-pointer"
                 title={`${user.name} (${user.collegeName || 'Student'})`}
             >
-                <div className="w-6 h-6 rounded-md bg-black text-white flex items-center justify-center text-white text-[10px] font-black flex-shrink-0">
+                <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white text-[10px] font-black flex-shrink-0">
                     {(user.given_name || user.name)?.[0]?.toUpperCase() || '?'}
                 </div>
                 <div className="text-left hidden sm:block">
                     <span className="text-xs font-bold text-neutral-800 max-w-[90px] truncate block leading-tight">
                         {user.given_name || user.name.split(' ')[0]}
                     </span>
-                    <span className="text-[9px] text-black font-bold leading-none block">
+                    <span className="text-[9px] text-emerald-600 font-bold leading-none block">
                         Free · Cloud Sync
                     </span>
                 </div>
@@ -61,12 +61,12 @@ export default function UserMenu() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 8, scale: 0.96 }}
                         transition={{ duration: 0.16 }}
-                        className="absolute right-0 top-full mt-2 w-72 bg-white rounded-md shadow-sm border border-neutral-200/90 overflow-hidden z-50 text-neutral-800 select-none"
+                        className="absolute right-0 top-full mt-2 w-72 bg-white rounded-2xl shadow-xl border border-neutral-200/90 overflow-hidden z-50 text-neutral-800 select-none"
                     >
                         {/* User Info Header */}
-                        <div className="p-4 bg-black text-white/30 border-b border-neutral-100">
+                        <div className="p-4 bg-gradient-to-br from-neutral-50 to-indigo-50/30 border-b border-neutral-100">
                             <div className="flex items-center gap-3 mb-2">
-                                <div className="w-10 h-10 rounded-md bg-black text-white flex items-center justify-center text-white font-black text-lg flex-shrink-0">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white font-black text-lg flex-shrink-0">
                                     {(user.given_name || user.name)?.[0]?.toUpperCase() || '?'}
                                 </div>
                                 <div className="min-w-0 flex-1">
@@ -80,7 +80,7 @@ export default function UserMenu() {
                                     <GraduationCap size={11} />
                                     <span className="truncate max-w-[120px]">{user.collegeName || 'Student Scholar'}</span>
                                 </span>
-                                <span className="inline-flex items-center gap-1 text-black bg-neutral-50 px-2 py-0.5 rounded-md">
+                                <span className="inline-flex items-center gap-1 text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">
                                     <Cloud size={10} />
                                     <span>Cloud Active</span>
                                 </span>
@@ -93,9 +93,9 @@ export default function UserMenu() {
                             <button
                                 type="button"
                                 onClick={() => { navigate('/account'); setIsOpen(false); }}
-                                className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-neutral-700 hover:text-neutral-900 hover:bg-neutral-100/80 rounded-md transition-all text-left cursor-pointer"
+                                className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-neutral-700 hover:text-neutral-900 hover:bg-neutral-100/80 rounded-xl transition-all text-left cursor-pointer"
                             >
-                                <div className="w-7 h-7 bg-neutral-100 rounded-md flex items-center justify-center text-black">
+                                <div className="w-7 h-7 bg-violet-50 rounded-lg flex items-center justify-center text-violet-600">
                                     <User size={13} />
                                 </div>
                                 <span>My Account</span>
@@ -106,10 +106,10 @@ export default function UserMenu() {
                             <button
                                 type="button"
                                 onClick={() => { setIsHistoryOpen(true); setIsOpen(false); }}
-                                className="w-full flex items-center justify-between px-3 py-2 text-xs font-bold text-neutral-700 hover:text-neutral-900 hover:bg-neutral-100/80 rounded-md transition-all text-left cursor-pointer"
+                                className="w-full flex items-center justify-between px-3 py-2 text-xs font-bold text-neutral-700 hover:text-neutral-900 hover:bg-neutral-100/80 rounded-xl transition-all text-left cursor-pointer"
                             >
                                 <div className="flex items-center gap-2.5">
-                                    <div className="w-7 h-7 bg-neutral-100 rounded-md flex items-center justify-center text-neutral-600">
+                                    <div className="w-7 h-7 bg-neutral-100 rounded-lg flex items-center justify-center text-neutral-600">
                                         <Clock size={13} />
                                     </div>
                                     <span>History Vault</span>
@@ -127,9 +127,9 @@ export default function UserMenu() {
                             <button
                                 type="button"
                                 onClick={() => { logout(); setIsOpen(false); }}
-                                className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 rounded-md transition-all text-left cursor-pointer"
+                                className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 rounded-xl transition-all text-left cursor-pointer"
                             >
-                                <div className="w-7 h-7 bg-rose-50 rounded-md flex items-center justify-center text-rose-500">
+                                <div className="w-7 h-7 bg-rose-50 rounded-lg flex items-center justify-center text-rose-500">
                                     <LogOut size={13} />
                                 </div>
                                 <span>Sign Out</span>

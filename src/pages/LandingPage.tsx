@@ -180,7 +180,7 @@ export default function LandingPage() {
     }, []);
 
     return (
-        <div className="min-h-screen bg-[#FAF8F5] text-neutral-900 selection:bg-neutral-200 selection:text-neutral-900 font-sans relative">
+        <div className="min-h-screen bg-[#FAF8F5] text-stone-900 selection:bg-violet-200 selection:text-violet-900 font-sans relative">
 
             {/* Architectural Warm Paper Dot Grid */}
             <div 
@@ -215,10 +215,10 @@ export default function LandingPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5, delay: 0.1 }}
-                            className="text-4xl sm:text-5.5xl lg:text-6xl font-black tracking-tight leading-[1.08] text-neutral-950 font-display"
+                            className="text-4xl sm:text-5.5xl lg:text-6xl font-black tracking-tight leading-[1.08] text-stone-950 font-display"
                         >
                             Turn typed assignments into{' '}
-                            <span className="bg-gradient-to-r from-neutral-800 via-black to-cyan-600 bg-clip-text text-transparent italic font-serif">
+                            <span className="bg-gradient-to-r from-violet-700 via-indigo-600 to-cyan-600 bg-clip-text text-transparent italic font-serif">
                                 real handwriting.
                             </span>
                         </motion.h1>
@@ -228,7 +228,7 @@ export default function LandingPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5, delay: 0.2 }}
-                            className="text-base sm:text-lg text-neutral-600 leading-relaxed max-w-xl font-normal"
+                            className="text-base sm:text-lg text-stone-600 leading-relaxed max-w-xl font-normal"
                         >
                             Stop wasting hours copying lab records, assignments, and practical notes by hand. Paste your text, choose authentic Indian student ruled registers, and download print-ready 4K PDFs in seconds.
                         </motion.p>
@@ -242,7 +242,7 @@ export default function LandingPage() {
                         >
                             <Link
                                 to="/editor"
-                                className="px-7 py-4 bg-neutral-950 hover:bg-neutral-800 text-white rounded-md font-bold text-sm sm:text-base shadow-sm shadow-neutral-950/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2.5 cursor-pointer group"
+                                className="px-7 py-4 bg-stone-950 hover:bg-stone-800 text-white rounded-2xl font-bold text-sm sm:text-base shadow-xl shadow-stone-950/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2.5 cursor-pointer group"
                             >
                                 <Sparkles size={18} className="text-amber-400 group-hover:rotate-12 transition-transform" />
                                 <span>Launch Studio — It's Free</span>
@@ -251,9 +251,9 @@ export default function LandingPage() {
 
                             <a
                                 href="#comparison"
-                                className="px-6 py-4 bg-white hover:bg-neutral-50 border border-neutral-300/90 text-neutral-800 rounded-md font-bold text-sm sm:text-base shadow-2xs hover:border-neutral-400 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                                className="px-6 py-4 bg-white hover:bg-stone-50 border border-stone-300/90 text-stone-800 rounded-2xl font-bold text-sm sm:text-base shadow-2xs hover:border-stone-400 transition-all flex items-center justify-center gap-2 cursor-pointer"
                             >
-                                <Eye size={18} className="text-black" />
+                                <Eye size={18} className="text-violet-600" />
                                 <span>Compare Realism</span>
                             </a>
                         </motion.div>
@@ -263,9 +263,9 @@ export default function LandingPage() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.4 }}
-                            className="pt-4 flex items-center gap-3 border-t border-neutral-200/80 text-xs text-neutral-500"
+                            className="pt-4 flex items-center gap-3 border-t border-stone-200/80 text-xs text-stone-500"
                         >
-                            <span className="font-mono text-[11px] uppercase tracking-wider text-neutral-700 font-bold">Ink Tone:</span>
+                            <span className="font-mono text-[11px] uppercase tracking-wider text-stone-700 font-bold">Ink Tone:</span>
                             <div className="flex items-center gap-2">
                                 {[
                                     { name: 'Royal Blue', color: '#1e3a8a' },
@@ -277,33 +277,33 @@ export default function LandingPage() {
                                         key={ink.name}
                                         type="button"
                                         onClick={() => setActiveInk(ink.color)}
-                                        className={`w-5 h-5 rounded-full border border-neutral-300 transition-all hover:scale-125 focus:outline-none cursor-pointer ${
-                                            activeInk === ink.color ? 'ring-2 ring-black ring-offset-2 scale-110' : ''
+                                        className={`w-5 h-5 rounded-full border border-stone-300 transition-all hover:scale-125 focus:outline-none cursor-pointer ${
+                                            activeInk === ink.color ? 'ring-2 ring-violet-500 ring-offset-2 scale-110' : ''
                                         }`}
                                         style={{ backgroundColor: ink.color }}
                                         title={ink.name}
                                     />
                                 ))}
                             </div>
-                            <span className="text-[11px] text-neutral-800 font-mono ml-auto font-bold flex items-center gap-1">
-                                <span className="w-1.5 h-1.5 rounded-full bg-black" />
+                            <span className="text-[11px] text-emerald-700 font-mono ml-auto font-bold flex items-center gap-1">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                                 Interactive Canvas Live
                             </span>
                         </motion.div>
 
                         {/* Verified Credibility Badges */}
                         <div className="grid grid-cols-3 gap-3 pt-2 text-center">
-                            <div className="p-3.5 rounded-md bg-white/80 border border-neutral-200/80 shadow-2xs">
-                                <p className="text-lg font-black text-neutral-900">0%</p>
-                                <p className="text-[11px] text-neutral-500 font-medium">AI Watermarks</p>
+                            <div className="p-3.5 rounded-2xl bg-white/80 border border-stone-200/80 shadow-2xs">
+                                <p className="text-lg font-black text-stone-900">0%</p>
+                                <p className="text-[11px] text-stone-500 font-medium">AI Watermarks</p>
                             </div>
-                            <div className="p-3.5 rounded-md bg-white/80 border border-neutral-200/80 shadow-2xs">
-                                <p className="text-lg font-black text-neutral-800">30+</p>
-                                <p className="text-[11px] text-neutral-500 font-medium">Handwriting Fonts</p>
+                            <div className="p-3.5 rounded-2xl bg-white/80 border border-stone-200/80 shadow-2xs">
+                                <p className="text-lg font-black text-violet-700">30+</p>
+                                <p className="text-[11px] text-stone-500 font-medium">Handwriting Fonts</p>
                             </div>
-                            <div className="p-3.5 rounded-md bg-white/80 border border-neutral-200/80 shadow-2xs">
-                                <p className="text-lg font-black text-black">100%</p>
-                                <p className="text-[11px] text-neutral-500 font-medium">Local & Private</p>
+                            <div className="p-3.5 rounded-2xl bg-white/80 border border-stone-200/80 shadow-2xs">
+                                <p className="text-lg font-black text-emerald-600">100%</p>
+                                <p className="text-[11px] text-stone-500 font-medium">Local & Private</p>
                             </div>
                         </div>
                     </motion.div>
@@ -327,14 +327,14 @@ export default function LandingPage() {
             ========================================================= */}
             <section id="comparison" className="py-16 sm:py-24 px-4 sm:px-6 max-w-6xl mx-auto relative scroll-mt-24">
                 <div className="text-center max-w-2xl mx-auto mb-10">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neutral-200/80 border border-neutral-200 text-neutral-800 text-xs font-mono font-bold uppercase tracking-wider mb-3">
-                        <Eye size={12} className="text-black" />
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-100/80 border border-violet-200 text-violet-800 text-xs font-mono font-bold uppercase tracking-wider mb-3">
+                        <Eye size={12} className="text-violet-600" />
                         <span>The Realism Difference</span>
                     </span>
-                    <h2 className="text-3xl sm:text-5xl font-black text-neutral-950 tracking-tight font-display">
+                    <h2 className="text-3xl sm:text-5xl font-black text-stone-950 tracking-tight font-display">
                         Mechanical Type vs. Organic Ink
                     </h2>
-                    <p className="text-neutral-600 text-sm sm:text-base mt-2">
+                    <p className="text-stone-600 text-sm sm:text-base mt-2">
                         Drag the center slider horizontally to compare rigid computer fonts against Text2Handwriting's authentic ink absorption, motor jitter, and margin layout.
                     </p>
                 </div>
@@ -354,14 +354,14 @@ export default function LandingPage() {
             ========================================================= */}
             <section id="how-it-works" className="py-16 sm:py-24 px-4 sm:px-6 max-w-7xl mx-auto relative scroll-mt-20">
                 <div className="text-center max-w-2xl mx-auto mb-16">
-                    <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-neutral-100/80 border border-neutral-200 text-neutral-800 text-xs font-mono font-bold uppercase tracking-wider mb-3">
-                        <CheckCircle2 size={13} className="text-black" />
+                    <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-indigo-100/80 border border-indigo-200 text-indigo-800 text-xs font-mono font-bold uppercase tracking-wider mb-3">
+                        <CheckCircle2 size={13} className="text-indigo-600" />
                         <span>Workflow · 4 Simple Steps</span>
                     </span>
-                    <h2 className="text-3xl sm:text-5xl font-black text-neutral-950 tracking-tight font-display">
+                    <h2 className="text-3xl sm:text-5xl font-black text-stone-950 tracking-tight font-display">
                         How Text2Handwriting Works
                     </h2>
-                    <p className="text-neutral-600 text-sm sm:text-base mt-2.5 leading-relaxed">
+                    <p className="text-stone-600 text-sm sm:text-base mt-2.5 leading-relaxed">
                         Four straightforward steps to turn digital text into authentic student lab records, registers, and handwritten assignments.
                     </p>
                 </div>
@@ -373,25 +373,25 @@ export default function LandingPage() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, margin: '-50px' }}
                         transition={{ duration: 0.4, delay: 0.05 }}
-                        className="p-6 sm:p-7 rounded-md bg-white border border-neutral-200/90 shadow-xs hover:shadow-sm hover:border-neutral-300 transition-all flex flex-col justify-between group"
+                        className="p-6 sm:p-7 rounded-3xl bg-white border border-stone-200/90 shadow-xs hover:shadow-xl hover:border-violet-300 transition-all flex flex-col justify-between group"
                     >
                         <div>
                             <div className="flex items-center justify-between mb-6">
-                                <span className="w-12 h-12 rounded-md bg-neutral-900 text-white flex items-center justify-center font-black text-lg shadow-md group-hover:scale-108 transition-transform">
+                                <span className="w-12 h-12 rounded-2xl bg-neutral-900 text-white flex items-center justify-center font-black text-lg shadow-md group-hover:scale-108 transition-transform">
                                     01
                                 </span>
-                                <span className="px-2.5 py-1 rounded-full bg-neutral-100 text-neutral-600 text-[10px] font-mono font-bold uppercase">
+                                <span className="px-2.5 py-1 rounded-full bg-stone-100 text-stone-600 text-[10px] font-mono font-bold uppercase">
                                     Input
                                 </span>
                             </div>
-                            <h3 className="text-lg font-black text-neutral-900 mb-2">
+                            <h3 className="text-lg font-black text-stone-900 mb-2">
                                 Write, Paste, or Import
                             </h3>
-                            <p className="text-xs text-neutral-600 leading-relaxed">
+                            <p className="text-xs text-stone-600 leading-relaxed">
                                 Paste raw text, markdown, or drop documents (.docx, .pdf, .txt). The Smart Preamble Stripper purges ChatGPT fluff, while Smart Margin Indexing pins question numbers (Q1., Sol:) cleanly into notebook margins.
                             </p>
                         </div>
-                        <div className="mt-6 pt-4 border-t border-neutral-100 flex items-center gap-1.5 text-[11px] font-mono text-neutral-800 font-bold">
+                        <div className="mt-6 pt-4 border-t border-stone-100 flex items-center gap-1.5 text-[11px] font-mono text-violet-700 font-bold">
                             <span>Auto-detection active</span>
                         </div>
                     </motion.div>
@@ -402,25 +402,25 @@ export default function LandingPage() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, margin: '-50px' }}
                         transition={{ duration: 0.4, delay: 0.15 }}
-                        className="p-6 sm:p-7 rounded-md bg-white border border-neutral-200/90 shadow-xs hover:shadow-sm hover:border-neutral-300 transition-all flex flex-col justify-between group"
+                        className="p-6 sm:p-7 rounded-3xl bg-white border border-stone-200/90 shadow-xs hover:shadow-xl hover:border-indigo-300 transition-all flex flex-col justify-between group"
                     >
                         <div>
                             <div className="flex items-center justify-between mb-6">
-                                <span className="w-12 h-12 rounded-md bg-black text-white flex items-center justify-center font-black text-lg shadow-md group-hover:scale-108 transition-transform">
+                                <span className="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-black text-lg shadow-md group-hover:scale-108 transition-transform">
                                     02
                                 </span>
-                                <span className="px-2.5 py-1 rounded-full bg-neutral-50 text-neutral-700 text-[10px] font-mono font-bold uppercase">
+                                <span className="px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 text-[10px] font-mono font-bold uppercase">
                                     Stationery
                                 </span>
                             </div>
-                            <h3 className="text-lg font-black text-neutral-900 mb-2">
+                            <h3 className="text-lg font-black text-stone-900 mb-2">
                                 Pick Paper & Ink Tone
                             </h3>
-                            <p className="text-xs text-neutral-600 leading-relaxed">
+                            <p className="text-xs text-stone-600 leading-relaxed">
                                 Select Classmate 30-Line Ruled registers, millimeter engineering graph paper, or parchment. Choose authentic student ink colors: Royal Blue, Ballpoint Black, Gel Cyan, or Emerald Green with true capillary absorption.
                             </p>
                         </div>
-                        <div className="mt-6 pt-4 border-t border-neutral-100 flex items-center gap-1.5 text-[11px] font-mono text-neutral-700 font-bold">
+                        <div className="mt-6 pt-4 border-t border-stone-100 flex items-center gap-1.5 text-[11px] font-mono text-indigo-700 font-bold">
                             <span>Curated paper & lab styles</span>
                         </div>
                     </motion.div>
@@ -431,25 +431,25 @@ export default function LandingPage() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, margin: '-50px' }}
                         transition={{ duration: 0.4, delay: 0.25 }}
-                        className="p-6 sm:p-7 rounded-md bg-white border border-neutral-200/90 shadow-xs hover:shadow-sm hover:border-cyan-300 transition-all flex flex-col justify-between group"
+                        className="p-6 sm:p-7 rounded-3xl bg-white border border-stone-200/90 shadow-xs hover:shadow-xl hover:border-cyan-300 transition-all flex flex-col justify-between group"
                     >
                         <div>
                             <div className="flex items-center justify-between mb-6">
-                                <span className="w-12 h-12 rounded-md bg-cyan-600 text-white flex items-center justify-center font-black text-lg shadow-md group-hover:scale-108 transition-transform">
+                                <span className="w-12 h-12 rounded-2xl bg-cyan-600 text-white flex items-center justify-center font-black text-lg shadow-md group-hover:scale-108 transition-transform">
                                     03
                                 </span>
                                 <span className="px-2.5 py-1 rounded-full bg-cyan-50 text-cyan-700 text-[10px] font-mono font-bold uppercase">
                                     Engine
                                 </span>
                             </div>
-                            <h3 className="text-lg font-black text-neutral-900 mb-2">
+                            <h3 className="text-lg font-black text-stone-900 mb-2">
                                 Realism & Human Flaws
                             </h3>
-                            <p className="text-xs text-neutral-600 leading-relaxed">
+                            <p className="text-xs text-stone-600 leading-relaxed">
                                 Eliminate mechanical perfection. Text2Handwriting adds organic motor jitter, subtle line-drift waves, slight character width variations, realistic pen pressure, and deliberate human scratch-outs with wavy ink strokes.
                             </p>
                         </div>
-                        <div className="mt-6 pt-4 border-t border-neutral-100 flex items-center gap-1.5 text-[11px] font-mono text-cyan-700 font-bold">
+                        <div className="mt-6 pt-4 border-t border-stone-100 flex items-center gap-1.5 text-[11px] font-mono text-cyan-700 font-bold">
                             <span>Zero uniform glyphs</span>
                         </div>
                     </motion.div>
@@ -460,25 +460,25 @@ export default function LandingPage() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, margin: '-50px' }}
                         transition={{ duration: 0.4, delay: 0.35 }}
-                        className="p-6 sm:p-7 rounded-md bg-white border border-neutral-200/90 shadow-xs hover:shadow-sm hover:border-neutral-300 transition-all flex flex-col justify-between group"
+                        className="p-6 sm:p-7 rounded-3xl bg-white border border-stone-200/90 shadow-xs hover:shadow-xl hover:border-emerald-300 transition-all flex flex-col justify-between group"
                     >
                         <div>
                             <div className="flex items-center justify-between mb-6">
-                                <span className="w-12 h-12 rounded-md bg-black text-white flex items-center justify-center font-black text-lg shadow-md group-hover:scale-108 transition-transform">
+                                <span className="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-black text-lg shadow-md group-hover:scale-108 transition-transform">
                                     04
                                 </span>
-                                <span className="px-2.5 py-1 rounded-full bg-neutral-50 text-neutral-800 text-[10px] font-mono font-bold uppercase">
+                                <span className="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-mono font-bold uppercase">
                                     Export
                                 </span>
                             </div>
-                            <h3 className="text-lg font-black text-neutral-900 mb-2">
+                            <h3 className="text-lg font-black text-stone-900 mb-2">
                                 4K Multi-Page PDF
                             </h3>
-                            <p className="text-xs text-neutral-600 leading-relaxed">
+                            <p className="text-xs text-stone-600 leading-relaxed">
                                 Toggle smartphone camera shadows, desk lamp warm glow, and paper fold creases. Export print-ready 4K high-resolution PDFs or image bundles with facing diagram sheets included in flawless sequence.
                             </p>
                         </div>
-                        <div className="mt-6 pt-4 border-t border-neutral-100 flex items-center gap-1.5 text-[11px] font-mono text-neutral-800 font-bold">
+                        <div className="mt-6 pt-4 border-t border-stone-100 flex items-center gap-1.5 text-[11px] font-mono text-emerald-700 font-bold">
                             <span>Vector crisp · 0 watermarks</span>
                         </div>
                     </motion.div>
@@ -494,19 +494,19 @@ export default function LandingPage() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: '-60px' }}
                     transition={{ duration: 0.5 }}
-                    className="rounded-md border border-neutral-200/90 bg-white p-6 sm:p-10 shadow-sm shadow-neutral-200/50"
+                    className="rounded-3xl border border-stone-200/90 bg-white p-6 sm:p-10 shadow-xl shadow-stone-200/50"
                 >
                     {/* Sandbox Header */}
-                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-8 border-b border-neutral-200/80">
+                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-8 border-b border-stone-200/80">
                         <div>
-                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-200/80 border border-neutral-200 text-neutral-800 text-xs font-mono font-bold mb-2">
-                                <PenTool size={13} className="text-black" />
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-100/80 border border-violet-200 text-violet-800 text-xs font-mono font-bold mb-2">
+                                <PenTool size={13} className="text-violet-600" />
                                 <span>Interactive Sandbox</span>
                             </div>
-                            <h3 className="text-2xl sm:text-3xl font-black text-neutral-950 font-display">
+                            <h3 className="text-2xl sm:text-3xl font-black text-stone-950 font-display">
                                 Test Your Own Text Right Here
                             </h3>
-                            <p className="text-xs sm:text-sm text-neutral-600 mt-1">
+                            <p className="text-xs sm:text-sm text-stone-600 mt-1">
                                 Type or pick an assignment preset below to watch Text2Handwriting render authentic handwriting in real time.
                             </p>
                         </div>
@@ -518,10 +518,10 @@ export default function LandingPage() {
                                     key={preset.title}
                                     type="button"
                                     onClick={() => handleLoadPreset(idx)}
-                                    className={`px-3.5 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${
+                                    className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                                         selectedPreset === idx
-                                            ? 'bg-black text-white shadow-md shadow-black/20'
-                                            : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200/70 border border-neutral-200/80'
+                                            ? 'bg-violet-600 text-white shadow-md shadow-violet-600/20'
+                                            : 'bg-stone-100 text-stone-700 hover:bg-stone-200/70 border border-stone-200/80'
                                     }`}
                                 >
                                     {preset.subject}
@@ -536,14 +536,14 @@ export default function LandingPage() {
                         {/* Left: Input Textarea & Controls */}
                         <div className="lg:col-span-5 space-y-4">
                             <div>
-                                <label className="text-xs font-bold text-neutral-700 uppercase tracking-wider block mb-2 font-mono">
+                                <label className="text-xs font-bold text-stone-700 uppercase tracking-wider block mb-2 font-mono">
                                     Input Text (Type or Paste)
                                 </label>
                                 <textarea
                                     value={sandboxText}
                                     onChange={(e) => setSandboxText(e.target.value)}
                                     rows={8}
-                                    className="w-full p-4 rounded-md bg-neutral-50/80 border border-neutral-200/90 focus:border-black focus:bg-white focus:outline-none text-neutral-900 text-xs font-mono leading-relaxed resize-none shadow-inner"
+                                    className="w-full p-4 rounded-2xl bg-stone-50/80 border border-stone-200/90 focus:border-violet-500 focus:bg-white focus:outline-none text-stone-900 text-xs font-mono leading-relaxed resize-none shadow-inner"
                                     placeholder="Type anything here..."
                                 />
                             </div>
@@ -553,27 +553,27 @@ export default function LandingPage() {
                                 <button
                                     type="button"
                                     onClick={() => setActiveJitter(!activeJitter)}
-                                    className={`p-2.5 rounded-md text-xs font-bold flex items-center justify-between border transition-all cursor-pointer ${
+                                    className={`p-2.5 rounded-xl text-xs font-bold flex items-center justify-between border transition-all cursor-pointer ${
                                         activeJitter 
-                                            ? 'bg-neutral-100 border-neutral-300 text-neutral-800' 
-                                            : 'bg-neutral-100 border-neutral-200 text-neutral-500'
+                                            ? 'bg-violet-50 border-violet-300 text-violet-800' 
+                                            : 'bg-stone-100 border-stone-200 text-stone-500'
                                     }`}
                                 >
                                     <span>Motor Jitter</span>
-                                    <span className={`w-2 h-2 rounded-full ${activeJitter ? 'bg-black' : 'bg-neutral-400'}`} />
+                                    <span className={`w-2 h-2 rounded-full ${activeJitter ? 'bg-violet-600' : 'bg-stone-400'}`} />
                                 </button>
 
                                 <button
                                     type="button"
                                     onClick={() => setActiveMargin(!activeMargin)}
-                                    className={`p-2.5 rounded-md text-xs font-bold flex items-center justify-between border transition-all cursor-pointer ${
+                                    className={`p-2.5 rounded-xl text-xs font-bold flex items-center justify-between border transition-all cursor-pointer ${
                                         activeMargin 
                                             ? 'bg-cyan-50 border-cyan-300 text-cyan-800' 
-                                            : 'bg-neutral-100 border-neutral-200 text-neutral-500'
+                                            : 'bg-stone-100 border-stone-200 text-stone-500'
                                     }`}
                                 >
                                     <span>Margin Rules</span>
-                                    <span className={`w-2 h-2 rounded-full ${activeMargin ? 'bg-cyan-600' : 'bg-neutral-400'}`} />
+                                    <span className={`w-2 h-2 rounded-full ${activeMargin ? 'bg-cyan-600' : 'bg-stone-400'}`} />
                                 </button>
                             </div>
 
@@ -582,7 +582,7 @@ export default function LandingPage() {
                                 <button
                                     type="button"
                                     onClick={handleTransferToStudio}
-                                    className="w-full py-3.5 bg-black text-white hover:from-neutral-800 hover:to-neutral-700 text-white font-bold text-xs rounded-md shadow-sm shadow-black/20 flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98"
+                                    className="w-full py-3.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-bold text-xs rounded-xl shadow-lg shadow-violet-600/20 flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98"
                                 >
                                     <Sparkles size={15} className="text-yellow-300" />
                                     <span>Transfer to Full Studio & Export PDF</span>
@@ -593,7 +593,7 @@ export default function LandingPage() {
 
                         {/* Right: Real-time Paper Canvas Preview */}
                         <div className="lg:col-span-7">
-                            <div className="relative rounded-md bg-[#fdfbf7] p-8 sm:p-10 shadow-md min-h-[380px] sm:min-h-[420px] text-neutral-900 overflow-hidden border border-neutral-300">
+                            <div className="relative rounded-2xl bg-[#fdfbf7] p-8 sm:p-10 shadow-md min-h-[380px] sm:min-h-[420px] text-neutral-900 overflow-hidden border border-stone-300">
                                 
                                 {/* Margin double red line */}
                                 {activeMargin && (
@@ -634,7 +634,7 @@ export default function LandingPage() {
                                 {/* Simulated ink stamp bottom watermark */}
                                 <div className="relative z-10 pl-8 pt-8 flex items-center justify-between text-[10px] text-neutral-400 font-mono border-t border-neutral-200/50 mt-6">
                                     <span>Classmate 180-GSM Ruled Paper</span>
-                                    <span className="text-neutral-800 font-bold">Organic Micro-Jitter Active</span>
+                                    <span className="text-emerald-700 font-bold">Organic Micro-Jitter Active</span>
                                 </div>
                             </div>
                         </div>
@@ -648,14 +648,14 @@ export default function LandingPage() {
             ========================================================= */}
             <section id="paper-vault" className="py-16 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-20">
                 <div className="text-center max-w-2xl mx-auto mb-14">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neutral-200/80 border border-neutral-200 text-neutral-800 text-xs font-mono font-bold uppercase tracking-wider mb-3">
-                        <BookOpen size={12} className="text-black" />
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-100/80 border border-violet-200 text-violet-800 text-xs font-mono font-bold uppercase tracking-wider mb-3">
+                        <BookOpen size={12} className="text-violet-600" />
                         <span>The Paper Vault</span>
                     </span>
-                    <h2 className="text-3xl sm:text-5xl font-black text-neutral-950 tracking-tight font-display">
+                    <h2 className="text-3xl sm:text-5xl font-black text-stone-950 tracking-tight font-display">
                         Authentic Student Registers & Formats
                     </h2>
-                    <p className="text-neutral-600 text-sm sm:text-base mt-2">
+                    <p className="text-stone-600 text-sm sm:text-base mt-2">
                         From standard Indian university ruled sheets to dual-page lab records and millimeter engineering graph papers.
                     </p>
                 </div>
@@ -663,19 +663,19 @@ export default function LandingPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {PAPER_SHOWCASE.map((paper) => (
                         <TiltCard key={paper.id} className="h-full">
-                            <div className="h-full p-6 rounded-md bg-white hover:bg-neutral-50/50 border border-neutral-200/90 hover:border-neutral-400/60 transition-all flex flex-col justify-between group shadow-xs hover:shadow-sm">
+                            <div className="h-full p-6 rounded-3xl bg-white hover:bg-stone-50/50 border border-stone-200/90 hover:border-violet-400/60 transition-all flex flex-col justify-between group shadow-xs hover:shadow-xl">
                                 <div>
                                     <div className="flex items-center justify-between mb-4">
-                                        <span className="px-2.5 py-0.5 rounded-full bg-neutral-100 text-neutral-800 text-[11px] font-bold border border-neutral-200">
+                                        <span className="px-2.5 py-0.5 rounded-full bg-violet-50 text-violet-700 text-[11px] font-bold border border-violet-200">
                                             {paper.badge}
                                         </span>
-                                        <div className="w-8 h-8 rounded-md bg-neutral-100 flex items-center justify-center text-neutral-500 group-hover:text-white group-hover:bg-neutral-800 transition-colors">
+                                        <div className="w-8 h-8 rounded-xl bg-stone-100 flex items-center justify-center text-stone-500 group-hover:text-white group-hover:bg-violet-600 transition-colors">
                                             <ArrowRight size={14} />
                                         </div>
                                     </div>
 
                                     {/* Paper Pattern Preview Swatch */}
-                                    <div className="h-24 w-full rounded-md border border-neutral-200/80 mb-4 overflow-hidden relative shadow-2xs">
+                                    <div className="h-24 w-full rounded-2xl border border-stone-200/80 mb-4 overflow-hidden relative shadow-2xs">
                                         {paper.lines === 'ruled' && (
                                             <div className="w-full h-full bg-[#fdfbf7] p-3">
                                                 <div className="absolute left-6 top-0 bottom-0 w-[1px] bg-red-400 opacity-60" />
@@ -689,9 +689,9 @@ export default function LandingPage() {
                                             </div>
                                         )}
                                         {paper.lines === 'lab' && (
-                                            <div className="w-full h-full grid grid-cols-2 divide-x divide-neutral-200 bg-[#fdfbf7]">
-                                                <div className="p-2 flex items-center justify-center bg-neutral-50/50">
-                                                    <span className="text-[9px] font-mono text-neutral-400 font-bold">BLANK DIAGRAM</span>
+                                            <div className="w-full h-full grid grid-cols-2 divide-x divide-stone-200 bg-[#fdfbf7]">
+                                                <div className="p-2 flex items-center justify-center bg-stone-50/50">
+                                                    <span className="text-[9px] font-mono text-stone-400 font-bold">BLANK DIAGRAM</span>
                                                 </div>
                                                 <div
                                                     className="w-full h-full opacity-40 p-2"
@@ -712,7 +712,7 @@ export default function LandingPage() {
                                             />
                                         )}
                                         {paper.lines === 'parchment' && (
-                                            <div className="w-full h-full bg-[#fef3c7]/40 border-neutral-200 flex items-center justify-center">
+                                            <div className="w-full h-full bg-[#fef3c7]/40 border-stone-200 flex items-center justify-center">
                                                 <span className="text-[10px] font-serif text-amber-800/60 italic font-semibold">180 GSM Warm Parchment</span>
                                             </div>
                                         )}
@@ -739,20 +739,20 @@ export default function LandingPage() {
                                         )}
                                     </div>
 
-                                    <h4 className="text-lg font-bold text-neutral-900 mb-1.5">{paper.name}</h4>
-                                    <p className="text-xs text-neutral-600 leading-relaxed">{paper.desc}</p>
+                                    <h4 className="text-lg font-bold text-stone-900 mb-1.5">{paper.name}</h4>
+                                    <p className="text-xs text-stone-600 leading-relaxed">{paper.desc}</p>
                                 </div>
 
-                                <div className="mt-6 pt-4 border-t border-neutral-100 flex items-center justify-between">
+                                <div className="mt-6 pt-4 border-t border-stone-100 flex items-center justify-between">
                                     <button
                                         type="button"
                                         onClick={() => handleSelectPaperAndLaunch(paper.id)}
-                                        className="text-xs font-bold text-neutral-800 group-hover:text-neutral-800 flex items-center gap-1.5 cursor-pointer"
+                                        className="text-xs font-bold text-violet-700 group-hover:text-violet-800 flex items-center gap-1.5 cursor-pointer"
                                     >
                                         <span>Open in Studio</span>
                                         <ArrowRight size={12} />
                                     </button>
-                                    <span className="text-[10px] font-mono text-neutral-400">Vector Print Ready</span>
+                                    <span className="text-[10px] font-mono text-stone-400">Vector Print Ready</span>
                                 </div>
                             </div>
                         </TiltCard>
@@ -769,10 +769,10 @@ export default function LandingPage() {
                         <Zap size={12} className="text-amber-600" />
                         <span>Core Capabilities</span>
                     </span>
-                    <h2 className="text-3xl sm:text-5xl font-black text-neutral-950 tracking-tight font-display">
+                    <h2 className="text-3xl sm:text-5xl font-black text-stone-950 tracking-tight font-display">
                         Crafted for Real Paper Authenticity
                     </h2>
-                    <p className="text-neutral-600 text-sm sm:text-base mt-2">
+                    <p className="text-stone-600 text-sm sm:text-base mt-2">
                         Every small detail of physical pens and paper, recreated with care.
                     </p>
                 </div>
@@ -780,97 +780,97 @@ export default function LandingPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     
                     {/* Card 1: Smartphone Camera Perspective */}
-                    <div className="p-8 rounded-md bg-white border border-neutral-200/90 shadow-xs hover:shadow-sm hover:border-neutral-300 transition-all flex flex-col justify-between group">
+                    <div className="p-8 rounded-3xl bg-white border border-stone-200/90 shadow-xs hover:shadow-xl hover:border-indigo-300 transition-all flex flex-col justify-between group">
                         <div>
-                            <div className="w-12 h-12 rounded-md bg-neutral-50 border border-neutral-200 flex items-center justify-center text-black mb-6 group-hover:scale-108 transition-transform">
+                            <div className="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-600 mb-6 group-hover:scale-108 transition-transform">
                                 <Camera size={24} />
                             </div>
-                            <h3 className="text-xl font-black text-neutral-900 mb-2">Smartphone Perspective & Cast Shadows</h3>
-                            <p className="text-sm text-neutral-600 leading-relaxed">
+                            <h3 className="text-xl font-black text-stone-900 mb-2">Smartphone Perspective & Cast Shadows</h3>
+                            <p className="text-sm text-stone-600 leading-relaxed">
                                 Simulates taking a photo with a mobile phone. Adds subtle corner tilt, lens depth, and authentic phone silhouette cast shadows to look like real student submissions.
                             </p>
                         </div>
-                        <div className="mt-6 pt-4 border-t border-neutral-100 text-xs font-mono text-black font-bold">
+                        <div className="mt-6 pt-4 border-t border-stone-100 text-xs font-mono text-indigo-600 font-bold">
                             Natural optical depth & illumination
                         </div>
                     </div>
 
                     {/* Card 2: Lab Notebook Diagram Canvas */}
-                    <div className="p-8 rounded-md bg-white border border-neutral-200/90 shadow-xs hover:shadow-sm hover:border-cyan-300 transition-all flex flex-col justify-between group">
+                    <div className="p-8 rounded-3xl bg-white border border-stone-200/90 shadow-xs hover:shadow-xl hover:border-cyan-300 transition-all flex flex-col justify-between group">
                         <div>
-                            <div className="w-12 h-12 rounded-md bg-cyan-50 border border-cyan-200 flex items-center justify-center text-cyan-600 mb-6 group-hover:scale-108 transition-transform">
+                            <div className="w-12 h-12 rounded-2xl bg-cyan-50 border border-cyan-200 flex items-center justify-center text-cyan-600 mb-6 group-hover:scale-108 transition-transform">
                                 <FlaskConical size={24} />
                             </div>
-                            <h3 className="text-xl font-black text-neutral-900 mb-2">Lab Record & Diagram Workbench</h3>
-                            <p className="text-sm text-neutral-600 leading-relaxed">
+                            <h3 className="text-xl font-black text-stone-900 mb-2">Lab Record & Diagram Workbench</h3>
+                            <p className="text-sm text-stone-600 leading-relaxed">
                                 Facing-sheet practical mode with built-in sketch tools. Insert SVG circuit schematics, ray optics, or titration apparatus directly onto blank sheets before PDF compilation.
                             </p>
                         </div>
-                        <div className="mt-6 pt-4 border-t border-neutral-100 text-xs font-mono text-cyan-600 font-bold">
+                        <div className="mt-6 pt-4 border-t border-stone-100 text-xs font-mono text-cyan-600 font-bold">
                             Dual-page practical mode
                         </div>
                     </div>
 
                     {/* Card 3: Natural Human Inconsistency */}
-                    <div className="p-8 rounded-md bg-white border border-neutral-200/90 shadow-xs hover:shadow-sm hover:border-purple-300 transition-all flex flex-col justify-between group">
+                    <div className="p-8 rounded-3xl bg-white border border-stone-200/90 shadow-xs hover:shadow-xl hover:border-purple-300 transition-all flex flex-col justify-between group">
                         <div>
-                            <div className="w-12 h-12 rounded-md bg-purple-50 border border-purple-200 flex items-center justify-center text-purple-600 mb-6 group-hover:scale-108 transition-transform">
+                            <div className="w-12 h-12 rounded-2xl bg-purple-50 border border-purple-200 flex items-center justify-center text-purple-600 mb-6 group-hover:scale-108 transition-transform">
                                 <Flame size={24} />
                             </div>
-                            <h3 className="text-xl font-black text-neutral-900 mb-2">Human Imperfections & Scratch-Outs</h3>
-                            <p className="text-sm text-neutral-600 leading-relaxed">
+                            <h3 className="text-xl font-black text-stone-900 mb-2">Human Imperfections & Scratch-Outs</h3>
+                            <p className="text-sm text-stone-600 leading-relaxed">
                                 Real handwriting has character. Text2Handwriting adds realistic baseline drift, pen pressure variations, and realistic human typos with authentic wavy strikethroughs.
                             </p>
                         </div>
-                        <div className="mt-6 pt-4 border-t border-neutral-100 text-xs font-mono text-purple-600 font-bold">
+                        <div className="mt-6 pt-4 border-t border-stone-100 text-xs font-mono text-purple-600 font-bold">
                             Organic pen flow & ink absorption
                         </div>
                     </div>
 
                     {/* Card 4: Smart Margin Indexing */}
-                    <div className="p-8 rounded-md bg-white border border-neutral-200/90 shadow-xs hover:shadow-sm hover:border-amber-300 transition-all flex flex-col justify-between group">
+                    <div className="p-8 rounded-3xl bg-white border border-stone-200/90 shadow-xs hover:shadow-xl hover:border-amber-300 transition-all flex flex-col justify-between group">
                         <div>
-                            <div className="w-12 h-12 rounded-md bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600 mb-6 group-hover:scale-108 transition-transform">
+                            <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600 mb-6 group-hover:scale-108 transition-transform">
                                 <FileText size={24} />
                             </div>
-                            <h3 className="text-xl font-black text-neutral-900 mb-2">Smart Margin Indexing & AI Cleaner</h3>
-                            <p className="text-sm text-neutral-600 leading-relaxed">
+                            <h3 className="text-xl font-black text-stone-900 mb-2">Smart Margin Indexing & AI Cleaner</h3>
+                            <p className="text-sm text-stone-600 leading-relaxed">
                                 Automatically isolates question labels (Q1., Sol:, Fig:) into the red margin rule, while automatically stripping away conversational AI preambles like "Sure, here is your assignment".
                             </p>
                         </div>
-                        <div className="mt-6 pt-4 border-t border-neutral-100 text-xs font-mono text-amber-700 font-bold">
+                        <div className="mt-6 pt-4 border-t border-stone-100 text-xs font-mono text-amber-700 font-bold">
                             Standard Indian answer sheet format
                         </div>
                     </div>
 
                     {/* Card 5: Twin-Wire Spiral Binding */}
-                    <div className="p-8 rounded-md bg-white border border-neutral-200/90 shadow-xs hover:shadow-sm hover:border-neutral-300 transition-all flex flex-col justify-between group">
+                    <div className="p-8 rounded-3xl bg-white border border-stone-200/90 shadow-xs hover:shadow-xl hover:border-emerald-300 transition-all flex flex-col justify-between group">
                         <div>
-                            <div className="w-12 h-12 rounded-md bg-neutral-50 border border-neutral-200 flex items-center justify-center text-black mb-6 group-hover:scale-108 transition-transform">
+                            <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 mb-6 group-hover:scale-108 transition-transform">
                                 <Layers size={24} />
                             </div>
-                            <h3 className="text-xl font-black text-neutral-900 mb-2">Twin-Wire Spiral Coils & Paper Ream</h3>
-                            <p className="text-sm text-neutral-600 leading-relaxed">
+                            <h3 className="text-xl font-black text-stone-900 mb-2">Twin-Wire Spiral Coils & Paper Ream</h3>
+                            <p className="text-sm text-stone-600 leading-relaxed">
                                 Render metallic chrome twin-wire spiral coils pinned exclusively along the left edge, complete with paper thickness edges, puncture punch holes, and subtle shadow grooves.
                             </p>
                         </div>
-                        <div className="mt-6 pt-4 border-t border-neutral-100 text-xs font-mono text-black font-bold">
+                        <div className="mt-6 pt-4 border-t border-stone-100 text-xs font-mono text-emerald-600 font-bold">
                             Authentic stationery physics
                         </div>
                     </div>
 
                     {/* Card 6: Zero Paywalls & Privacy */}
-                    <div className="p-8 rounded-md bg-white border border-neutral-200/90 shadow-xs hover:shadow-sm hover:border-rose-300 transition-all flex flex-col justify-between group">
+                    <div className="p-8 rounded-3xl bg-white border border-stone-200/90 shadow-xs hover:shadow-xl hover:border-rose-300 transition-all flex flex-col justify-between group">
                         <div>
-                            <div className="w-12 h-12 rounded-md bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-600 mb-6 group-hover:scale-108 transition-transform">
+                            <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-600 mb-6 group-hover:scale-108 transition-transform">
                                 <ShieldCheck size={24} />
                             </div>
-                            <h3 className="text-xl font-black text-neutral-900 mb-2">100% Client-Side Privacy & Free Beta</h3>
-                            <p className="text-sm text-neutral-600 leading-relaxed">
+                            <h3 className="text-xl font-black text-stone-900 mb-2">100% Client-Side Privacy & Free Beta</h3>
+                            <p className="text-sm text-stone-600 leading-relaxed">
                                 Everything runs locally inside your browser memory. Your assignments, notes, and records are never saved to external servers without consent. 100% free with unlimited 4K exports.
                             </p>
                         </div>
-                        <div className="mt-6 pt-4 border-t border-neutral-100 text-xs font-mono text-rose-600 font-bold">
+                        <div className="mt-6 pt-4 border-t border-stone-100 text-xs font-mono text-rose-600 font-bold">
                             No paywalls · No watermarks · Instant
                         </div>
                     </div>
@@ -883,10 +883,10 @@ export default function LandingPage() {
             ========================================================= */}
             <section id="faq" className="py-16 sm:py-20 px-4 sm:px-6 max-w-4xl mx-auto scroll-mt-20">
                 <div className="text-center mb-12">
-                    <h2 className="text-3xl sm:text-4xl font-black text-neutral-950 tracking-tight font-display">
+                    <h2 className="text-3xl sm:text-4xl font-black text-stone-950 tracking-tight font-display">
                         Frequently Asked Questions
                     </h2>
-                    <p className="text-neutral-600 text-sm mt-2">
+                    <p className="text-stone-600 text-sm mt-2">
                         Everything you need to know about Text2Handwriting, authenticity, and student export rights.
                     </p>
                 </div>
@@ -895,17 +895,17 @@ export default function LandingPage() {
                     {FAQ_ITEMS.map((item, idx) => (
                         <div
                             key={item.q}
-                            className="rounded-md border border-neutral-200/90 bg-white shadow-2xs overflow-hidden transition-colors"
+                            className="rounded-2xl border border-stone-200/90 bg-white shadow-2xs overflow-hidden transition-colors"
                         >
                             <button
                                 type="button"
                                 onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                                className="w-full p-5 text-left flex items-center justify-between gap-4 font-bold text-neutral-900 text-base cursor-pointer hover:bg-neutral-50/60"
+                                className="w-full p-5 text-left flex items-center justify-between gap-4 font-bold text-stone-900 text-base cursor-pointer hover:bg-stone-50/60"
                             >
                                 <span>{item.q}</span>
                                 <ChevronDown
                                     size={18}
-                                    className={`text-neutral-400 transition-transform ${openFaq === idx ? 'rotate-180 text-black' : ''}`}
+                                    className={`text-stone-400 transition-transform ${openFaq === idx ? 'rotate-180 text-violet-600' : ''}`}
                                 />
                             </button>
                             <AnimatePresence>
@@ -917,7 +917,7 @@ export default function LandingPage() {
                                         transition={{ duration: 0.2 }}
                                         className="overflow-hidden"
                                     >
-                                        <p className="px-5 pb-5 text-neutral-600 text-sm leading-relaxed border-t border-neutral-100 pt-3">
+                                        <p className="px-5 pb-5 text-stone-600 text-sm leading-relaxed border-t border-stone-100 pt-3">
                                             {item.a}
                                         </p>
                                     </motion.div>
@@ -932,8 +932,8 @@ export default function LandingPage() {
                 8. CALL-TO-ACTION PORTAL
             ========================================================= */}
             <section className="py-20 sm:py-24 px-4 sm:px-6 max-w-6xl mx-auto">
-                <div className="relative rounded-md overflow-hidden bg-gradient-to-br from-neutral-900 via-neutral-950 to-neutral-950 border border-neutral-800/30 p-10 sm:p-16 text-center shadow-[0_0_40px_rgba(139,92,246,0.15)] text-white">
-                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-black/20 via-transparent to-transparent pointer-events-none" />
+                <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-stone-900 via-indigo-950 to-violet-950 border border-indigo-500/30 p-10 sm:p-16 text-center shadow-[0_0_40px_rgba(139,92,246,0.15)] text-white">
+                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-600/20 via-transparent to-transparent pointer-events-none" />
                     
                     <div className="relative z-10 max-w-2xl mx-auto space-y-6">
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/15 border border-amber-400/30 text-amber-300 text-xs font-bold font-mono">
@@ -941,18 +941,18 @@ export default function LandingPage() {
                             <span>ZERO COST · PUBLIC BETA</span>
                         </div>
 
-                        <h2 className="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white via-white to-neutral-400 tracking-tight font-display pb-1">
+                        <h2 className="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white via-white to-violet-400 tracking-tight font-display pb-1">
                             Start Creating Handwritten Assignments in Seconds.
                         </h2>
 
-                        <p className="text-neutral-200 text-sm sm:text-base leading-relaxed max-w-xl mx-auto">
+                        <p className="text-stone-200 text-sm sm:text-base leading-relaxed max-w-xl mx-auto">
                             No download, no credit card. Join students and creators turning typed text into realistic handwritten notes in seconds.
                         </p>
 
                         <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
                             <Link
                                 to="/editor"
-                                className="w-full sm:w-auto px-8 py-4 bg-black text-white text-white hover:from-neutral-400 hover:to-neutral-400 rounded-md font-bold text-base shadow-xl hover:shadow-2xl hover:-translate-y-0.5 active:translate-y-0 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                                className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white hover:from-violet-400 hover:to-fuchsia-400 rounded-2xl font-bold text-base shadow-[0_0_20px_rgba(139,92,246,0.4)] hover:shadow-[0_0_30px_rgba(139,92,246,0.6)] hover:-translate-y-0.5 active:translate-y-0 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
                             >
                                 <Sparkles size={18} className="text-yellow-300" />
                                 <span>Open Studio Now — It's Free</span>
